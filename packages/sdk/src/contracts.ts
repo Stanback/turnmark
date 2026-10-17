@@ -29,6 +29,7 @@ export interface Provenance {
   url: string;
   revision: string;
   sha256?: string;
+  verified?: string;
 }
 export type CoverageReason =
   | "event-not-published"

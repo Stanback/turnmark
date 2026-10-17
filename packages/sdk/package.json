@@ -53,7 +53,7 @@
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "node ../../scripts/generate-sdk-data.mjs && tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
     "prepack": "npm run build && node -e \"require('node:fs').copyFileSync('../../LICENSE', 'LICENSE')\""
   }

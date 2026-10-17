@@ -1,0 +1,23 @@
+[package]
+name = "turnmark-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["rlib", "cdylib", "staticlib"]
+
+[features]
+native = ["dep:uniffi"]
+bindgen = ["native", "uniffi/cli"]
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+thiserror = "2"
+uniffi = { version = "=0.32.2", optional = true }
+
+[[bin]]
+name = "uniffi-bindgen"
+required-features = ["bindgen"]

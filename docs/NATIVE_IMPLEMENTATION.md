@@ -1,12 +1,13 @@
 # Native apps: implementation scope
 
-Status: draft implementation plan for PR #2, October 17, 2026.
+Status: shared-engine implementation in draft PR #2, October 17, 2026.
 
 PR #1 established the JavaScript/TypeScript SDK and its source-backed contract.
-That package already supports web, embed, and Node consumers. It does not yet
-provide a library importable by Swift or Kotlin. The first milestone here is
-to prove that native integration, then deliver a working native converter on
-both platforms.
+That package already supports web, embed, and Node consumers. The Rust proof now
+provides generated Swift/Kotlin libraries with native packaging, plus a Wasm
+JavaScript adapter. See [implementation and evidence](SHARED_ENGINE.md). The next
+milestone is a working native converter on both platforms; these apps have not
+been implemented yet.
 
 ## Fixed product constraints
 
@@ -66,8 +67,9 @@ Generated files should be regenerated rather than hand-edited.
 
 Research checked October 17, 2026. Recommended starting setup: local development
 on the existing Mac, with GitHub Actions for reproducible builds and tests.
-Xcode 27 and Rust are already installed locally; Android Studio and its SDK/JDK
-still need setup. This recommendation adds no external service account.
+Xcode 27 and Rust are installed locally; the proof also installed a local JDK,
+Android CLI/SDK/NDK and emulator in the user's tool cache. Android Studio remains
+optional for interactive editing/debugging. This adds no external service account.
 
 | Option            | Current free provision                                                                                                                       | Fit                                                                                                                               |
 | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |

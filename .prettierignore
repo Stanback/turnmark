@@ -4,4 +4,13 @@ dist/
 test-results/
 playwright-report/
 public/FONT-LICENSES.txt
-packages/sdk/src/data/standards.json
+data/standards.json
+packages/sdk/src/data/*.json
+bindings/generated/
+packages/engine/src/generated/
+packages/swift/Artifacts/
+packages/swift/Sources/TurnmarkCore/turnmark_core.swift
+packages/swift/Tests/TurnmarkCoreTests/Fixtures/
+Cargo.lock
+gradlew
+gradlew.bat

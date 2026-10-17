@@ -388,8 +388,8 @@ data and edge-case parity follows before production engine replacement.
 
 The first milestone introduces a private npm workspace at `packages/sdk`, with
 validated conversion/altitude operations and separate youth, Masters, and points
-entry points. Canonical numerical snapshots live under `packages/sdk/src/data`
-for now; a standalone data package can follow when native consumers need it.
+entry points. Canonical numerical snapshots now live under root `data/` and are
+embedded by Rust or copied into generated SDK outputs during its build.
 The existing web app uses transitional package adapters, preserving its links,
 storage, and calculation behavior while keeping UI labels and browser features
 in the app. Web framework choice remains open.
@@ -400,5 +400,8 @@ and TypeScript declarations, and verifies conversion-only bundling excludes
 benchmark/points tables. The SDK has no runtime dependencies. See the
 [implemented SDK guide](../packages/sdk/README.md).
 
-Rust bindings, native apps, and publisher embeds remain subsequent implementation
+The shared Rust proof now derives Swift, Kotlin, and WebAssembly libraries with
+native platform packaging and simulator/emulator tests. Its implementation and
+remaining acceptance work are recorded in [the engine guide](SHARED_ENGINE.md).
+Native app workflows and publisher embeds remain subsequent implementation
 milestones. No package has been published and the SDK/core license is unchanged.

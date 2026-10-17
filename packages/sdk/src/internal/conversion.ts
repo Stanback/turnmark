@@ -1,4 +1,8 @@
-import { altitudeAdjustments, longCourseFactors } from "../data/conversions.js";
+import {
+  altitudeAdjustments,
+  longCourseFactors,
+  shortCourseFactors,
+} from "../data/conversions.js";
 import {
   availableEvent,
   type Stroke,
@@ -15,11 +19,11 @@ export function toYardFactor(
   if (!availableEvent(distance, course, stroke)) return null;
   if (course === "SCY") return 1;
   if (course === "SCM")
-    return stroke === "FR" && [400, 800].includes(distance)
-      ? 1.143
-      : stroke === "FR" && distance === 1500
-        ? 1.003
-        : 0.896;
+    return (
+      (stroke === "FR"
+        ? (shortCourseFactors.freestyle as Record<string, number>)[distance]
+        : undefined) ?? shortCourseFactors.default
+    );
   return longCourseFactors[category][`${distance}-${stroke}`] ?? null;
 }
 export function altitudeAdjustment(distance: number, altitude: number): number {

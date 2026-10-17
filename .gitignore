@@ -10,3 +10,16 @@ test-results/
 
 test-results-production/
 packages/sdk/LICENSE
+/target/
+/bindings/generated/
+packages/sdk/src/data/*.json
+packages/swift/Artifacts/
+packages/swift/Sources/TurnmarkCore/turnmark_core.swift
+packages/swift/Tests/TurnmarkCoreTests/Fixtures/
+packages/swift/.build/
+.swiftpm/
+.gradle/
+**/build/
+local.properties
+packages/engine/src/generated/
+packages/engine/LICENSE
