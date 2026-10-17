@@ -64,6 +64,9 @@ jobs:
           distribution: temurin
           java-version: 21
       - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: false
       - run: sdkmanager 'ndk;30.0.16248370' 'platforms;android-36' 'build-tools;36.0.0'
       - run: rustup target add aarch64-linux-android x86_64-linux-android
       - name: Generate Kotlin and Android native libraries
