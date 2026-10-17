@@ -42,8 +42,4 @@ The production app is static files in `dist/`. The GitHub Actions workflow check
 
 Read [the methodology](docs/METHODOLOGY.md) for sources, rounding behavior, coverage, and limitations, and [the data maintenance guide](docs/DATA.md) for updating the tables. Inputs and original-course benchmarks are separated from course estimates. A converted time is not an official swim or a guarantee of meet-entry eligibility.
 
-## A new lap
-
-Turnmark started in 2013 as `php-swim-time-conversion`. The original code is preserved in [`legacy/php`](legacy/php) and the [`legacy-php-v3`](https://github.com/Stanback/turnmark/tree/legacy-php-v3) tag. The modern engine intentionally replaces the historical conversion formulas with a documented, current primary-source table.
-
 Application code is licensed under GPL-3.0-or-later. Published numerical data remains attributed to its respective source organizations. Turnmark is an independent project and is not affiliated with or endorsed by NCAA or USA Swimming.

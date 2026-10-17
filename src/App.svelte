@@ -693,7 +693,7 @@
         Here’s what goes into your estimate.
       </p>
       <a
-        href="https://github.com/Stanback/turnmark/blob/master/docs/METHODOLOGY.md"
+        href="https://github.com/Stanback/turnmark/blob/main/docs/METHODOLOGY.md"
         target="_blank"
         rel="noreferrer"
         >Read the full methodology<Icon name="arrow" size={17} /></a
@@ -758,7 +758,7 @@
     <span class="closing-turn"><Icon name="turn" size={32} /></span>
     <p>
       Made for the love of the swim.<span
-        >From a little PHP tool in 2013 to a fresh lap around the pool.</span
+        >Built for swimmers, coaches, and the next personal best.</span
       >
     </p>
     <span class="closing-year"
