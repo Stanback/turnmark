@@ -33,6 +33,14 @@ Girls’ columns run B → AAAA in the source PDF; boys’ columns run AAAA → 
 
 The ladder uses the entered course. Converted results are never silently treated as an actual swim for standards. A time equal to a standard meets that level; the next goal is the next faster standard. Ladder marker positions interpolate between neighboring published thresholds. The marker is kept inside the track at its extremes; exact level and next-goal text remain authoritative.
 
+## World Aquatics points
+
+Points are a separate way of comparing performances across events, using [World Aquatics’ cubic formula](https://www.worldaquatics.com/swimming/points): `floor(1000 × (base / enteredTime)^3)`. A floating-point epsilon of 1e-9 corrects representation at exact integer boundaries. Scores may exceed 1,000; they are not capped or interpreted as age-group rankings.
+
+The [official 2026 base times PDF](https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf) supplies 35 individual events across two published categories, or 70 base times. SCM validity is September 1, 2026–August 31, 2027; LCM validity is January 1–December 31, 2026. These are fixed, labeled snapshots, not live records. The importer excludes relays and verifies the clock-formatted and seconds-formatted columns agree. Source metadata and fingerprint live in `src/data/points.json`.
+
+Points use the entered metric course and raw time, without altitude correction. Yards swims and unsupported events remain unscored. Course estimates are not silently scored as actual performances. World Aquatics points are open scoring, not an age-adjusted or Masters benchmark. The app does not provide points-to-time inversion, relay scoring, or national records comparisons.
+
 ## Altitude
 
 Optional corrections follow [USA Swimming’s Times and Recognition Policy Manual §4.7](https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7), verified October 16, 2026.
@@ -41,4 +49,4 @@ For eligible individual-event distances of 200, 400/500, 800/1000, and 1500/1650
 
 ## Privacy
 
-The app makes no runtime requests to source organizations. Data, fonts, icons, and calculations ship with the static build. Inputs remain in memory until the user chooses Save swim (device-local storage), Copy link (URL fragment and clipboard), or CSV export (device download). At most eight distinct saved swims are retained. Browser storage can be blocked or cleared. Following a source link opens that organization’s website. No analytics or user accounts are included.
+The app makes no runtime requests to source organizations. Data, fonts, icons, and calculations ship with the static build. After a valid edit settles for 1.4 seconds, the conversion is recorded in device-local history, capped at the most recent 50 entries. Merely opening the default or a shared swim does not create an entry. Each entry retains event, source course, focused target course, input time, category, age group, elevation, and a timestamp. Restoring history does not add a duplicate. History supports per-entry removal and clearing, and never syncs between browsers. Save swim keeps an additional explicit collection of at most eight distinct swims. Copy link uses the URL fragment and clipboard; CSV export creates a device download. Browser storage can be blocked or cleared. Following a source link opens that organization’s website. No analytics or user accounts are included.

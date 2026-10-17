@@ -5,196 +5,262 @@
     distance,
     time,
   }: { course: Course; distance: number; time: string } = $props();
+  const lanes = [
+    { id: "SCY", length: "25 yards", meters: 22.86 },
+    { id: "SCM", length: "25 meters", meters: 25 },
+    { id: "LCM", length: "50 meters", meters: 50 },
+  ];
 </script>
 
-<div class="pool-art" aria-hidden="true">
-  <svg viewBox="0 0 840 280" role="presentation">
-    <defs>
-      <linearGradient id="poolWater" x1="0" y1="0" x2="1" y2="1"
-        ><stop stop-color="#61c8e9" /><stop
-          offset="1"
-          stop-color="#0a80ad"
-        /></linearGradient
-      >
-      <pattern id="tiles" width="18" height="18" patternUnits="userSpaceOnUse"
-        ><path
-          d="M18 0H0v18"
-          fill="none"
-          stroke="#d3f7ff"
-          stroke-opacity=".16"
-          stroke-width=".7"
-        /></pattern
-      >
-      <pattern id="rope" width="13" height="6" patternUnits="userSpaceOnUse"
-        ><rect width="13" height="6" fill="#d8e9e3" /><rect
-          width="6"
-          height="6"
-          fill="#185976"
-        /></pattern
-      >
-      <filter id="glow"><feGaussianBlur stdDeviation="8" /></filter>
-    </defs>
-    <rect
-      x="22"
-      y="12"
-      width="796"
-      height="255"
-      rx="5"
-      fill="url(#poolWater)"
-    />
-    <rect x="22" y="12" width="796" height="255" rx="5" fill="url(#tiles)" />
-    <g
-      class="water-ripples"
-      fill="none"
-      stroke="#c7f4ff"
-      stroke-opacity=".22"
-      stroke-width="1.3"
+<div
+  class="pool-art"
+  role="img"
+  aria-label="Pool length comparison: 25 yards is 22.86 meters, short course meters is 25 meters, long course meters is 50 meters."
+>
+  <div class="lane-rows">
+    {#each lanes as lane}
+      <div class="lane-row" class:focused={course === lane.id}>
+        <span class="lane-label">{lane.id}</span>
+        <div class="lane-track">
+          <div class="water-lane" style={`width:${lane.meters * 2}%`}>
+            <div class="water-caustics"></div>
+            <div class="lane-center"></div>
+            <span class="lane-length">{lane.length}</span>
+            {#if course === lane.id}<span class="swimmer-mark"
+                ><svg viewBox="0 0 60 24" aria-hidden="true"
+                  ><path
+                    d="M0 12h28m-20-6h14M6 18h17"
+                    stroke="#e9fcff"
+                    stroke-width="1"
+                    opacity=".5"
+                  /><ellipse
+                    cx="36"
+                    cy="12"
+                    rx="9"
+                    ry="3"
+                    fill="#efffd2"
+                  /><circle cx="47" cy="12" r="3.5" fill="#fff" /><path
+                    d="m40 10-7-7-10 2m15 10-7 6-10-2"
+                    fill="none"
+                    stroke="#efffd2"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                  /></svg
+                ></span
+              >{/if}
+          </div>
+        </div>
+      </div>
+    {/each}
+  </div>
+  <div class="pool-scale">
+    <span>0</span><span>12.5</span><span>25</span><span>37.5</span><span
+      >50 m</span
     >
-      <path
-        d="M20 50q90-40 180 0t180 0 180 0 260 0M20 72q90-40 180 0t180 0 180 0 260 0M20 190q90-40 180 0t180 0 180 0 260 0M20 212q90-40 180 0t180 0 180 0 260 0"
-      />
-    </g>
-    <g fill="url(#rope)"
-      ><rect x="25" y="91" width="790" height="5" rx="2" /><rect
-        x="25"
-        y="180"
-        width="790"
-        height="5"
-        rx="2"
-      /></g
-    >
-    <g fill="none" stroke="#135f80" stroke-width="7" opacity=".5"
-      ><path
-        d="M55 57h730m-20-15v30M55 139h730m-20-15v30M55 225h730m-20-15v30"
-      /></g
-    >
-    <g fill="none" stroke="#e6f8fb" stroke-width="2" opacity=".7"
-      ><path d="M48 12v255M792 12v255" /></g
-    >
-    <path
-      d="M85 139h545"
-      stroke="#ecffce"
-      stroke-width="5"
-      stroke-linecap="round"
-    />
-    <path
-      d="m614 126 16 13-16 13"
-      fill="none"
-      stroke="#ecffce"
-      stroke-width="4"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-    <ellipse
-      cx="410"
-      cy="139"
-      rx="50"
-      ry="15"
-      fill="#e8ffd6"
-      opacity=".45"
-      filter="url(#glow)"
-    />
-    <g class="swimmer"
-      ><ellipse cx="416" cy="139" rx="22" ry="5" fill="#f4ffd7" /><circle
-        cx="439"
-        cy="139"
-        r="6"
-        fill="#102f49"
-      /><path
-        d="m426 139-17-15-22 2m33 15-15 14-20-2"
-        fill="none"
-        stroke="#f4ffd7"
-        stroke-width="4"
-        stroke-linecap="round"
-      /></g
-    >
-    <g fill="#e7f5f7"
-      ><rect x="804" y="43" width="27" height="25" rx="3" /><rect
-        x="804"
-        y="126"
-        width="27"
-        height="25"
-        rx="3"
-      /><rect x="804" y="212" width="27" height="25" rx="3" /></g
-    >
-    <g
-      fill="#1a536c"
-      font-family="monospace"
-      font-size="12"
-      text-anchor="middle"
-      ><text x="818" y="60">1</text><text x="818" y="143">2</text><text
-        x="818"
-        y="229">3</text
-      ></g
-    >
-  </svg>
+  </div>
   <div class="pool-tag">
-    <span class="live-dot"></span>{course === "SCY"
-      ? "25 yd"
-      : course === "SCM"
-        ? "25 m"
-        : "50 m"} pool <span>·</span>
-    {distance}
-    {course === "SCY" ? "yd" : "m"}
+    <span></span>Pool lengths to scale <i>·</i>
+    {course} in focus
   </div>
 </div>
 
 <style>
   .pool-art {
-    position: relative;
+    margin: 22px 0 16px;
     width: 100%;
-    margin: 5px 0 10px;
+    font-size: 11px;
   }
-  .pool-art svg {
-    display: block;
-    width: 100%;
-    height: auto;
-    filter: drop-shadow(0 12px 18px #071b2c25);
+  .lane-rows {
+    display: grid;
+    gap: 15px;
   }
-  .pool-tag {
-    position: absolute;
-    bottom: 10%;
-    left: 8%;
-    background: #f3ffffe8;
-    border: 1px solid #ffffff70;
-    box-shadow: 0 3px 10px #123d4f12;
-    border-radius: 30px;
-    display: flex;
+  .lane-row {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 12px;
     align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
+  }
+  .lane-label {
     font-size: 10px;
     font-weight: 650;
-    color: #18415b;
+    color: #c3dfe9;
   }
-  .pool-tag > span:not(.live-dot) {
-    opacity: 0.4;
+  .lane-track {
+    height: 42px;
+    border-right: 1px solid #ffffff20;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent calc(25% - 1px),
+      #ffffff12 calc(25% - 1px),
+      #ffffff12 25%
+    );
   }
-  .live-dot {
-    width: 5px;
+  .water-lane {
+    height: 100%;
+    position: relative;
+    background: linear-gradient(
+      120deg,
+      #078bb8,
+      #169cbb 30%,
+      #00739e 70%,
+      #21a7bf
+    );
+    border-block: 4px solid transparent;
+    border-image: repeating-linear-gradient(
+        90deg,
+        #e5f5ee 0 5px,
+        #194b6c 5px 11px,
+        #e5f5ee 11px 16px,
+        #d66f55 16px 21px
+      )
+      4;
+    box-shadow:
+      inset 0 0 12px #003e6680,
+      0 2px 8px #0002;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .focused .water-lane {
+    box-shadow:
+      inset 0 0 12px #003e6680,
+      0 0 0 1px #daee9970,
+      0 3px 14px #062c4b80;
+  }
+  .lane-center {
+    height: 3px;
+    background: #004d7380;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 10px;
+  }
+  .lane-center:after {
+    content: "";
+    height: 19px;
+    width: 3px;
+    background: #004d7380;
+    position: absolute;
+    right: 0;
+    top: -8px;
+  }
+  .water-caustics {
+    position: absolute;
+    inset: -10px;
+    background: repeating-radial-gradient(
+      ellipse at 20% 0%,
+      transparent 0 12px,
+      #b4f6ff45 14px,
+      transparent 17px 24px
+    );
+    transform: skewX(-18deg);
+    opacity: 0.55;
+    animation: water 8s ease-in-out infinite alternate;
+  }
+  .lane-length {
+    position: absolute;
+    left: 9px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 9px;
+    color: #fff;
+    font-weight: 600;
+    text-shadow: 0 1px 4px #003e66;
+    background: #00507190;
+    padding: 3px 5px;
+    border-radius: 3px;
+  }
+  .swimmer-mark {
+    position: absolute;
+    left: 61%;
+    top: 50%;
+    width: 58px;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(0 1px 2px #003654);
+    animation: swim 5s ease-in-out infinite alternate;
+  }
+  .swimmer-mark svg {
+    width: 100%;
+    display: block;
+  }
+  .pool-scale {
+    margin: 8px 0 0 44px;
+    display: flex;
+    justify-content: space-between;
+    color: #bfd9e5;
+    font-size: 9px;
+    font-variant-numeric: tabular-nums;
+  }
+  .pool-scale span {
+    position: relative;
+    padding-top: 6px;
+  }
+  .pool-scale span:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    height: 3px;
+    width: 1px;
+    background: #9cbdca;
+    left: 50%;
+  }
+  .pool-tag {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 9px;
+    color: #d3e7ee;
+    margin: 14px 0 0 44px;
+  }
+  .pool-tag > span {
     height: 5px;
-    border-radius: 100%;
-    background: #188377;
+    width: 5px;
+    background: #d3ee80;
+    border-radius: 50%;
   }
-  .water-ripples {
-    animation: ripples 12s ease-in-out infinite alternate;
+  .pool-tag i {
+    font-style: normal;
+    opacity: 0.5;
   }
-  .swimmer {
-    animation: swim 7s ease-in-out infinite alternate;
-  }
-  @keyframes ripples {
+  @keyframes water {
     to {
-      transform: translateX(18px) translateY(4px);
+      transform: skewX(-12deg) translateX(12px);
     }
   }
   @keyframes swim {
     to {
-      transform: translateX(20px);
+      left: 75%;
+    }
+  }
+  @media (max-width: 680px) {
+    .pool-art {
+      margin: 18px 0 14px;
+    }
+    .lane-track {
+      height: 35px;
+    }
+    .lane-rows {
+      gap: 12px;
+    }
+    .lane-length {
+      font-size: 8px;
+      left: 4px;
+    }
+    .swimmer-mark {
+      width: 42px;
+    }
+    .lane-row {
+      gap: 8px;
+      grid-template-columns: 28px minmax(0, 1fr);
+    }
+    .pool-scale,
+    .pool-tag {
+      margin-left: 36px;
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .water-ripples,
-    .swimmer {
+    .water-caustics,
+    .swimmer-mark {
       animation: none;
     }
   }

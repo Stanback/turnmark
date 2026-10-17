@@ -5,9 +5,13 @@
     ...rest
   }: { name: string; size?: number; [key: string]: unknown } = $props();
   const paths: Record<string, string> = {
+    wave: "M3 8q4-6 9 0t9 0M3 16q4-6 9 0t9 0",
+    history: "M3 4v6h6M3 10a9 9 0 1 1 .6 7M12 7v5l3 2",
+    lock: "M7 10V7a5 5 0 0 1 10 0v3M5 10h14v11H5zM12 14v3",
+    standards: "M8 4h8v4H8zM8 6H5v15h14V6h-3M9 12h6M9 16h6",
     arrow: "M5 12h14m-6-6 6 6-6 6",
     down: "M12 4v16m-6-6 6 6 6-6",
-    turn: "M5 5h10a5 5 0 0 1 0 10H6m4-4-4 4 4 4",
+    turn: "M3 8q4-6 9 0t9 0M3 16q4-6 9 0t9 0",
     link: "m10 13 4-4m-6 6-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0m2 3 1-1a4 4 0 0 1 6 6l-4 4a4 4 0 0 1-6 0",
     bookmark: "M6 4h12v17l-6-4-6 4V4Z",
     check: "m5 12 4 4L19 6",

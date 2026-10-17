@@ -20,6 +20,13 @@ The generated `src/data/standards.json` records the source URL, revision, retrie
 3. Update `src/data/conversions.ts` and the source fingerprint in `src/data/sources.json`.
 4. Add a published numerical example to the tests if the calculation changes. Never infer a missing event factor from a nearby event.
 
+## World Aquatics points
+
+1. Check [World Aquatics’ official points page](https://www.worldaquatics.com/swimming/points) for the current base-times PDF and its separate SCM/LCM validity dates.
+2. Run `npm run data:points`. The importer fetches the pinned official PDF, uses Poppler to extract its numeric columns, verifies both time representations, rejects duplicates, and requires 35 individual events (70 category-specific base times).
+3. For a future edition, review the PDF and update the URL, validity guards, source dates, labels, documentation, and tests together. Do not simply substitute current world records; the scoring base times have their own validity periods.
+4. Verify all 70 base times score 1,000 and independent slower/faster samples follow the published cubic formula and truncation. There is no yards points table and no implicit scoring of course-converted estimates.
+
 ## Altitude
 
 Check USA Swimming’s official Times and Recognition Policy Manual §4.7. Review band boundaries and eligible events, then update the source metadata, numeric table, documentation, and boundary tests together.

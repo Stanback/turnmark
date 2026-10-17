@@ -1,0 +1,260 @@
+{
+  "source": {
+    "name": "World Aquatics 2026 points base times",
+    "url": "https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf",
+    "method": "https://www.worldaquatics.com/swimming/points",
+    "checked": "2026-10-16",
+    "sha256": "22582ce69dab3103c8f3dbbc7e9e19509d295082ae68e3b1557d9dd6264ccd6e"
+  },
+  "validity": {
+    "SCM": "September 1, 2026 \u2013 August 31, 2027",
+    "LCM": "January 1 \u2013 December 31, 2026"
+  },
+  "events": [
+    {
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FR",
+      "men": 19.9,
+      "women": 22.83
+    },
+    {
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FR",
+      "men": 44.84,
+      "women": 49.93
+    },
+    {
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FR",
+      "men": 98.61,
+      "women": 109.36
+    },
+    {
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "FR",
+      "men": 212.25,
+      "women": 230.25
+    },
+    {
+      "course": "SCM",
+      "distance": 800,
+      "stroke": "FR",
+      "men": 440.46,
+      "women": 474.0
+    },
+    {
+      "course": "SCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "men": 846.88,
+      "women": 908.24
+    },
+    {
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BK",
+      "men": 22.11,
+      "women": 25.23
+    },
+    {
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BK",
+      "men": 48.16,
+      "women": 54.02
+    },
+    {
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BK",
+      "men": 105.12,
+      "women": 117.33
+    },
+    {
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BR",
+      "men": 24.95,
+      "women": 28.37
+    },
+    {
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BR",
+      "men": 55.28,
+      "women": 62.36
+    },
+    {
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BR",
+      "men": 119.52,
+      "women": 132.5
+    },
+    {
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FL",
+      "men": 21.32,
+      "women": 23.72
+    },
+    {
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FL",
+      "men": 47.68,
+      "women": 52.71
+    },
+    {
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FL",
+      "men": 106.85,
+      "women": 119.32
+    },
+    {
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "IM",
+      "men": 49.28,
+      "women": 55.11
+    },
+    {
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "IM",
+      "men": 108.88,
+      "women": 121.63
+    },
+    {
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "IM",
+      "men": 234.81,
+      "women": 255.48
+    },
+    {
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FR",
+      "men": 20.91,
+      "women": 23.61
+    },
+    {
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FR",
+      "men": 46.4,
+      "women": 51.71
+    },
+    {
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FR",
+      "men": 102.0,
+      "women": 112.23
+    },
+    {
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "FR",
+      "men": 219.96,
+      "women": 234.18
+    },
+    {
+      "course": "LCM",
+      "distance": 800,
+      "stroke": "FR",
+      "men": 452.12,
+      "women": 484.12
+    },
+    {
+      "course": "LCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "men": 870.67,
+      "women": 920.48
+    },
+    {
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BK",
+      "men": 23.55,
+      "women": 26.86
+    },
+    {
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BK",
+      "men": 51.6,
+      "women": 57.13
+    },
+    {
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BK",
+      "men": 111.92,
+      "women": 123.14
+    },
+    {
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BR",
+      "men": 25.95,
+      "women": 29.16
+    },
+    {
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BR",
+      "men": 56.88,
+      "women": 64.13
+    },
+    {
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BR",
+      "men": 125.48,
+      "women": 137.55
+    },
+    {
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FL",
+      "men": 22.27,
+      "women": 24.43
+    },
+    {
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FL",
+      "men": 49.45,
+      "women": 54.6
+    },
+    {
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FL",
+      "men": 110.34,
+      "women": 121.81
+    },
+    {
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "IM",
+      "men": 112.69,
+      "women": 125.7
+    },
+    {
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "IM",
+      "men": 242.5,
+      "women": 263.65
+    }
+  ]
+}

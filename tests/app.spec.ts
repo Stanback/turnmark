@@ -108,3 +108,99 @@ test("long times fit the narrow desktop layout", async ({ page }) => {
     ).toBe(true);
   }
 });
+
+test("conversion history records settled edits, persists, filters, restores and clears", async ({
+  page,
+}) => {
+  await page.goto("./");
+  await expect(page.locator(".history-row")).toHaveCount(0);
+  await page.locator("#swim-time").fill("59.10");
+  await expect(page.locator(".history-row")).toHaveCount(1);
+  await expect(page.locator(".history-row")).toContainText("59.10");
+  await page.reload();
+  await expect(page.locator(".history-row")).toHaveCount(1);
+  const historyA11y = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+    .analyze();
+  expect(historyA11y.violations.map((v) => v.id)).toEqual([]);
+  await page.getByRole("button", { name: "Breast", exact: true }).click();
+  await page.locator("#swim-time").fill("1:12.50");
+  await expect(page.locator(".history-row")).toHaveCount(2);
+  await page
+    .getByRole("button", { name: "Filter history: Free", exact: true })
+    .click();
+  await expect(page.locator(".history-row")).toHaveCount(1);
+  await page.locator(".history-restore").click();
+  await expect(page.locator("#swim-time")).toHaveValue("59.10");
+  await expect(
+    page
+      .getByRole("group", { name: "Stroke", exact: true })
+      .getByRole("button", { name: "Free", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  // Invalid input must never enter history.
+  await page.locator("#swim-time").fill("1:60");
+  await page
+    .getByRole("button", { name: "Clear history", exact: true })
+    .click();
+  await page.reload();
+  await expect(page.locator(".history-row")).toHaveCount(0);
+});
+
+test("World Aquatics points score entered metric swims and leave yards unscored", async ({
+  page,
+}) => {
+  await page.goto("./");
+  await page
+    .getByRole("button", { name: "World Aquatics points", exact: true })
+    .click();
+  await expect(page.getByTestId("points-score")).toHaveText("—");
+  await expect(page.locator(".points-note")).toContainText("25m and 50m");
+  await page
+    .getByRole("group", { name: "Swum in" })
+    .getByRole("button", { name: "SCM" })
+    .click();
+  await page.locator("#swim-time").fill("49.93");
+  await expect(page.getByTestId("points-score")).toHaveText("1,000");
+  await page
+    .getByRole("group", { name: "Swum in" })
+    .getByRole("button", { name: "LCM" })
+    .click();
+  await page.locator("#swim-time").fill("51.71");
+  await expect(page.getByTestId("points-score")).toHaveText("1,000");
+  const pointsA11y = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+    .analyze();
+  expect(pointsA11y.violations.map((v) => v.id)).toEqual([]);
+});
+
+test("mobile navigation reaches history and standards without covering content", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "Mobile navigation only");
+  await page.goto("./");
+  const nav = page.getByRole("navigation", { name: "Mobile navigation" });
+  await nav.getByRole("button", { name: "History", exact: true }).click();
+  await expect(page.locator("#history")).toBeInViewport();
+  await nav.getByRole("button", { name: "Standards", exact: true }).click();
+  await expect(page.locator("#standards")).toBeInViewport();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+});
+
+test("history remembers target-course changes and explicit saves without duplicates", async ({
+  page,
+}) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "Save swim", exact: true }).click();
+  await expect(page.locator(".history-row")).toHaveCount(1);
+  await page.getByRole("button", { name: "Save swim", exact: true }).click();
+  await expect(page.locator(".history-row")).toHaveCount(1);
+  await page.getByTestId("result-SCM").click();
+  await expect(page.locator(".history-row")).toHaveCount(2);
+  await expect(page.locator(".history-row").first()).toContainText("SCY → SCM");
+  await page.locator(".history-remove").first().click();
+  await expect(page.locator(".history-row")).toHaveCount(1);
+});

@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import Icon from "./lib/Icon.svelte";
   import Pool from "./lib/Pool.svelte";
+  import { worldPoints, pointsSource, pointsValidity } from "./lib/points";
   import { altitudeSource, conversionSource } from "./data/conversions";
   import standardData from "./data/standards.json";
   import {
@@ -35,8 +36,36 @@
   let toast = $state("");
   let saved = $state<{ id: string; form: SwimState }[]>([]);
   let toastTimer: ReturnType<typeof setTimeout>;
-  let mounted = false;
+  let mounted = $state(false);
+  type HistoryEntry = {
+    id: string;
+    form: SwimState;
+    target: Course;
+    createdAt: number;
+  };
+  let conversions = $state<HistoryEntry[]>([]);
+  let historyFilter = $state<Stroke | "all">("all");
+  let activeSection = $state("converter");
+  let standardMode = $state<"targets" | "points">("targets");
+  let lastRecorded = "";
+  const filteredHistory = $derived(
+    conversions.filter(
+      (x) => historyFilter === "all" || x.form.stroke === historyFilter,
+    ),
+  );
+  $effect(() => {
+    const target = focus;
+    const hash = `${stateHash(form)}|${target}`;
+    if (!mounted || error || hash === lastRecorded) return;
+    const snapshot = { ...form };
+    const timer = setTimeout(() => recordConversion(snapshot, target), 1400);
+    return () => clearTimeout(timer);
+  });
   const time = $derived(parseTime(form.time));
+  const points = $derived(
+    worldPoints(time, form.course, form.distance, form.stroke, form.category),
+  );
+
   const altitudeValid = $derived(
     Number.isInteger(form.altitude) &&
       form.altitude >= 0 &&
@@ -132,7 +161,42 @@
     } catch {
       /* Corrupt or blocked storage starts with an empty board. */
     }
+    try {
+      const raw: unknown = JSON.parse(
+        localStorage.getItem("turnmark-history") ?? "[]",
+      );
+      if (Array.isArray(raw))
+        conversions = raw
+          .filter(
+            (x) =>
+              typeof x?.id === "string" &&
+              typeof x?.hash === "string" &&
+              Number.isFinite(x?.createdAt) &&
+              courses.includes(x?.target),
+          )
+          .slice(0, 50)
+          .map((x) => ({
+            id: x.id,
+            form: readState(x.hash),
+            target: x.target,
+            createdAt: x.createdAt,
+          }));
+    } catch {
+      /* History is optional when storage is unavailable. */
+    }
+    lastRecorded = `${stateHash(form)}|${focus}`;
     mounted = true;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries)
+          if (entry.isIntersecting) activeSection = entry.target.id;
+      },
+      { rootMargin: "-10% 0px -60% 0px" },
+    );
+    for (const id of ["converter", "history", "standards", "method"]) {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    }
     const hashChange = () => {
       if (window.location.hash.startsWith("#t="))
         form = readState(window.location.hash);
@@ -140,15 +204,94 @@
     window.addEventListener("hashchange", hashChange);
     return () => {
       clearTimeout(toastTimer);
+      observer.disconnect();
       window.removeEventListener("hashchange", hashChange);
     };
   });
+  function recordConversion(
+    snapshot: SwimState,
+    target: Course,
+    explicit = false,
+  ) {
+    const hash = `${stateHash(snapshot)}|${target}`;
+    if (!explicit && hash === lastRecorded) return;
+    if (
+      explicit &&
+      conversions[0] &&
+      `${stateHash(conversions[0].form)}|${conversions[0].target}` === hash &&
+      conversions[0].target === target
+    )
+      return;
+    lastRecorded = hash;
+    const next = [
+      {
+        id: crypto.randomUUID(),
+        form: snapshot,
+        target,
+        createdAt: Date.now(),
+      },
+      ...conversions,
+    ].slice(0, 50);
+    writeHistory(next);
+  }
+  function writeHistory(next: HistoryEntry[]) {
+    try {
+      localStorage.setItem(
+        "turnmark-history",
+        JSON.stringify(
+          next.map((x) => ({
+            id: x.id,
+            hash: stateHash(x.form),
+            target: x.target,
+            createdAt: x.createdAt,
+          })),
+        ),
+      );
+      conversions = next;
+    } catch {
+      notify(
+        "History couldn’t be saved in this browser. Copy a link to keep this swim.",
+      );
+    }
+  }
+  function restoreConversion(entry: HistoryEntry) {
+    lastRecorded = `${stateHash(entry.form)}|${entry.target}`;
+    form = { ...entry.form };
+    focus = entry.target;
+    go("converter");
+    notify("Previous conversion restored.");
+  }
+  function historyResult(entry: HistoryEntry) {
+    const seconds = parseTime(entry.form.time);
+    const adjusted =
+      seconds === null
+        ? 0
+        : seconds -
+          altitudeAdjustment(entry.form.distance, entry.form.altitude);
+    return convert(
+      adjusted,
+      entry.form.stroke,
+      entry.form.distance,
+      entry.form.course,
+      entry.target,
+      entry.form.category,
+    ).time;
+  }
+  function dateLabel(timestamp: number) {
+    const date = new Date(timestamp);
+    return (
+      date.toLocaleDateString(undefined, { month: "short", day: "numeric" }) +
+      " · " +
+      date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })
+    );
+  }
   function notify(message: string) {
     toast = message;
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => (toast = ""), 3500);
   }
   function go(id: string) {
+    activeSection = id;
     document.getElementById(id)?.scrollIntoView({
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
         ? "instant"
@@ -204,6 +347,7 @@
   function save() {
     if (error || !mounted) return;
     const snapshot = { ...form };
+    recordConversion(snapshot, focus, true);
     const next = [
       { id: crypto.randomUUID(), form: snapshot },
       ...saved.filter((x) => stateHash(x.form) !== stateHash(snapshot)),
@@ -267,11 +411,16 @@
       >turnmark<span class="brand-period">.</span></a
     >
     <nav aria-label="Main navigation">
-      <button class="nav-current" onclick={() => go("converter")}
-        >Converter</button
-      ><button onclick={() => go("standards")}>Time standards</button><button
-        onclick={() => go("method")}>The method</button
-      >
+      <button
+        class:nav-current={activeSection === "converter"}
+        onclick={() => go("converter")}>Converter</button
+      ><button
+        class:nav-current={activeSection === "history"}
+        onclick={() => go("history")}>History</button
+      ><button
+        class:nav-current={activeSection === "standards"}
+        onclick={() => go("standards")}>Time standards</button
+      ><button onclick={() => go("method")}>The method</button>
     </nav>
     <a
       class="github-link"
@@ -286,30 +435,37 @@
   </div>
 </header>
 <main id="main">
-  <section class="intro page-width" aria-labelledby="page-title">
-    <div class="intro-copy">
-      <div class="eyebrow">
-        <span></span>A FRESH PERSPECTIVE ON YOUR PERSONAL BEST
+  <section class="intro" aria-labelledby="page-title">
+    <img
+      class="hero-photo"
+      src={`${import.meta.env.BASE_URL}images/swimmer-hero.webp`}
+      alt=""
+      fetchpriority="high"
+    />
+    <div class="hero-inner page-width">
+      <div class="intro-copy">
+        <div class="eyebrow"><span></span>DIFFERENT POOLS. SAME POTENTIAL.</div>
+        <h1 id="page-title">
+          Your swim.<br />Any <span class="course-word">course.</span>
+        </h1>
+        <p>
+          Convert your time, find your next goal,<br class="desktop-break" /> and
+          make every turn count.
+        </p>
+        <button
+          class="hero-cta"
+          onclick={() => {
+            go("converter");
+            document
+              .getElementById("swim-time")
+              ?.focus({ preventScroll: true });
+          }}>Start converting <Icon name="arrow" size={17} /></button
+        >
       </div>
-      <h1 id="page-title">
-        Your swim.<br />Any
-        <span class="course-word"
-          >course<svg viewBox="0 0 320 15" aria-hidden="true"
-            ><path d="M3 9q140-14 312-2" /></svg
-          ></span
-        >.
-      </h1>
-      <p>
-        Different pool. Same potential. Convert your time,<br
-          class="desktop-break"
-        /> find your next goal, and make every turn count.
-      </p>
-    </div>
-    <div class="intro-aside">
-      <div class="watermark-number" aria-hidden="true">01<span>/ 03</span></div>
-      <p>25 yards. 25 meters. 50 meters.<br />One clearer picture.</p>
-      <div class="privacy-note">
-        <span class="status-dot"></span>All in your browser. All yours.
+      <div class="intro-aside">
+        <span>ONE SWIM.<br />THREE COURSES.<br />MORE POSSIBILITIES.</span><i
+        ></i>
+        <p>Swim anywhere.<br />Go a little further.</p>
       </div>
     </div>
   </section>
@@ -321,14 +477,14 @@
   >
     <div class="input-panel">
       <div class="section-label">
-        <span class="section-number">01</span>THE STARTING BLOCK<button
+        <span class="section-number">01</span>CONVERT YOUR SWIM<button
           class="text-button reset"
           onclick={reset}>Reset</button
         >
       </div>
       <div class="panel-title">
-        <h2>Tell us about your swim.</h2>
-        <p>We’ll take it from here.</p>
+        <h2>Convert your swim</h2>
+        <p>One time. A whole new perspective.</p>
       </div>
       <div class="field-label" id="stroke-label">Stroke</div>
       <div class="stroke-picker" role="group" aria-labelledby="stroke-label">
@@ -383,9 +539,7 @@
           >{/each}
       </div>
       <div class="factor-row">
-        <label for="category"
-          >Factor table <span>for course conversion</span></label
-        >
+        <label for="category">Category <span>for published tables</span></label>
         <div class="select-wrap">
           <select id="category" bind:value={form.category}
             ><option value="women">Women / girls</option><option value="men"
@@ -429,16 +583,18 @@
       <div class="results-heading">
         <div>
           <div class="section-label">
-            <span class="section-number">02</span>A CHANGE OF SCENERY
+            <span class="section-number">02</span>POOL VISUALIZATION & RESULTS
           </div>
-          <h2>See the other side of the wall.</h2>
+          <h2>Same swim. Different water.</h2>
         </div>
         <span class="method-chip">NCAA factors <span>↗</span></span>
       </div>
       <div class="pool-scene">
         <div class="pool-scene-top">
           <div>
-            <span class="tiny-label">IN FOCUS</span>
+            <span class="tiny-label"
+              >{form.course} <span aria-hidden="true">→</span> {focus}</span
+            >
             <h3>
               {eventLabel(form.distance, focus, form.stroke)}
               <span>· {focus}</span>
@@ -487,7 +643,7 @@
                 >{result.course === form.course
                   ? adjustment
                     ? "ADJUSTED"
-                    : "YOUR SWIM"
+                    : "YOUR INPUT"
                   : "ESTIMATE"}</span
               >
             </div>
@@ -496,10 +652,8 @@
             </div>
             <div class="result-card-bottom">
               <span
-                >{eventLabel(form.distance, result.course, form.stroke)}
-                <span class="result-unit"
-                  >{result.course === "SCY" ? "yd" : "m"}</span
-                ></span
+                >{eventDistance(form.distance, result.course, form.stroke)}
+                {result.course === "SCY" ? "yards" : "meters"}</span
               >{#if focus === result.course}<span class="selected-check"
                   ><Icon name="check" size={12} /></span
                 >{:else}<Icon name="arrow" size={15} />{/if}
@@ -534,114 +688,289 @@
     </div>
   </section>
 
-  <section
-    class="standards-section page-width"
-    id="standards"
-    aria-labelledby="standards-title"
-  >
-    <div class="standards-title-row">
-      <div>
-        <div class="section-label">
-          <span class="section-number">03</span>THE NEXT PERSONAL BEST
+  <div class="insights-grid page-width">
+    <section class="history-panel" id="history" aria-labelledby="history-title">
+      <div class="history-heading">
+        <div>
+          <span class="eyebrow">EVERY SWIM HAS A STORY</span>
+          <h2 id="history-title">
+            Recent conversions <span>{conversions.length}</span>
+          </h2>
         </div>
-        <h2 id="standards-title">A little context. A new target.</h2>
-        <p>Find your place on the USA Swimming motivational ladder.</p>
+        {#if conversions.length}<button
+            class="text-button"
+            onclick={() => {
+              writeHistory([]);
+              notify("Conversion history cleared.");
+            }}>Clear history</button
+          >{/if}
       </div>
-      <div class="standards-controls">
-        <label for="age-group"
-          >Age group<select id="age-group" bind:value={form.age}
-            >{#each ages as age}<option value={age.id}>{age.label}</option
-              >{/each}</select
-          ></label
-        ><span class="standards-edition"
-          >2024–2028<br /><span>National age group standards</span></span
+      <p class="history-subtitle">
+        Your last 50 conversions. Only on this device.
+      </p>
+      <div
+        class="history-filters"
+        role="group"
+        aria-label="Filter conversion history"
+      >
+        <button
+          class:active={historyFilter === "all"}
+          aria-pressed={historyFilter === "all"}
+          onclick={() => (historyFilter = "all")}>All</button
         >
+        {#each strokes as stroke}<button
+            class:active={historyFilter === stroke.id}
+            aria-pressed={historyFilter === stroke.id}
+            aria-label={`Filter history: ${stroke.short}`}
+            onclick={() => (historyFilter = stroke.id)}>{stroke.short}</button
+          >{/each}
       </div>
-    </div>
-    <div class="standards-card">
-      <div class="standards-context">
-        <span class="context-pill">{currentLabel} · {form.course}</span><span
-          >{form.category === "women" ? "Girls" : "Boys"} · {ages.find(
-            (a) => a.id === form.age,
-          )?.label} <span class="context-divider">/</span>
-          {adjustment ? "Altitude-adjusted input" : "Your entered course"}</span
-        ><a href={standardData.source.url} target="_blank" rel="noreferrer"
-          >Official table<Icon name="external" size={12} /></a
-        >
-      </div>
-      {#if thresholds && standing && correctedTime !== null}<div
-          class="standard-summary"
-        >
-          <div class="standard-achievement">
-            <span class="achievement-badge"
-              >{standing.achieved >= 0 ? levels[standing.achieved] : "→"}</span
+      <div class="history-list">
+        {#each filteredHistory as entry (entry.id)}
+          <div class="history-row">
+            <button
+              class="history-restore"
+              onclick={() => restoreConversion(entry)}
+              aria-label={`Restore ${eventLabel(entry.form.distance, entry.form.course, entry.form.stroke)} ${entry.form.time}`}
             >
-            <div>
+              <span
+                class="history-wave"
+                class:medley={entry.form.stroke === "IM"}
+                ><Icon name="wave" size={20} /></span
+              >
+              <span class="history-event"
+                ><strong
+                  >{eventLabel(
+                    entry.form.distance,
+                    entry.form.course,
+                    entry.form.stroke,
+                  )}</strong
+                ><small
+                  >{entry.form.course} <span aria-hidden="true">→</span>
+                  {entry.target} · {entry.form.category === "women"
+                    ? "Women"
+                    : "Men"}</small
+                ></span
+              >
+              <span class="history-times"
+                ><strong
+                  >{formatTime(parseTime(entry.form.time))} <span>→</span>
+                  {formatTime(historyResult(entry))}</strong
+                ><small>{dateLabel(entry.createdAt)}</small></span
+              >
+              <Icon name="chevron" size={14} />
+            </button>
+            <button
+              class="history-remove"
+              aria-label={`Remove conversion ${entry.form.time}`}
+              onclick={() =>
+                writeHistory(conversions.filter((x) => x.id !== entry.id))}
+              ><Icon name="close" size={14} /></button
+            >
+          </div>
+        {:else}
+          <div class="history-empty">
+            <span class="empty-icon"
+              ><Icon
+                name={conversions.length ? "wave" : "history"}
+                size={26}
+              /></span
+            >
+            <h3>
+              {conversions.length
+                ? "A clear lane for this stroke."
+                : "Your next swim starts the story."}
+            </h3>
+            <p>
+              {conversions.length
+                ? "Try another filter to find a previous conversion."
+                : "Change a time or event above. Your conversion will appear here automatically."}
+            </p>
+            <span
+              ><Icon name="lock" size={13} />Private to this browser. No account
+              needed.</span
+            >
+          </div>
+        {/each}
+      </div>
+    </section>
+    <section
+      class="standards-section"
+      id="standards"
+      aria-labelledby="standards-title"
+    >
+      <div
+        class="standards-tabs"
+        role="group"
+        aria-label="Performance comparison"
+      >
+        <button
+          class:active={standardMode === "targets"}
+          aria-pressed={standardMode === "targets"}
+          onclick={() => (standardMode = "targets")}>Time standards</button
+        >
+        <button
+          class:active={standardMode === "points"}
+          aria-pressed={standardMode === "points"}
+          onclick={() => (standardMode = "points")}
+          >World Aquatics points</button
+        >
+      </div>
+      {#if standardMode === "targets"}
+        <div class="standards-title-row">
+          <div>
+            <div class="section-label">
+              <span class="section-number">03</span>THE NEXT PERSONAL BEST
+            </div>
+            <h2 id="standards-title">A little context. A new target.</h2>
+            <p>Find your place on the USA Swimming motivational ladder.</p>
+          </div>
+          <div class="standards-controls">
+            <label for="age-group"
+              >Age group<select id="age-group" bind:value={form.age}
+                >{#each ages as age}<option value={age.id}>{age.label}</option
+                  >{/each}</select
+              ></label
+            ><span class="standards-edition"
+              >2024–2028<br /><span>National age group standards</span></span
+            >
+          </div>
+        </div>
+        <div class="standards-card">
+          <div class="standards-context">
+            <span class="context-pill">{currentLabel} · {form.course}</span
+            ><span
+              >{form.category === "women" ? "Girls" : "Boys"} · {ages.find(
+                (a) => a.id === form.age,
+              )?.label} <span class="context-divider">/</span>
+              {adjustment
+                ? "Altitude-adjusted input"
+                : "Your entered course"}</span
+            ><a href={standardData.source.url} target="_blank" rel="noreferrer"
+              >Official table<Icon name="external" size={12} /></a
+            >
+          </div>
+          {#if thresholds && standing && correctedTime !== null}<div
+              class="standard-summary"
+            >
+              <div class="standard-achievement">
+                <span class="achievement-badge"
+                  >{standing.achieved >= 0
+                    ? levels[standing.achieved]
+                    : "→"}</span
+                >
+                <div>
+                  <h3>
+                    {standing.achieved >= 0
+                      ? `${levels[standing.achieved]} time, nicely done.`
+                      : "Your next chapter starts here."}
+                  </h3>
+                  <p>
+                    {#if standing.next !== null}<strong
+                        >{nextGap?.toFixed(2)}s</strong
+                      >
+                      to your next mark:
+                      <strong>{levels[standing.next]}</strong>
+                      in {formatTime(nextTime)}.{:else}You’ve reached the top
+                      motivational standard for this event.{/if}
+                  </p>
+                </div>
+              </div>
+              <div class="goal-time">
+                <span class="tiny-label"
+                  >{standing.next !== null
+                    ? `NEXT UP · ${levels[standing.next]}`
+                    : "TOP MARK · AAAA"}</span
+                ><strong>{formatTime(nextTime ?? thresholds[5])}</strong>
+              </div>
+            </div>
+            <div class="ladder" style={`--marker:${marker}%`}>
+              <div class="ladder-track">
+                <div class="ladder-progress" style={`width:${marker}%`}></div>
+                <span class="swim-marker"
+                  ><span>{formatTime(correctedTime)}</span></span
+                >
+              </div>
+              <div class="ladder-levels">
+                {#each thresholds as threshold, i}<div
+                    class:achieved={i <= standing.achieved}
+                  >
+                    <span class="ladder-node"
+                      >{#if i <= standing.achieved}<Icon
+                          name="check"
+                          size={10}
+                        />{/if}</span
+                    ><strong>{levels[i]}</strong><span
+                      >{formatTime(threshold)}</span
+                    >
+                  </div>{/each}
+              </div>
+            </div>
+            <p class="standards-note">
+              {#if adjustment}Altitude-adjusted comparison; confirm eligibility
+                with your meet.{:else}Compared using your entered {form.course} time.
+                Course estimates above don’t count as official swims.{/if}
+            </p>
+          {:else}<div class="standards-empty">
+              <Icon name="info" size={22} />
               <h3>
-                {standing.achieved >= 0
-                  ? `${levels[standing.achieved]} time, nicely done.`
-                  : "Your next chapter starts here."}
+                {error
+                  ? "Your next goal is one time away."
+                  : "No published standard for this selection."}
               </h3>
               <p>
-                {#if standing.next !== null}<strong
-                    >{nextGap?.toFixed(2)}s</strong
-                  >
-                  to your next mark: <strong>{levels[standing.next]}</strong> in {formatTime(
-                    nextTime,
-                  )}.{:else}You’ve reached the top motivational standard for
-                  this event.{/if}
+                {error
+                  ? "Enter a valid swim above to explore the ladder."
+                  : "Try another age group or event. We leave missing data empty."}
               </p>
-            </div>
-          </div>
-          <div class="goal-time">
-            <span class="tiny-label"
-              >{standing.next !== null
-                ? `NEXT UP · ${levels[standing.next]}`
-                : "TOP MARK · AAAA"}</span
-            ><strong>{formatTime(nextTime ?? thresholds[5])}</strong>
-          </div>
+            </div>{/if}
         </div>
-        <div class="ladder" style={`--marker:${marker}%`}>
-          <div class="ladder-track">
-            <div class="ladder-progress" style={`width:${marker}%`}></div>
-            <span class="swim-marker"
-              ><span>{formatTime(correctedTime)}</span></span
-            >
-          </div>
-          <div class="ladder-levels">
-            {#each thresholds as threshold, i}<div
-                class:achieved={i <= standing.achieved}
-              >
-                <span class="ladder-node"
-                  >{#if i <= standing.achieved}<Icon
-                      name="check"
-                      size={10}
-                    />{/if}</span
-                ><strong>{levels[i]}</strong><span>{formatTime(threshold)}</span
-                >
-              </div>{/each}
-          </div>
-        </div>
-        <p class="standards-note">
-          {#if adjustment}Altitude-adjusted comparison; confirm eligibility with
-            your meet.{:else}Compared using your entered {form.course} time. Course
-            estimates above don’t count as official swims.{/if}
-        </p>
-      {:else}<div class="standards-empty">
-          <Icon name="info" size={22} />
-          <h3>
-            {error
-              ? "Your next goal is one time away."
-              : "No published standard for this selection."}
-          </h3>
+      {:else}
+        <div class="points-panel">
+          <div class="eyebrow">A DIFFERENT WAY TO SEE YOUR SWIM</div>
+          <h2 id="standards-title">How does your swim stack up?</h2>
           <p>
-            {error
-              ? "Enter a valid swim above to explore the ladder."
-              : "Try another age group or event. We leave missing data empty."}
+            Compare performances across events with World Aquatics’ published
+            scoring system. Open scoring, without age adjustment.
           </p>
-        </div>{/if}
-    </div>
-  </section>
+          <div class="points-score">
+            <strong data-testid="points-score"
+              >{points === null ? "—" : points.toLocaleString()}</strong
+            ><span>WORLD AQUATICS POINTS</span>
+          </div>
+          {#if form.course === "SCY"}<p class="points-note">
+              <Icon name="info" size={17} />World Aquatics publishes points for
+              25m and 50m pools. Select SCM or LCM for an entered metric swim;
+              we don’t score a yards conversion as an official swim.
+            </p>
+          {:else}<p class="points-note">
+              <Icon name="info" size={17} />Based on your entered {form.course} time,
+              without altitude adjustment. {pointsValidity[form.course]}.
+            </p>{/if}
+          <div class="points-formula">
+            <span>THE MATH</span><code>1,000 × (base time / your time)³</code>
+          </div>
+          <a
+            class="points-source"
+            href={pointsSource.url}
+            target="_blank"
+            rel="noreferrer"
+            >2026 base times <Icon name="external" size={13} /></a
+          >
+          <a
+            class="points-source"
+            href={pointsSource.method}
+            target="_blank"
+            rel="noreferrer"
+            >How World Aquatics points work <Icon
+              name="external"
+              size={13}
+            /></a
+          >
+        </div>
+      {/if}
+    </section>
+  </div>
 
   {#if saved.length}<section
       class="swimboard page-width"
@@ -752,6 +1081,20 @@
           >
         </div>
       </article>
+      <article>
+        <span>04</span>
+        <div>
+          <h3>One swim. Another point of view.</h3>
+          <p>
+            World Aquatics points compare entered metric swims against published
+            2026 base times. This is a separate scoring system from course
+            conversion and age-group targets.
+          </p>
+          <a href={pointsSource.method} target="_blank" rel="noreferrer"
+            >World Aquatics scoring method<Icon name="external" size={12} /></a
+          >
+        </div>
+      </article>
     </div>
   </section>
   <section class="closing-strip page-width">
@@ -773,6 +1116,16 @@
     > · Open source, always.</span
   ><span>Sources checked October 16, 2026</span>
 </footer>
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  {#each [{ id: "converter", icon: "wave", label: "Converter" }, { id: "history", icon: "history", label: "History" }, { id: "standards", icon: "standards", label: "Standards" }, { id: "method", icon: "info", label: "The method" }] as item}
+    <button
+      class:active={activeSection === item.id}
+      aria-current={activeSection === item.id ? "location" : undefined}
+      onclick={() => go(item.id)}
+      ><Icon name={item.icon} size={21} /><span>{item.label}</span></button
+    >
+  {/each}
+</nav>
 <div class="toast" class:visible={!!toast} role="status" aria-live="polite">
   {#if toast}<Icon name="check" size={17} />{toast}{/if}
 </div>
