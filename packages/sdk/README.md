@@ -4,7 +4,9 @@ Offline JavaScript/TypeScript calculations for course conversion, altitude,
 USA Swimming youth standards, USMS targets, and World Aquatics points.
 This is an **unpublished private workspace** at version `0.1.0`. The proposed
 `@turnmark/sdk` name has not been reserved on npm. It runs compiled JavaScript
-with no runtime dependencies; no Rust/Wasm implementation is included yet.
+with no runtime dependencies. The experimental Rust-derived libraries are
+documented in [the shared engine guide](../../docs/SHARED_ENGINE.md); this package
+remains the current web implementation and migration reference.
 
 ```ts
 import { createEngine } from "@turnmark/sdk";
@@ -107,7 +109,7 @@ npm run test:sdk:package
 
 `npm run dev --workspace @turnmark/sdk` watches sources. Root dev/build/check/test
 commands build the SDK first. Data import scripts update the canonical snapshots
-in this package's `src/data/`. Source-backed portable cases live in the repo's
+in root `data/`; builds generate this package's `src/data/` copies. Source-backed portable cases live in the repo's
 `fixtures/`. The package check installs a tarball into a temporary project and
 validates Node, browser, declaration resolution, and conversion-only bundling.
 
