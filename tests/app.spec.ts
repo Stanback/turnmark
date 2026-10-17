@@ -95,3 +95,16 @@ test("responsive layout and accessible controls", async ({
     fullPage: true,
   });
 });
+
+test("long times fit the narrow desktop layout", async ({ page }) => {
+  await page.setViewportSize({ width: 681, height: 1000 });
+  await page.goto("./");
+  await page.locator("#swim-time").fill("60:00.00");
+  for (const time of await page.locator(".result-time").all()) {
+    expect(
+      await time.evaluate(
+        (element) => element.scrollWidth <= element.clientWidth,
+      ),
+    ).toBe(true);
+  }
+});

@@ -2218,3 +2218,12 @@ footer > span > a {
     font-size: 28px;
   }
 }
+/* Keep long event times inside their cards at intermediate viewport widths. */
+@media (min-width: 681px) {
+  .result-card {
+    container-type: inline-size;
+  }
+  .result-time {
+    font-size: clamp(13px, 22cqw, 32px);
+  }
+}

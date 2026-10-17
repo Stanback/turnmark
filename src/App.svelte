@@ -461,7 +461,8 @@
           <span
             ><strong>{lengths}</strong> lengths
             <span class="dot-separator">·</span>
-            <strong>{Math.max(0, lengths - 1)}</strong> turns</span
+            <strong>{Math.max(0, lengths - 1)}</strong>
+            {lengths === 2 ? "turn" : "turns"}</span
           ><span
             >{focused.time !== null
               ? `${formatTime(pace)} / 100 ${focus === "SCY" ? "yd" : "m"}`
