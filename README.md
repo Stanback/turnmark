@@ -22,6 +22,14 @@ A browser-only swim time converter, standards explorer, and World Aquatics point
 
 No backend, account, analytics, third-party runtime requests, or uploaded swim data. Conversion history and saved swims stay in this browser’s local storage. Sharing a link shares the event, time, category, age group, and elevation contained in its URL fragment.
 
+## History
+
+Turnmark started long before it had that name. Bri Stanback swam competitively from roughly 1993 to 2005 and built an early swim time converter in the late 1990s, giving swimmers a simple way to compare times across pool courses.
+
+The tool evolved from JavaScript to PHP and eventually came to GitHub as `php-swim-time-conversion`. Along the way, versions of the converter found a home on other swimming websites.
+
+In 2026, Bri returned to the project, modernized it, and gave it the Turnmark name. The rebuild brings that familiar utility into a browser app with documented conversion factors, published standards and points, local swim history, and offline support.
+
 ## Develop
 
 Requires Node.js 22.12+ (or a current supported Node release).
