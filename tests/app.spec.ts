@@ -183,6 +183,9 @@ test("mobile navigation reaches history and standards without covering content",
   await expect(page.locator("#history")).toBeInViewport();
   await nav.getByRole("button", { name: "Standards", exact: true }).click();
   await expect(page.locator("#standards")).toBeInViewport();
+  await expect(
+    nav.getByRole("button", { name: "Standards", exact: true }),
+  ).toHaveAttribute("aria-current", "location");
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
@@ -342,4 +345,36 @@ test("source chip links to the NCAA source and install instructions are usable",
   await expect(
     page.locator(".faq-answer").filter({ hasText: "25-yard pool" }),
   ).toBeVisible();
+});
+
+test("points explain the reference and next milestone; swimboard remove buttons stay circular", async ({
+  page,
+}) => {
+  await page.goto("./#t=1%3A05&s=FR&d=100&c=SCM&g=women&a=15-16&h=0");
+  await page
+    .getByRole("button", { name: "World Aquatics points", exact: true })
+    .click();
+  await expect(page.locator(".points-tldr")).toContainText(
+    "1,000 points matches",
+  );
+  await expect(page.locator(".points-next")).toContainText("500 points");
+  await expect(page.getByTestId("points-next-time")).not.toHaveText("—");
+  await page.getByRole("button", { name: "Save swim", exact: true }).click();
+  const bounds = await page.locator(".remove-swim").boundingBox();
+  expect(bounds).not.toBeNull();
+  expect(Math.abs(bounds!.width - bounds!.height)).toBeLessThan(1);
+  await expect(page.getByRole("status")).toHaveCSS("opacity", "1");
+  const results = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+    .analyze();
+  expect(
+    results.violations.map((v) => ({
+      id: v.id,
+      targets: v.nodes.map((n) => n.target),
+    })),
+  ).toEqual([]);
+  await page
+    .getByRole("button", { name: "Compare with age-group time standards" })
+    .click();
+  await expect(page.locator("#standards-system")).toBeVisible();
 });

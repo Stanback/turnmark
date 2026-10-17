@@ -6,7 +6,12 @@
   import Install from "./lib/Install.svelte";
   import Theme from "./lib/Theme.svelte";
   import { site, faqs } from "./data/site";
-  import { worldPoints, pointsSource, pointsValidity } from "./lib/points";
+  import {
+    worldPoints,
+    worldPointsContext,
+    pointsSource,
+    pointsValidity,
+  } from "./lib/points";
   import { altitudeSource, conversionSource } from "./data/conversions";
   import standardData from "./data/standards.json";
   import {
@@ -69,6 +74,16 @@
   const time = $derived(parseTime(form.time));
   const points = $derived(
     worldPoints(time, form.course, form.distance, form.stroke, form.category),
+  );
+
+  const pointContext = $derived(
+    worldPointsContext(
+      time,
+      form.course,
+      form.distance,
+      form.stroke,
+      form.category,
+    ),
   );
 
   const altitudeValid = $derived(
@@ -212,17 +227,31 @@
     }
     lastRecorded = `${stateHash(form)}|${focus}`;
     mounted = true;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries)
-          if (entry.isIntersecting) activeSection = entry.target.id;
-      },
-      { rootMargin: "-10% 0px -60% 0px" },
-    );
-    for (const id of ["converter", "history", "standards", "method"]) {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    }
+    let sectionFrame = 0;
+    const updateSection = () => {
+      sectionFrame = 0;
+      let next = "converter",
+        nearest = -Infinity;
+      for (const id of ["converter", "history", "standards", "method"]) {
+        const top = document.getElementById(id)?.getBoundingClientRect().top;
+        if (
+          top !== undefined &&
+          top <= innerHeight * 0.3 &&
+          (top > nearest + 1 ||
+            (Math.abs(top - nearest) <= 1 && activeSection === id))
+        ) {
+          next = id;
+          nearest = top;
+        }
+      }
+      activeSection = next;
+    };
+    const scheduleSection = () => {
+      if (!sectionFrame) sectionFrame = requestAnimationFrame(updateSection);
+    };
+    window.addEventListener("scroll", scheduleSection, { passive: true });
+    window.addEventListener("resize", scheduleSection);
+    scheduleSection();
     const hashChange = () => {
       if (window.location.hash.startsWith("#t="))
         form = readState(window.location.hash);
@@ -230,7 +259,9 @@
     window.addEventListener("hashchange", hashChange);
     return () => {
       clearTimeout(toastTimer);
-      observer.disconnect();
+      cancelAnimationFrame(sectionFrame);
+      window.removeEventListener("scroll", scheduleSection);
+      window.removeEventListener("resize", scheduleSection);
       window.removeEventListener("hashchange", hashChange);
     };
   });
@@ -1057,17 +1088,57 @@
         {/if}
       {:else}
         <div class="points-panel">
-          <div class="eyebrow">A DIFFERENT WAY TO SEE YOUR SWIM</div>
-          <h2 id="standards-title">How does your swim stack up?</h2>
+          <h2 id="standards-title">World Aquatics points</h2>
           <p>
-            Compare performances across events with World Aquatics’ published
-            scoring system. Open scoring, without age adjustment.
+            Compare performances across events and metric pool courses. Higher
+            points mean a faster performance relative to the event’s published
+            base time.
           </p>
           <div class="points-score">
             <strong data-testid="points-score"
               >{points === null ? "—" : points.toLocaleString()}</strong
             ><span>WORLD AQUATICS POINTS</span>
           </div>
+          {#if pointContext && points !== null}
+            <div class="points-context">
+              <p class="points-event">
+                {currentLabel} · {form.course} · {form.category === "women"
+                  ? "Women"
+                  : "Men"}
+              </p>
+              <p class="points-tldr">
+                <strong>1,000 points matches the published base time</strong>,
+                which is based on the approved world record at the table’s
+                cutoff date. This is a performance score, without age
+                adjustment.
+              </p>
+              <div class="points-benchmarks">
+                <div>
+                  <span>1,000-point reference</span><strong
+                    >{formatTime(pointContext.base)}</strong
+                  ><small>2026 · {form.course}</small>
+                </div>
+                <div class="points-next">
+                  <span
+                    >Next mark · {pointContext.nextMark.toLocaleString()} points</span
+                  ><strong data-testid="points-next-time"
+                    >{formatTime(pointContext.target)}</strong
+                  ><small
+                    ><b>{pointContext.gap.toFixed(2)}s</b> to drop from your entered
+                    time</small
+                  >
+                </div>
+              </div>
+              <button
+                class="points-standards-link"
+                onclick={() => (standardMode = "targets")}
+                >Compare with age-group time standards <Icon
+                  name="arrow"
+                  size={15}
+                /></button
+              >
+            </div>
+          {/if}
           {#if form.course === "SCY"}<p class="points-note">
               <Icon name="info" size={17} />World Aquatics publishes points for
               25m and 50m pools. Select SCM or LCM for an entered metric swim;
@@ -1133,7 +1204,7 @@
               class="remove-swim"
               aria-label={`Remove saved ${eventLabel(swim.form.distance, swim.form.course, swim.form.stroke)} ${swim.form.time}`}
               onclick={() => persist(saved.filter((x) => x.id !== swim.id))}
-              ><Icon name="close" size={13} /></button
+              ><Icon name="close" size={16} /></button
             >
           </div>{/each}
       </div>

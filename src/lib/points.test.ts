@@ -31,3 +31,37 @@ describe("World Aquatics points", () => {
     expect(worldPoints(60, "LCM", 100, "IM", "women")).toBeNull();
   });
 });
+
+it("derived milestone times meet the requested score at the slowest eligible hundredth", async () => {
+  const { worldPointsContext } = await import("./points");
+  for (const row of data.events)
+    for (const category of ["women", "men"] as const) {
+      for (const multiplier of [1, 1.2, 1.6, 2.5]) {
+        const context = worldPointsContext(
+          row[category] * multiplier,
+          row.course as Course,
+          row.distance,
+          row.stroke as Stroke,
+          category,
+        )!;
+        expect(
+          worldPoints(
+            context.target,
+            row.course as Course,
+            row.distance,
+            row.stroke as Stroke,
+            category,
+          ),
+        ).toBeGreaterThanOrEqual(context.nextMark);
+        expect(
+          worldPoints(
+            context.target + 0.01,
+            row.course as Course,
+            row.distance,
+            row.stroke as Stroke,
+            category,
+          ),
+        ).toBeLessThan(context.nextMark);
+      }
+    }
+});

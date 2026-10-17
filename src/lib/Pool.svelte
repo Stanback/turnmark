@@ -162,7 +162,7 @@
     left: 9px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 10px;
+    font-size: 11px;
     color: #fff;
     font-weight: 600;
     text-shadow: 0 1px 4px #003e66;
@@ -188,7 +188,7 @@
     display: flex;
     justify-content: space-between;
     color: #bfd9e5;
-    font-size: 10px;
+    font-size: 11px;
     font-variant-numeric: tabular-nums;
   }
   .pool-scale span {
@@ -208,7 +208,7 @@
     display: flex;
     align-items: center;
     gap: 7px;
-    font-size: 10px;
+    font-size: 11px;
     color: #d3e7ee;
     margin: 14px 0 0 44px;
   }
@@ -243,7 +243,7 @@
       gap: 12px;
     }
     .lane-length {
-      font-size: 9px;
+      font-size: 10px;
       left: 4px;
     }
     .swimmer-mark {

@@ -223,7 +223,7 @@ h3 {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 1.55px;
   font-weight: 750;
 }
@@ -321,7 +321,7 @@ h1 {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 1.1px;
   font-weight: 700;
   color: #587188;
@@ -376,7 +376,7 @@ h1 {
   margin-bottom: 8px;
 }
 .field-label > span {
-  font-size: 11px;
+  font-size: 12px;
   color: #49647c;
   font-weight: 400;
 }
@@ -478,7 +478,7 @@ h1 {
   gap: 6px;
   align-items: center;
   color: #557186;
-  font-size: 11px;
+  font-size: 12px;
   margin: 8px 0 20px;
 }
 .status-dot {
@@ -513,7 +513,7 @@ h1 {
   font-size: 12px;
 }
 .course-picker button > span {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 .course-picker button:hover {
@@ -539,7 +539,7 @@ h1 {
   gap: 4px;
 }
 .factor-row > label > span {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 400;
   color: var(--muted);
 }
@@ -592,7 +592,7 @@ details[open] .summary-plus {
   align-items: center;
 }
 .altitude-body > label > span {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 400;
   color: var(--muted);
 }
@@ -604,13 +604,13 @@ details[open] .summary-plus {
   border-radius: 5px;
 }
 .altitude-body p {
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.6;
   color: var(--muted);
   margin: 8px 0 0;
 }
 .input-footnote {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   line-height: 1.6;
   display: flex;
@@ -630,7 +630,7 @@ details[open] .summary-plus {
   gap: 12px;
 }
 .results-heading .section-label {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 1.3px;
 }
 .results-heading h2 {
@@ -647,7 +647,7 @@ details[open] .summary-plus {
   gap: 10px;
   border: 1px solid var(--line);
   color: #42657e;
-  font-size: 11px;
+  font-size: 12px;
   padding: 8px 10px;
   border-radius: 6px;
   white-space: nowrap;
@@ -680,7 +680,7 @@ details[open] .summary-plus {
   align-items: center;
 }
 .tiny-label {
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 1px;
   font-weight: 550;
   color: #c0dbe6;
@@ -704,7 +704,7 @@ details[open] .summary-plus {
 }
 .pool-scene-caption > span {
   display: block;
-  font-size: 11px;
+  font-size: 12px;
   color: #bbd7e3;
 }
 .pool-scene-bottom {
@@ -714,7 +714,7 @@ details[open] .summary-plus {
   gap: 8px;
   align-items: center;
   color: #c1dbe7;
-  font-size: 11px;
+  font-size: 12px;
   padding-top: 10px;
   border-top: 1px solid #ffffff20;
 }
@@ -763,7 +763,7 @@ details[open] .summary-plus {
   font-size: 12px;
 }
 .result-card-top > span {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 0.2px;
   color: #486122;
   background: #f2f9de;
@@ -791,7 +791,7 @@ details[open] .summary-plus {
   white-space: nowrap;
 }
 .result-card-bottom {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 .result-unit {
@@ -821,7 +821,7 @@ details[open] .summary-plus {
   margin-top: 1px;
 }
 .result-explanation p {
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.65;
   margin: 0;
 }
@@ -874,7 +874,7 @@ details[open] .summary-plus {
   background: #edf3f8;
 }
 .local-note {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   margin-left: auto;
   white-space: nowrap;
@@ -898,7 +898,7 @@ details[open] .summary-plus {
   align-items: center;
 }
 .history-heading .eyebrow {
-  font-size: 9px;
+  font-size: 11px;
   color: #587188;
   letter-spacing: 1.2px;
 }
@@ -916,12 +916,12 @@ details[open] .summary-plus {
   background: #edf5fa;
   color: #476882;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: 12px;
   margin-left: 4px;
   letter-spacing: 0;
 }
 .history-heading .text-button {
-  font-size: 11px;
+  font-size: 12px;
   white-space: nowrap;
 }
 .history-subtitle {
@@ -937,7 +937,7 @@ details[open] .summary-plus {
 }
 .history-filters button {
   flex: 1;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 550;
   min-height: 33px;
   background: #f3f6f9;
@@ -1001,7 +1001,7 @@ details[open] .summary-plus {
 }
 .history-event small,
 .history-times small {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
 }
 .history-times {
@@ -1072,7 +1072,7 @@ details[open] .summary-plus {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 11px;
   color: #55758c;
 }
 .standards-tabs {
@@ -1089,7 +1089,7 @@ details[open] .summary-plus {
   background: transparent;
   color: var(--muted);
   border-radius: 5px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   padding: 7px 12px;
 }
@@ -1128,7 +1128,7 @@ details[open] .summary-plus {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 550;
   white-space: nowrap;
 }
@@ -1143,13 +1143,13 @@ details[open] .summary-plus {
 }
 .standards-edition {
   color: #42627d;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.7;
   padding-left: 15px;
   border-left: 1px solid var(--line);
 }
 .standards-edition > span {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
 }
 .standards-card {
@@ -1162,7 +1162,7 @@ details[open] .summary-plus {
   gap: 6px;
   flex-wrap: wrap;
   align-items: center;
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   line-height: 1.6;
 }
@@ -1181,7 +1181,7 @@ details[open] .summary-plus {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 10px;
+  font-size: 11px;
   color: #466780;
   margin-left: auto;
   text-decoration: none;
@@ -1220,7 +1220,7 @@ details[open] .summary-plus {
   margin: 0 0 6px;
 }
 .standard-achievement p {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   line-height: 1.6;
   margin: 0;
@@ -1238,7 +1238,7 @@ details[open] .summary-plus {
   flex-shrink: 0;
 }
 .goal-time .tiny-label {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 0.6px;
   color: #4a6725;
 }
@@ -1282,7 +1282,7 @@ details[open] .summary-plus {
   bottom: 15px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 11px;
+  font-size: 12px;
   border-radius: 4px;
   color: white;
   background: var(--navy);
@@ -1331,18 +1331,18 @@ details[open] .summary-plus {
   background: #7da632;
 }
 .ladder-levels strong {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 650;
 }
 .ladder-levels > div > span:last-child {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 .standards-note {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.65;
   margin: 21px 0 0;
 }
@@ -1361,7 +1361,7 @@ details[open] .summary-plus {
   margin: 0;
 }
 .points-panel > .eyebrow {
-  font-size: 9px;
+  font-size: 11px;
   color: #59748a;
   margin-top: 24px;
 }
@@ -1390,7 +1390,7 @@ details[open] .summary-plus {
   font-variant-numeric: tabular-nums;
 }
 .points-score > span {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 1.4px;
   font-weight: 650;
   color: #5b7890;
@@ -1402,7 +1402,7 @@ details[open] .summary-plus {
   padding: 13px;
   border-radius: 7px;
   background: #f3f8fc;
-  font-size: 11px;
+  font-size: 12px;
 }
 .points-note svg {
   margin-top: 2px;
@@ -1416,20 +1416,20 @@ details[open] .summary-plus {
   border-block: 1px solid var(--line);
 }
 .points-formula > span {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 1px;
   color: #537188;
 }
 .points-formula code {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12px;
 }
 .points-source {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 11px;
+  font-size: 12px;
   color: #365f7c;
   text-decoration: none;
   margin-top: 14px;
@@ -1479,7 +1479,7 @@ details[open] .summary-plus {
   padding: 20px;
 }
 .restore-swim > span {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 .restore-swim > span:last-child {
@@ -1516,7 +1516,7 @@ details[open] .summary-plus {
   scroll-margin-top: 20px;
 }
 .method-intro .eyebrow {
-  font-size: 10px;
+  font-size: 11px;
   color: #486d84;
   letter-spacing: 1.2px;
 }
@@ -1547,7 +1547,7 @@ details[open] .summary-plus {
 }
 .method-items article > span {
   color: #4d738c;
-  font-size: 11px;
+  font-size: 12px;
   padding-top: 3px;
 }
 .method-items h3 {
@@ -1565,7 +1565,7 @@ details[open] .summary-plus {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 12px;
   color: #36627f;
   text-decoration: none;
 }
@@ -1578,7 +1578,7 @@ footer {
   display: flex;
   align-items: center;
   gap: 25px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   padding-top: 28px;
   padding-bottom: 28px;
@@ -1593,7 +1593,7 @@ footer {
 }
 footer > span:last-child {
   margin-left: auto;
-  font-size: 10px;
+  font-size: 11px;
 }
 footer > span > a {
   text-underline-offset: 3px;
@@ -1691,7 +1691,7 @@ footer > span > a {
 }
 .elevation-entry > span {
   color: #4d6c84;
-  font-size: 11px;
+  font-size: 12px;
   white-space: nowrap;
 }
 .summary-elevation {
@@ -1724,7 +1724,7 @@ footer > span > a {
 }
 .altitude-conversion-heading > span {
   margin-left: auto;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   color: #3d6279;
 }
@@ -1783,7 +1783,7 @@ footer > span > a {
   padding-top: 12px;
   margin: 0;
   border-top: 1px solid #d3e6ef;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.7;
   color: #4a6c82;
 }
@@ -1812,7 +1812,7 @@ footer > span > a {
   }
   .altitude-before > span,
   .altitude-after > span {
-    font-size: 11px;
+    font-size: 12px;
   }
 }
 @media (max-width: 680px) {
@@ -1844,14 +1844,14 @@ footer > span > a {
   }
   .altitude-before > span,
   .altitude-after > span {
-    font-size: 11px;
+    font-size: 12px;
   }
   .altitude-difference > span {
     padding: 4px 5px;
-    font-size: 11px;
+    font-size: 12px;
   }
   .altitude-conversion > p {
-    font-size: 11px;
+    font-size: 12px;
   }
 }
 @media print {
@@ -1910,7 +1910,7 @@ footer > span > a {
     font-size: clamp(12px, 24cqw, 32px);
   }
   .result-card-bottom {
-    font-size: 10px;
+    font-size: 11px;
   }
   .result-card-bottom > svg,
   .selected-check {
@@ -1936,11 +1936,11 @@ footer > span > a {
   }
   .history-event strong,
   .history-times strong {
-    font-size: 11px;
+    font-size: 12px;
   }
   .history-times small,
   .history-event small {
-    font-size: 9px;
+    font-size: 11px;
   }
   .history-restore > svg {
     display: none;
@@ -1966,13 +1966,13 @@ footer > span > a {
     font-size: 12px;
   }
   .standard-achievement p {
-    font-size: 10px;
+    font-size: 11px;
   }
   .goal-time > strong {
     font-size: 19px;
   }
   .goal-time .tiny-label {
-    font-size: 9px;
+    font-size: 11px;
   }
   .standards-context > a {
     margin-left: 0;
@@ -2003,7 +2003,7 @@ footer > span > a {
     padding-inline: 12px;
   }
   .pool-scene-bottom {
-    font-size: 9px;
+    font-size: 11px;
   }
   .result-cards {
     gap: 5px;
@@ -2012,17 +2012,17 @@ footer > span > a {
     padding: 12px 8px;
   }
   .result-card-top > span {
-    font-size: 9px;
+    font-size: 11px;
   }
   .result-card-bottom {
-    font-size: 9px;
+    font-size: 11px;
   }
   .result-actions {
     gap: 5px;
   }
   .primary-button,
   .secondary-button {
-    font-size: 11px;
+    font-size: 12px;
     padding: 10px;
   }
   .insights-grid {
@@ -2038,7 +2038,7 @@ footer > span > a {
   }
   .history-times small,
   .history-event small {
-    font-size: 11px;
+    font-size: 12px;
   }
   .standards-controls {
     max-width: 380px;
@@ -2091,7 +2091,7 @@ footer > span > a {
   }
   .github-link {
     display: flex;
-    font-size: 11px;
+    font-size: 12px;
     gap: 6px;
   }
   .github-link > svg:last-child {
@@ -2114,7 +2114,7 @@ footer > span > a {
       linear-gradient(0deg, #e8f4f8, transparent 28%);
   }
   .intro-copy .eyebrow {
-    font-size: 9px;
+    font-size: 11px;
     letter-spacing: 1.15px;
   }
   h1 {
@@ -2170,7 +2170,7 @@ footer > span > a {
     margin-bottom: 9px;
   }
   .field-label > span {
-    font-size: 11px;
+    font-size: 12px;
   }
   .stroke-picker {
     gap: 6px;
@@ -2220,7 +2220,7 @@ footer > span > a {
     font-size: 12px;
   }
   .factor-row > label > span {
-    font-size: 11px;
+    font-size: 12px;
   }
   .factor-row .select-wrap select {
     padding: 10px 25px 10px 10px;
@@ -2234,14 +2234,14 @@ footer > span > a {
     font-size: 12px;
   }
   .altitude-body > label > span {
-    font-size: 11px;
+    font-size: 12px;
   }
   .altitude-body p,
   .input-footnote {
     font-size: 12px;
   }
   .results-heading .section-label {
-    font-size: 9px;
+    font-size: 11px;
   }
   .results-heading h2 {
     font-size: 20px;
@@ -2258,11 +2258,11 @@ footer > span > a {
     display: none;
   }
   .pool-scene-bottom {
-    font-size: 10px;
+    font-size: 11px;
     gap: 5px;
   }
   .pool-scene-bottom > span:last-child {
-    font-size: 9px;
+    font-size: 11px;
   }
   .result-cards {
     display: flex;
@@ -2292,7 +2292,7 @@ footer > span > a {
     font-size: 13px;
   }
   .result-card-top > span {
-    font-size: 9px;
+    font-size: 11px;
   }
   .result-time {
     grid-column: 2;
@@ -2353,7 +2353,7 @@ footer > span > a {
     letter-spacing: -0.8px;
   }
   .history-heading .eyebrow {
-    font-size: 9px;
+    font-size: 11px;
   }
   .history-heading .text-button {
     font-size: 12px;
@@ -2369,7 +2369,7 @@ footer > span > a {
     padding-bottom: 17px;
   }
   .history-filters button {
-    font-size: 11px;
+    font-size: 12px;
     min-height: 42px;
   }
   .history-list {
@@ -2387,13 +2387,13 @@ footer > span > a {
     font-size: 12px;
   }
   .history-event small {
-    font-size: 9px;
-  }
-  .history-times strong {
     font-size: 11px;
   }
+  .history-times strong {
+    font-size: 12px;
+  }
   .history-times small {
-    font-size: 9px;
+    font-size: 11px;
   }
   .history-remove {
     width: 25px;
@@ -2411,7 +2411,7 @@ footer > span > a {
     font-size: 12px;
   }
   .history-empty > span:last-child {
-    font-size: 11px;
+    font-size: 12px;
   }
   .standards-tabs {
     width: 100%;
@@ -2420,7 +2420,7 @@ footer > span > a {
   .standards-tabs button {
     flex: 1;
     min-height: 38px;
-    font-size: 11px;
+    font-size: 12px;
     padding: 8px;
   }
   .standards-title-row {
@@ -2437,7 +2437,7 @@ footer > span > a {
     justify-content: space-between;
   }
   .standards-controls label {
-    font-size: 11px;
+    font-size: 12px;
     gap: 7px;
   }
   .standards-controls select {
@@ -2446,17 +2446,17 @@ footer > span > a {
   }
   .standards-edition {
     padding-left: 12px;
-    font-size: 11px;
+    font-size: 12px;
   }
   .standards-edition > span {
-    font-size: 9px;
+    font-size: 11px;
   }
   .standards-context {
-    font-size: 10px;
+    font-size: 11px;
     gap: 7px;
   }
   .standards-context > a {
-    font-size: 10px;
+    font-size: 11px;
   }
   .standard-summary {
     margin-top: 25px;
@@ -2476,7 +2476,7 @@ footer > span > a {
     line-height: 1.4;
   }
   .standard-achievement p {
-    font-size: 11px;
+    font-size: 12px;
     max-width: 160px;
   }
   .goal-time {
@@ -2486,23 +2486,23 @@ footer > span > a {
     font-size: 22px;
   }
   .goal-time .tiny-label {
-    font-size: 9px;
+    font-size: 11px;
   }
   .ladder {
     margin: 47px 9px 0;
   }
   .ladder-levels strong {
-    font-size: 11px;
+    font-size: 12px;
   }
   .ladder-levels > div > span:last-child {
-    font-size: 9px;
+    font-size: 11px;
   }
   .standards-note {
-    font-size: 11px;
+    font-size: 12px;
     margin-top: 23px;
   }
   .points-panel > .eyebrow {
-    font-size: 9px;
+    font-size: 11px;
   }
   .points-panel h2 {
     font-size: 20px;
@@ -2517,7 +2517,7 @@ footer > span > a {
     font-size: 12px;
   }
   .points-formula code {
-    font-size: 10px;
+    font-size: 11px;
   }
   .points-source {
     font-size: 12px;
@@ -2549,7 +2549,7 @@ footer > span > a {
     padding: 30px 23px;
   }
   .method-intro .eyebrow {
-    font-size: 9px;
+    font-size: 11px;
   }
   .method-intro h2 {
     font-size: 34px;
@@ -2575,7 +2575,7 @@ footer > span > a {
     font-size: 12px;
   }
   .method-items a {
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.7;
   }
 
@@ -2583,7 +2583,7 @@ footer > span > a {
     flex-wrap: wrap;
     gap: 12px;
     padding: 25px 23px;
-    font-size: 11px;
+    font-size: 12px;
   }
   .footer-brand {
     font-size: 22px;
@@ -2591,7 +2591,7 @@ footer > span > a {
   footer > span:last-child {
     width: 100%;
     margin: 0;
-    font-size: 10px;
+    font-size: 11px;
   }
   .mobile-nav {
     position: fixed;
@@ -2619,7 +2619,7 @@ footer > span > a {
     background: none;
     border-radius: 9px;
     color: #58718a;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 550;
   }
   .mobile-nav button.active {
@@ -2639,7 +2639,7 @@ footer > span > a {
     padding-inline: 17px;
   }
   .github-link {
-    font-size: 10px;
+    font-size: 11px;
   }
   .page-width {
     padding-inline: 12px;
@@ -2659,7 +2659,7 @@ footer > span > a {
   }
   .history-event strong,
   .history-times strong {
-    font-size: 10px;
+    font-size: 11px;
   }
   .history-remove {
     width: 20px;
@@ -2668,7 +2668,7 @@ footer > span > a {
     font-size: 12px;
   }
   .standard-achievement p {
-    font-size: 10px;
+    font-size: 11px;
   }
   .goal-time > strong {
     font-size: 19px;
@@ -2775,7 +2775,7 @@ footer > span > a {
 .masters-context {
   border-top: 1px solid var(--line);
   padding-top: 17px;
-  font-size: 11px;
+  font-size: 12px;
   color: #4d6b81;
 }
 .masters-comparison {
@@ -2795,7 +2795,7 @@ footer > span > a {
   text-align: right;
 }
 .masters-comparison span {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 .masters-comparison strong {
@@ -2840,7 +2840,7 @@ footer > span > a {
   line-height: 1.7;
 }
 .masters-note {
-  font-size: 11px;
+  font-size: 12px;
   margin: 18px 0 0;
 }
 .masters-empty {
@@ -3013,7 +3013,7 @@ footer > span > a {
     gap: 12px;
   }
   .install-button {
-    font-size: 11px;
+    font-size: 12px;
     padding: 9px 10px;
     min-height: 38px;
   }
@@ -3059,7 +3059,7 @@ footer > span > a {
   }
   .install-button {
     padding: 8px;
-    font-size: 10px;
+    font-size: 11px;
   }
   .wordmark {
     font-size: 23px;
@@ -3443,4 +3443,211 @@ footer > span > a {
 
 [data-theme="dark"] .footer-brand {
   color: #dcecf7;
+}
+
+.remove-swim {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  line-height: 1;
+  background: #edf3f8;
+  color: #3d5c76;
+}
+.remove-swim svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.8;
+}
+.restore-swim {
+  padding-top: 43px;
+}
+.points-context {
+  margin-bottom: 20px;
+}
+.points-event {
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--ink);
+  margin: 0 0 13px;
+}
+.points-tldr {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin: 0 0 17px;
+}
+.points-tldr strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.points-benchmarks {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  overflow: hidden;
+}
+.points-benchmarks > div {
+  padding: 16px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  background: #f7fafc;
+  min-width: 0;
+}
+.points-benchmarks .points-next {
+  background: #f3f9e4;
+  border-left: 1px solid var(--line);
+}
+.points-benchmarks span {
+  font-size: 12px;
+  color: #48667e;
+  line-height: 1.5;
+}
+.points-benchmarks strong {
+  font-family: var(--heading);
+  font-size: clamp(20px, 2.2vw, 28px);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  letter-spacing: -0.8px;
+}
+.points-benchmarks small {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.points-benchmarks small > b {
+  font-weight: 650;
+  color: var(--ink);
+}
+.points-standards-link {
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 0 0;
+  color: #315f7d;
+  font-size: 12px;
+  text-align: left;
+  line-height: 1.6;
+  width: 100%;
+}
+.points-standards-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+[data-theme="dark"] .remove-swim {
+  background: #244258;
+  color: #d0e1ed;
+}
+[data-theme="dark"] .remove-swim:hover {
+  background: #3a4d65;
+  color: #ffc4b9;
+}
+[data-theme="dark"] .points-benchmarks > div {
+  background: #1b354a;
+}
+[data-theme="dark"] .points-benchmarks .points-next {
+  background: #2c402c;
+}
+[data-theme="dark"] .points-benchmarks span,
+[data-theme="dark"] .points-standards-link {
+  color: #bad7e8;
+}
+@media (max-width: 1050px) and (min-width: 681px) {
+  .result-cards {
+    display: flex;
+    flex-direction: column;
+  }
+  .result-card {
+    container-type: normal;
+    display: grid;
+    grid-template-columns: 95px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    gap: 5px 12px;
+    align-items: center;
+    padding: 15px;
+  }
+  .result-card-top {
+    grid-column: 1;
+    grid-row: 1/3;
+  }
+  .result-time {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    font-size: clamp(20px, 3.3vw, 31px);
+    text-align: right;
+  }
+  .result-card-bottom {
+    grid-column: 2;
+    grid-row: 2;
+    justify-content: flex-end;
+  }
+}
+@media (max-width: 680px) {
+  .remove-swim {
+    width: 36px;
+    height: 36px;
+  }
+  .restore-swim {
+    padding-top: 48px;
+  }
+  .points-benchmarks strong {
+    font-size: clamp(19px, 5.8vw, 26px);
+  }
+  .points-benchmarks > div {
+    padding: 14px 11px;
+  }
+  .points-benchmarks span,
+  .points-benchmarks small {
+    font-size: 12px;
+  }
+  .result-card-top > span {
+    font-size: 10px;
+  }
+  .standards-context {
+    font-size: 12px;
+  }
+  .history-times strong {
+    font-size: 12px;
+  }
+  .history-event strong {
+    font-size: 12px;
+  }
+  .history-restore {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 7px 9px;
+  }
+  .history-wave {
+    grid-row: 1/3;
+  }
+  .history-event {
+    grid-row: 1;
+    grid-column: 2;
+  }
+  .history-times {
+    grid-row: 2;
+    grid-column: 2;
+    margin: 0;
+    text-align: left;
+  }
+  .history-times small {
+    font-size: 11px;
+  }
+  .history-event small {
+    font-size: 11px;
+  }
+  .history-heading {
+    align-items: flex-start;
+  }
+  .history-heading h2 {
+    font-size: 19px;
+  }
 }
