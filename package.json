@@ -3,12 +3,19 @@
   "private": true,
   "version": "4.0.0",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "vite build && node scripts/finish-build.mjs",
+    "dev": "npm run build:sdk && vite",
+    "build": "npm run build:sdk && vite build && node scripts/finish-build.mjs",
+    "build:sdk": "npm run build --workspace @turnmark/sdk",
+    "prepare": "npm run build:sdk",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
+    "check": "npm run build:sdk && svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
+    "pretest": "npm run build:sdk",
     "test": "vitest run",
+    "test:sdk:package": "npm run build:sdk && node scripts/test-sdk-package.mjs",
     "test:browser": "playwright test",
     "test:production": "playwright test --config playwright.production.config.ts",
     "data:refresh": "python3 scripts/import-standards.py",
@@ -33,6 +40,7 @@
   "description": "Your swim. Any course. A browser-only swim time converter and standards explorer.",
   "license": "GPL-3.0-or-later",
   "dependencies": {
+    "@turnmark/sdk": "0.1.0",
     "@fontsource-variable/dm-sans": "^5.3.0",
     "@fontsource-variable/manrope": "^5.3.0",
     "@fontsource/dm-mono": "^5.3.0"

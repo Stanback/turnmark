@@ -38,7 +38,11 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
     .toBe("points");
   await page.reload();
   await expect(
-    page.getByRole("heading", { name: "World Aquatics points", exact: true }),
+    page.getByRole("heading", {
+      name: "World Aquatics points",
+      exact: true,
+      level: 2,
+    }),
   ).toBeVisible();
   await expect(page.locator("#swim-time")).toHaveValue("58.32");
   await expect(page.locator("#distance")).toHaveValue("100");

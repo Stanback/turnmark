@@ -38,12 +38,21 @@ npm run check
 npm test
 npx playwright install chromium
 npm run test:browser
+npm run test:sdk:package
 npm run test:production
 npm run build
 npm run preview
 ```
 
 The production app is static files in `dist/`. The GitHub Actions workflow checks types, unit tests, desktop/mobile browser interactions and accessibility before deploying to GitHub Pages.
+
+The web app consumes the private [Turnmark SDK workspace](packages/sdk/README.md),
+which contains the shared calculations and source-data snapshots. `npm ci` and
+the normal development/check/build commands compile it automatically. The SDK
+has no framework or runtime dependencies; optional benchmark datasets have
+separate imports. Portable examples live in [fixtures](fixtures/README.md).
+See the [platform plan](docs/PLATFORM_PLAN.md) for native SwiftUI/Android Compose
+apps and publisher embeds; these are ongoing work, and the SDK is not published.
 
 ## Data and calculations
 

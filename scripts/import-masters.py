@@ -55,5 +55,5 @@ for index, (course, category, season) in enumerate([('SCY', 'women', 'Spring'), 
 assert len(records) == 70
 assert len({(r['course'], r['category'], r['distance'], r['stroke']) for r in records}) == 70
 result = {'source': {'name': '2026 USMS National Qualifying Times', 'url': URL, 'year': 2026, 'checked': '2026-10-16', 'sha256': hashlib.sha256(raw).hexdigest()}, 'ages': AGES, 'records': records}
-Path('src/data/masters.json').write_text(json.dumps(result, indent=2) + '\n')
+Path('packages/sdk/src/data/masters.json').write_text(json.dumps(result, indent=2) + '\n')
 print(f'Imported {len(records)} event/category rows, {sum(t is not None for r in records for t in r["times"])} published targets; NO TIME retained as null.')

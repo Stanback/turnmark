@@ -1,0 +1,60 @@
+{
+  "name": "@turnmark/sdk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Offline swim calculations, published benchmarks, and source provenance.",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22.12"
+  },
+  "files": [
+    "dist",
+    "src",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./conversion": {
+      "types": "./dist/conversion.d.ts",
+      "import": "./dist/conversion.js"
+    },
+    "./time": {
+      "types": "./dist/time.d.ts",
+      "import": "./dist/time.js"
+    },
+    "./youth": {
+      "types": "./dist/youth.d.ts",
+      "import": "./dist/youth.js"
+    },
+    "./masters": {
+      "types": "./dist/masters.d.ts",
+      "import": "./dist/masters.js"
+    },
+    "./points": {
+      "types": "./dist/points.d.ts",
+      "import": "./dist/points.js"
+    },
+    "./compat": {
+      "types": "./dist/compat.d.ts",
+      "import": "./dist/compat.js"
+    },
+    "./compat/masters": {
+      "types": "./dist/internal/masters.d.ts",
+      "import": "./dist/internal/masters.js"
+    },
+    "./compat/points": {
+      "types": "./dist/internal/points.d.ts",
+      "import": "./dist/internal/points.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "prepack": "npm run build && node -e \"require('node:fs').copyFileSync('../../LICENSE', 'LICENSE')\""
+  }
+}

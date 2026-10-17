@@ -317,21 +317,6 @@ h1 {
 .input-panel {
   padding: 23px 24px 20px;
 }
-.section-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  letter-spacing: 1.1px;
-  font-weight: 700;
-  color: #587188;
-}
-.section-number {
-  display: none;
-}
-.input-panel > .section-label {
-  font-size: 0;
-}
 .text-button {
   background: none;
   font-size: 14px;
@@ -632,10 +617,6 @@ details[open] .summary-plus {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-}
-.results-heading .section-label {
-  font-size: 13px;
-  letter-spacing: 1.3px;
 }
 .results-heading h2 {
   font-size: 19px;
@@ -1107,9 +1088,6 @@ details[open] .summary-plus {
   flex-direction: column;
   gap: 17px;
 }
-.standards-title-row .section-label {
-  display: none;
-}
 .standards-title-row h2 {
   font-size: 19px;
   font-weight: 800;
@@ -1530,11 +1508,6 @@ details[open] .summary-plus {
   border-top: 1px solid #d9e6ef;
   scroll-margin-top: 20px;
 }
-.method-intro .eyebrow {
-  font-size: 13px;
-  color: #486d84;
-  letter-spacing: 1.2px;
-}
 .method-intro h2 {
   font-size: 35px;
   line-height: 1.15;
@@ -1556,14 +1529,7 @@ details[open] .summary-plus {
   margin-top: 22px;
 }
 .method-items article {
-  display: flex;
-  gap: 17px;
   margin-bottom: 24px;
-}
-.method-items article > span {
-  color: #4d738c;
-  font-size: 14px;
-  padding-top: 3px;
 }
 .method-items h3 {
   font-size: 14px;
@@ -2185,9 +2151,6 @@ footer > span > a {
     padding-inline: 17px;
     font-size: 16px;
   }
-  .input-panel > .section-label {
-    height: 7px;
-  }
   .panel-title {
     margin-bottom: 24px;
   }
@@ -2277,9 +2240,6 @@ footer > span > a {
   .altitude-body p,
   .input-footnote {
     font-size: 14px;
-  }
-  .results-heading .section-label {
-    font-size: 13px;
   }
   .results-heading h2 {
     font-size: 20px;
@@ -2586,9 +2546,6 @@ footer > span > a {
     margin-top: 35px;
     padding: 30px 23px;
   }
-  .method-intro .eyebrow {
-    font-size: 13px;
-  }
   .method-intro h2 {
     font-size: 34px;
   }
@@ -2603,7 +2560,6 @@ footer > span > a {
     margin-top: 35px;
   }
   .method-items article {
-    gap: 14px;
     margin-bottom: 28px;
   }
   .method-items h3 {
@@ -3195,7 +3151,6 @@ footer > span > a {
   background: #122a3d;
   border-color: #253e53;
 }
-[data-theme="dark"] .section-label,
 [data-theme="dark"] .history-heading .eyebrow {
   color: #a5bdd0;
 }
@@ -3436,8 +3391,6 @@ footer > span > a {
 [data-theme="dark"] .faq-list details {
   border-color: #2c4458;
 }
-[data-theme="dark"] .method-intro .eyebrow,
-[data-theme="dark"] .method-items article > span,
 [data-theme="dark"] .faq-list summary > svg {
   color: #a8c9de;
 }
