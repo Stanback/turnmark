@@ -1,4 +1,4 @@
-# Turnmark SDK, embeds, and native apps
+# Turnmark SDK, embeds, native apps, and agent interfaces
 
 Research date: October 17, 2026. Status: draft proposal for implementation.
 
@@ -172,6 +172,8 @@ apps/
   android/                   Kotlin/Jetpack Compose application
 packages/
   sdk/                       public JavaScript/TypeScript API
+  mcp/                       local MCP server using the SDK
+  webmcp/                    optional browser tool registration using the SDK
   widget/                    optional loader/custom element, after iframe v1
   data/                      reviewed snapshots, schemas, attribution
 crates/
@@ -249,6 +251,21 @@ for the JavaScript facade. Test installed tarballs in separate browser and Node
 projects, rather than trusting workspace imports. Use scoped package names only
 after checking registry ownership. Publication is a later release step; use
 [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/) when configured.
+
+## MCP and WebMCP
+
+Add two agent interfaces around the same Rust-backed SDK: a local MCP server
+for assistant clients, and optional WebMCP tools on the active website. Share
+tool contracts for conversion, altitude, youth/Masters benchmarks, points and
+source metadata. Keep the SDK's explicit inputs, availability/validation states,
+precision and provenance; do not create another calculation implementation.
+
+Start MCP with offline stdio distribution. Treat WebMCP as progressive
+enhancement with feature detection and browser-version checks, since its API
+is still evolving. Native feature parity remains the next implementation
+milestone; agent adapters follow in focused PRs with the embed work. See the
+[agent interface plan](AGENT_INTERFACES.md) for tool scope, protocol research,
+packaging and acceptance checks.
 
 ## Native product quality and parity
 
@@ -367,7 +384,11 @@ recheck store rules at release time rather than freezing this research as policy
    contract. Validate a hostile-style host page, restricted storage, multiple
    instances, narrow viewports, keyboard/screen-reader use, and a real CMS preview.
    Keep attribution and methodology visible.
-5. **Monorepo completion and releases.** Move the web app separately, establish
+5. **MCP and WebMCP adapters.** Expose the same SDK operations through a local
+   MCP server and optional browser tools. Reuse tool contracts, preserve source
+   attribution and missing-data semantics, and test real protocol consumers plus
+   browsers without WebMCP. Keep calculations read-only in the first release.
+6. **Monorepo completion and releases.** Move the web app separately, establish
    artifact packaging/release jobs, document integrations, and expand native
    coverage to the full existing web capability set before claiming parity.
 
@@ -403,5 +424,6 @@ JavaScript entry points add no calculation dependencies. See the
 The shared Rust proof now derives Swift, Kotlin, and WebAssembly libraries with
 native platform packaging and simulator/emulator tests. Its implementation and
 remaining acceptance work are recorded in [the engine guide](SHARED_ENGINE.md).
-Native app workflows and publisher embeds remain subsequent implementation
-milestones. No package has been published and the SDK/core license is unchanged.
+Native app workflows, publisher embeds and MCP/WebMCP adapters remain subsequent
+implementation milestones. No package has been published and the SDK/core
+license is unchanged.

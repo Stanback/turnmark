@@ -67,6 +67,8 @@ uses the same engine in Node. Offline caching includes that versioned asset.
 See the [shared engine guide](docs/SHARED_ENGINE.md) for packaging, checks and
 tradeoffs. Native SwiftUI/Android Compose app interfaces and publisher embeds
 are subsequent work, tracked in the [platform plan](docs/PLATFORM_PLAN.md).
+The [agent interface plan](docs/AGENT_INTERFACES.md) covers future MCP and WebMCP
+adapters around that same SDK.
 No SDK package has been published.
 
 ## Data and calculations
