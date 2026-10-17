@@ -1,0 +1,14 @@
+{
+  "verified": "2026-10-16",
+  "ncaa": {
+    "url": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf",
+    "edition": "2025-26 and 2026-27; updated October 1, 2026",
+    "page": 120,
+    "sha256": "3c32eace52e1d9c01300cbf23ff0ea102fd5248ef2c4ae807246864fdedda9ea"
+  },
+  "altitude": {
+    "url": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf",
+    "section": "4.7",
+    "verified": "2026-10-16"
+  }
+}

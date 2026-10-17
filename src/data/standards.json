@@ -1,0 +1,3869 @@
+{
+  "source": {
+    "title": "USA Swimming 2024\u20132028 Motivational Standards",
+    "url": "https://www.usaswimming.org/docs/default-source/timesdocuments/time-standards/2025/2028-motivational-standards-age-group.pdf",
+    "revision": "2025-10-10",
+    "retrieved": "2026-10-16",
+    "sha256": "9eb877a4a0d23f55401b5f87bc22e92cf46b3af391ac5f22d30917325514ab49",
+    "levels": ["B", "BB", "A", "AA", "AAA", "AAAA"],
+    "scope": "Individual events; relays excluded. Categories follow the published girls/boys tables."
+  },
+  "records": [
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [39.79, 35.99, 32.09, 30.89, 29.59, 28.29]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [38.19, 34.59, 31.09, 29.89, 28.69, 27.49]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [90.79, 81.09, 71.49, 68.29, 64.99, 61.79]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [87.99, 78.89, 69.79, 66.79, 63.79, 60.69]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [202.79, 180.59, 158.39, 150.99, 143.59, 136.19]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [189.49, 170.59, 151.59, 145.29, 138.99, 132.69]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCY",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [516.69, 465.09, 413.39, 396.19, 378.99, 361.69]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCY",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [504.29, 453.79, 403.39, 386.59, 369.79, 352.99]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [48.59, 43.29, 37.99, 36.19, 34.39, 32.59]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [48.29, 42.89, 37.59, 35.79, 33.99, 32.19]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [105.79, 93.99, 82.29, 78.39, 74.49, 70.59]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [100.69, 90.09, 79.59, 76.09, 72.49, 68.99]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [54.59, 48.69, 42.79, 40.89, 38.89, 36.89]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [53.39, 47.69, 42.09, 40.19, 38.29, 36.39]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [120.29, 106.89, 93.59, 89.09, 84.69, 80.19]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [114.09, 102.29, 90.59, 86.59, 82.69, 78.79]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [48.39, 42.69, 36.99, 35.09, 33.19, 31.29]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [46.49, 41.29, 35.99, 34.29, 32.59, 30.79]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [116.69, 101.39, 86.09, 80.99, 75.99, 70.89]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [113.49, 98.99, 84.39, 79.49, 74.59, 69.79]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "IM",
+      "times": [104.29, 93.19, 82.09, 78.39, 74.69, 70.99]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "IM",
+      "times": [99.69, 89.69, 79.69, 76.39, 73.09, 69.79]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [222.09, 198.79, 175.49, 167.69, 159.99, 152.19]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [218.59, 195.99, 173.49, 165.89, 158.39, 150.89]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [33.99, 31.69, 29.29, 28.09, 26.99, 25.79]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [32.79, 30.49, 28.09, 26.99, 25.79, 24.59]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [74.69, 69.39, 63.99, 61.39, 58.69, 55.99]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [71.49, 66.39, 61.29, 58.69, 56.19, 53.59]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [162.59, 150.89, 139.29, 133.49, 127.69, 121.89]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [155.99, 144.89, 133.69, 128.19, 122.59, 116.99]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [436.89, 405.69, 374.49, 358.89, 343.29, 327.69]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [419.89, 389.99, 359.99, 344.99, 329.99, 314.99]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 1000,
+      "stroke": "FR",
+      "times": [902.69, 838.19, 773.79, 741.49, 709.29, 676.99]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 1000,
+      "stroke": "FR",
+      "times": [883.49, 820.39, 757.29, 725.79, 694.19, 662.59]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 1650,
+      "stroke": "FR",
+      "times": [1507.39, 1399.69, 1292.09, 1238.19, 1184.39, 1130.59]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 1650,
+      "stroke": "FR",
+      "times": [1467.69, 1362.89, 1258.09, 1205.59, 1153.19, 1100.79]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [38.79, 35.99, 33.19, 31.79, 30.49, 29.09]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [38.49, 35.59, 32.69, 31.19, 29.69, 28.19]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [86.59, 79.79, 72.99, 69.59, 66.19, 62.69]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [82.19, 75.69, 69.29, 65.99, 62.79, 59.49]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [179.49, 166.69, 153.89, 147.49, 140.99, 134.59]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [172.89, 160.49, 148.19, 141.99, 135.89, 129.69]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [43.99, 40.89, 37.69, 36.19, 34.59, 32.99]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [43.49, 40.09, 36.69, 34.99, 33.29, 31.49]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [96.49, 89.29, 82.19, 78.59, 75.09, 71.49]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [92.59, 85.49, 78.39, 74.89, 71.39, 67.79]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [205.69, 190.99, 176.29, 168.99, 161.69, 154.29]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [196.39, 182.39, 168.39, 161.39, 154.39, 147.29]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [36.89, 34.29, 31.59, 30.29, 28.99, 27.69]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [37.09, 34.19, 31.19, 29.69, 28.19, 26.69]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [85.79, 78.89, 72.09, 68.59, 65.19, 61.79]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [82.89, 76.09, 69.29, 65.89, 62.49, 59.09]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [183.39, 170.29, 157.19, 150.59, 144.09, 137.59]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [176.59, 163.99, 151.39, 144.99, 138.69, 132.39]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "IM",
+      "times": [85.19, 79.09, 73.09, 69.99, 66.99, 63.89]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "IM",
+      "times": [81.89, 75.89, 69.99, 66.99, 63.99, 61.09]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [183.89, 170.69, 157.59, 150.99, 144.49, 137.89]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [179.29, 165.79, 152.29, 145.59, 138.79, 132.09]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCY",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [391.69, 363.69, 335.79, 321.79, 307.79, 293.79]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCY",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [377.09, 350.09, 323.19, 309.79, 296.29, 282.79]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [32.49, 30.19, 27.89, 26.69, 25.59, 24.39]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [29.89, 27.69, 25.59, 24.59, 23.49, 22.39]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [70.99, 65.89, 60.89, 58.29, 55.79, 53.29]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [64.99, 60.29, 55.69, 53.39, 51.09, 48.69]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [153.59, 142.69, 131.69, 126.19, 120.69, 115.29]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [142.49, 132.29, 122.19, 117.09, 111.99, 106.89]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCY",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [412.19, 382.79, 353.39, 338.59, 323.89, 309.19]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCY",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [385.69, 358.19, 330.59, 316.89, 303.09, 289.29]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCY",
+      "distance": 1000,
+      "stroke": "FR",
+      "times": [851.09, 790.29, 729.49, 699.09, 668.69, 638.29]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCY",
+      "distance": 1000,
+      "stroke": "FR",
+      "times": [797.99, 740.99, 683.99, 655.49, 626.99, 598.49]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCY",
+      "distance": 1650,
+      "stroke": "FR",
+      "times": [1422.89, 1321.19, 1219.59, 1168.79, 1117.99, 1067.19]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCY",
+      "distance": 1650,
+      "stroke": "FR",
+      "times": [1342.89, 1246.99, 1151.09, 1103.09, 1055.19, 1007.19]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [36.19, 33.69, 31.09, 29.79, 28.49, 27.19]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [33.69, 31.29, 28.89, 27.69, 26.49, 25.29]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [76.89, 71.39, 65.89, 63.19, 60.49, 57.69]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [71.29, 66.19, 61.09, 58.59, 55.99, 53.49]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [166.39, 154.49, 142.59, 136.69, 130.69, 124.79]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [154.69, 143.69, 132.59, 127.09, 121.59, 115.99]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [42.09, 39.09, 36.09, 34.59, 33.09, 31.59]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [38.59, 35.79, 33.09, 31.69, 30.29, 28.89]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [88.69, 82.29, 75.99, 72.89, 69.69, 66.49]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [80.49, 74.79, 68.99, 66.19, 63.29, 60.39]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [190.99, 177.39, 163.79, 156.89, 150.09, 143.29]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [174.89, 162.39, 149.89, 143.59, 137.39, 131.19]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [35.79, 33.29, 30.69, 29.39, 28.19, 26.89]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [33.19, 30.79, 28.39, 27.19, 26.09, 24.89]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [76.79, 71.29, 65.89, 63.09, 60.39, 57.59]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [70.49, 65.49, 60.39, 57.89, 55.39, 52.89]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [171.19, 158.99, 146.69, 140.59, 134.49, 128.39]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [156.79, 145.59, 134.39, 128.79, 123.19, 117.59]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [171.79, 159.49, 147.19, 141.09, 134.99, 128.79]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [157.99, 146.69, 135.39, 129.79, 124.09, 118.49]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCY",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [365.79, 339.69, 313.49, 300.49, 287.39, 274.29]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCY",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [337.69, 313.59, 289.49, 277.39, 265.39, 253.29]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [31.79, 29.49, 27.29, 26.09, 24.99, 23.89]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [28.29, 26.29, 24.19, 23.19, 22.19, 21.19]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [68.79, 63.79, 58.89, 56.49, 53.99, 51.59]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [61.99, 57.59, 53.19, 50.99, 48.79, 46.49]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [148.99, 138.39, 127.69, 122.39, 117.09, 111.79]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [135.99, 126.29, 116.59, 111.79, 106.89, 101.99]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCY",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [400.99, 372.39, 343.69, 329.39, 315.09, 300.79]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCY",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [368.39, 342.09, 315.79, 302.69, 289.49, 276.29]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCY",
+      "distance": 1000,
+      "stroke": "FR",
+      "times": [832.89, 773.49, 713.99, 684.19, 654.49, 624.69]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCY",
+      "distance": 1000,
+      "stroke": "FR",
+      "times": [771.79, 716.69, 661.59, 633.99, 606.39, 578.89]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCY",
+      "distance": 1650,
+      "stroke": "FR",
+      "times": [1395.89, 1296.19, 1196.49, 1146.69, 1096.79, 1046.89]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCY",
+      "distance": 1650,
+      "stroke": "FR",
+      "times": [1286.59, 1194.69, 1102.79, 1056.89, 1010.89, 964.99]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [35.29, 32.69, 30.19, 28.99, 27.69, 26.49]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [31.79, 29.49, 27.19, 26.09, 24.99, 23.79]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [74.69, 69.39, 64.09, 61.39, 58.69, 56.09]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [67.49, 62.69, 57.89, 55.49, 53.09, 50.69]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [162.19, 150.59, 139.09, 133.29, 127.49, 121.69]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [147.59, 137.09, 126.59, 121.29, 115.99, 110.69]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [41.09, 38.19, 35.19, 33.79, 32.29, 30.79]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [36.69, 34.09, 31.39, 30.09, 28.79, 27.49]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [85.89, 79.79, 73.69, 70.59, 67.49, 64.49]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [76.89, 71.39, 65.89, 63.19, 60.39, 57.69]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [185.99, 172.69, 159.39, 152.79, 146.19, 139.49]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [167.09, 155.19, 143.19, 137.29, 131.29, 125.29]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [34.69, 32.29, 29.79, 28.59, 27.29, 26.09]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [31.59, 29.29, 27.09, 25.89, 24.79, 23.69]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [74.39, 69.09, 63.79, 61.09, 58.39, 55.79]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [67.19, 62.39, 57.59, 55.19, 52.79, 50.39]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [165.79, 153.99, 142.09, 136.19, 130.29, 124.39]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [150.19, 139.49, 128.79, 123.39, 118.09, 112.69]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [166.19, 154.29, 142.39, 136.49, 130.59, 124.59]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [150.89, 140.19, 129.39, 123.99, 118.59, 113.19]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCY",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [354.99, 329.69, 304.29, 291.59, 278.99, 266.29]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCY",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [322.19, 299.19, 276.19, 264.69, 253.19, 241.59]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [31.39, 29.09, 26.89, 25.79, 24.69, 23.49]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [27.59, 25.59, 23.59, 22.59, 21.69, 20.69]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [68.09, 63.19, 58.39, 55.89, 53.49, 51.09]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [60.29, 55.99, 51.69, 49.59, 47.39, 45.29]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [147.19, 136.69, 126.19, 120.89, 115.69, 110.39]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [133.59, 123.99, 114.49, 109.69, 104.99, 100.19]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCY",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [396.49, 368.19, 339.89, 325.69, 311.59, 297.39]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCY",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [363.19, 337.29, 311.39, 298.39, 285.39, 272.39]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCY",
+      "distance": 1000,
+      "stroke": "FR",
+      "times": [826.09, 767.09, 708.09, 678.59, 649.09, 619.59]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCY",
+      "distance": 1000,
+      "stroke": "FR",
+      "times": [760.19, 705.89, 651.59, 624.49, 597.29, 570.19]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCY",
+      "distance": 1650,
+      "stroke": "FR",
+      "times": [1367.19, 1269.59, 1171.89, 1123.09, 1074.29, 1025.39]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCY",
+      "distance": 1650,
+      "stroke": "FR",
+      "times": [1268.99, 1178.39, 1087.69, 1042.39, 997.09, 951.79]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [34.59, 32.19, 29.69, 28.39, 27.19, 25.99]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [30.79, 28.59, 26.39, 25.29, 24.19, 23.09]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [73.39, 68.09, 62.89, 60.29, 57.69, 54.99]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [65.19, 60.59, 55.89, 53.59, 51.29, 48.89]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [158.79, 147.39, 136.09, 130.39, 124.79, 119.09]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [143.89, 133.59, 123.29, 118.19, 113.09, 107.89]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [40.39, 37.49, 34.59, 33.19, 31.69, 30.29]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [35.39, 32.89, 30.39, 29.09, 27.89, 26.59]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [84.79, 78.79, 72.69, 69.69, 66.69, 63.59]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [74.69, 69.39, 63.99, 61.39, 58.69, 55.99]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [184.69, 171.49, 158.29, 151.69, 145.09, 138.49]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [162.29, 150.69, 139.09, 133.29, 127.49, 121.69]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [34.49, 31.99, 29.59, 28.29, 27.09, 25.89]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCY",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [30.59, 28.39, 26.19, 25.09, 23.99, 22.99]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [73.59, 68.29, 63.09, 60.39, 57.79, 55.19]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCY",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [65.39, 60.79, 56.09, 53.69, 51.39, 49.09]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [162.79, 151.19, 139.49, 133.69, 127.89, 122.09]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [146.39, 135.99, 125.49, 120.29, 115.09, 109.79]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [163.59, 151.89, 140.19, 134.39, 128.49, 122.69]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCY",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [147.39, 136.89, 126.39, 121.09, 115.89, 110.59]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCY",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [350.69, 325.59, 300.59, 287.99, 275.49, 262.99]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCY",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [317.39, 294.69, 271.99, 260.69, 249.39, 237.99]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [43.99, 39.79, 35.49, 34.09, 32.69, 31.29]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [42.19, 38.19, 34.29, 32.99, 31.69, 30.39]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [100.29, 89.69, 78.99, 75.39, 71.89, 68.29]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [97.19, 87.19, 77.09, 73.79, 70.39, 67.09]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [223.99, 199.49, 174.99, 166.79, 158.59, 150.39]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [209.39, 188.49, 167.49, 160.59, 153.59, 146.59]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [452.19, 406.89, 361.69, 346.69, 331.59, 316.49]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [441.19, 397.09, 352.99, 338.29, 323.59, 308.89]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [53.69, 47.79, 41.89, 39.99, 37.99, 36.09]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [53.39, 47.39, 41.49, 39.59, 37.59, 35.59]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [116.89, 103.89, 90.89, 86.59, 82.29, 77.99]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [111.19, 99.59, 87.89, 83.99, 80.09, 76.29]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [60.29, 53.79, 47.29, 45.09, 42.99, 40.79]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [58.99, 52.79, 46.49, 44.39, 42.29, 40.19]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [132.89, 118.19, 103.39, 98.49, 93.59, 88.69]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [126.09, 113.09, 100.09, 95.69, 91.39, 86.99]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [53.49, 47.19, 40.89, 38.79, 36.69, 34.59]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [51.39, 45.59, 39.79, 37.89, 35.99, 33.99]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [128.89, 112.09, 95.19, 89.49, 83.89, 78.29]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [125.49, 109.29, 93.19, 87.79, 82.49, 77.09]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "IM",
+      "times": [115.19, 102.99, 90.69, 86.59, 82.49, 78.39]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "IM",
+      "times": [110.09, 99.09, 88.09, 84.39, 80.79, 77.09]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [245.39, 219.59, 193.89, 185.29, 176.79, 168.19]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [241.59, 216.59, 191.69, 183.39, 175.09, 166.69]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [37.59, 34.99, 32.39, 31.09, 29.79, 28.49]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [36.29, 33.69, 31.09, 29.79, 28.49, 27.19]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [82.49, 76.59, 70.69, 67.79, 64.89, 61.89]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [78.99, 73.29, 67.69, 64.89, 62.09, 59.19]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [179.59, 166.79, 153.99, 147.59, 141.09, 134.69]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [172.39, 160.09, 147.79, 141.59, 135.49, 129.29]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [382.29, 354.99, 327.69, 314.09, 300.39, 286.79]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [367.49, 341.19, 314.99, 301.79, 288.69, 275.59]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [789.89, 733.49, 676.99, 648.79, 620.59, 592.39]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [773.09, 717.89, 662.59, 634.99, 607.39, 579.79]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1498.39, 1391.29, 1284.29, 1230.79, 1177.29, 1123.79]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1458.89, 1354.69, 1250.49, 1198.39, 1146.29, 1094.19]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [42.79, 39.79, 36.69, 35.19, 33.59, 32.09]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [42.59, 39.29, 36.09, 34.49, 32.79, 31.19]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [95.69, 88.19, 80.59, 76.89, 73.09, 69.29]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [90.79, 83.69, 76.49, 72.89, 69.39, 65.79]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [198.29, 184.19, 169.99, 162.89, 155.79, 148.79]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [190.99, 177.39, 163.69, 156.89, 150.09, 143.29]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [48.59, 45.19, 41.69, 39.89, 38.19, 36.49]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [48.09, 44.29, 40.49, 38.59, 36.69, 34.89]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [106.59, 98.69, 90.79, 86.89, 82.99, 78.99]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [102.29, 94.49, 86.69, 82.79, 78.89, 74.99]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [227.29, 211.09, 194.89, 186.69, 178.59, 170.49]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [217.09, 201.59, 186.09, 178.29, 170.59, 162.79]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [40.79, 37.79, 34.89, 33.49, 31.99, 30.59]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [40.99, 37.69, 34.49, 32.79, 31.19, 29.59]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [94.79, 87.19, 79.59, 75.79, 72.09, 68.29]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [91.59, 84.09, 76.49, 72.79, 68.99, 65.29]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [202.59, 188.19, 173.69, 166.49, 159.19, 151.99]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [195.09, 181.19, 167.19, 160.29, 153.29, 146.29]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "IM",
+      "times": [94.19, 87.49, 80.69, 77.39, 73.99, 70.59]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "IM",
+      "times": [90.49, 83.89, 77.29, 73.99, 70.69, 67.49]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [203.19, 188.69, 174.19, 166.89, 159.59, 152.39]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [198.09, 183.19, 168.29, 160.89, 153.39, 145.99]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [432.79, 401.89, 370.99, 355.59, 340.09, 324.59]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [416.69, 386.89, 357.19, 342.29, 327.39, 312.49]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [35.99, 33.39, 30.79, 29.49, 28.29, 26.99]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [32.99, 30.69, 28.29, 27.09, 25.89, 24.79]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [78.49, 72.89, 67.29, 64.49, 61.69, 58.89]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [71.79, 66.69, 61.49, 58.99, 56.39, 53.89]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [169.79, 157.69, 145.49, 139.49, 133.39, 127.29]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [157.49, 146.19, 134.99, 129.39, 123.69, 118.09]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [360.69, 334.99, 309.19, 296.29, 283.39, 270.59]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [337.49, 313.39, 289.29, 277.29, 265.19, 253.19]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCM",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [744.69, 691.49, 638.29, 611.69, 585.09, 558.49]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCM",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [698.19, 648.39, 598.49, 573.59, 548.59, 523.69]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1414.29, 1313.29, 1212.29, 1161.79, 1111.29, 1060.79]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1334.89, 1239.49, 1144.19, 1096.49, 1048.79, 1001.19]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [39.99, 37.19, 34.29, 32.89, 31.49, 29.99]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [37.19, 34.59, 31.89, 30.59, 29.19, 27.89]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [84.99, 78.89, 72.89, 69.79, 66.79, 63.79]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [78.79, 73.09, 67.49, 64.69, 61.89, 59.09]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [183.89, 170.69, 157.59, 150.99, 144.49, 137.89]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [170.99, 158.69, 146.49, 140.39, 134.29, 128.19]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [46.49, 43.19, 39.89, 38.19, 36.49, 34.89]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [42.59, 39.59, 36.49, 34.99, 33.49, 31.99]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [97.99, 90.99, 83.99, 80.49, 76.99, 73.49]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [88.99, 82.59, 76.29, 73.09, 69.89, 66.79]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [211.09, 195.99, 180.89, 173.39, 165.89, 158.29]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [193.19, 179.39, 165.59, 158.69, 151.79, 144.89]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [39.59, 36.79, 33.89, 32.49, 31.09, 29.69]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [36.59, 33.99, 31.39, 30.09, 28.79, 27.49]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [84.89, 78.79, 72.79, 69.69, 66.69, 63.69]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [77.89, 72.29, 66.79, 63.99, 61.19, 58.39]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [189.19, 175.69, 162.19, 155.39, 148.59, 141.89]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [173.29, 160.89, 148.49, 142.39, 136.19, 129.99]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [189.79, 176.19, 162.69, 155.89, 149.09, 142.39]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [174.49, 162.09, 149.59, 143.39, 137.09, 130.89]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [404.19, 375.29, 346.39, 331.99, 317.59, 303.09]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [373.19, 346.49, 319.89, 306.49, 293.19, 279.89]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [35.09, 32.59, 30.09, 28.89, 27.59, 26.39]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [31.19, 28.99, 26.79, 25.69, 24.59, 23.39]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [75.99, 70.49, 65.09, 62.39, 59.69, 56.99]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [68.49, 63.69, 58.79, 56.29, 53.89, 51.39]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [164.69, 152.89, 141.19, 135.29, 129.39, 123.49]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [150.29, 139.59, 128.89, 123.49, 118.09, 112.79]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [350.89, 325.79, 300.79, 288.19, 275.69, 263.19]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [322.39, 299.39, 276.29, 264.79, 253.29, 241.79]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCM",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [728.79, 676.79, 624.69, 598.69, 572.69, 546.59]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCM",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [675.29, 627.09, 578.89, 554.79, 530.59, 506.49]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1387.49, 1288.39, 1189.29, 1139.79, 1090.19, 1040.69]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1278.89, 1187.59, 1096.19, 1050.49, 1004.89, 959.19]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [38.89, 36.19, 33.39, 31.99, 30.59, 29.19]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [35.09, 32.59, 30.09, 28.79, 27.59, 26.29]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [82.59, 76.69, 70.79, 67.79, 64.89, 61.99]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [74.59, 69.29, 63.99, 61.29, 58.59, 55.99]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [179.29, 166.49, 153.69, 147.29, 140.89, 134.49]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [163.09, 151.49, 139.79, 133.99, 128.19, 122.39]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [45.39, 42.19, 38.89, 37.29, 35.69, 34.09]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [40.49, 37.59, 34.69, 33.29, 31.79, 30.39]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [94.99, 88.19, 81.39, 77.99, 74.59, 71.19]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [84.99, 78.89, 72.79, 69.79, 66.79, 63.69]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [205.49, 190.89, 176.19, 168.79, 161.49, 154.19]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [184.59, 171.39, 158.29, 151.69, 145.09, 138.49]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [38.39, 35.59, 32.89, 31.49, 30.19, 28.79]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [34.89, 32.39, 29.89, 28.59, 27.39, 26.19]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [82.19, 76.29, 70.39, 67.49, 64.59, 61.59]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [74.29, 68.99, 63.69, 60.99, 58.39, 55.69]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [183.19, 170.09, 157.09, 150.49, 143.99, 137.39]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [165.99, 154.19, 142.29, 136.39, 130.39, 124.49]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [183.59, 170.49, 157.39, 150.79, 144.29, 137.69]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [166.79, 154.89, 142.99, 136.99, 131.09, 125.09]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [392.29, 364.29, 336.29, 322.29, 308.19, 294.19]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [355.99, 330.59, 305.19, 292.39, 279.69, 266.99]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [34.69, 32.19, 29.69, 28.49, 27.19, 25.99]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [30.39, 28.29, 26.09, 24.99, 23.89, 22.79]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [75.19, 69.89, 64.49, 61.79, 59.09, 56.39]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [66.69, 61.89, 57.19, 54.79, 52.39, 49.99]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [162.69, 151.09, 139.39, 133.59, 127.79, 121.99]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [147.59, 137.09, 126.49, 121.29, 115.99, 110.69]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [346.89, 322.19, 297.39, 284.99, 272.59, 260.19]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [317.79, 295.09, 272.39, 261.09, 249.69, 238.39]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCM",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [722.79, 671.19, 619.59, 593.69, 567.89, 542.09]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCM",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [665.19, 617.69, 570.19, 546.39, 522.69, 498.89]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1358.99, 1261.99, 1164.89, 1116.39, 1067.79, 1019.29]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1261.39, 1171.29, 1081.19, 1036.19, 991.09, 946.09]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [38.19, 35.49, 32.79, 31.39, 30.09, 28.69]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [33.99, 31.59, 29.09, 27.89, 26.69, 25.49]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [81.09, 75.29, 69.49, 66.59, 63.69, 60.79]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [72.09, 66.89, 61.79, 59.19, 56.59, 54.09]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [175.39, 162.89, 150.39, 144.09, 137.79, 131.59]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [158.99, 147.59, 136.29, 130.59, 124.89, 119.29]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [44.59, 41.39, 38.29, 36.69, 35.09, 33.49]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [39.09, 36.39, 33.59, 32.19, 30.79, 29.39]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [93.69, 87.09, 80.39, 76.99, 73.69, 70.29]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [82.49, 76.59, 70.69, 67.79, 64.89, 61.89]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [204.09, 189.49, 174.89, 167.59, 160.39, 153.09]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [179.29, 166.49, 153.69, 147.29, 140.89, 134.49]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [38.09, 35.39, 32.59, 31.29, 29.89, 28.59]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [33.79, 31.39, 28.99, 27.79, 26.59, 25.39]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [81.29, 75.49, 69.69, 66.79, 63.89, 60.99]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [72.29, 67.09, 61.99, 59.39, 56.79, 54.19]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [179.89, 166.99, 154.19, 147.69, 141.29, 134.89]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [161.79, 150.19, 138.69, 132.89, 127.09, 121.39]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [180.69, 167.79, 154.89, 148.49, 141.99, 135.59]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [162.89, 151.29, 139.59, 133.79, 127.99, 122.19]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [387.49, 359.79, 332.09, 318.29, 304.49, 290.59]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "SCM",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [350.69, 325.59, 300.59, 288.09, 275.49, 262.99]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [45.29, 40.89, 36.59, 35.09, 33.69, 32.19]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [43.89, 39.79, 35.69, 34.39, 32.99, 31.59]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [104.09, 92.99, 81.89, 78.19, 74.49, 70.79]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [100.99, 90.59, 80.19, 76.69, 73.19, 69.79]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [230.99, 205.69, 180.39, 171.99, 163.49, 155.09]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [216.69, 194.99, 173.39, 166.09, 158.89, 151.69]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [468.59, 421.69, 374.89, 359.29, 343.69, 327.99]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [458.29, 412.49, 366.59, 351.39, 336.09, 320.79]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [55.79, 49.69, 43.59, 41.59, 39.49, 37.49]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [55.39, 49.29, 43.09, 41.09, 38.99, 36.99]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [121.59, 108.09, 94.59, 90.09, 85.59, 81.09]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [116.69, 104.49, 92.29, 88.19, 84.09, 79.99]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [62.19, 55.49, 48.79, 46.49, 44.29, 42.09]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [60.89, 54.39, 47.89, 45.79, 43.59, 41.49]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [139.39, 123.89, 108.39, 103.29, 98.09, 92.99]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [132.89, 119.19, 105.49, 100.89, 96.29, 91.69]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [54.49, 48.09, 41.59, 39.49, 37.29, 35.19]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [52.29, 46.39, 40.59, 38.59, 36.59, 34.69]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [132.79, 115.39, 97.99, 92.19, 86.39, 80.59]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [129.49, 112.89, 96.19, 90.69, 85.09, 79.59]
+    },
+    {
+      "age": "10u",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [255.69, 228.89, 202.09, 193.09, 184.19, 175.29]
+    },
+    {
+      "age": "10u",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [249.49, 223.69, 197.89, 189.39, 180.79, 172.19]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [38.49, 35.89, 33.19, 31.89, 30.49, 29.19]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [37.39, 34.79, 32.09, 30.69, 29.39, 28.09]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [85.59, 79.49, 73.39, 70.29, 67.19, 64.19]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [82.09, 76.19, 70.39, 67.49, 64.49, 61.59]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [186.39, 173.09, 159.79, 153.09, 146.49, 139.79]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [179.19, 166.39, 153.59, 147.19, 140.79, 134.39]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [392.89, 364.79, 336.79, 322.79, 308.69, 294.69]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [381.09, 353.89, 326.69, 313.09, 299.49, 285.89]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "LCM",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [821.59, 762.89, 704.19, 674.89, 645.49, 616.19]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "LCM",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [800.19, 742.99, 685.89, 657.29, 628.69, 600.09]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "LCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1566.89, 1454.99, 1342.99, 1287.09, 1231.09, 1175.19]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "LCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1551.79, 1440.99, 1330.19, 1274.69, 1219.29, 1163.89]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [44.79, 41.59, 38.39, 36.79, 35.19, 33.59]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [44.49, 41.09, 37.69, 35.99, 34.29, 32.59]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [100.59, 92.69, 84.79, 80.79, 76.89, 72.89]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [97.19, 89.59, 81.89, 78.09, 74.29, 70.39]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [208.09, 193.29, 178.39, 170.99, 163.49, 156.09]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [202.99, 188.49, 173.99, 166.69, 159.49, 152.19]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [49.79, 46.19, 42.69, 40.89, 39.09, 37.39]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [49.79, 45.89, 41.99, 39.99, 38.09, 36.09]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [110.39, 102.19, 93.99, 89.99, 85.89, 81.79]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [107.79, 99.59, 91.29, 87.19, 83.09, 78.99]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [236.79, 219.89, 202.99, 194.49, 186.09, 177.59]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [227.89, 211.59, 195.39, 187.19, 179.09, 170.99]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [41.79, 38.79, 35.79, 34.29, 32.89, 31.39]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [41.99, 38.69, 35.29, 33.59, 31.99, 30.29]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [98.29, 90.49, 82.59, 78.69, 74.79, 70.79]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [95.09, 87.29, 79.49, 75.59, 71.69, 67.79]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [211.09, 195.99, 180.89, 173.39, 165.89, 158.29]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [204.79, 190.19, 175.59, 168.29, 160.89, 153.59]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [210.59, 195.59, 180.59, 172.99, 165.49, 157.99]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [204.39, 188.99, 173.69, 165.99, 158.29, 150.59]
+    },
+    {
+      "age": "11-12",
+      "category": "women",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [448.89, 416.79, 384.79, 368.69, 352.69, 336.69]
+    },
+    {
+      "age": "11-12",
+      "category": "men",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [437.89, 406.59, 375.39, 359.69, 344.09, 328.39]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [37.19, 34.59, 31.89, 30.59, 29.29, 27.89]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [34.29, 31.79, 29.39, 28.19, 26.89, 25.69]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [81.19, 75.39, 69.59, 66.69, 63.79, 60.89]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [75.09, 69.79, 64.39, 61.69, 58.99, 56.39]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [175.29, 162.79, 150.29, 143.99, 137.79, 131.49]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [163.99, 152.29, 140.59, 134.69, 128.89, 122.99]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [368.09, 341.79, 315.49, 302.39, 289.19, 276.09]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [348.39, 323.49, 298.69, 286.19, 273.79, 261.29]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "LCM",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [765.49, 710.79, 656.09, 628.79, 601.49, 574.09]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "LCM",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [720.59, 669.19, 617.69, 591.99, 566.19, 540.49]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "LCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1468.39, 1363.49, 1258.59, 1206.19, 1153.69, 1101.29]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "LCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1384.59, 1285.69, 1186.79, 1137.39, 1087.89, 1038.49]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [42.59, 39.49, 36.49, 34.99, 33.49, 31.89]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [39.49, 36.69, 33.89, 32.49, 31.09, 29.69]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [89.69, 83.29, 76.89, 73.69, 70.49, 67.29]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [83.69, 77.69, 71.69, 68.69, 65.79, 62.79]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [193.29, 179.49, 165.69, 158.79, 151.89, 144.99]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [181.79, 168.79, 155.79, 149.29, 142.79, 136.29]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [47.79, 44.39, 40.99, 39.29, 37.59, 35.89]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [43.99, 40.89, 37.69, 36.19, 34.59, 32.99]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [102.39, 94.99, 87.69, 84.09, 80.39, 76.79]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [93.79, 87.09, 80.39, 76.99, 73.69, 70.29]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [220.29, 204.59, 188.89, 180.99, 173.09, 165.29]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [202.79, 188.29, 173.79, 166.59, 159.39, 152.09]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [39.99, 37.09, 34.29, 32.79, 31.39, 29.99]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [37.29, 34.59, 31.89, 30.59, 29.29, 27.99]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [87.19, 80.99, 74.79, 71.69, 68.59, 65.39]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [80.29, 74.59, 68.89, 65.99, 63.09, 60.29]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [195.69, 181.69, 167.79, 160.79, 153.79, 146.79]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [179.69, 166.79, 153.99, 147.59, 141.19, 134.79]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [197.19, 183.09, 168.99, 161.99, 154.89, 147.89]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [182.89, 169.79, 156.69, 150.19, 143.69, 137.19]
+    },
+    {
+      "age": "13-14",
+      "category": "women",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [417.99, 388.19, 358.29, 343.39, 328.39, 313.49]
+    },
+    {
+      "age": "13-14",
+      "category": "men",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [390.69, 362.79, 334.89, 320.89, 306.99, 292.99]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [36.09, 33.49, 30.89, 29.59, 28.29, 27.09]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [32.89, 30.59, 28.19, 26.99, 25.89, 24.69]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [78.39, 72.79, 67.19, 64.39, 61.59, 58.79]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [71.79, 66.69, 61.49, 58.99, 56.39, 53.79]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [169.19, 157.09, 145.09, 138.99, 132.99, 126.89]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [156.59, 145.39, 134.29, 128.69, 123.09, 117.49]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [355.19, 329.89, 304.49, 291.79, 279.09, 266.39]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [334.09, 310.19, 286.39, 274.39, 262.49, 250.59]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "LCM",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [737.79, 685.09, 632.39, 605.99, 579.69, 553.29]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "LCM",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [693.99, 644.39, 594.79, 569.99, 545.29, 520.49]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "LCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1413.49, 1312.49, 1211.59, 1161.09, 1110.59, 1060.09]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "LCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1328.29, 1233.39, 1138.49, 1091.09, 1043.59, 996.19]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [41.19, 38.29, 35.29, 33.89, 32.39, 30.89]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [37.79, 35.09, 32.39, 31.09, 29.69, 28.39]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [86.89, 80.69, 74.49, 71.39, 68.29, 65.19]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [79.39, 73.69, 67.99, 65.19, 62.39, 59.49]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [186.79, 173.39, 160.09, 153.39, 146.79, 140.09]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [172.29, 159.99, 147.69, 141.49, 135.39, 129.19]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [46.19, 42.89, 39.59, 37.89, 36.29, 34.59]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [41.79, 38.79, 35.79, 34.29, 32.79, 31.29]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [98.59, 91.59, 84.49, 80.99, 77.49, 73.99]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [89.49, 83.09, 76.69, 73.49, 70.29, 67.09]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [212.49, 197.29, 182.09, 174.49, 166.99, 159.39]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [194.49, 180.59, 166.69, 159.79, 152.79, 145.89]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [38.99, 36.19, 33.49, 32.09, 30.69, 29.29]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [35.69, 33.09, 30.59, 29.29, 27.99, 26.79]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [84.29, 78.29, 72.29, 69.29, 66.29, 63.29]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [76.79, 71.29, 65.79, 63.09, 60.29, 57.59]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [187.79, 174.39, 160.99, 154.29, 147.59, 140.89]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [171.69, 159.49, 147.19, 141.09, 134.89, 128.79]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [191.19, 177.49, 163.89, 156.99, 150.19, 143.39]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [176.19, 163.59, 150.99, 144.69, 138.39, 132.09]
+    },
+    {
+      "age": "15-16",
+      "category": "women",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [404.69, 375.79, 346.89, 332.49, 317.99, 303.59]
+    },
+    {
+      "age": "15-16",
+      "category": "men",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [374.69, 347.99, 321.19, 307.79, 294.39, 281.09]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [35.89, 33.29, 30.69, 29.49, 28.19, 26.89]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [31.89, 29.59, 27.39, 26.19, 25.09, 23.99]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [77.69, 72.19, 66.59, 63.89, 61.09, 58.29]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [69.89, 64.89, 59.89, 57.39, 54.89, 52.39]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [167.69, 155.69, 143.69, 137.69, 131.69, 125.79]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [152.89, 141.99, 131.09, 125.59, 120.09, 114.69]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [353.39, 328.19, 302.99, 290.29, 277.69, 265.09]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [326.49, 303.09, 279.79, 268.19, 256.49, 244.89]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "LCM",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [730.29, 678.19, 625.99, 599.89, 573.79, 547.79]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "LCM",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [677.89, 629.49, 581.09, 556.89, 532.69, 508.49]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "LCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1400.89, 1300.79, 1200.79, 1150.79, 1100.69, 1050.69]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "LCM",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1305.79, 1212.49, 1119.29, 1072.59, 1025.99, 979.39]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [40.99, 38.09, 35.09, 33.69, 32.19, 30.79]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [36.79, 34.19, 31.59, 30.29, 28.99, 27.59]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [85.89, 79.79, 73.69, 70.59, 67.49, 64.49]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [77.49, 71.99, 66.49, 63.69, 60.89, 58.19]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [185.79, 172.49, 159.19, 152.59, 145.99, 139.29]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [169.19, 157.09, 144.99, 138.99, 132.89, 126.89]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [45.59, 42.29, 39.09, 37.49, 35.79, 34.19]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [40.29, 37.49, 34.59, 33.09, 31.69, 30.29]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [97.49, 90.49, 83.59, 80.09, 76.59, 73.09]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [86.69, 80.59, 74.39, 71.29, 68.19, 65.09]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [209.89, 194.99, 179.99, 172.49, 164.99, 157.49]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [189.19, 175.69, 162.19, 155.39, 148.59, 141.89]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [38.39, 35.59, 32.89, 31.49, 30.19, 28.79]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "LCM",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [34.59, 32.09, 29.69, 28.39, 27.19, 25.99]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [83.59, 77.69, 71.69, 68.69, 65.69, 62.69]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "LCM",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [74.59, 69.29, 63.99, 61.29, 58.69, 55.99]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [184.49, 171.39, 158.19, 151.59, 144.99, 138.39]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [166.99, 155.09, 143.19, 137.19, 131.29, 125.29]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [189.29, 175.79, 162.29, 155.49, 148.79, 141.99]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "LCM",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [171.89, 159.59, 147.39, 141.19, 135.09, 128.99]
+    },
+    {
+      "age": "17-18",
+      "category": "women",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [400.29, 371.69, 343.09, 328.79, 314.49, 300.29]
+    },
+    {
+      "age": "17-18",
+      "category": "men",
+      "course": "LCM",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [367.59, 341.29, 315.09, 301.89, 288.79, 275.69]
+    }
+  ]
+}
