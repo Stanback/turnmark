@@ -19,10 +19,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -30,7 +32,7 @@ import androidx.compose.ui.unit.sp
 import org.json.JSONObject
 import uniffi.turnmark_core.*
 
-private val Ink = Color(0xFF09293B)
+private val Ink = Color(0xFF032C43)
 private val Lime = Color(0xFFDDF58C)
 private val courses = Course.entries
 private val strokes = Stroke.entries
@@ -106,7 +108,13 @@ private fun share(context: Context, draft: Draft) {
         surface = Color(0xFF122C3C), background = Color(0xFF091F2D))
         else lightColorScheme(primary = Ink, secondaryContainer = Lime, onSecondaryContainer = Ink,
             background = Color(0xFFF0F5F8), surface = Color.White)) {
-        Scaffold(topBar = { TopAppBar(title = { Text(if (tab == 0) "turnmark." else if (tab == 1) "Saved swim" else "The method", fontWeight = FontWeight.Bold) }) },
+        Scaffold(topBar = { TopAppBar(title = {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                if (tab == 0) Icon(painterResource(R.drawable.brand_mark), contentDescription = null,
+                    tint = Color.Unspecified, modifier = Modifier.size(34.dp))
+                Text(if (tab == 0) "turnmark." else if (tab == 1) "Saved swim" else "The method", fontWeight = FontWeight.Bold)
+            }
+        }) },
             bottomBar = {
               Column {
                 if (tab == 0) ResultSummary(draft)
@@ -114,7 +122,10 @@ private fun share(context: Context, draft: Draft) {
                     listOf("Convert", "Saved", "Method").forEachIndexed { index, label ->
                         NavigationBarItem(selected = tab == index, onClick = { tab = index },
                             modifier = Modifier.testTag("nav-$label"), label = { Text(label) },
-                            icon = { Icon(when (index) { 0 -> Icons.Default.Refresh; 1 -> Icons.Default.FavoriteBorder; else -> Icons.Default.Info }, contentDescription = null) })
+                            icon = {
+                                if (index == 2) Icon(Icons.Default.Info, contentDescription = null)
+                                else Icon(painterResource(if (index == 0) R.drawable.ic_convert else R.drawable.ic_bookmark), contentDescription = null)
+                            })
                     }
                 }
               }
@@ -123,7 +134,7 @@ private fun share(context: Context, draft: Draft) {
                 verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 when (tab) {
                     0 -> {
-                        Text("Your swim. Any course.", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                        Text("Convert a swim", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                         Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
                             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                                 Text("Your time", fontWeight = FontWeight.Bold)

@@ -15,11 +15,15 @@ offline on first launch, and use the same source editions and outcomes.
   sharing. Share links still open the existing GitHub Pages app. The
   `turnmark.app` website migration is a separate PR.
 - Convert, Saved and Method screens, system appearance, scalable native text
-  and native accessibility semantics.
+  and native accessibility semantics. The shared wave mark appears in app headers
+  and launcher icons; see [brand asset generation](BRANDING.md).
+- iOS uses system Liquid Glass navigation, pickers and glass Save/Share buttons
+  on iOS 26+. Input and result cards retain opaque, readable surfaces. Older
+  supported versions use standard bordered buttons.
 
 This is the first converter workflow, not full web feature parity. Native youth
-and Masters benchmarks, points, altitude entry, full history/export, application
-icons/store artwork, verified app links and final release targets remain later
+and Masters benchmarks, points, altitude entry, full history/export,
+layered iOS icon/store artwork, verified app links and final release targets remain later
 work. Physical-device, VoiceOver/TalkBack, large-text and 16 KB Android runtime
 checks are release gates; automated simulator tests do not establish those.
 Bundle/application ID `net.stanback.turnmark`, iOS 17 minimum and Android API 26
@@ -27,7 +31,7 @@ minimum are provisional until release configuration is finalized.
 
 ## iOS
 
-Install Xcode with an iOS simulator and the Rust targets listed in
+Use current stable Xcode 27.1 with an iOS 27 simulator and the Rust targets listed in
 [the engine guide](SHARED_ENGINE.md), then:
 
 ```sh
@@ -77,7 +81,10 @@ after the test APK could not install on a still-booting emulator.
 
 Pull-request checks run Rust/web tests, unsigned iOS simulator builds/UI tests,
 and Android debug builds/emulator tests. They use `contents: read` and contain no
-Cloudflare, Apple signing or store-upload credentials. Test artifacts expire
+Cloudflare, Apple signing or store-upload credentials. The iOS job uses the
+`xcode-27` runner, pins Xcode 27.1 and verifies SDK 27.1 before building. Simulator
+selection prefers the latest installed iOS runtime; CI requires iOS 27. Local
+visual checks can also run on older supported runtimes. Test artifacts expire
 after seven days. The existing website deployment remains a main-branch-only
 job with its own permissions; do not use `pull_request_target` to execute PR code.
 

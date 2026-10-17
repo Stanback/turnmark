@@ -37,7 +37,10 @@ jobs:
           path: target/engine-metrics.json
           retention-days: 7
   ios:
-    runs-on: macos-15-intel
+    runs-on: xcode-27
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
+      TURNMARK_IOS_RUNTIME: "27"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -45,6 +48,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+      - name: Verify current stable Apple SDK
+        run: |
+          xcodebuild -version
+          test "$(xcrun --sdk iphoneos --show-sdk-version)" = '27.1'
       - run: rustup target add aarch64-apple-ios aarch64-apple-ios-sim x86_64-apple-ios
       - run: node scripts/package-ios.mjs
       - run: node scripts/test-native-host.mjs swift

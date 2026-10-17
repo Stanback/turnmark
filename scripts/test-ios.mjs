@@ -12,10 +12,24 @@ const inventory = spawnSync(
   { encoding: "utf8" },
 );
 if (inventory.status !== 0) throw new Error(inventory.stderr);
-const device = Object.values(JSON.parse(inventory.stdout).devices)
-  .flat()
+const requiredRuntime = process.env.TURNMARK_IOS_RUNTIME;
+const runtimes = Object.entries(JSON.parse(inventory.stdout).devices)
+  .filter(
+    ([key]) =>
+      key.includes(".iOS-") &&
+      (!requiredRuntime ||
+        key.includes(`.iOS-${requiredRuntime.replaceAll(".", "-")}-`) ||
+        key.endsWith(`.iOS-${requiredRuntime.replaceAll(".", "-")}`)),
+  )
+  .sort(([a], [b]) => b.localeCompare(a, undefined, { numeric: true }));
+const device = runtimes
+  .flatMap(([, devices]) => devices)
   .find((d) => d.isAvailable && d.name.startsWith("iPhone"));
-if (!device) throw new Error("Install an iOS simulator in Xcode first");
+if (!device)
+  throw new Error(
+    `Install an iOS ${requiredRuntime ?? ""} simulator in Xcode first`,
+  );
+console.log(`Testing on ${device.name} (${device.udid})`);
 await rm(`target/${output}.xcresult`, { recursive: true, force: true });
 const result = spawnSync(
   "xcodebuild",

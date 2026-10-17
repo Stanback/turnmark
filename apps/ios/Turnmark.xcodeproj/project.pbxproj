@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0A7945AEF04A892E43ACE1DE /* TurnmarkUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D16C21D7F1C9E54F75FE74B /* TurnmarkUITests.swift */; };
+		63E8CB2D3A1891F1C44EAFA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649B64D9001836B5F659593C /* Assets.xcassets */; };
 		95DC7EBE8CEEAC85CA154B94 /* TurnmarkApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C2633BB30C9B5BFAEAFF94 /* TurnmarkApp.swift */; };
 		FA5150614CE151801FF7E62F /* TurnmarkCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0B509BAFE31A5ED85B9E5812 /* TurnmarkCore */; };
 /* End PBXBuildFile section */
@@ -23,6 +24,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		649B64D9001836B5F659593C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6A0409D9F50C35CC7B2C84C6 /* Turnmark.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Turnmark.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		77652A273CB3E0E5519B5E11 /* TurnmarkUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TurnmarkUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C2633BB30C9B5BFAEAFF94 /* TurnmarkApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnmarkApp.swift; sourceTree = "<group>"; };
@@ -80,6 +82,7 @@
 		F0C66C82A1DE22236BC0E435 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				649B64D9001836B5F659593C /* Assets.xcassets */,
 				89C2633BB30C9B5BFAEAFF94 /* TurnmarkApp.swift */,
 			);
 			path = Sources;
@@ -111,6 +114,7 @@
 			buildConfigurationList = DFD905AFEF997153A041B639 /* Build configuration list for PBXNativeTarget "Turnmark" */;
 			buildPhases = (
 				E9CFB02D71251791C4A1187E /* Sources */,
+				070D72228139CE4B5A914D60 /* Resources */,
 				93B39E5486386E020FC68512 /* Frameworks */,
 			);
 			buildRules = (
@@ -161,6 +165,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		070D72228139CE4B5A914D60 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				63E8CB2D3A1891F1C44EAFA5 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E9CFB02D71251791C4A1187E /* Sources */ = {

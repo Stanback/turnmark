@@ -1,8 +1,8 @@
 import SwiftUI
 import TurnmarkCore
 
-private let ink = Color(red: 0.035, green: 0.16, blue: 0.23)
-private let lime = Color(red: 0.87, green: 0.96, blue: 0.55)
+private let ink = Color(red: 3 / 255, green: 44 / 255, blue: 67 / 255)
+private let lime = Color(red: 221 / 255, green: 245 / 255, blue: 140 / 255)
 private let courseNames = ["SCY", "SCM", "LCM"]
 private let courses: [Course] = [.scy, .scm, .lcm]
 private let strokeNames = ["Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual medley"]
@@ -78,11 +78,8 @@ private struct TurnmarkView: View {
         TabView(selection: $tab) {
             NavigationStack {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 24) {
-                        HStack(spacing: 10) {
-                            Image(systemName: "water.waves").font(.title).foregroundStyle(.teal)
-                            Text("Your swim. Any course.").font(.title2.bold())
-                        }.accessibilityAddTraits(.isHeader)
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text("Convert a swim").font(.title2.bold()).accessibilityAddTraits(.isHeader)
                         inputCard
                         HStack {
                             Button { savedJSON = draft.encoded } label: { Label("Save swim", systemImage: "bookmark") }
@@ -90,17 +87,19 @@ private struct TurnmarkView: View {
                             Spacer()
                             ShareLink(item: draft.shareURL) { Label("Share", systemImage: "square.and.arrow.up") }
                                 .accessibilityIdentifier("shareSwim")
-                        }.buttonStyle(.bordered).disabled(!draft.available)
+                        }.modifier(SwimActionsStyle()).disabled(!draft.available)
                         Text("Calculated on your device. Works offline.")
                             .font(.footnote).foregroundStyle(.secondary)
                     }.padding()
                 }
-                .safeAreaInset(edge: .bottom, spacing: 0) {
-                    resultSummary.padding(.horizontal).padding(.vertical, 8).background(.regularMaterial)
-                }
+                .modifier(ConversionResultBar(summary: resultSummary))
                 .background(Color(uiColor: .systemGroupedBackground))
                 .navigationTitle("turnmark.")
-                .toolbar { if editingTime { ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("Done") { editingTime = false } } } }
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .principal) { BrandHeader() }
+                    if editingTime { ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("Done") { editingTime = false } } }
+                }
             }.tabItem { Label("Convert", systemImage: "arrow.left.arrow.right") }.tag(0)
             NavigationStack {
                 ScrollView {
@@ -168,7 +167,7 @@ private struct TurnmarkView: View {
     }
 
     private var inputCard: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: 16) {
             Text("Your time").font(.headline)
             TextField("58.32", text: $draft.time)
                 .font(.system(size: 42, weight: .semibold, design: .rounded)).monospacedDigit()
@@ -178,11 +177,11 @@ private struct TurnmarkView: View {
             HStack {
                 Picker("Stroke", selection: $draft.strokeIndex) {
                     ForEach(strokeNames.indices, id: \.self) { Text(strokeNames[$0]).tag($0) }
-                }.accessibilityIdentifier("strokePicker")
+                }.accessibilityIdentifier("strokePicker").layoutPriority(1)
                 Spacer()
                 Picker("Distance", selection: $draft.distance) {
                     ForEach(draft.options, id: \.event.distance) { Text(String($0.event.distance)).tag($0.event.distance) }
-                }.accessibilityIdentifier("distancePicker")
+                }.accessibilityIdentifier("distancePicker").fixedSize(horizontal: true, vertical: false)
             }
             Text("Swum in").font(.subheadline.bold())
             Picker("Swum in", selection: $draft.courseIndex) {
@@ -202,7 +201,7 @@ private struct TurnmarkView: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
                 Text("\(courseNames[input.courseIndex]) → \(courseNames[input.targetIndex])").font(.subheadline.weight(.semibold))
-                Spacer(); Image(systemName: "water.waves")
+                Spacer(); Image("BrandMark").resizable().frame(width: 32, height: 32).clipShape(.rect(cornerRadius: 9)).accessibilityHidden(true)
             }.foregroundStyle(lime)
             switch input.outcome {
             case let .available(value, source):
@@ -222,5 +221,45 @@ private struct TurnmarkView: View {
             }
         }.frame(maxWidth: .infinity, alignment: .leading).padding(24)
             .foregroundStyle(.white).background(ink, in: RoundedRectangle(cornerRadius: 24))
+    }
+}
+
+// Standard navigation and pickers inherit Liquid Glass from the current SDK.
+// Keep the result and input surfaces opaque so the numbers remain easy to read.
+private struct SwimActionsStyle: ViewModifier {
+    @ViewBuilder func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            GlassEffectContainer(spacing: 16) {
+                content.buttonStyle(.glass).controlSize(.large)
+            }
+        } else {
+            content.buttonStyle(.bordered).controlSize(.large)
+        }
+    }
+}
+
+private struct BrandHeader: View {
+    var body: some View {
+        HStack(spacing: 8) {
+            Image("BrandMark").resizable().frame(width: 32, height: 32)
+                .clipShape(.rect(cornerRadius: 10)).accessibilityHidden(true)
+            Text("turnmark.").font(.title3.bold())
+        }.accessibilityElement(children: .combine).accessibilityLabel("Turnmark")
+    }
+}
+
+private struct ConversionResultBar<Summary: View>: ViewModifier {
+    let summary: Summary
+
+    @ViewBuilder func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content.safeAreaBar(edge: .bottom, spacing: 0) {
+                summary.padding(.horizontal).padding(.vertical, 8)
+            }
+        } else {
+            content.safeAreaInset(edge: .bottom, spacing: 0) {
+                summary.padding(.horizontal).padding(.vertical, 8).background(.regularMaterial)
+            }
+        }
     }
 }

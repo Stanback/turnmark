@@ -15,19 +15,36 @@ final class TurnmarkUITests: XCTestCase {
         app.segmentedControls["targetCourse"].buttons["SCY"].tap()
         XCTAssertTrue(app.segmentedControls["targetCourse"].buttons["SCY"].isSelected)
         XCTAssertEqual(app.staticTexts["resultTime"].label, "52.44")
-        let screenshot = XCTAttachment(screenshot: app.screenshot())
-        screenshot.name = "Native converter"
-        screenshot.lifetime = .keepAlways
-        add(screenshot)
+        capture(app, "Native converter")
         app.swipeUp()
         app.buttons["saveSwim"].tap()
         app.terminate()
         app.launchArguments = []
         app.launch()
+        XCTAssertTrue(app.staticTexts["resultTime"].waitForExistence(timeout: 10))
+        XCTAssertEqual(app.staticTexts["resultTime"].label, "52.44")
         app.tabBars.buttons["Saved"].tap()
         XCTAssertEqual(app.staticTexts["resultTime"].label, "52.44")
+        capture(app, "Saved swim")
+        app.tabBars.buttons["Method"].tap()
+        XCTAssertTrue(app.staticTexts["How comparisons work"].exists)
+        capture(app, "Method")
+        let appearance = XCUIDevice.shared.appearance
+        defer { XCUIDevice.shared.appearance = appearance }
+        XCUIDevice.shared.appearance = .dark
+        capture(app, "Method dark")
+        app.tabBars.buttons["Saved"].tap()
+        capture(app, "Saved swim dark")
         app.buttons["Use this swim"].tap()
         XCTAssertEqual(app.textFields["timeInput"].value as? String, "1:00")
+        capture(app, "Native converter dark")
+    }
+
+    @MainActor private func capture(_ app: XCUIApplication, _ name: String) {
+        let screenshot = XCTAttachment(screenshot: app.screenshot())
+        screenshot.name = name
+        screenshot.lifetime = .keepAlways
+        add(screenshot)
     }
 
     @MainActor func testInvalidTimeDoesNotProduceResult() {
