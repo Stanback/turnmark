@@ -6,3 +6,5 @@ dependencyResolutionManagement {
 rootProject.name = "turnmark"
 include(":sdk-android")
 project(":sdk-android").projectDir = file("packages/android")
+include(":app-android")
+project(":app-android").projectDir = file("apps/android")

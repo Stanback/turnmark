@@ -30,6 +30,27 @@ pub fn parse_time(input: String) -> Option<f64> {
     engine::parse_time(&input)
 }
 
+/// Published input events and their legacy web-link distance, from the core's
+/// event definitions. Native controls and share adapters must not reimplement
+/// the 400/500, 800/1000 or 1500/1650 mappings.
+#[cfg_attr(feature = "native", uniffi::export)]
+pub fn get_event_options(course: Course, stroke: Stroke) -> Vec<EventOption> {
+    engine::event_distances(stroke)
+        .iter()
+        .filter_map(|&distance| {
+            let event = SwimEvent {
+                distance: engine::actual_distance(distance, course, stroke),
+                stroke,
+                course,
+            };
+            engine::published(&event, distance).then_some(EventOption {
+                event,
+                canonical_distance: distance,
+            })
+        })
+        .collect()
+}
+
 #[cfg_attr(feature = "native", uniffi::export)]
 pub fn convert_swim(request: ConversionRequest) -> ConversionOutcome {
     engine::convert(&json!(request)).into()

@@ -4,7 +4,7 @@
 
 [Try Turnmark →](https://stanback.github.io/turnmark/)
 
-A browser-only swim time converter, standards explorer, and World Aquatics points calculator. Built for swimmers, coaches, and parents who want to understand a swim across pool courses and find a useful next target.
+Swim time conversion, published standards, and World Aquatics points, built around a shared Rust calculation engine. The web app is available today; native iOS and Android apps are in development. Built for swimmers, coaches, and parents who want to understand a swim across pool courses and find a useful next target.
 
 - Live SCY / SCM / LCM comparisons with event-specific distance mapping
 - Published NCAA metric-to-yards factors, with explicitly labeled derived reverse conversions
@@ -28,7 +28,7 @@ Turnmark started long before it had that name. Bri Stanback swam competitively f
 
 The tool evolved from JavaScript to PHP and eventually came to GitHub as `php-swim-time-conversion`. Along the way, versions of the converter found a home on other swimming websites.
 
-In 2026, Bri returned to the project, modernized it, and gave it the Turnmark name. The rebuild brings that familiar utility into a browser app with documented conversion factors, published standards and points, local swim history, and offline support.
+In 2026, Bri returned to the project, modernized it, and gave it the Turnmark name. The familiar converter grew into an offline web app with documented factors, published standards and points, and local swim history. Its calculations now live in one Rust engine, shared through JavaScript, Swift, and Kotlin libraries. That foundation is carrying Turnmark toward native iOS and Android apps, an embeddable calculator, and MCP and WebMCP integrations, while keeping the original idea: a useful tool swimmers can trust.
 
 ## Develop
 
@@ -70,6 +70,10 @@ are subsequent work, tracked in the [platform plan](docs/PLATFORM_PLAN.md).
 The [agent interface plan](docs/AGENT_INTERFACES.md) covers future MCP and WebMCP
 adapters around that same SDK.
 No SDK package has been published.
+
+The first SwiftUI and Jetpack Compose converter screens are in `apps/ios` and
+`apps/android`. See [native app setup and scope](docs/NATIVE_APPS.md) for local
+builds, simulator/emulator tests, and the public-repository CI boundary.
 
 ## Data and calculations
 

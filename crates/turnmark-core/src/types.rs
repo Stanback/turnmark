@@ -38,6 +38,10 @@ record!(SwimEvent {
     stroke: Stroke,
     course: Course
 });
+record!(EventOption {
+    event: SwimEvent,
+    canonical_distance: u32
+});
 record!(Swim {
     time: String,
     event: SwimEvent

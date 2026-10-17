@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -38,6 +40,8 @@ jobs:
     runs-on: macos-15-intel
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -45,16 +49,22 @@ jobs:
       - run: node scripts/package-ios.mjs
       - run: node scripts/test-native-host.mjs swift
       - run: node scripts/test-ios.mjs
+      - name: Test unsigned native iOS app
+        run: node scripts/test-ios.mjs app
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: ios-engine-tests
-          path: target/ios-tests.xcresult
+          path: |
+            target/ios-tests.xcresult
+            target/ios-app-tests.xcresult
           retention-days: 7
   android:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -66,11 +76,11 @@ jobs:
         with:
           packages: platform-tools
           log-accepted-android-sdk-licenses: false
-      - run: sdkmanager 'ndk;30.0.16248370' 'platforms;android-36' 'build-tools;36.0.0'
+      - run: sdkmanager 'ndk;30.0.16248370' 'platforms;android-36' 'platforms;android-37.0' 'build-tools;36.0.0'
       - run: rustup target add aarch64-linux-android x86_64-linux-android
       - name: Generate Kotlin and Android native libraries
         run: ANDROID_NDK_HOME="$ANDROID_HOME/ndk/30.0.16248370" node scripts/package-android.mjs
-      - run: ./gradlew :sdk-android:assembleDebug :sdk-android:assembleDebugAndroidTest
+      - run: ./gradlew :sdk-android:assembleDebug :sdk-android:assembleDebugAndroidTest :app-android:assembleDebug :app-android:assembleDebugAndroidTest
       - run: node scripts/check-android-libraries.mjs
       - name: Enable KVM for emulator tests
         run: |
@@ -83,10 +93,14 @@ jobs:
           target: default
           arch: x86_64
           disable-animations: true
-          script: ./gradlew :sdk-android:connectedDebugAndroidTest
+          script: node scripts/test-android.mjs sdk && node scripts/test-android.mjs app
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: android-engine-tests
-          path: packages/android/build/reports/androidTests/
+          path: |
+            packages/android/build/reports/androidTests/
+            packages/android/build/outputs/androidTest-results/
+            apps/android/build/reports/androidTests/
+            apps/android/build/outputs/androidTest-results/
           retention-days: 7
