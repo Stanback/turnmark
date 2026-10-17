@@ -1029,7 +1029,7 @@
                       {#if standing.next !== null}<strong
                           >{nextGap?.toFixed(2)}s</strong
                         >
-                        to your next mark:
+                        to the next time standard:
                         <strong>{levels[standing.next]}</strong>
                         in {formatTime(nextTime)}.{:else}You’ve reached the top
                         motivational standard for this event.{/if}
@@ -1091,8 +1091,8 @@
           <h2 id="standards-title">World Aquatics points</h2>
           <p>
             Compare performances across events and metric pool courses. Higher
-            points mean a faster performance relative to the event’s published
-            base time.
+            points mean a faster performance relative to the event’s
+            world-record reference time.
           </p>
           <div class="points-score">
             <strong data-testid="points-score"
@@ -1107,25 +1107,32 @@
                   : "Men"}
               </p>
               <p class="points-tldr">
-                <strong>1,000 points matches the published base time</strong>,
-                which is based on the approved world record at the table’s
-                cutoff date. This is a performance score, without age
-                adjustment.
+                <strong
+                  >1,000 points matches the world-record reference time</strong
+                >. World Aquatics fixes this reference for each event, course,
+                and category using the approved record at the table’s cutoff
+                date. It can lag a newer record. Scores are not adjusted for
+                age.
               </p>
               <div class="points-benchmarks">
                 <div>
-                  <span>1,000-point reference</span><strong
+                  <span>World-record reference · 1,000 points</span><strong
                     >{formatTime(pointContext.base)}</strong
                   ><small>2026 · {form.course}</small>
                 </div>
                 <div class="points-next">
                   <span
-                    >Next mark · {pointContext.nextMark.toLocaleString()} points</span
+                    >Next points target · {pointContext.nextMark.toLocaleString()}
+                    points</span
                   ><strong data-testid="points-next-time"
                     >{formatTime(pointContext.target)}</strong
                   ><small
                     ><b>{pointContext.gap.toFixed(2)}s</b> to drop from your entered
                     time</small
+                  >
+                  <small
+                    >Next 100-point step: a suggested goal, not an official
+                    qualifying time.</small
                   >
                 </div>
               </div>

@@ -355,7 +355,7 @@ test("points explain the reference and next milestone; swimboard remove buttons 
     .getByRole("button", { name: "World Aquatics points", exact: true })
     .click();
   await expect(page.locator(".points-tldr")).toContainText(
-    "1,000 points matches",
+    "1,000 points matches the world-record reference time",
   );
   await expect(page.locator(".points-next")).toContainText("500 points");
   await expect(page.getByTestId("points-next-time")).not.toHaveText("—");

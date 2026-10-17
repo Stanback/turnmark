@@ -35,7 +35,7 @@ export const faqs = [
   {
     question: "How are World Aquatics points calculated?",
     answer:
-      "World Aquatics points use 1,000 × (base time / swim time)³, truncated to a whole number. Turnmark uses the published 2026 base times for entered SCM and LCM swims, without altitude correction. It does not assign World Aquatics points to yards swims or silently score a converted estimate as an actual swim.",
+      "World Aquatics points use 1,000 × (base time / swim time)³, truncated to a whole number. The base time is the world-record reference for that event, course, and category at the table’s cutoff date; matching it earns 1,000 points. Turnmark uses the published 2026 tables for entered SCM and LCM swims, without altitude or age adjustment. The next points target is the next multiple of 100 above your score, with a calculated time to aim for. It is a suggested goal, not an official qualifying time. Yards swims are left unscored.",
     url: "https://www.worldaquatics.com/swimming/points",
     source: "World Aquatics scoring method",
   },
