@@ -146,7 +146,7 @@ h3 {
 }
 .header-inner nav button {
   background: none;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 550;
   padding: 8px 0;
   position: relative;
@@ -174,7 +174,7 @@ h3 {
   gap: 8px;
   align-items: center;
   text-decoration: none;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
 }
 .github-link:hover {
@@ -223,7 +223,7 @@ h3 {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 1.55px;
   font-weight: 750;
 }
@@ -283,7 +283,7 @@ h1 {
   gap: 20px;
   background: var(--navy);
   color: white;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   padding: 12px 20px;
   border-radius: 50px;
@@ -321,7 +321,7 @@ h1 {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 1.1px;
   font-weight: 700;
   color: #587188;
@@ -334,7 +334,7 @@ h1 {
 }
 .text-button {
   background: none;
-  font-size: 12px;
+  font-size: 14px;
   color: #365e7d;
   padding: 7px 0;
   min-height: 32px;
@@ -363,11 +363,11 @@ h1 {
 }
 .panel-title p {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
   margin-bottom: 0;
 }
 .field-label {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -376,7 +376,7 @@ h1 {
   margin-bottom: 8px;
 }
 .field-label > span {
-  font-size: 12px;
+  font-size: 14px;
   color: #49647c;
   font-weight: 400;
 }
@@ -390,7 +390,7 @@ h1 {
   padding: 9px 0;
   flex: 1;
   border-radius: 7px;
-  font-size: 12px;
+  font-size: 14px;
   color: #3a5570;
   font-weight: 550;
   min-height: 36px;
@@ -419,7 +419,7 @@ h1 {
   color: var(--ink);
   border-radius: 7px;
   padding: 10px 32px 10px 12px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
 }
@@ -478,7 +478,7 @@ h1 {
   gap: 6px;
   align-items: center;
   color: #557186;
-  font-size: 12px;
+  font-size: 14px;
   margin: 8px 0 20px;
 }
 .status-dot {
@@ -490,7 +490,7 @@ h1 {
 }
 .field-error {
   color: #a13c32;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.5;
   margin: 8px 0 18px;
 }
@@ -510,10 +510,10 @@ h1 {
   align-items: center;
 }
 .course-picker strong {
-  font-size: 12px;
+  font-size: 14px;
 }
 .course-picker button > span {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
 }
 .course-picker button:hover {
@@ -532,19 +532,19 @@ h1 {
   margin: 20px 0 16px;
 }
 .factor-row > label {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 650;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 .factor-row > label > span {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 400;
   color: var(--muted);
 }
 .factor-row .select-wrap select {
-  font-size: 12px;
+  font-size: 14px;
   padding: 9px 26px 9px 10px;
 }
 .factor-row .select-wrap > svg {
@@ -564,7 +564,7 @@ summary::-webkit-details-marker {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: 14px;
   padding: 13px 0;
   font-weight: 550;
 }
@@ -585,14 +585,14 @@ details[open] .summary-plus {
   padding-bottom: 12px;
 }
 .altitude-body > label {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   display: flex;
   gap: 8px;
   align-items: center;
 }
 .altitude-body > label > span {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 400;
   color: var(--muted);
 }
@@ -604,13 +604,13 @@ details[open] .summary-plus {
   border-radius: 5px;
 }
 .altitude-body p {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.6;
   color: var(--muted);
   margin: 8px 0 0;
 }
 .input-footnote {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   line-height: 1.6;
   display: flex;
@@ -630,7 +630,7 @@ details[open] .summary-plus {
   gap: 12px;
 }
 .results-heading .section-label {
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 1.3px;
 }
 .results-heading h2 {
@@ -647,7 +647,7 @@ details[open] .summary-plus {
   gap: 10px;
   border: 1px solid var(--line);
   color: #42657e;
-  font-size: 12px;
+  font-size: 14px;
   padding: 8px 10px;
   border-radius: 6px;
   white-space: nowrap;
@@ -680,7 +680,7 @@ details[open] .summary-plus {
   align-items: center;
 }
 .tiny-label {
-  font-size: 12px;
+  font-size: 14px;
   letter-spacing: 1px;
   font-weight: 550;
   color: #c0dbe6;
@@ -692,19 +692,19 @@ details[open] .summary-plus {
   margin: 3px 0 0;
 }
 .pool-scene h3 > span {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
   color: #c2d9e4;
 }
 .pool-scene-caption {
   text-align: right;
-  font-size: 12px;
+  font-size: 14px;
   color: #f2f8fc;
   line-height: 1.6;
 }
 .pool-scene-caption > span {
   display: block;
-  font-size: 12px;
+  font-size: 14px;
   color: #bbd7e3;
 }
 .pool-scene-bottom {
@@ -714,7 +714,7 @@ details[open] .summary-plus {
   gap: 8px;
   align-items: center;
   color: #c1dbe7;
-  font-size: 12px;
+  font-size: 14px;
   padding-top: 10px;
   border-top: 1px solid #ffffff20;
 }
@@ -760,10 +760,10 @@ details[open] .summary-plus {
   gap: 4px;
 }
 .result-card-top > strong {
-  font-size: 12px;
+  font-size: 14px;
 }
 .result-card-top > span {
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.2px;
   color: #486122;
   background: #f2f9de;
@@ -791,7 +791,7 @@ details[open] .summary-plus {
   white-space: nowrap;
 }
 .result-card-bottom {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
 }
 .result-unit {
@@ -821,7 +821,7 @@ details[open] .summary-plus {
   margin-top: 1px;
 }
 .result-explanation p {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.65;
   margin: 0;
 }
@@ -844,7 +844,7 @@ details[open] .summary-plus {
   justify-content: center;
   padding: 11px 16px;
   border-radius: 30px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   border: 1px solid var(--navy);
 }
@@ -874,7 +874,7 @@ details[open] .summary-plus {
   background: #edf3f8;
 }
 .local-note {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   margin-left: auto;
   white-space: nowrap;
@@ -898,7 +898,7 @@ details[open] .summary-plus {
   align-items: center;
 }
 .history-heading .eyebrow {
-  font-size: 11px;
+  font-size: 13px;
   color: #587188;
   letter-spacing: 1.2px;
 }
@@ -916,17 +916,17 @@ details[open] .summary-plus {
   background: #edf5fa;
   color: #476882;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 14px;
   margin-left: 4px;
   letter-spacing: 0;
 }
 .history-heading .text-button {
-  font-size: 12px;
+  font-size: 14px;
   white-space: nowrap;
 }
 .history-subtitle {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
   margin: 9px 0 17px;
 }
 .history-filters {
@@ -937,7 +937,7 @@ details[open] .summary-plus {
 }
 .history-filters button {
   flex: 1;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 550;
   min-height: 33px;
   background: #f3f6f9;
@@ -996,12 +996,12 @@ details[open] .summary-plus {
   min-width: 0;
 }
 .history-event strong {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
 }
 .history-event small,
 .history-times small {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
 }
 .history-times {
@@ -1009,7 +1009,7 @@ details[open] .summary-plus {
   text-align: right;
 }
 .history-times strong {
-  font-size: 12px;
+  font-size: 14px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   font-weight: 650;
@@ -1063,7 +1063,7 @@ details[open] .summary-plus {
 }
 .history-empty p {
   max-width: 275px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
   color: var(--muted);
   margin-bottom: 22px;
@@ -1072,7 +1072,7 @@ details[open] .summary-plus {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 13px;
   color: #55758c;
 }
 .standards-tabs {
@@ -1089,7 +1089,7 @@ details[open] .summary-plus {
   background: transparent;
   color: var(--muted);
   border-radius: 5px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   padding: 7px 12px;
 }
@@ -1113,7 +1113,7 @@ details[open] .summary-plus {
   margin: 0 0 7px;
 }
 .standards-title-row p {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   line-height: 1.6;
   margin: 0;
@@ -1128,7 +1128,7 @@ details[open] .summary-plus {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 550;
   white-space: nowrap;
 }
@@ -1139,17 +1139,17 @@ details[open] .summary-plus {
   padding: 7px 10px;
   min-width: 90px;
   color: var(--ink);
-  font-size: 12px;
+  font-size: 14px;
 }
 .standards-edition {
   color: #42627d;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
   padding-left: 15px;
   border-left: 1px solid var(--line);
 }
 .standards-edition > span {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
 }
 .standards-card {
@@ -1162,7 +1162,7 @@ details[open] .summary-plus {
   gap: 6px;
   flex-wrap: wrap;
   align-items: center;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   line-height: 1.6;
 }
@@ -1181,7 +1181,7 @@ details[open] .summary-plus {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: 13px;
   color: #466780;
   margin-left: auto;
   text-decoration: none;
@@ -1191,6 +1191,7 @@ details[open] .summary-plus {
 }
 .standard-summary {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 12px;
   align-items: center;
@@ -1198,14 +1199,16 @@ details[open] .summary-plus {
 }
 .standard-achievement {
   display: flex;
+  flex: 1 1 230px;
+  min-width: 0;
   gap: 12px;
   align-items: center;
 }
 .achievement-badge {
   display: grid;
   place-items: center;
-  width: 47px;
-  height: 47px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background: #f0f9d4;
   color: #506a13;
@@ -1214,13 +1217,20 @@ details[open] .summary-plus {
   font-size: 22px;
   flex-shrink: 0;
 }
-.standard-achievement h3 {
+.achievement-badge.long-label {
   font-size: 14px;
+  letter-spacing: -0.4px;
+}
+.standard-achievement > div {
+  min-width: 0;
+}
+.standard-achievement h3 {
+  font-size: 16px;
   letter-spacing: -0.4px;
   margin: 0 0 6px;
 }
 .standard-achievement p {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   line-height: 1.6;
   margin: 0;
@@ -1231,6 +1241,7 @@ details[open] .summary-plus {
   font-weight: 600;
 }
 .goal-time {
+  margin-left: auto;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -1238,7 +1249,7 @@ details[open] .summary-plus {
   flex-shrink: 0;
 }
 .goal-time .tiny-label {
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.6px;
   color: #4a6725;
 }
@@ -1266,12 +1277,12 @@ details[open] .summary-plus {
 .swim-marker {
   position: absolute;
   left: var(--marker);
-  top: -4px;
+  top: -5px;
   background: var(--navy);
   border: 2px solid #fff;
   outline: 1px solid var(--navy);
-  width: 11px;
-  height: 11px;
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
   transform: translateX(-50%);
   z-index: 1;
@@ -1282,7 +1293,7 @@ details[open] .summary-plus {
   bottom: 15px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 12px;
+  font-size: 14px;
   border-radius: 4px;
   color: white;
   background: var(--navy);
@@ -1331,18 +1342,18 @@ details[open] .summary-plus {
   background: #7da632;
 }
 .ladder-levels strong {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 650;
 }
 .ladder-levels > div > span:last-child {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 .standards-note {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.65;
   margin: 21px 0 0;
 }
@@ -1356,12 +1367,12 @@ details[open] .summary-plus {
   margin: 12px 0 8px;
 }
 .standards-empty p {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
   margin: 0;
 }
 .points-panel > .eyebrow {
-  font-size: 11px;
+  font-size: 13px;
   color: #59748a;
   margin-top: 24px;
 }
@@ -1371,7 +1382,7 @@ details[open] .summary-plus {
   margin: 10px 0;
 }
 .points-panel > p {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
   color: var(--muted);
 }
@@ -1390,7 +1401,7 @@ details[open] .summary-plus {
   font-variant-numeric: tabular-nums;
 }
 .points-score > span {
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 1.4px;
   font-weight: 650;
   color: #5b7890;
@@ -1402,7 +1413,7 @@ details[open] .summary-plus {
   padding: 13px;
   border-radius: 7px;
   background: #f3f8fc;
-  font-size: 12px;
+  font-size: 14px;
 }
 .points-note svg {
   margin-top: 2px;
@@ -1416,20 +1427,20 @@ details[open] .summary-plus {
   border-block: 1px solid var(--line);
 }
 .points-formula > span {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 1px;
   color: #537188;
 }
 .points-formula code {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 14px;
 }
 .points-source {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 12px;
+  font-size: 14px;
   color: #365f7c;
   text-decoration: none;
   margin-top: 14px;
@@ -1449,12 +1460,12 @@ details[open] .summary-plus {
   letter-spacing: -0.7px;
 }
 .board-heading h2 > span {
-  font-size: 12px;
+  font-size: 14px;
   margin-left: 8px;
   color: #557388;
 }
 .board-heading p {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
 }
 .saved-grid {
@@ -1479,7 +1490,7 @@ details[open] .summary-plus {
   padding: 20px;
 }
 .restore-swim > span {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
 }
 .restore-swim > span:last-child {
@@ -1516,7 +1527,7 @@ details[open] .summary-plus {
   scroll-margin-top: 20px;
 }
 .method-intro .eyebrow {
-  font-size: 11px;
+  font-size: 13px;
   color: #486d84;
   letter-spacing: 1.2px;
 }
@@ -1527,7 +1538,7 @@ details[open] .summary-plus {
   margin: 17px 0;
 }
 .method-intro > p {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.8;
   color: var(--muted);
   max-width: 340px;
@@ -1536,7 +1547,7 @@ details[open] .summary-plus {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 12px;
+  font-size: 14px;
   text-decoration: none;
   margin-top: 22px;
 }
@@ -1547,7 +1558,7 @@ details[open] .summary-plus {
 }
 .method-items article > span {
   color: #4d738c;
-  font-size: 12px;
+  font-size: 14px;
   padding-top: 3px;
 }
 .method-items h3 {
@@ -1556,7 +1567,7 @@ details[open] .summary-plus {
   margin: 0 0 9px;
 }
 .method-items p {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.8;
   color: var(--muted);
   margin-bottom: 9px;
@@ -1565,7 +1576,7 @@ details[open] .summary-plus {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 14px;
   color: #36627f;
   text-decoration: none;
 }
@@ -1578,7 +1589,7 @@ footer {
   display: flex;
   align-items: center;
   gap: 25px;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   padding-top: 28px;
   padding-bottom: 28px;
@@ -1593,7 +1604,7 @@ footer {
 }
 footer > span:last-child {
   margin-left: auto;
-  font-size: 11px;
+  font-size: 13px;
 }
 footer > span > a {
   text-underline-offset: 3px;
@@ -1614,7 +1625,7 @@ footer > span > a {
   display: flex;
   gap: 10px;
   align-items: center;
-  font-size: 12px;
+  font-size: 14px;
   opacity: 0;
   pointer-events: none;
   transition:
@@ -1638,7 +1649,7 @@ footer > span > a {
   margin-bottom: 9px;
 }
 .elevation-heading label {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 650;
 }
 .elevation-units {
@@ -1654,7 +1665,7 @@ footer > span > a {
   border-radius: 4px;
   min-width: 36px;
   min-height: 29px;
-  font-size: 12px;
+  font-size: 14px;
   color: #4d6c84;
 }
 .elevation-units button.active {
@@ -1691,16 +1702,16 @@ footer > span > a {
 }
 .elevation-entry > span {
   color: #4d6c84;
-  font-size: 12px;
+  font-size: 14px;
   white-space: nowrap;
 }
 .summary-elevation {
   color: #3d607b;
-  font-size: 12px;
+  font-size: 14px;
   font-variant-numeric: tabular-nums;
 }
 .altitude-body #elevation-help {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
   margin-top: 10px;
 }
@@ -1718,13 +1729,13 @@ footer > span > a {
   color: #315e78;
 }
 .altitude-conversion-heading h3 {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   margin: 0;
 }
 .altitude-conversion-heading > span {
   margin-left: auto;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   color: #3d6279;
 }
@@ -1744,7 +1755,7 @@ footer > span > a {
 }
 .altitude-before > span,
 .altitude-after > span {
-  font-size: 12px;
+  font-size: 14px;
   color: #4b6a80;
 }
 .altitude-before > strong,
@@ -1775,7 +1786,7 @@ footer > span > a {
   border: 1px solid #c4e2ec;
   border-radius: 5px;
   padding: 4px 7px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -1783,7 +1794,7 @@ footer > span > a {
   padding-top: 12px;
   margin: 0;
   border-top: 1px solid #d3e6ef;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
   color: #4a6c82;
 }
@@ -1812,7 +1823,7 @@ footer > span > a {
   }
   .altitude-before > span,
   .altitude-after > span {
-    font-size: 12px;
+    font-size: 14px;
   }
 }
 @media (max-width: 680px) {
@@ -1828,7 +1839,7 @@ footer > span > a {
     padding-block: 12px;
   }
   .elevation-entry > span {
-    font-size: 12px;
+    font-size: 14px;
   }
   .altitude-conversion {
     padding: 16px 13px;
@@ -1844,14 +1855,14 @@ footer > span > a {
   }
   .altitude-before > span,
   .altitude-after > span {
-    font-size: 12px;
+    font-size: 14px;
   }
   .altitude-difference > span {
     padding: 4px 5px;
-    font-size: 12px;
+    font-size: 14px;
   }
   .altitude-conversion > p {
-    font-size: 12px;
+    font-size: 14px;
   }
 }
 @media print {
@@ -1910,7 +1921,7 @@ footer > span > a {
     font-size: clamp(12px, 24cqw, 32px);
   }
   .result-card-bottom {
-    font-size: 11px;
+    font-size: 13px;
   }
   .result-card-bottom > svg,
   .selected-check {
@@ -1936,11 +1947,11 @@ footer > span > a {
   }
   .history-event strong,
   .history-times strong {
-    font-size: 12px;
+    font-size: 14px;
   }
   .history-times small,
   .history-event small {
-    font-size: 11px;
+    font-size: 13px;
   }
   .history-restore > svg {
     display: none;
@@ -1958,21 +1969,21 @@ footer > span > a {
     gap: 9px;
   }
   .achievement-badge {
-    width: 38px;
-    height: 38px;
-    font-size: 19px;
+    width: 48px;
+    height: 48px;
+    font-size: 22px;
   }
   .standard-achievement h3 {
-    font-size: 12px;
+    font-size: 16px;
   }
   .standard-achievement p {
-    font-size: 11px;
+    font-size: 14px;
   }
   .goal-time > strong {
     font-size: 19px;
   }
   .goal-time .tiny-label {
-    font-size: 11px;
+    font-size: 13px;
   }
   .standards-context > a {
     margin-left: 0;
@@ -2003,7 +2014,7 @@ footer > span > a {
     padding-inline: 12px;
   }
   .pool-scene-bottom {
-    font-size: 11px;
+    font-size: 13px;
   }
   .result-cards {
     gap: 5px;
@@ -2012,17 +2023,17 @@ footer > span > a {
     padding: 12px 8px;
   }
   .result-card-top > span {
-    font-size: 11px;
+    font-size: 13px;
   }
   .result-card-bottom {
-    font-size: 11px;
+    font-size: 13px;
   }
   .result-actions {
     gap: 5px;
   }
   .primary-button,
   .secondary-button {
-    font-size: 12px;
+    font-size: 14px;
     padding: 10px;
   }
   .insights-grid {
@@ -2034,11 +2045,11 @@ footer > span > a {
   }
   .history-event strong,
   .history-times strong {
-    font-size: 12px;
+    font-size: 14px;
   }
   .history-times small,
   .history-event small {
-    font-size: 12px;
+    font-size: 14px;
   }
   .standards-controls {
     max-width: 380px;
@@ -2047,7 +2058,7 @@ footer > span > a {
     font-size: 16px;
   }
   .standard-achievement p {
-    font-size: 12px;
+    font-size: 14px;
   }
   .goal-time > strong {
     font-size: 25px;
@@ -2091,7 +2102,7 @@ footer > span > a {
   }
   .github-link {
     display: flex;
-    font-size: 12px;
+    font-size: 14px;
     gap: 6px;
   }
   .github-link > svg:last-child {
@@ -2114,7 +2125,7 @@ footer > span > a {
       linear-gradient(0deg, #e8f4f8, transparent 28%);
   }
   .intro-copy .eyebrow {
-    font-size: 11px;
+    font-size: 13px;
     letter-spacing: 1.15px;
   }
   h1 {
@@ -2123,14 +2134,14 @@ footer > span > a {
     margin: 19px 0 15px;
   }
   .intro-copy > p {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.65;
     max-width: 230px;
     color: #173e5b;
     margin-bottom: 17px;
   }
   .hero-cta {
-    font-size: 12px;
+    font-size: 14px;
     padding: 11px 16px;
     gap: 14px;
   }
@@ -2157,26 +2168,26 @@ footer > span > a {
     font-size: 20px;
   }
   .panel-title p {
-    font-size: 12px;
+    font-size: 14px;
   }
   .reset {
     top: 18px;
     right: 20px;
-    font-size: 12px;
+    font-size: 14px;
     min-height: 36px;
   }
   .field-label {
-    font-size: 12px;
+    font-size: 14px;
     margin-bottom: 9px;
   }
   .field-label > span {
-    font-size: 12px;
+    font-size: 14px;
   }
   .stroke-picker {
     gap: 6px;
   }
   .stroke-picker button {
-    font-size: 12px;
+    font-size: 14px;
     min-height: 44px;
   }
   .distance-label,
@@ -2200,7 +2211,7 @@ footer > span > a {
     padding-right: 25px;
   }
   .time-help {
-    font-size: 12px;
+    font-size: 14px;
     margin: 10px 0 22px;
   }
   .course-picker button {
@@ -2211,16 +2222,16 @@ footer > span > a {
     font-size: 13px;
   }
   .course-picker button > span {
-    font-size: 12px;
+    font-size: 14px;
   }
   .factor-row {
     margin-block: 20px 16px;
   }
   .factor-row > label {
-    font-size: 12px;
+    font-size: 14px;
   }
   .factor-row > label > span {
-    font-size: 12px;
+    font-size: 14px;
   }
   .factor-row .select-wrap select {
     padding: 10px 25px 10px 10px;
@@ -2228,20 +2239,20 @@ footer > span > a {
   }
   .altitude-options summary {
     padding-block: 15px;
-    font-size: 12px;
+    font-size: 14px;
   }
   .altitude-body > label {
-    font-size: 12px;
+    font-size: 14px;
   }
   .altitude-body > label > span {
-    font-size: 12px;
+    font-size: 14px;
   }
   .altitude-body p,
   .input-footnote {
-    font-size: 12px;
+    font-size: 14px;
   }
   .results-heading .section-label {
-    font-size: 11px;
+    font-size: 13px;
   }
   .results-heading h2 {
     font-size: 20px;
@@ -2258,11 +2269,11 @@ footer > span > a {
     display: none;
   }
   .pool-scene-bottom {
-    font-size: 11px;
+    font-size: 13px;
     gap: 5px;
   }
   .pool-scene-bottom > span:last-child {
-    font-size: 11px;
+    font-size: 13px;
   }
   .result-cards {
     display: flex;
@@ -2292,7 +2303,7 @@ footer > span > a {
     font-size: 13px;
   }
   .result-card-top > span {
-    font-size: 11px;
+    font-size: 13px;
   }
   .result-time {
     grid-column: 2;
@@ -2306,7 +2317,7 @@ footer > span > a {
     grid-column: 2;
     grid-row: 2;
     justify-content: flex-end;
-    font-size: 12px;
+    font-size: 14px;
   }
   .result-card-bottom > svg,
   .selected-check {
@@ -2317,7 +2328,7 @@ footer > span > a {
     min-height: 0;
   }
   .result-explanation p {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.7;
   }
   .result-actions {
@@ -2328,7 +2339,7 @@ footer > span > a {
   }
   .primary-button,
   .secondary-button {
-    font-size: 12px;
+    font-size: 14px;
     padding: 12px 16px;
     min-height: 44px;
   }
@@ -2353,14 +2364,14 @@ footer > span > a {
     letter-spacing: -0.8px;
   }
   .history-heading .eyebrow {
-    font-size: 11px;
+    font-size: 13px;
   }
   .history-heading .text-button {
-    font-size: 12px;
+    font-size: 14px;
     min-height: 40px;
   }
   .history-subtitle {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.6;
     margin-top: 12px;
   }
@@ -2369,7 +2380,7 @@ footer > span > a {
     padding-bottom: 17px;
   }
   .history-filters button {
-    font-size: 12px;
+    font-size: 14px;
     min-height: 42px;
   }
   .history-list {
@@ -2384,16 +2395,16 @@ footer > span > a {
     width: 30px;
   }
   .history-event strong {
-    font-size: 12px;
+    font-size: 14px;
   }
   .history-event small {
-    font-size: 11px;
+    font-size: 13px;
   }
   .history-times strong {
-    font-size: 12px;
+    font-size: 14px;
   }
   .history-times small {
-    font-size: 11px;
+    font-size: 13px;
   }
   .history-remove {
     width: 25px;
@@ -2408,10 +2419,10 @@ footer > span > a {
     font-size: 16px;
   }
   .history-empty p {
-    font-size: 12px;
+    font-size: 14px;
   }
   .history-empty > span:last-child {
-    font-size: 12px;
+    font-size: 14px;
   }
   .standards-tabs {
     width: 100%;
@@ -2420,7 +2431,7 @@ footer > span > a {
   .standards-tabs button {
     flex: 1;
     min-height: 38px;
-    font-size: 12px;
+    font-size: 14px;
     padding: 8px;
   }
   .standards-title-row {
@@ -2430,14 +2441,14 @@ footer > span > a {
     font-size: 20px;
   }
   .standards-title-row p {
-    font-size: 12px;
+    font-size: 14px;
   }
   .standards-controls {
     gap: 15px;
     justify-content: space-between;
   }
   .standards-controls label {
-    font-size: 12px;
+    font-size: 14px;
     gap: 7px;
   }
   .standards-controls select {
@@ -2446,17 +2457,17 @@ footer > span > a {
   }
   .standards-edition {
     padding-left: 12px;
-    font-size: 12px;
+    font-size: 14px;
   }
   .standards-edition > span {
-    font-size: 11px;
+    font-size: 13px;
   }
   .standards-context {
-    font-size: 11px;
+    font-size: 13px;
     gap: 7px;
   }
   .standards-context > a {
-    font-size: 11px;
+    font-size: 13px;
   }
   .standard-summary {
     margin-top: 25px;
@@ -2467,17 +2478,17 @@ footer > span > a {
     gap: 9px;
   }
   .achievement-badge {
-    width: 37px;
-    height: 37px;
-    font-size: 19px;
+    width: 48px;
+    height: 48px;
+    font-size: 22px;
   }
   .standard-achievement h3 {
-    font-size: 13px;
+    font-size: 16px;
     line-height: 1.4;
   }
   .standard-achievement p {
-    font-size: 12px;
-    max-width: 160px;
+    font-size: 14px;
+    max-width: 230px;
   }
   .goal-time {
     padding-top: 3px;
@@ -2486,41 +2497,41 @@ footer > span > a {
     font-size: 22px;
   }
   .goal-time .tiny-label {
-    font-size: 11px;
+    font-size: 13px;
   }
   .ladder {
     margin: 47px 9px 0;
   }
   .ladder-levels strong {
-    font-size: 12px;
+    font-size: 14px;
   }
   .ladder-levels > div > span:last-child {
-    font-size: 11px;
+    font-size: 13px;
   }
   .standards-note {
-    font-size: 12px;
+    font-size: 14px;
     margin-top: 23px;
   }
   .points-panel > .eyebrow {
-    font-size: 11px;
+    font-size: 13px;
   }
   .points-panel h2 {
     font-size: 20px;
   }
   .points-panel > p {
-    font-size: 12px;
+    font-size: 14px;
   }
   .points-score strong {
     font-size: 90px;
   }
   .points-panel .points-note {
-    font-size: 12px;
+    font-size: 14px;
   }
   .points-formula code {
-    font-size: 11px;
+    font-size: 13px;
   }
   .points-source {
-    font-size: 12px;
+    font-size: 14px;
     padding-block: 5px;
   }
   .board-heading {
@@ -2532,7 +2543,7 @@ footer > span > a {
     margin-bottom: 8px;
   }
   .board-heading p {
-    font-size: 12px;
+    font-size: 14px;
   }
   .saved-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2549,7 +2560,7 @@ footer > span > a {
     padding: 30px 23px;
   }
   .method-intro .eyebrow {
-    font-size: 11px;
+    font-size: 13px;
   }
   .method-intro h2 {
     font-size: 34px;
@@ -2559,7 +2570,7 @@ footer > span > a {
     max-width: none;
   }
   .method-intro > a {
-    font-size: 12px;
+    font-size: 14px;
   }
   .method-items {
     margin-top: 35px;
@@ -2572,10 +2583,10 @@ footer > span > a {
     font-size: 15px;
   }
   .method-items p {
-    font-size: 12px;
+    font-size: 14px;
   }
   .method-items a {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.7;
   }
 
@@ -2583,7 +2594,7 @@ footer > span > a {
     flex-wrap: wrap;
     gap: 12px;
     padding: 25px 23px;
-    font-size: 12px;
+    font-size: 14px;
   }
   .footer-brand {
     font-size: 22px;
@@ -2591,7 +2602,7 @@ footer > span > a {
   footer > span:last-child {
     width: 100%;
     margin: 0;
-    font-size: 11px;
+    font-size: 13px;
   }
   .mobile-nav {
     position: fixed;
@@ -2619,7 +2630,7 @@ footer > span > a {
     background: none;
     border-radius: 9px;
     color: #58718a;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 550;
   }
   .mobile-nav button.active {
@@ -2630,7 +2641,7 @@ footer > span > a {
   .toast {
     bottom: calc(88px + env(safe-area-inset-bottom));
     padding: 13px 16px;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.6;
   }
 }
@@ -2639,7 +2650,7 @@ footer > span > a {
     padding-inline: 17px;
   }
   .github-link {
-    font-size: 11px;
+    font-size: 13px;
   }
   .page-width {
     padding-inline: 12px;
@@ -2659,16 +2670,16 @@ footer > span > a {
   }
   .history-event strong,
   .history-times strong {
-    font-size: 11px;
+    font-size: 13px;
   }
   .history-remove {
     width: 20px;
   }
   .standard-achievement h3 {
-    font-size: 12px;
+    font-size: 16px;
   }
   .standard-achievement p {
-    font-size: 11px;
+    font-size: 14px;
   }
   .goal-time > strong {
     font-size: 19px;
@@ -2744,7 +2755,7 @@ footer > span > a {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 650;
   margin-bottom: 21px;
 }
@@ -2766,7 +2777,7 @@ footer > span > a {
 .masters-description,
 .masters-note {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.75;
 }
 .masters-panel .standards-controls {
@@ -2775,7 +2786,7 @@ footer > span > a {
 .masters-context {
   border-top: 1px solid var(--line);
   padding-top: 17px;
-  font-size: 12px;
+  font-size: 14px;
   color: #4d6b81;
 }
 .masters-comparison {
@@ -2795,7 +2806,7 @@ footer > span > a {
   text-align: right;
 }
 .masters-comparison span {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
 }
 .masters-comparison strong {
@@ -2836,11 +2847,11 @@ footer > span > a {
 .masters-status p {
   margin: 6px 0 0;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
 }
 .masters-note {
-  font-size: 12px;
+  font-size: 14px;
   margin: 18px 0 0;
 }
 .masters-empty {
@@ -2854,7 +2865,7 @@ footer > span > a {
   margin: 14px 0 9px;
 }
 .masters-empty p {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.75;
   margin-bottom: 0;
 }
@@ -2883,7 +2894,7 @@ footer > span > a {
   border: 1px solid #d5e3ed;
   border-radius: 7px;
   background: #f7fafc;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -2930,7 +2941,7 @@ footer > span > a {
   border-radius: 8px;
   padding: 13px;
   margin: 22px 0;
-  font-size: 12px;
+  font-size: 14px;
 }
 .install-offline > svg {
   margin-top: 3px;
@@ -2989,7 +3000,7 @@ footer > span > a {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 14px;
   color: #365f7c;
   text-underline-offset: 3px;
 }
@@ -3013,7 +3024,7 @@ footer > span > a {
     gap: 12px;
   }
   .install-button {
-    font-size: 12px;
+    font-size: 14px;
     padding: 9px 10px;
     min-height: 38px;
   }
@@ -3059,7 +3070,7 @@ footer > span > a {
   }
   .install-button {
     padding: 8px;
-    font-size: 11px;
+    font-size: 13px;
   }
   .wordmark {
     font-size: 23px;
@@ -3079,7 +3090,7 @@ footer > span > a {
   display: flex;
   align-items: center;
   gap: 13px;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
 }
 .theme-control > div {
@@ -3096,7 +3107,7 @@ footer > span > a {
   border-radius: 4px;
   padding: 7px 12px;
   min-height: 33px;
-  font-size: 12px;
+  font-size: 14px;
 }
 .theme-control button.active {
   background: white;
@@ -3351,7 +3362,16 @@ footer > span > a {
   background: #3d5569;
 }
 [data-theme="dark"] .swim-marker {
+  background: #d6f28d;
   border-color: #122a3d;
+  outline: 2px solid #d6f28d;
+}
+[data-theme="dark"] .swim-marker > span {
+  background: #d6f28d;
+  color: #122a3d;
+}
+[data-theme="dark"] .swim-marker > span:after {
+  background: #d6f28d;
 }
 [data-theme="dark"] .points-panel > .eyebrow,
 [data-theme="dark"] .points-score > span,
@@ -3504,7 +3524,7 @@ footer > span > a {
   border-left: 1px solid var(--line);
 }
 .points-benchmarks span {
-  font-size: 12px;
+  font-size: 14px;
   color: #48667e;
   line-height: 1.5;
 }
@@ -3516,7 +3536,7 @@ footer > span > a {
   letter-spacing: -0.8px;
 }
 .points-benchmarks small {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
   line-height: 1.6;
 }
@@ -3532,7 +3552,7 @@ footer > span > a {
   gap: 12px;
   padding: 15px 0 0;
   color: #315f7d;
-  font-size: 12px;
+  font-size: 14px;
   text-align: left;
   line-height: 1.6;
   width: 100%;
@@ -3606,19 +3626,19 @@ footer > span > a {
   }
   .points-benchmarks span,
   .points-benchmarks small {
-    font-size: 12px;
+    font-size: 14px;
   }
   .result-card-top > span {
-    font-size: 10px;
+    font-size: 12px;
   }
   .standards-context {
-    font-size: 12px;
+    font-size: 14px;
   }
   .history-times strong {
-    font-size: 12px;
+    font-size: 14px;
   }
   .history-event strong {
-    font-size: 12px;
+    font-size: 14px;
   }
   .history-restore {
     display: grid;
@@ -3639,10 +3659,10 @@ footer > span > a {
     text-align: left;
   }
   .history-times small {
-    font-size: 11px;
+    font-size: 13px;
   }
   .history-event small {
-    font-size: 11px;
+    font-size: 13px;
   }
   .history-heading {
     align-items: flex-start;

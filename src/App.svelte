@@ -1014,7 +1014,10 @@
                 class="standard-summary"
               >
                 <div class="standard-achievement">
-                  <span class="achievement-badge"
+                  <span
+                    class="achievement-badge"
+                    class:long-label={standing.achieved >= 0 &&
+                      levels[standing.achieved].length > 2}
                     >{standing.achieved >= 0
                       ? levels[standing.achieved]
                       : "→"}</span
@@ -1040,7 +1043,7 @@
                   <span class="tiny-label"
                     >{standing.next !== null
                       ? `NEXT UP · ${levels[standing.next]}`
-                      : "TOP MARK · AAAA"}</span
+                      : "TOP STANDARD · AAAA"}</span
                   ><strong>{formatTime(nextTime ?? thresholds[5])}</strong>
                 </div>
               </div>

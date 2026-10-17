@@ -1,6 +1,59 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
+test("dark standards keep long badges inside their circles and the swim marker visible", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto("./#t=58&s=FR&d=100&c=SCM&g=women&a=15-16&h=0");
+  await page.evaluate(() => document.fonts.ready);
+  for (const [time, label] of [
+    ["58", "AAA"],
+    ["52.32", "AAAA"],
+  ]) {
+    await page.locator("#swim-time").fill(time);
+    const badge = page.locator(".achievement-badge");
+    await expect(badge).toHaveText(label);
+    const fit = await badge.evaluate((element) => {
+      const range = document.createRange();
+      range.selectNodeContents(element);
+      const text = range.getBoundingClientRect();
+      const circle = element.getBoundingClientRect();
+      return {
+        left: text.left - circle.left,
+        right: circle.right - text.right,
+      };
+    });
+    expect(fit.left).toBeGreaterThan(4);
+    expect(fit.right).toBeGreaterThan(4);
+  }
+  const contrast = await page.locator(".swim-marker").evaluate((element) => {
+    const luminance = (color: string) => {
+      const rgb = color
+        .match(/[\d.]+/g)!
+        .slice(0, 3)
+        .map(Number)
+        .map((channel) => {
+          const v = channel / 255;
+          return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+        });
+      return rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722;
+    };
+    const marker = luminance(getComputedStyle(element).backgroundColor);
+    const panel = luminance(
+      getComputedStyle(element.closest(".standards-section")!).backgroundColor,
+    );
+    return (Math.max(marker, panel) + 0.05) / (Math.min(marker, panel) + 0.05);
+  });
+  expect(contrast).toBeGreaterThanOrEqual(3);
+  await expect(page.locator(".standards-note")).toHaveCSS("font-size", "14px");
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+});
+
 test("live conversion, invalid input and course-specific unavailable events", async ({
   page,
 }) => {
