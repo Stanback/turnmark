@@ -622,6 +622,10 @@ details[open] .summary-plus {
 }
 .results-panel {
   padding: 23px 24px 20px;
+  scroll-margin-top: 16px;
+}
+.primary-button.mobile-results-jump {
+  display: none;
 }
 .results-heading {
   display: flex;
@@ -2149,7 +2153,7 @@ footer > span > a {
   .workspace {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 0;
     margin-top: -23px;
     scroll-margin-top: 12px;
   }
@@ -2157,6 +2161,29 @@ footer > span > a {
   .results-panel {
     border-radius: 12px;
     padding: 23px 20px;
+  }
+  .input-panel {
+    border-radius: 12px 12px 0 0;
+    border-bottom: 0;
+    box-shadow: none;
+  }
+  .results-panel {
+    border-radius: 0 0 12px 12px;
+    border-top: 0;
+    padding-top: 0;
+  }
+  .results-heading {
+    padding-top: 23px;
+    border-top: 1px solid var(--line);
+  }
+  .primary-button.mobile-results-jump {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 48px;
+    margin-top: 20px;
+    padding-inline: 17px;
+    font-size: 16px;
   }
   .input-panel > .section-label {
     height: 7px;

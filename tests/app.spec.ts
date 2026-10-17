@@ -316,6 +316,29 @@ test("mobile navigation reaches history and standards without covering content",
 }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "Mobile navigation only");
   await page.goto("./");
+  const resultsJump = page.getByRole("button", {
+    name: "See your results",
+    exact: true,
+  });
+  await resultsJump.click();
+  await expect(page.locator("#results-title")).toBeFocused();
+  await expect
+    .poll(() =>
+      page
+        .locator("#results-title")
+        .evaluate((element) => element.getBoundingClientRect().top),
+    )
+    .toBeLessThan(100);
+  const seam = await page.evaluate(() =>
+    Math.abs(
+      document.querySelector(".input-panel")!.getBoundingClientRect().bottom -
+        document.querySelector(".results-panel")!.getBoundingClientRect().top,
+    ),
+  );
+  expect(seam).toBeLessThan(1);
+  await page.locator("#swim-time").fill("invalid");
+  await expect(resultsJump).toBeDisabled();
+  await page.locator("#swim-time").fill("58.32");
   const nav = page.getByRole("navigation", { name: "Mobile navigation" });
   await nav.getByRole("button", { name: "History", exact: true }).click();
   await expect(page.locator("#history")).toBeInViewport();

@@ -391,7 +391,7 @@
     toastTimer = setTimeout(() => (toast = ""), 3500);
   }
   function go(id: string) {
-    activeSection = id;
+    activeSection = id === "conversion-results" ? "converter" : id;
     document.getElementById(id)?.scrollIntoView({
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
         ? "instant"
@@ -717,15 +717,30 @@
           >Estimates for perspective. Meet rules decide entry eligibility.</span
         >
       </div>
+      <button
+        class="primary-button mobile-results-jump"
+        disabled={!!error}
+        onclick={() => {
+          go("conversion-results");
+          document
+            .getElementById("results-title")
+            ?.focus({ preventScroll: true });
+        }}>See your results <Icon name="down" size={19} /></button
+      >
     </div>
 
-    <div class="results-panel">
+    <div
+      class="results-panel"
+      id="conversion-results"
+      role="region"
+      aria-labelledby="results-title"
+    >
       <div class="results-heading">
         <div>
           <div class="section-label">
             <span class="section-number">02</span>POOL VISUALIZATION & RESULTS
           </div>
-          <h2>Same swim. Different water.</h2>
+          <h2 id="results-title" tabindex="-1">Your conversion results</h2>
         </div>
         <a
           class="method-chip"
