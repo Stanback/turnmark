@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from "./Icon.svelte";
-  import { getMastersTarget, mastersSource } from "./masters";
+  import { getMastersEntry, mastersSource } from "./masters";
   import {
     mastersAges,
     eventLabel,
@@ -24,9 +24,10 @@
     stroke: Stroke;
     time: number | null;
   } = $props();
-  const target = $derived(
-    getMastersTarget(age, category, course, distance, stroke),
+  const entry = $derived(
+    getMastersEntry(age, category, course, distance, stroke),
   );
+  const target = $derived(entry ?? null);
   const gap = $derived(time !== null && target !== null ? time - target : null);
 </script>
 
@@ -94,14 +95,18 @@
             ? "No NQT for ages 85+"
             : time === null
               ? "Enter a valid swim time"
-              : "No published target for this selection"}
+              : entry === null
+                ? "USMS lists ‘NO TIME’ for this selection"
+                : "No published target for this selection"}
       </h3>
       <p>
         {course === "SCM"
           ? "These USMS tables cover SCY and LCM. Select the course you actually swam; converted estimates aren’t used for this comparison."
           : age === "85+"
             ? "USMS does not set National Qualifying Times for age groups 85 and older."
-            : "Missing targets remain blank. Try another event or age group."}
+            : entry === null
+              ? "The published table has no qualifying time for this event and age group. There’s no target to compare against."
+              : "Missing targets remain blank. Try another event or age group."}
       </p>
     </div>{/if}
   <p class="masters-note">
