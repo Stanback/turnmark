@@ -6,6 +6,7 @@
   import Install from "./lib/Install.svelte";
   import Theme from "./lib/Theme.svelte";
   import { site, faqs } from "./data/site";
+  import { readPreferences, type SwimPreferences } from "./lib/preferences";
   import {
     worldPoints,
     worldPointsContext,
@@ -47,6 +48,7 @@
   let toastTimer: ReturnType<typeof setTimeout>;
   let mounted = $state(false);
   let elevationUnit = $state<"ft" | "m">("ft");
+  let elevationOpen = $state(false);
   type HistoryEntry = {
     id: string;
     form: SwimState;
@@ -57,6 +59,27 @@
   let historyFilter = $state<Stroke | "all">("all");
   let activeSection = $state("converter");
   let standardMode = $state<"targets" | "points">("targets");
+  $effect(() => {
+    if (form.altitude > 0) elevationOpen = true;
+  });
+  $effect(() => {
+    if (!mounted || !altitudeValid) return;
+    const preferences: SwimPreferences = {
+      age: form.age,
+      mastersAge: form.mastersAge,
+      standardSystem: form.standardSystem,
+      category: form.category,
+      course: form.course,
+      altitude: form.altitude,
+      elevationUnit,
+      standardMode,
+    };
+    try {
+      localStorage.setItem("turnmark-preferences", JSON.stringify(preferences));
+    } catch {
+      /* Preferences still work in this tab when storage is unavailable. */
+    }
+  });
   let lastRecorded = "";
   const filteredHistory = $derived(
     conversions.filter(
@@ -187,7 +210,25 @@
   );
 
   onMount(() => {
-    form = readState(window.location.hash);
+    let preferences = readPreferences(null);
+    try {
+      preferences = readPreferences(
+        JSON.parse(localStorage.getItem("turnmark-preferences") ?? "null"),
+      );
+    } catch {
+      /* Malformed or blocked storage falls back to the normal defaults. */
+    }
+    const {
+      elevationUnit: unit,
+      standardMode: mode,
+      ...defaults
+    } = preferences;
+    elevationUnit = unit;
+    standardMode = window.location.hash.startsWith("#t=") ? "targets" : mode;
+    // A shared conversion is complete: never mix in a remembered altitude/category.
+    form = window.location.hash.startsWith("#t=")
+      ? readState(window.location.hash)
+      : { ...defaultState, ...defaults };
     try {
       const raw: unknown = JSON.parse(
         localStorage.getItem("turnmark-swimboard") ?? "[]",
@@ -253,8 +294,10 @@
     window.addEventListener("resize", scheduleSection);
     scheduleSection();
     const hashChange = () => {
-      if (window.location.hash.startsWith("#t="))
+      if (window.location.hash.startsWith("#t=")) {
         form = readState(window.location.hash);
+        standardMode = "targets";
+      }
     };
     window.addEventListener("hashchange", hashChange);
     return () => {
@@ -369,6 +412,9 @@
   function reset() {
     form = { ...defaultState };
     focus = "LCM";
+    elevationOpen = false;
+    elevationUnit = "ft";
+    standardMode = "targets";
     history.replaceState(null, "", location.pathname + location.search);
     notify("Inputs reset.");
   }
@@ -613,7 +659,7 @@
           ><Icon name="chevron" size={13} />
         </div>
       </div>
-      <details class="altitude-options" open={form.altitude > 0}>
+      <details class="altitude-options" bind:open={elevationOpen}>
         <summary
           ><span><Icon name="mountain" size={17} />Swam at altitude?</span><span
             class="summary-elevation"

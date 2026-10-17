@@ -53,6 +53,8 @@ Application code is licensed under GPL-3.0-or-later. Published numerical data re
 
 ## Install and offline use
 
+Your age groups, standards selection, category, swum-in course, elevation, and ft/m choice are remembered in this browser. Restored elevations stay visible in the expanded elevation panel. A shared conversion link overrides remembered swim settings, including altitude. Race time, stroke, and distance start fresh; conversion history keeps past swims. Reset restores the app defaults and updates remembered preferences. Preferences stay on this device and work without an account.
+
 Chrome and Edge can install Turnmark from the address bar/browser menu; the app’s Install button invokes the native prompt when available and otherwise shows instructions. Safari on iPhone/iPad supports Share → Add to Home Screen. Icons include 192px/512px PNGs, a maskable icon, and an Apple touch icon. The manifest and service worker are scoped to `/turnmark/`.
 
 Once an online visit completes caching, calculations, standards, history, and saved swims work without a connection. Source links still need the internet. Browser-managed storage may be cleared or evicted; this is not cloud backup. New static builds are cached separately; a waiting service worker activates after existing app tabs close. The network is preferred for document navigation, so online visits receive the current release. Offline navigation retains the complete active build until a new worker activates, keeping its HTML and asset revisions together.

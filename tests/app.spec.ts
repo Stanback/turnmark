@@ -1,6 +1,91 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
+test("remembers swimmer preferences without reusing race inputs, and shared swims override them", async ({
+  page,
+}) => {
+  await page.goto("./");
+  await page.locator("#category").selectOption("men");
+  await page.locator("#age-group").selectOption("17-18");
+  await page
+    .getByRole("group", { name: "Swum in" })
+    .getByRole("button", { name: "LCM" })
+    .click();
+  await page.locator("#standards-system").selectOption("masters");
+  await page.locator("#masters-age").selectOption("40-44");
+  await page.locator(".altitude-options summary").click();
+  const units = page.getByRole("group", { name: "Elevation units" });
+  await units.getByRole("button", { name: "m", exact: true }).click();
+  await expect(page.locator("#altitude")).toBeVisible();
+  await units.getByRole("button", { name: "ft", exact: true }).click();
+  await expect(page.locator("#altitude")).toBeVisible();
+  await units.getByRole("button", { name: "m", exact: true }).click();
+  await page.locator("#altitude").fill("1600");
+  await page.locator("#swim-time").fill("2:00");
+  await page.getByRole("button", { name: "Breast", exact: true }).click();
+  await page.locator("#distance").selectOption("200");
+  await page
+    .getByRole("button", { name: "World Aquatics points", exact: true })
+    .click();
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          JSON.parse(localStorage.getItem("turnmark-preferences")!)
+            .standardMode,
+      ),
+    )
+    .toBe("points");
+  await page.reload();
+  await expect(
+    page.getByRole("heading", { name: "World Aquatics points", exact: true }),
+  ).toBeVisible();
+  await expect(page.locator("#swim-time")).toHaveValue("58.32");
+  await expect(page.locator("#distance")).toHaveValue("100");
+  await expect(
+    page.getByRole("button", { name: "Free", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("#category")).toHaveValue("men");
+  await expect(
+    page
+      .getByRole("group", { name: "Swum in" })
+      .getByRole("button", { name: "LCM" }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".altitude-options")).toHaveAttribute("open", "");
+  await expect(
+    units.getByRole("button", { name: "m", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("#altitude")).toHaveValue("1599.9");
+  await page
+    .getByRole("group", { name: "Performance comparison" })
+    .getByRole("button", { name: "Time standards", exact: true })
+    .click();
+  await expect(page.locator("#standards-system")).toHaveValue("masters");
+  await expect(page.locator("#masters-age")).toHaveValue("40-44");
+  await page.locator("#standards-system").selectOption("youth");
+  await expect(page.locator("#age-group")).toHaveValue("17-18");
+  await page.goto("./#t=1%3A05&s=FR&d=100&c=SCM&g=women&a=13-14&h=0");
+  await expect(page.locator("#category")).toHaveValue("women");
+  await expect(page.locator("#age-group")).toHaveValue("13-14");
+  await expect(
+    page
+      .getByRole("group", { name: "Swum in" })
+      .getByRole("button", { name: "SCM" }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("#altitude")).toHaveValue("0");
+  await expect(page.locator(".altitude-conversion")).toHaveCount(0);
+  await page.getByRole("button", { name: "Reset", exact: true }).click();
+  await page.reload();
+  await expect(page.locator("#category")).toHaveValue("women");
+  await expect(page.locator("#age-group")).toHaveValue("15-16");
+  await expect(
+    page
+      .getByRole("group", { name: "Swum in" })
+      .getByRole("button", { name: "SCY" }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".altitude-options")).not.toHaveAttribute("open");
+});
+
 test("dark standards keep long badges inside their circles and the swim marker visible", async ({
   page,
 }) => {

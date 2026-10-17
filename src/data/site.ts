@@ -52,6 +52,6 @@ export const faqs = [
   {
     question: "Where are my conversion history and saved swims stored?",
     answer:
-      "Your last 50 conversions and up to eight saved swims stay in this browser’s local storage. There is no account, cloud sync, analytics, or upload of swim data. You can remove individual conversions or clear your history. Clearing browser site data removes these local records. A shared link includes the swim details encoded in its URL fragment.",
+      "Your last 50 conversions, up to eight saved swims, and preferences stay in this browser’s local storage. Turnmark remembers your age groups, standards selection, category, swum-in course, elevation, and ft/m choice. Shared conversion links override remembered swim settings. Reset restores default inputs and preferences. There is no account, cloud sync, analytics, or upload of swim data. You can remove individual conversions or clear your history. Clearing browser site data removes local records and preferences. A shared link includes the swim details encoded in its URL fragment.",
   },
 ];
