@@ -5,4 +5,14 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [svelte()],
   base: "/turnmark/",
+  ssr: {
+    external: [
+      "@turnmark/sdk",
+      "@turnmark/sdk/compat",
+      "@turnmark/sdk/compat/masters",
+      "@turnmark/sdk/compat/points",
+      "@turnmark/sdk/conversion",
+      "@turnmark/sdk/youth",
+    ],
+  },
 });

@@ -20,8 +20,24 @@ export type {
   ValidationReason,
 } from "./contracts.js";
 import { convertSwim, adjustAltitude } from "./conversion.js";
+import { parseTime } from "./time.js";
+import { getYouthStandards } from "./youth.js";
+import { getMastersTarget } from "./masters.js";
+import { getWorldPoints } from "./points.js";
+import { initializeEngine, engineVersion, type EngineOptions } from "./core.js";
+export type { EngineOptions } from "./core.js";
 
-/** No I/O: the async boundary also permits a future explicitly loaded Wasm engine. */
-export async function createEngine() {
-  return Object.freeze({ convert: convertSwim, adjustAltitude });
+/** Load the shared Rust engine once; subsequent calculations are synchronous and offline. */
+export async function createEngine(options: EngineOptions = {}) {
+  await initializeEngine(options);
+  return Object.freeze({
+    version: engineVersion(),
+    parseTime,
+    convert: convertSwim,
+    adjustAltitude,
+    youth: getYouthStandards,
+    masters: getMastersTarget,
+    points: getWorldPoints,
+  });
 }
+export type Engine = Awaited<ReturnType<typeof createEngine>>;

@@ -1,6 +1,6 @@
 # Draft SDK contract
 
-Status: first implementation, October 17, 2026. The private `0.1.0` workspace
+Status: Rust-backed implementation, October 17, 2026. The private `0.1.0` workspace
 implements the conversion, altitude, and separate benchmark/points APIs with
 runtime validation and portable conformance cases. It has not been published;
 the package name is still provisional. See the [SDK guide](../packages/sdk/README.md)
@@ -38,7 +38,7 @@ Implemented TypeScript conversion API:
 ```ts
 import { createEngine } from "@turnmark/sdk";
 
-// Explicit initialization accommodates packaged WebAssembly if selected.
+// Initialize the packaged Rust/WebAssembly engine once.
 // Supply local assets in offline or self-hosted deployments.
 const engine = await createEngine();
 
@@ -62,10 +62,14 @@ if (result.status === "available") {
 ```
 
 The workspace package name is provisional; registry ownership has not been
-established. The current TypeScript implementation initializes without I/O.
-For a WebAssembly implementation, document asynchronous initialization, custom
-asset URLs/bytes, Node support, and errors at startup. Do not perform network
+established. The Rust-backed JavaScript SDK initializes asynchronously from a
+packaged Wasm URL or caller-provided bytes; Node consumers pass bytes. Startup
+errors can be retried and are surfaced by the web app. Do not perform network
 requests during calculation calls or silently fall back to a different formula.
+
+MCP and WebMCP will expose these same operations through thin protocol adapters,
+with shared tool contracts and unchanged domain results. See the
+[agent interface plan](AGENT_INTERFACES.md).
 
 Native Swift/Kotlin consumers call their generated or platform wrappers directly;
 they do not load this JavaScript facade or initialize WebAssembly.

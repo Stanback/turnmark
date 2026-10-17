@@ -59,6 +59,16 @@ test("production hydrates, registers scoped offline support and converts with no
       );
   });
   await context.setOffline(true);
+  expect(
+    await page.evaluate(async () => {
+      const cache = await caches.open(
+        (await caches.keys()).find((name) => name.startsWith("turnmark-"))!,
+      );
+      return (await cache.keys()).some((request) =>
+        new URL(request.url).pathname.endsWith(".wasm"),
+      );
+    }),
+  ).toBe(true);
   await page.reload();
   await expect(page.getByTestId("altitude-corrected")).toHaveText("20:27.70");
   await page.locator("#swim-time").fill("20:00.20");
@@ -68,6 +78,21 @@ test("production hydrates, registers scoped offline support and converts with no
   await page.reload();
   await expect(page.locator(".saved-card")).toHaveCount(1);
   expect(errors).toEqual([]);
+});
+
+test("a failed calculation-engine download shows a recovery message and reload can recover", async ({
+  page,
+}) => {
+  await page.route("**/*.wasm", (route) => route.abort());
+  await page.goto("./");
+  await expect(page.getByRole("alert")).toHaveText(
+    "Turnmark couldn’t load. Check your connection and reload the page.",
+  );
+  await page.unroute("**/*.wasm");
+  await page.reload();
+  await expect(page.getByRole("alert")).toHaveCount(0);
+  await page.locator("#swim-time").fill("1:00");
+  await expect(page.locator("#swim-time")).toHaveValue("1:00");
 });
 
 test("manifest and icons support standalone installation, and native prompt is invoked on click", async ({

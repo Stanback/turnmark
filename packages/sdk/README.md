@@ -1,10 +1,12 @@
 # Turnmark SDK
 
-Offline JavaScript/TypeScript calculations for course conversion, altitude,
-USA Swimming youth standards, USMS targets, and World Aquatics points.
-This is an **unpublished private workspace** at version `0.1.0`. The proposed
-`@turnmark/sdk` name has not been reserved on npm. It runs compiled JavaScript
-with no runtime dependencies; no Rust/Wasm implementation is included yet.
+Offline course conversion, altitude, USA Swimming standards, USMS targets, and
+World Aquatics points, calculated by the shared Rust engine. Swift and Kotlin
+libraries are generated from the same core. This is an **unpublished private
+workspace** at version `0.1.0`; `@turnmark/sdk` has not been reserved on npm.
+
+Initialize explicitly before using any calculation helpers. In an unbundled
+browser application, the default loads the packaged WebAssembly asset:
 
 ```ts
 import { createEngine } from "@turnmark/sdk";
@@ -26,8 +28,25 @@ if (result.status === "available") {
 }
 ```
 
-`convertSwim` and `adjustAltitude` are also direct named exports.
-`createEngine()` initializes without I/O; calculation calls never fetch data.
+Bundlers should pass their resolved asset URL (for Vite, import
+`wasmUrl` from `"@turnmark/sdk/engine.wasm?url"` and call
+`await createEngine({ wasm: wasmUrl })`). Node callers pass the asset's bytes:
+
+```ts
+import { readFile } from "node:fs/promises";
+import { createEngine } from "@turnmark/sdk";
+const wasm = await readFile(
+  new URL(import.meta.resolve("@turnmark/sdk/engine.wasm")),
+);
+const engine = await createEngine({ wasm });
+```
+
+After initialization every operation is synchronous and offline. Repeated
+`createEngine()` calls reuse the loaded module. Failed initialization can be
+retried; there is no fallback calculation engine. Direct named exports such as
+`convertSwim` and `formatTime` use that initialized module too. Swift/Kotlin
+consumers do not load WebAssembly or JavaScript. See the
+[shared engine guide](../../docs/SHARED_ENGINE.md) for native packaging.
 
 ## Entry points
 
@@ -40,8 +59,8 @@ if (result.status === "available") {
 | `@turnmark/sdk/masters`    | `getMastersTarget`, ages, source and edition.                           |
 | `@turnmark/sdk/points`     | `getWorldPoints`, next points milestone, source and validity.           |
 
-Root and conversion imports do not load benchmark or points tables. Import only
-the optional modules you need. `compat` entry points temporarily support the
+The Wasm asset currently embeds all numerical tables. JavaScript modules contain
+API adapters and generated source metadata, without a second set of calculations. `compat` entry points temporarily support the
 existing web UI; new integrations should use the validated APIs above.
 
 ## Inputs and results
@@ -98,6 +117,7 @@ are runtime-validated, with no implicit coercion or fallback method.
 From the repository root:
 
 ```sh
+cargo install wasm-bindgen-cli --version 0.2.129 --locked
 npm ci
 npm run build:sdk
 npm test
@@ -107,7 +127,8 @@ npm run test:sdk:package
 
 `npm run dev --workspace @turnmark/sdk` watches sources. Root dev/build/check/test
 commands build the SDK first. Data import scripts update the canonical snapshots
-in this package's `src/data/`. Source-backed portable cases live in the repo's
+in root `data/`; Rust embeds those tables and builds generate JavaScript source
+metadata. The pinned Rust toolchain is selected by `rust-toolchain.toml`. Source-backed portable cases live in the repo's
 `fixtures/`. The package check installs a tarball into a temporary project and
 validates Node, browser, declaration resolution, and conversion-only bundling.
 

@@ -32,9 +32,11 @@ In 2026, Bri returned to the project, modernized it, and gave it the Turnmark na
 
 ## Develop
 
-Requires Node.js 22.12+ (or a current supported Node release).
+Requires Node.js 22.12+ and Rust (pinned by `rust-toolchain.toml`). Install the
+pinned WebAssembly binding generator before the first npm install.
 
 ```sh
+cargo install wasm-bindgen-cli --version 0.2.129 --locked
 npm ci
 npm run dev
 ```
@@ -54,13 +56,20 @@ npm run preview
 
 The production app is static files in `dist/`. The GitHub Actions workflow checks types, unit tests, desktop/mobile browser interactions and accessibility before deploying to GitHub Pages.
 
-The web app consumes the private [Turnmark SDK workspace](packages/sdk/README.md),
-which contains the shared calculations and source-data snapshots. `npm ci` and
-the normal development/check/build commands compile it automatically. The SDK
-has no framework or runtime dependencies; optional benchmark datasets have
-separate imports. Portable examples live in [fixtures](fixtures/README.md).
-See the [platform plan](docs/PLATFORM_PLAN.md) for native SwiftUI/Android Compose
-apps and publisher embeds; these are ongoing work, and the SDK is not published.
+The web app consumes the private [Turnmark SDK](packages/sdk/README.md). Its
+calculations, clock helpers, and numerical lookups execute in the same Rust core
+that generates Swift and Kotlin libraries. Canonical snapshots live in root
+`data/`; JavaScript contains API adapters and source metadata. `npm ci` and the
+normal development/check/build commands compile the SDK automatically.
+
+The browser loads a bundled WebAssembly asset before hydration; pre-rendering
+uses the same engine in Node. Offline caching includes that versioned asset.
+See the [shared engine guide](docs/SHARED_ENGINE.md) for packaging, checks and
+tradeoffs. Native SwiftUI/Android Compose app interfaces and publisher embeds
+are subsequent work, tracked in the [platform plan](docs/PLATFORM_PLAN.md).
+The [agent interface plan](docs/AGENT_INTERFACES.md) covers future MCP and WebMCP
+adapters around that same SDK.
+No SDK package has been published.
 
 ## Data and calculations
 

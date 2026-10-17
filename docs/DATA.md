@@ -11,13 +11,13 @@ The app uses checked-in numeric snapshots, with attribution and retrieval metada
 5. Render and inspect representative pages from each course; verify age headers, both category column orders, distance mappings, missing events, and every amended value. Compare generated JSON against the prior snapshot. No PDFs are redistributed in this repository.
 6. Update source dates and user-facing counts/cycle labels if they change. Run the checks and tests.
 
-The generated `packages/sdk/src/data/standards.json` records the source URL, revision, retrieval date, SHA-256 fingerprint, scope, level order, and 482 records. Each record’s six times are seconds in B → AAAA order. Stars in the source are not part of numeric time values.
+The generated `data/standards.json` records the source URL, revision, retrieval date, SHA-256 fingerprint, scope, level order, and 482 records. Each record’s six times are seconds in B → AAAA order. Stars in the source are not part of numeric time values.
 
 ## NCAA factors
 
 1. Check the [official NCAA swimming rules page](https://www.ncaa.org/championships/playing-rules/swimming-and-diving-playing-rules/) for the current rules book.
 2. Inspect Appendix C’s conversion tables, directions, factor categories, event coverage, and truncation instructions.
-3. Update `packages/sdk/src/data/conversions.ts` and the source fingerprint in `packages/sdk/src/data/sources.json`.
+3. Update `data/conversions.json` and the source fingerprint in `data/sources.json`.
 4. Add a published numerical example to the tests if the calculation changes. Never infer a missing event factor from a nearby event.
 
 ## World Aquatics points
@@ -35,6 +35,6 @@ Run `npm run check`, `npm test`, `npm run test:browser`, and `npm run build` bef
 
 ## U.S. Masters Swimming targets
 
-`npm run data:masters` fetches the official USMS NQT page with curl and extracts its first four 2026 tables. Exact headings, course/category order, 13 published age columns, row counts, unique event keys, and numeric cell formats are validated. The checked-in snapshot contains 70 event/category rows and 904 numeric targets. Six source cells say NO TIME and stay null. Source URL, checked date, year, and the source HTML SHA-256 are stored in `packages/sdk/src/data/masters.json`.
+`npm run data:masters` fetches the official USMS NQT page with curl and extracts its first four 2026 tables. Exact headings, course/category order, 13 published age columns, row counts, unique event keys, and numeric cell formats are validated. The checked-in snapshot contains 70 event/category rows and 904 numeric targets. Six source cells say NO TIME and stay null. Source URL, checked date, year, and the source HTML SHA-256 are stored in `data/masters.json`.
 
 Review a newer edition before changing importer guards. Ages 85+ have no USMS NQT; SCM has no target in these Nationals tables. Never infer those missing values, interpolate adult age groups, or generate an adult B–AAAA ladder from NQTs. The UI uses the entered course/time and does not apply NCAA course estimates or USA Swimming altitude corrections to adult eligibility comparisons. USMS entry guidance and event exceptions remain authoritative.

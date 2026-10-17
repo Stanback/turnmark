@@ -32,5 +32,5 @@ for course, page in zip(['SCM', 'LCM'], raw.split('\f')[:2], strict=True):
 assert len(rows) == 35, f'Expected 35 events, found {len(rows)}'
 assert len({(x['course'], x['distance'], x['stroke']) for x in rows}) == 35
 result = {'source': {'name': 'World Aquatics 2026 points base times', 'url': URL, 'method': 'https://www.worldaquatics.com/swimming/points', 'checked': '2026-10-16', 'sha256': fingerprint}, 'validity': {'SCM': 'September 1, 2026 – August 31, 2027', 'LCM': 'January 1 – December 31, 2026'}, 'events': rows}
-Path('packages/sdk/src/data/points.json').write_text(json.dumps(result, indent=2) + '\n')
+Path('data/points.json').write_text(json.dumps(result, indent=2) + '\n')
 print(f'Imported {len(rows)} events / {len(rows)*2} base times.')

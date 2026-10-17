@@ -1,4 +1,4 @@
-# Turnmark SDK, embeds, and native apps
+# Turnmark SDK, embeds, native apps, and agent interfaces
 
 Research date: October 17, 2026. Status: draft proposal for implementation.
 
@@ -18,11 +18,12 @@ and Kotlin bindings and a WebAssembly-backed JavaScript SDK before committing
 to that engine for production. Keep navigation, controls, persistence, sharing,
 accessibility, and lifecycle handling in each platform's native code.
 
-Rust would serve numerical consistency and SDK distribution here. There is no
-measured calculation-performance problem in the existing application, and a
-monorepo alone does not justify a language rewrite. The decision should turn on
-whether building, distributing, and debugging the shared engine is easier than
-maintaining the small domain implementation in each language.
+The target is one authoritative calculation engine and canonical dataset, with
+derived libraries for Swift, Kotlin, and JavaScript. Rust would serve numerical
+consistency and SDK distribution here. There is no measured calculation-
+performance problem in the existing application. Evaluate build, distribution,
+and debugging costs while preserving the single-source requirement; permanent
+independent domain implementations are outside that target.
 
 ## What the research establishes
 
@@ -99,11 +100,11 @@ All three options below retain native SwiftUI and Android Compose screens.
 These assessments are engineering judgments for this repository, not benchmark
 results.
 
-| Engine strategy                                              | Benefits for Turnmark                                                                                                     | Costs and decision                                                                                                                                                                                         |
-| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Rust + UniFFI for mobile; Rust + wasm-bindgen for web        | One calculation implementation; generated Swift/Kotlin API; reusable native and npm distributions.                        | Adds cross-compilation, binary packaging, FFI, and WebAssembly initialization. Recommended first experiment.                                                                                               |
-| Swift and Kotlin implementations; existing TypeScript engine | Straightforward platform debugging; small calculations remain ordinary platform code; smallest binding/toolchain surface. | Three implementations can drift. Shared data, independent fixtures, and a parity gate are mandatory. Practical fallback if the Rust experiment costs too much.                                             |
-| Kotlin Multiplatform domain library with native UIs          | Shared domain implementation across mobile; Kotlin is already needed for Android.                                         | Still needs Apple integration and a decision about JavaScript SDK output. Consider if Kotlin ownership is preferred; test the actual export path rather than assuming all Swift interop is equally mature. |
+| Engine strategy                                              | Benefits for Turnmark                                                                                                     | Costs and decision                                                                                                                                                                                             |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rust + UniFFI for mobile; Rust + wasm-bindgen for web        | One calculation implementation; generated Swift/Kotlin API; reusable native and npm distributions.                        | Adds cross-compilation, binary packaging, FFI, and WebAssembly initialization. Recommended first experiment.                                                                                                   |
+| Swift and Kotlin implementations; existing TypeScript engine | Straightforward platform debugging; small calculations remain ordinary platform code; smallest binding/toolchain surface. | Three implementations can drift. Shared data, independent fixtures, and a parity gate are mandatory. Rejected for the single-source requirement; independent platform formulas are not an acceptable fallback. |
+| Kotlin Multiplatform domain library with native UIs          | Shared domain implementation across mobile; Kotlin is already needed for Android.                                         | Still needs Apple integration and a decision about JavaScript SDK output. Consider if Kotlin ownership is preferred; test the actual export path rather than assuming all Swift interop is equally mature.     |
 
 [UniFFI](https://mozilla.github.io/uniffi-rs/latest/) generates bindings for Rust
 libraries and supports Swift and Kotlin; packaging those libraries remains our
@@ -153,9 +154,10 @@ Before selecting Rust, demonstrate:
 6. Browser CSP, WebAssembly loading, offline packaging, and SSR/Node imports work
    without requiring cross-origin isolation or hidden network requests.
 
-If these criteria fail, keep native app work moving with the language-native
-engine option and the same contract. Do not replace the native UI decision
-with a cross-platform UI framework.
+If these criteria fail, investigate another shared-engine approach against the
+same contract and single-source requirement. The separate implementation option
+in the comparison table is background research, not the selected fallback.
+Keep the native UI direction fixed.
 
 ## Proposed monorepo
 
@@ -170,6 +172,8 @@ apps/
   android/                   Kotlin/Jetpack Compose application
 packages/
   sdk/                       public JavaScript/TypeScript API
+  mcp/                       local MCP server using the SDK
+  webmcp/                    optional browser tool registration using the SDK
   widget/                    optional loader/custom element, after iframe v1
   data/                      reviewed snapshots, schemas, attribution
 crates/
@@ -247,6 +251,24 @@ for the JavaScript facade. Test installed tarballs in separate browser and Node
 projects, rather than trusting workspace imports. Use scoped package names only
 after checking registry ownership. Publication is a later release step; use
 [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/) when configured.
+
+## MCP and WebMCP
+
+Add two agent interfaces around the same Rust-backed SDK: a local MCP server
+for assistant clients, and optional WebMCP tools on the active website. Share
+tool contracts for conversion, altitude, youth/Masters benchmarks, points and
+source metadata. Keep the SDK's explicit inputs, availability/validation states,
+precision and provenance; do not create another calculation implementation.
+
+Start MCP with offline stdio distribution. Later, optionally add Streamable HTTP
+on a stateless Cloudflare Worker under an owner-controlled custom domain. GitHub
+Pages can continue serving the website and WebMCP integration; the remote MCP
+endpoint needs a server runtime. Treat WebMCP as progressive
+enhancement with feature detection and browser-version checks, since its API
+is still evolving. Native feature parity remains the next implementation
+milestone; agent adapters follow in focused PRs with the embed work. See the
+[agent interface plan](AGENT_INTERFACES.md) for tool scope, protocol research,
+packaging and acceptance checks.
 
 ## Native product quality and parity
 
@@ -354,7 +376,7 @@ recheck store rules at release time rather than freezing this research as policy
    Decide SDK licensing before public publication, not before local experiments.
 2. **Native engine experiment.** Prove Rust → Swift, Kotlin, browser, and Node
    distribution with the same small operation set. Record build/debugging costs
-   and payload sizes; choose Rust or the language-native fallback in a short
+   and payload sizes; record a shared-engine decision in a short
    architecture decision record.
 3. **First complete experience on both native platforms.** Ship a testable
    converter plus source attribution, a saved target, and native sharing on iOS
@@ -365,7 +387,11 @@ recheck store rules at release time rather than freezing this research as policy
    contract. Validate a hostile-style host page, restricted storage, multiple
    instances, narrow viewports, keyboard/screen-reader use, and a real CMS preview.
    Keep attribution and methodology visible.
-5. **Monorepo completion and releases.** Move the web app separately, establish
+5. **MCP and WebMCP adapters.** Expose the same SDK operations through a local
+   MCP server and optional browser tools. Reuse tool contracts, preserve source
+   attribution and missing-data semantics, and test real protocol consumers plus
+   browsers without WebMCP. Keep calculations read-only in the first release.
+6. **Monorepo completion and releases.** Move the web app separately, establish
    artifact packaging/release jobs, document integrations, and expand native
    coverage to the full existing web capability set before claiming parity.
 
@@ -376,7 +402,7 @@ data and edge-case parity follows before production engine replacement.
 ## Open decisions
 
 - SDK/core license and package/distribution names.
-- Rust experiment outcome versus language-native engines with shared fixtures.
+- Rust experiment outcome and practical shared-engine packaging.
 - First supported iOS/Android versions and available physical test devices.
 - Embed hosting/domain, publisher upgrade policy, and initial partner feedback.
 - Store price and support model; keep subscriptions/accounts out of the first
@@ -386,17 +412,21 @@ data and edge-case parity follows before production engine replacement.
 
 The first milestone introduces a private npm workspace at `packages/sdk`, with
 validated conversion/altitude operations and separate youth, Masters, and points
-entry points. Canonical numerical snapshots live under `packages/sdk/src/data`
-for now; a standalone data package can follow when native consumers need it.
+entry points. Canonical numerical snapshots now live under root `data/` and are
+embedded by Rust; the JavaScript SDK generates source metadata only.
 The existing web app uses transitional package adapters, preserving its links,
 storage, and calculation behavior while keeping UI labels and browser features
 in the app. Web framework choice remains open.
 
 There are 62 portable source-backed conformance cases. Packaging verification
 installs the SDK tarball outside the repository, checks Node/browser consumers
-and TypeScript declarations, and verifies conversion-only bundling excludes
-benchmark/points tables. The SDK has no runtime dependencies. See the
+and TypeScript declarations. Numerical tables live in the compiled Wasm asset;
+JavaScript entry points add no calculation dependencies. See the
 [implemented SDK guide](../packages/sdk/README.md).
 
-Rust bindings, native apps, and publisher embeds remain subsequent implementation
-milestones. No package has been published and the SDK/core license is unchanged.
+The shared Rust proof now derives Swift, Kotlin, and WebAssembly libraries with
+native platform packaging and simulator/emulator tests. Its implementation and
+remaining acceptance work are recorded in [the engine guide](SHARED_ENGINE.md).
+Native app workflows, publisher embeds and MCP/WebMCP adapters remain subsequent
+implementation milestones. No package has been published and the SDK/core
+license is unchanged.

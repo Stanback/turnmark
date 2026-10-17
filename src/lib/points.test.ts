@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { worldPoints } from "./points";
-import data from "../../packages/sdk/src/data/points.json";
+import data from "../../data/points.json";
 import type { Course, Stroke } from "./swim";
 
 describe("World Aquatics points", () => {
