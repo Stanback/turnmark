@@ -51,6 +51,15 @@ Read [the methodology](docs/METHODOLOGY.md) for sources, rounding behavior, cove
 
 Application code is licensed under GPL-3.0-or-later. Published numerical data remains attributed to its respective source organizations. Turnmark is an independent project and is not affiliated with or endorsed by NCAA, USA Swimming, U.S. Masters Swimming, or World Aquatics.
 
+## Community
+
+Bug reports, data corrections, accessibility improvements, and pull requests are welcome.
+Read the [contributing guide](CONTRIBUTING.md) for setup, checks, and source-data requirements,
+and follow the [code of conduct](CODE_OF_CONDUCT.md). Use the
+[issue templates](https://github.com/Stanback/turnmark/issues/new/choose) to report a problem
+or suggest an improvement. Report vulnerabilities privately as described in the
+[security policy](SECURITY.md). The full application license is in [LICENSE](LICENSE).
+
 ## Install and offline use
 
 Your age groups, standards selection, category, swum-in course, elevation, and ft/m choice are remembered in this browser. Restored elevations stay visible in the expanded elevation panel. A shared conversion link overrides remembered swim settings, including altitude. Race time, stroke, and distance start fresh; conversion history keeps past swims. Reset restores the app defaults and updates remembered preferences. Preferences stay on this device and work without an account.

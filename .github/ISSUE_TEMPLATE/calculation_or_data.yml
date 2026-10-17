@@ -1,0 +1,56 @@
+name: Calculation or source-data correction
+description: Report an incorrect conversion, standard, qualifying target, altitude adjustment, or points result.
+title: "[Data]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please check the methodology first: https://github.com/Stanback/turnmark/blob/main/docs/METHODOLOGY.md
+        Use sample swim data and link to official sources where possible. Converted estimates and original-course benchmarks have different purposes.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected calculation or dataset
+      options:
+        - Course conversion
+        - USA Swimming motivational standards
+        - USMS Nationals qualifying targets
+        - World Aquatics points
+        - Altitude adjustment
+        - Other calculation or data
+    validations:
+      required: true
+  - type: textarea
+    id: inputs
+    attributes:
+      label: Exact inputs
+      description: Include stroke, distance, course, time, published category, standards mode, age group, and elevation/unit where applicable. A sample shared link is helpful.
+      placeholder: "200 breaststroke, LCM, 2:16.71, men's table, altitude off"
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+      description: Include the result, label, and target course or benchmark shown.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result and reasoning
+      description: Explain the expected value, including rounding or truncation if relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Official source or supporting evidence
+      description: Include the source URL, edition/year or validity dates, page/table, and row/column if available. If no source is available, explain how you found the discrepancy.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: App version and browser, if known
+      description: Include the URL or commit and whether the app was offline or installed.

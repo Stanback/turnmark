@@ -1,0 +1,38 @@
+name: Bug report
+description: Report a broken interaction, display, accessibility, or offline behavior.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Turnmark. Search existing issues first and use sample data only.
+        For incorrect times or benchmarks, use the calculation/data form. Report vulnerabilities privately: https://github.com/Stanback/turnmark/security/advisories/new
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open Turnmark…
+        2. Select…
+        3. Observe…
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and device
+      placeholder: Safari 18 on iPhone / iOS 18, installed app, offline
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Screenshots or additional context
+      description: Include the app URL or commit if known. Remove personal information from screenshots and shared links.

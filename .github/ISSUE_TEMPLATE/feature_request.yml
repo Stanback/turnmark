@@ -1,0 +1,27 @@
+name: Feature request
+description: Suggest an improvement to Turnmark.
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing issues before submitting. Turnmark focuses on browser-only swim calculations, published benchmarks, privacy, and offline use.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Describe who needs this and a concrete situation where it would help.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed improvement
+      description: Describe the behavior you would like to see.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives and supporting context
+      description: Mention workarounds, relevant official data sources, or sample sketches if useful.
