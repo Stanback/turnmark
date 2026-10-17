@@ -2,6 +2,8 @@
 
 **Your swim. Any course.**
 
+[Try Turnmark →](https://stanback.github.io/turnmark/)
+
 A browser-only swim time converter and USA Swimming motivational standards explorer. Built for swimmers, coaches, and parents who want to understand a swim across pool courses and find a useful next target.
 
 - Live SCY / SCM / LCM comparisons with event-specific distance mapping
