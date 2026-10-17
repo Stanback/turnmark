@@ -29,11 +29,11 @@ jobs:
       - run: npm run test:browser
       - run: npm run test:production
       - uses: actions/upload-pages-artifact@v3
-        if: github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         with:
           path: dist
   deploy:
-    if: github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: check-and-build
     runs-on: ubuntu-latest
     permissions:
