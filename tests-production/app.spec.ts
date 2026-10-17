@@ -98,3 +98,47 @@ test("manifest and icons support standalone installation, and native prompt is i
   await expect(page.locator("body")).toHaveAttribute("data-prompted", "true");
   await expect(page.getByRole("dialog")).not.toBeVisible();
 });
+
+test("online navigation preserves a consistent offline build until a new worker activates", async ({
+  page,
+  context,
+}) => {
+  await page.goto("./");
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+    if (!navigator.serviceWorker.controller)
+      await new Promise<void>((resolve) =>
+        navigator.serviceWorker.addEventListener(
+          "controllerchange",
+          () => resolve(),
+          { once: true },
+        ),
+      );
+    const name = (await caches.keys()).find((name) =>
+      name.startsWith("turnmark-"),
+    )!;
+    const cache = await caches.open(name),
+      response = (await cache.match("/turnmark/"))!;
+    const html = (await response.text()).replace(
+      "<html",
+      '<html data-cached-build="previous"',
+    );
+    await cache.put(
+      "/turnmark/",
+      new Response(html, { headers: { "Content-Type": "text/html" } }),
+    );
+  });
+  await page.reload();
+  await expect(page.locator("html")).not.toHaveAttribute(
+    "data-cached-build",
+    "previous",
+  );
+  await context.setOffline(true);
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-cached-build",
+    "previous",
+  );
+  await page.locator("#swim-time").fill("59.10");
+  await expect(page.getByTestId("result-SCY")).toHaveText("59.10");
+});

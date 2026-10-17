@@ -55,7 +55,7 @@ Application code is licensed under GPL-3.0-or-later. Published numerical data re
 
 Chrome and Edge can install Turnmark from the address bar/browser menu; the app’s Install button invokes the native prompt when available and otherwise shows instructions. Safari on iPhone/iPad supports Share → Add to Home Screen. Icons include 192px/512px PNGs, a maskable icon, and an Apple touch icon. The manifest and service worker are scoped to `/turnmark/`.
 
-Once an online visit completes caching, calculations, standards, history, and saved swims work without a connection. Source links still need the internet. Browser-managed storage may be cleared or evicted; this is not cloud backup. New static builds are cached separately; a waiting service worker activates after existing app tabs close. The network is preferred for document navigation, so online visits receive the current release.
+Once an online visit completes caching, calculations, standards, history, and saved swims work without a connection. Source links still need the internet. Browser-managed storage may be cleared or evicted; this is not cloud backup. New static builds are cached separately; a waiting service worker activates after existing app tabs close. The network is preferred for document navigation, so online visits receive the current release. Offline navigation retains the complete active build until a new worker activates, keeping its HTML and asset revisions together.
 
 ## Discoverability
 

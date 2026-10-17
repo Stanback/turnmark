@@ -66,7 +66,7 @@ const BASE = '${base}';
 const URLS = ${JSON.stringify(urls)};
 const ASSETS = new Set(URLS);
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(URLS)));
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(URLS.map(url => new Request(url, { cache: 'reload' })))));
 });
 self.addEventListener('activate', event => {
   event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('turnmark-') && key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim()));
@@ -76,10 +76,8 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (request.method !== 'GET' || url.origin !== self.location.origin || !ASSETS.has(url.pathname)) return;
   if (request.mode === 'navigate') {
-    event.respondWith(fetch(request).then(response => {
-      if (response.ok) { const copy = response.clone(); event.waitUntil(caches.open(CACHE).then(cache => cache.put(BASE, copy))); }
-      return response;
-    }).catch(() => caches.match(BASE)));
+    // Keep offline HTML paired with this cache's immutable asset revisions.
+    event.respondWith(fetch(request).catch(() => caches.match(BASE)));
     return;
   }
   event.respondWith(caches.match(request, { ignoreSearch: true, ignoreVary: true }).then(cached => cached || fetch(request)));
