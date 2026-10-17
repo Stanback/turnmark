@@ -13,6 +13,11 @@ both platforms.
 - iOS: Swift and SwiftUI.
 - Android: Kotlin and Jetpack Compose.
 - Both platforms have equal feature scope and shared acceptance criteria.
+- One authoritative calculation engine and one canonical dataset produce the
+  Swift, Kotlin, and JavaScript libraries. Generated artifacts are derived
+  outputs; domain formulas and validation rules are not maintained independently
+  in each wrapper. The extracted TypeScript engine is a temporary migration
+  reference, not a second long-term calculation authority.
 - Shared calculations execute on-device, work offline, and use the same source
   editions, supported events, precision, and missing-data semantics.
 - Platform code owns navigation, controls, accessibility, lifecycle, persistence,
@@ -46,9 +51,47 @@ payload sizes, initialization cost, and a reproducible debugging example.
 Test ownership, errors, and lifetime behavior across FFI; invalid user input
 must not trigger a Rust panic at the boundary.
 
-If the packaging or debugging cost is unsuitable, use Swift/Kotlin domain
-implementations backed by the same data and fixture gates. Record that decision
-explicitly before expanding the screens. The native UI direction remains fixed.
+If Rust packaging or debugging is unsuitable, evaluate another shared-engine
+approach against the same requirements. Independently maintained Swift, Kotlin,
+and TypeScript calculation implementations do not meet the single-source goal.
+Record the engine decision explicitly before expanding the screens.
+
+Keep maintenance practical: pin binding-generator/toolchain versions, generate
+artifacts with repeatable scripts, and record source commit, method/data editions,
+and library version together. Native wrappers should translate platform types
+and errors; calculations and semantic validation belong to the shared engine.
+Generated files should be regenerated rather than hand-edited.
+
+## Development and build environments
+
+Research checked October 17, 2026. Recommended starting setup: local development
+on the existing Mac, with GitHub Actions for reproducible builds and tests.
+Xcode 27 and Rust are already installed locally; Android Studio and its SDK/JDK
+still need setup. This recommendation adds no external service account.
+
+| Option            | Current free provision                                                                                                                       | Fit                                                                                                                               |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| GitHub Actions    | Standard hosted runners are free for public repositories, including macOS and Linux. Larger runners and storage have separate billing rules. | Primary CI: Rust/SDK checks, iOS simulator builds/tests on macOS, Android builds/emulator checks on Linux, and release artifacts. |
+| Xcode Cloud       | 25 compute hours/month included with Apple Developer Program membership.                                                                     | Optional Apple-specific build/test and TestFlight delivery workflow; does not cover Android.                                      |
+| Codemagic         | Personal accounts receive 500 macOS M2 build minutes/month; the free allowance does not apply to Teams or Linux/Windows minutes.             | Optional mobile CI alternative; unnecessary alongside GitHub Actions initially.                                                   |
+| Firebase Test Lab | Spark no-cost quota: up to 10 virtual-device and 5 physical-device test runs/day.                                                            | Optional Android device coverage after producing build artifacts; not an IDE or build service.                                    |
+
+Sources: [GitHub billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions),
+[runner capabilities](https://docs.github.com/en/actions/reference/runners/github-hosted-runners),
+[Xcode Cloud allowance](https://developer.apple.com/xcode-cloud/get-started/),
+[Codemagic pricing](https://docs.codemagic.io/billing/pricing/),
+[Test Lab quotas](https://firebase.google.com/docs/test-lab/usage-quotas-pricing).
+
+Hosted CI runs automated build/test jobs; local Xcode and Android Studio provide
+the interactive editing, debugger, simulator/emulator, and device development
+loop. Keep the build commands executable locally and in CI. Use short artifact
+retention and a small representative device matrix to keep storage and testing
+maintenance modest.
+
+Avoid basing a new remote development setup on Firebase Studio: its official
+release notes say new signup/workspace creation is disabled and the service
+sunsets March 22, 2027. This concerns Firebase Studio, not Firebase Test Lab.
+[Firebase Studio status](https://firebase.google.com/support/release-notes/firebase-studio).
 
 ## Milestone 2: one complete native workflow on both platforms
 

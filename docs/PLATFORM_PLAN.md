@@ -18,11 +18,12 @@ and Kotlin bindings and a WebAssembly-backed JavaScript SDK before committing
 to that engine for production. Keep navigation, controls, persistence, sharing,
 accessibility, and lifecycle handling in each platform's native code.
 
-Rust would serve numerical consistency and SDK distribution here. There is no
-measured calculation-performance problem in the existing application, and a
-monorepo alone does not justify a language rewrite. The decision should turn on
-whether building, distributing, and debugging the shared engine is easier than
-maintaining the small domain implementation in each language.
+The target is one authoritative calculation engine and canonical dataset, with
+derived libraries for Swift, Kotlin, and JavaScript. Rust would serve numerical
+consistency and SDK distribution here. There is no measured calculation-
+performance problem in the existing application. Evaluate build, distribution,
+and debugging costs while preserving the single-source requirement; permanent
+independent domain implementations are outside that target.
 
 ## What the research establishes
 
@@ -153,9 +154,10 @@ Before selecting Rust, demonstrate:
 6. Browser CSP, WebAssembly loading, offline packaging, and SSR/Node imports work
    without requiring cross-origin isolation or hidden network requests.
 
-If these criteria fail, keep native app work moving with the language-native
-engine option and the same contract. Do not replace the native UI decision
-with a cross-platform UI framework.
+If these criteria fail, investigate another shared-engine approach against the
+same contract and single-source requirement. The separate implementation option
+in the comparison table is background research, not the selected fallback.
+Keep the native UI direction fixed.
 
 ## Proposed monorepo
 
@@ -354,7 +356,7 @@ recheck store rules at release time rather than freezing this research as policy
    Decide SDK licensing before public publication, not before local experiments.
 2. **Native engine experiment.** Prove Rust → Swift, Kotlin, browser, and Node
    distribution with the same small operation set. Record build/debugging costs
-   and payload sizes; choose Rust or the language-native fallback in a short
+   and payload sizes; record a shared-engine decision in a short
    architecture decision record.
 3. **First complete experience on both native platforms.** Ship a testable
    converter plus source attribution, a saved target, and native sharing on iOS
@@ -376,7 +378,7 @@ data and edge-case parity follows before production engine replacement.
 ## Open decisions
 
 - SDK/core license and package/distribution names.
-- Rust experiment outcome versus language-native engines with shared fixtures.
+- Rust experiment outcome and practical shared-engine packaging.
 - First supported iOS/Android versions and available physical test devices.
 - Embed hosting/domain, publisher upgrade policy, and initial partner feedback.
 - Store price and support model; keep subscriptions/accounts out of the first
