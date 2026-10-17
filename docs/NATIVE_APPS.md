@@ -101,3 +101,11 @@ Both UI suites exercise a women’s 100 free swim of `1:00` LCM converted to
 100 IM to LCM comparison. The iOS saved-swim test terminates/relaunches the app;
 Android recreates the activity and reads persisted state. The portable SDK
 fixtures continue to test the numerical core independently of UI controls.
+
+The iOS result bundle retains screenshots of Convert, Saved and Method in light
+and dark appearance. For a local Android visual review, pass instrumentation
+argument `turnmarkScreenshots=true` to the conversion/restoration test. It writes
+`android-converter.png`, `android-saved.png` and `android-method.png` in the debug
+app's private files directory, readable with `adb exec-out run-as
+net.stanback.turnmark cat files/<name>.png`. The app requests no screenshot or
+storage permission; capture code exists only in the test APK.

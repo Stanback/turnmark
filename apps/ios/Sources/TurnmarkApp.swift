@@ -243,7 +243,8 @@ private struct BrandHeader: View {
         HStack(spacing: 8) {
             Image("BrandMark").resizable().frame(width: 32, height: 32)
                 .clipShape(.rect(cornerRadius: 10)).accessibilityHidden(true)
-            Text("turnmark.").font(.title3.bold())
+            // A wordmark stays at a fixed optical size inside the system bar.
+            Text("turnmark.").font(.system(size: 20, weight: .bold))
         }.accessibilityElement(children: .combine).accessibilityLabel("Turnmark")
     }
 }
