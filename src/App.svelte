@@ -2,6 +2,10 @@
   import { onMount } from "svelte";
   import Icon from "./lib/Icon.svelte";
   import Pool from "./lib/Pool.svelte";
+  import Masters from "./lib/Masters.svelte";
+  import Install from "./lib/Install.svelte";
+  import Theme from "./lib/Theme.svelte";
+  import { site, faqs } from "./data/site";
   import { worldPoints, pointsSource, pointsValidity } from "./lib/points";
   import { altitudeSource, conversionSource } from "./data/conversions";
   import standardData from "./data/standards.json";
@@ -37,6 +41,7 @@
   let saved = $state<{ id: string; form: SwimState }[]>([]);
   let toastTimer: ReturnType<typeof setTimeout>;
   let mounted = $state(false);
+  let elevationUnit = $state<"ft" | "m">("ft");
   type HistoryEntry = {
     id: string;
     form: SwimState;
@@ -71,6 +76,25 @@
       form.altitude >= 0 &&
       form.altitude <= 20000,
   );
+  const elevationInput = $derived(
+    Number.isFinite(form.altitude)
+      ? elevationUnit === "ft"
+        ? form.altitude
+        : Number((form.altitude * 0.3048).toFixed(1))
+      : undefined,
+  );
+  const elevationLabel = $derived(
+    altitudeValid
+      ? `${Number(elevationInput).toLocaleString(undefined, { maximumFractionDigits: 1 })} ${elevationUnit}`
+      : "",
+  );
+  function setElevation(value: number | undefined) {
+    if (value === undefined || !Number.isFinite(value)) form.altitude = NaN;
+    else if (elevationUnit === "ft") form.altitude = value;
+    else if (value < 0) form.altitude = -1;
+    else if (value > 6096) form.altitude = 20001;
+    else form.altitude = Math.round(value / 0.3048);
+  }
   const adjustment = $derived(
     altitudeValid ? altitudeAdjustment(form.distance, form.altitude) : 0,
   );
@@ -136,7 +160,9 @@
     time === null
       ? "Enter a time like 58.32 or 1:02.45 (up to 60 minutes)."
       : !altitudeValid
-        ? "Enter an elevation in whole feet, between 0 and 20,000."
+        ? elevationUnit === "ft"
+          ? "Enter an elevation in whole feet, between 0 and 20,000."
+          : "Enter an elevation between 0 and 6,096 meters."
         : time <= adjustment
           ? "The time must be longer than the altitude adjustment."
           : "",
@@ -313,7 +339,7 @@
     form = { ...defaultState };
     focus = "LCM";
     history.replaceState(null, "", location.pathname + location.search);
-    notify("Back to the starting block.");
+    notify("Inputs reset.");
   }
   async function share() {
     if (error) return;
@@ -321,7 +347,7 @@
     try {
       await navigator.clipboard.writeText(url);
       history.replaceState(null, "", url);
-      notify("Link copied. Same swim, ready to share.");
+      notify("Conversion link copied.");
     } catch {
       history.replaceState(null, "", url);
       notify("Share link is ready in your address bar.");
@@ -362,6 +388,11 @@
       ["Entered time", form.time],
       ["Source course", form.course],
       ["Factor table", form.category],
+      ["Standards system", form.standardSystem],
+      [
+        "Standards age group",
+        form.standardSystem === "masters" ? form.mastersAge : form.age,
+      ],
       ["Altitude ft", form.altitude],
       ["Altitude correction seconds", adjustment],
       [],
@@ -402,7 +433,7 @@
   }
 </script>
 
-<svelte:head><title>Turnmark — Your swim. Any course.</title></svelte:head>
+<svelte:head><title>{site.title}</title></svelte:head>
 <a class="skip-link" href="#main">Skip to converter</a>
 <header class="site-header">
   <div class="header-inner">
@@ -422,16 +453,20 @@
         onclick={() => go("standards")}>Time standards</button
       ><button onclick={() => go("method")}>The method</button>
     </nav>
-    <a
-      class="github-link"
-      href="https://github.com/Stanback/turnmark"
-      target="_blank"
-      rel="noreferrer"
-      ><Icon name="github" size={18} /><span>Open source</span><Icon
-        name="external"
-        size={13}
-      /></a
-    >
+    <div class="header-actions">
+      <Install />
+      <a
+        class="github-link"
+        aria-label="Turnmark source code on GitHub"
+        href="https://github.com/Stanback/turnmark"
+        target="_blank"
+        rel="noreferrer"
+        ><Icon name="github" size={18} /><span>Open source</span><Icon
+          name="external"
+          size={13}
+        /></a
+      >
+    </div>
   </div>
 </header>
 <main id="main">
@@ -444,13 +479,17 @@
     />
     <div class="hero-inner page-width">
       <div class="intro-copy">
-        <div class="eyebrow"><span></span>DIFFERENT POOLS. SAME POTENTIAL.</div>
         <h1 id="page-title">
-          Your swim.<br />Any <span class="course-word">course.</span>
+          Your swim.<br />Any
+          <span class="course-word"
+            >course<svg viewBox="0 0 320 15" aria-hidden="true"
+              ><path d="M3 9q140-14 312-2" /></svg
+            ></span
+          >.
         </h1>
         <p>
-          Convert your time, find your next goal,<br class="desktop-break" /> and
-          make every turn count.
+          Swim time converter for yards and meters.<br class="desktop-break" /> Compare
+          SCY, SCM, and LCM times and published standards.
         </p>
         <button
           class="hero-cta"
@@ -461,11 +500,6 @@
               ?.focus({ preventScroll: true });
           }}>Start converting <Icon name="arrow" size={17} /></button
         >
-      </div>
-      <div class="intro-aside">
-        <span>ONE SWIM.<br />THREE COURSES.<br />MORE POSSIBILITIES.</span><i
-        ></i>
-        <p>Swim anywhere.<br />Go a little further.</p>
       </div>
     </div>
   </section>
@@ -484,7 +518,7 @@
       </div>
       <div class="panel-title">
         <h2>Convert your swim</h2>
-        <p>One time. A whole new perspective.</p>
+        <p>Compare times across pool courses.</p>
       </div>
       <div class="field-label" id="stroke-label">Stroke</div>
       <div class="stroke-picker" role="group" aria-labelledby="stroke-label">
@@ -548,27 +582,56 @@
           ><Icon name="chevron" size={13} />
         </div>
       </div>
-      <details class="altitude-options">
+      <details class="altitude-options" open={form.altitude > 0}>
         <summary
           ><span><Icon name="mountain" size={17} />Swam at altitude?</span><span
-            class="summary-plus">+</span
+            class="summary-elevation"
+            >{altitudeValid && form.altitude > 0 ? elevationLabel : "+"}</span
           ></summary
         >
         <div class="altitude-body">
-          <label for="altitude"
-            >Pool elevation <span>feet above sea level</span></label
-          ><input
-            type="number"
-            id="altitude"
-            min="0"
-            max="20000"
-            step="1"
-            bind:value={form.altitude}
-          />
-          <p>
-            {adjustment
-              ? `${adjustment.toFixed(2)} seconds subtracted before conversion.`
-              : "Adjustments begin at 3,000 ft for eligible events of 200 or longer."}
+          <div class="elevation-heading">
+            <label for="altitude">Pool elevation</label>
+            <div
+              class="elevation-units"
+              role="group"
+              aria-label="Elevation units"
+            >
+              <button
+                class:active={elevationUnit === "ft"}
+                aria-pressed={elevationUnit === "ft"}
+                onclick={() => (elevationUnit = "ft")}>ft</button
+              >
+              <button
+                class:active={elevationUnit === "m"}
+                aria-pressed={elevationUnit === "m"}
+                onclick={() => (elevationUnit = "m")}>m</button
+              >
+            </div>
+          </div>
+          <div class="elevation-entry">
+            <input
+              type="number"
+              id="altitude"
+              min="0"
+              max={elevationUnit === "ft" ? 20000 : 6096}
+              step={elevationUnit === "ft" ? 1 : "any"}
+              bind:value={() => elevationInput, setElevation}
+              aria-invalid={!altitudeValid}
+              aria-describedby="elevation-help"
+            /><span>{elevationUnit} above sea level</span>
+          </div>
+          <p id="elevation-help">
+            {#if altitudeValid}{elevationUnit === "ft"
+                ? `${(form.altitude * 0.3048).toLocaleString(undefined, { maximumFractionDigits: 1 })} meters`
+                : `${form.altitude.toLocaleString()} feet (rounded to the nearest foot)`}.{/if}
+            {#if adjustment}Altitude adjustment: −{adjustment.toFixed(2)}s
+              before course conversion.
+            {:else if altitudeValid && form.altitude > 0}{form.altitude < 3000
+                ? "Below the 3,000 ft threshold; no adjustment applies."
+                : "No altitude adjustment is published for this sprint event."}
+            {:else}Adjustments start at 3,000 ft (914.4 m) for events of 200 or
+              longer.{/if}
           </p>
         </div>
       </details>
@@ -587,7 +650,14 @@
           </div>
           <h2>Same swim. Different water.</h2>
         </div>
-        <span class="method-chip">NCAA factors <span>↗</span></span>
+        <a
+          class="method-chip"
+          href={conversionSource.url}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="NCAA factors — open published conversion source"
+          >NCAA factors <Icon name="external" size={12} /></a
+        >
       </div>
       <div class="pool-scene">
         <div class="pool-scene-top">
@@ -626,6 +696,44 @@
           >
         </div>
       </div>
+      {#if adjustment > 0 && correctedTime !== null}
+        <section
+          class="altitude-conversion"
+          aria-labelledby="altitude-title"
+          aria-live="polite"
+        >
+          <div class="altitude-conversion-heading">
+            <Icon name="mountain" size={17} />
+            <h3 id="altitude-title">Altitude adjustment</h3>
+            <span>{form.course}</span>
+          </div>
+          <div class="altitude-comparison">
+            <div class="altitude-before">
+              <span>Swum at {elevationLabel}</span><strong
+                data-testid="altitude-original">{formatTime(time)}</strong
+              >
+            </div>
+            <div class="altitude-difference">
+              <span>−{adjustment.toFixed(2)}s</span><Icon
+                name="arrow"
+                size={22}
+              />
+            </div>
+            <div class="altitude-after">
+              <span>Sea-level estimate</span><strong
+                data-testid="altitude-corrected"
+                >{formatTime(correctedTime)}</strong
+              >
+            </div>
+          </div>
+          <p>
+            Adjusted in {form.course} before course conversion.
+            <a href={altitudeSource.url} target="_blank" rel="noreferrer"
+              >USA Swimming §4.7<Icon name="external" size={10} /></a
+            >
+          </p>
+        </section>
+      {/if}
       <div
         class="result-cards"
         aria-label="Course comparison results"
@@ -664,7 +772,7 @@
         <Icon name="info" size={15} />
         <p>
           {#if focused.kind === "unavailable"}{focused.reason}{:else if focused.kind === "swum"}{adjustment
-              ? `Your entered ${formatTime(time)} swim, less ${adjustment.toFixed(2)}s for altitude.`
+              ? `Your sea-level estimate in ${form.course}.`
               : "Your entered swim, exactly as timed."}{:else}{form.course} → {focus}:
             <strong>× {focused.factor?.toFixed(5)}</strong>. {focused.kind ===
             "published"
@@ -692,7 +800,6 @@
     <section class="history-panel" id="history" aria-labelledby="history-title">
       <div class="history-heading">
         <div>
-          <span class="eyebrow">EVERY SWIM HAS A STORY</span>
           <h2 id="history-title">
             Recent conversions <span>{conversions.length}</span>
           </h2>
@@ -778,8 +885,8 @@
             >
             <h3>
               {conversions.length
-                ? "A clear lane for this stroke."
-                : "Your next swim starts the story."}
+                ? "No conversions for this stroke."
+                : "No conversions yet."}
             </h3>
             <p>
               {conversions.length
@@ -817,114 +924,137 @@
         >
       </div>
       {#if standardMode === "targets"}
-        <div class="standards-title-row">
-          <div>
-            <div class="section-label">
-              <span class="section-number">03</span>THE NEXT PERSONAL BEST
+        <label class="standards-system" for="standards-system"
+          >Standards<select
+            id="standards-system"
+            bind:value={form.standardSystem}
+            ><option value="youth">USA Swimming · Youth</option><option
+              value="masters">U.S. Masters Swimming · Adults</option
+            ></select
+          ></label
+        >
+        {#if form.standardSystem === "masters"}
+          <Masters
+            bind:age={form.mastersAge}
+            course={form.course}
+            category={form.category}
+            distance={form.distance}
+            stroke={form.stroke}
+            {time}
+          />
+        {:else}
+          <div class="standards-title-row">
+            <div>
+              <div class="section-label">
+                <span class="section-number">03</span>THE NEXT PERSONAL BEST
+              </div>
+              <h2 id="standards-title">A little context. A new target.</h2>
+              <p>Find your place on the USA Swimming motivational ladder.</p>
             </div>
-            <h2 id="standards-title">A little context. A new target.</h2>
-            <p>Find your place on the USA Swimming motivational ladder.</p>
+            <div class="standards-controls">
+              <label for="age-group"
+                >Age group<select id="age-group" bind:value={form.age}
+                  >{#each ages as age}<option value={age.id}>{age.label}</option
+                    >{/each}</select
+                ></label
+              ><span class="standards-edition"
+                >2024–2028<br /><span>National age group standards</span></span
+              >
+            </div>
           </div>
-          <div class="standards-controls">
-            <label for="age-group"
-              >Age group<select id="age-group" bind:value={form.age}
-                >{#each ages as age}<option value={age.id}>{age.label}</option
-                  >{/each}</select
-              ></label
-            ><span class="standards-edition"
-              >2024–2028<br /><span>National age group standards</span></span
-            >
-          </div>
-        </div>
-        <div class="standards-card">
-          <div class="standards-context">
-            <span class="context-pill">{currentLabel} · {form.course}</span
-            ><span
-              >{form.category === "women" ? "Girls" : "Boys"} · {ages.find(
-                (a) => a.id === form.age,
-              )?.label} <span class="context-divider">/</span>
-              {adjustment
-                ? "Altitude-adjusted input"
-                : "Your entered course"}</span
-            ><a href={standardData.source.url} target="_blank" rel="noreferrer"
-              >Official table<Icon name="external" size={12} /></a
-            >
-          </div>
-          {#if thresholds && standing && correctedTime !== null}<div
-              class="standard-summary"
-            >
-              <div class="standard-achievement">
-                <span class="achievement-badge"
-                  >{standing.achieved >= 0
-                    ? levels[standing.achieved]
-                    : "→"}</span
-                >
-                <div>
-                  <h3>
-                    {standing.achieved >= 0
-                      ? `${levels[standing.achieved]} time, nicely done.`
-                      : "Your next chapter starts here."}
-                  </h3>
-                  <p>
-                    {#if standing.next !== null}<strong
-                        >{nextGap?.toFixed(2)}s</strong
-                      >
-                      to your next mark:
-                      <strong>{levels[standing.next]}</strong>
-                      in {formatTime(nextTime)}.{:else}You’ve reached the top
-                      motivational standard for this event.{/if}
-                  </p>
+          <div class="standards-card">
+            <div class="standards-context">
+              <span class="context-pill">{currentLabel} · {form.course}</span
+              ><span
+                >{form.category === "women" ? "Girls" : "Boys"} · {ages.find(
+                  (a) => a.id === form.age,
+                )?.label} <span class="context-divider">/</span>
+                {adjustment
+                  ? "Altitude-adjusted input"
+                  : "Your entered course"}</span
+              ><a
+                href={standardData.source.url}
+                target="_blank"
+                rel="noreferrer"
+                >Official table<Icon name="external" size={12} /></a
+              >
+            </div>
+            {#if thresholds && standing && correctedTime !== null}<div
+                class="standard-summary"
+              >
+                <div class="standard-achievement">
+                  <span class="achievement-badge"
+                    >{standing.achieved >= 0
+                      ? levels[standing.achieved]
+                      : "→"}</span
+                  >
+                  <div>
+                    <h3>
+                      {standing.achieved >= 0
+                        ? `${levels[standing.achieved]} time, nicely done.`
+                        : "Your next chapter starts here."}
+                    </h3>
+                    <p>
+                      {#if standing.next !== null}<strong
+                          >{nextGap?.toFixed(2)}s</strong
+                        >
+                        to your next mark:
+                        <strong>{levels[standing.next]}</strong>
+                        in {formatTime(nextTime)}.{:else}You’ve reached the top
+                        motivational standard for this event.{/if}
+                    </p>
+                  </div>
+                </div>
+                <div class="goal-time">
+                  <span class="tiny-label"
+                    >{standing.next !== null
+                      ? `NEXT UP · ${levels[standing.next]}`
+                      : "TOP MARK · AAAA"}</span
+                  ><strong>{formatTime(nextTime ?? thresholds[5])}</strong>
                 </div>
               </div>
-              <div class="goal-time">
-                <span class="tiny-label"
-                  >{standing.next !== null
-                    ? `NEXT UP · ${levels[standing.next]}`
-                    : "TOP MARK · AAAA"}</span
-                ><strong>{formatTime(nextTime ?? thresholds[5])}</strong>
-              </div>
-            </div>
-            <div class="ladder" style={`--marker:${marker}%`}>
-              <div class="ladder-track">
-                <div class="ladder-progress" style={`width:${marker}%`}></div>
-                <span class="swim-marker"
-                  ><span>{formatTime(correctedTime)}</span></span
-                >
-              </div>
-              <div class="ladder-levels">
-                {#each thresholds as threshold, i}<div
-                    class:achieved={i <= standing.achieved}
+              <div class="ladder" style={`--marker:${marker}%`}>
+                <div class="ladder-track">
+                  <div class="ladder-progress" style={`width:${marker}%`}></div>
+                  <span class="swim-marker"
+                    ><span>{formatTime(correctedTime)}</span></span
                   >
-                    <span class="ladder-node"
-                      >{#if i <= standing.achieved}<Icon
-                          name="check"
-                          size={10}
-                        />{/if}</span
-                    ><strong>{levels[i]}</strong><span
-                      >{formatTime(threshold)}</span
+                </div>
+                <div class="ladder-levels">
+                  {#each thresholds as threshold, i}<div
+                      class:achieved={i <= standing.achieved}
                     >
-                  </div>{/each}
+                      <span class="ladder-node"
+                        >{#if i <= standing.achieved}<Icon
+                            name="check"
+                            size={10}
+                          />{/if}</span
+                      ><strong>{levels[i]}</strong><span
+                        >{formatTime(threshold)}</span
+                      >
+                    </div>{/each}
+                </div>
               </div>
-            </div>
-            <p class="standards-note">
-              {#if adjustment}Altitude-adjusted comparison; confirm eligibility
-                with your meet.{:else}Compared using your entered {form.course} time.
-                Course estimates above don’t count as official swims.{/if}
-            </p>
-          {:else}<div class="standards-empty">
-              <Icon name="info" size={22} />
-              <h3>
-                {error
-                  ? "Your next goal is one time away."
-                  : "No published standard for this selection."}
-              </h3>
-              <p>
-                {error
-                  ? "Enter a valid swim above to explore the ladder."
-                  : "Try another age group or event. We leave missing data empty."}
+              <p class="standards-note">
+                {#if adjustment}Altitude-adjusted comparison; confirm
+                  eligibility with your meet.{:else}Compared using your entered {form.course}
+                  time. Course estimates above don’t count as official swims.{/if}
               </p>
-            </div>{/if}
-        </div>
+            {:else}<div class="standards-empty">
+                <Icon name="info" size={22} />
+                <h3>
+                  {error
+                    ? "Your next goal is one time away."
+                    : "No published standard for this selection."}
+                </h3>
+                <p>
+                  {error
+                    ? "Enter a valid swim above to explore the ladder."
+                    : "Try another age group or event. We leave missing data empty."}
+                </p>
+              </div>{/if}
+          </div>
+        {/if}
       {:else}
         <div class="points-panel">
           <div class="eyebrow">A DIFFERENT WAY TO SEE YOUR SWIM</div>
@@ -1097,18 +1227,29 @@
       </article>
     </div>
   </section>
-  <section class="closing-strip page-width">
-    <span class="closing-turn"><Icon name="turn" size={32} /></span>
-    <p>
-      Made for the love of the swim.<span
-        >Built for swimmers, coaches, and the next personal best.</span
-      >
-    </p>
-    <span class="closing-year"
-      >EST. 2013<br /><strong>REIMAGINED 2026</strong></span
-    >
+  <section class="faq-section page-width" aria-labelledby="faq-title">
+    <div class="faq-intro">
+      <h2 id="faq-title">About the swim time converter</h2>
+      <p>
+        Convert between short course yards, short course meters, and long course
+        meters. Explore published time standards, altitude adjustments, and
+        performance points.
+      </p>
+    </div>
+    <div class="faq-list">
+      {#each faqs as faq}<details>
+          <summary>{faq.question}<Icon name="chevron" size={16} /></summary>
+          <div class="faq-answer">
+            <p>{faq.answer}</p>
+            {#if faq.url}<a href={faq.url} target="_blank" rel="noreferrer"
+                >{faq.source}<Icon name="external" size={12} /></a
+              >{/if}
+          </div>
+        </details>{/each}
+    </div>
   </section>
 </main>
+<div class="appearance-row page-width"><Theme /></div>
 <footer class="page-width">
   <a class="footer-brand" href="./">turnmark.</a><span
     >Built by <a href="https://bristanback.com" target="_blank" rel="noreferrer"

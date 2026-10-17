@@ -2,14 +2,64 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      (() => {
+        let preference = "auto";
+        try {
+          const stored = localStorage.getItem("turnmark-theme");
+          if (stored === "light" || stored === "dark") preference = stored;
+        } catch {}
+        document.documentElement.dataset.themePreference = preference;
+        document.documentElement.dataset.theme =
+          preference === "dark" ||
+          (preference === "auto" &&
+            matchMedia("(prefers-color-scheme: dark)").matches)
+            ? "dark"
+            : "light";
+      })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#102a43" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="%BASE_URL%icons/icon-180.png"
+    />
+    <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#032c43" />
+    <meta name="apple-mobile-web-app-title" content="Turnmark" />
     <meta
       name="description"
-      content="See your swim in a new light. Instant course conversions, USA Swimming time standards, and a clearer path to your next goal. All in your browser."
+      content="Convert swim times between yards and meters (SCY, SCM, LCM). Compare USA Swimming and USMS standards, calculate World Aquatics points, and adjust for altitude."
     />
-    <title>Turnmark — Your swim. Any course.</title>
+    <link rel="canonical" href="https://stanback.github.io/turnmark/" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Swim Time Converter: SCY, SCM & LCM | Turnmark"
+    />
+    <meta
+      property="og:description"
+      content="Compare swim times across pool courses, published youth and Masters standards, altitude adjustments, and World Aquatics points."
+    />
+    <meta property="og:url" content="https://stanback.github.io/turnmark/" />
+    <meta property="og:site_name" content="Turnmark" />
+    <meta
+      property="og:image"
+      content="https://stanback.github.io/turnmark/images/swimmer-hero.webp"
+    />
+    <meta property="og:image:width" content="2048" />
+    <meta property="og:image:height" content="683" />
+    <meta
+      property="og:image:alt"
+      content="A freestyle swimmer in an outdoor lap pool"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>Swim Time Converter: SCY, SCM & LCM | Turnmark</title>
   </head>
   <body>
     <div id="app"></div>

@@ -12,8 +12,12 @@ A browser-only swim time converter, standards explorer, and World Aquatics point
 - Original-course standards ladder with the next level and time gap
 - World Aquatics points from 70 published 2026 metric base times
 - Automatic, device-local conversion history with stroke filters, restore, remove, and clear
-- Optional USA Swimming altitude adjustments
+- 904 published 2026 USMS Nationals targets for adults, with explicit SCY/LCM and age-group coverage
+- Optional USA Swimming altitude adjustments with feet/meters input and an explicit sea-level comparison
 - Shareable URL fragments, CSV export, and an optional local swimboard
+- Automatic system light/dark mode with a saved appearance override
+- Installable desktop/mobile app with offline calculations and bundled tables
+- Pre-rendered introduction and expandable FAQs, canonical/social metadata, and app structured data
 - Responsive layouts, keyboard controls, reduced-motion support, and self-hosted fonts
 
 No backend, account, analytics, third-party runtime requests, or uploaded swim data. Conversion history and saved swims stay in this browser’s local storage. Sharing a link shares the event, time, category, age group, and elevation contained in its URL fragment.
@@ -34,6 +38,7 @@ npm run check
 npm test
 npx playwright install chromium
 npm run test:browser
+npm run test:production
 npm run build
 npm run preview
 ```
@@ -44,4 +49,14 @@ The production app is static files in `dist/`. The GitHub Actions workflow check
 
 Read [the methodology](docs/METHODOLOGY.md) for sources, rounding behavior, coverage, and limitations, and [the data maintenance guide](docs/DATA.md) for updating the tables. Inputs and original-course benchmarks are separated from course estimates. A converted time is not an official swim or a guarantee of meet-entry eligibility.
 
-Application code is licensed under GPL-3.0-or-later. Published numerical data remains attributed to its respective source organizations. Turnmark is an independent project and is not affiliated with or endorsed by NCAA, USA Swimming, or World Aquatics.
+Application code is licensed under GPL-3.0-or-later. Published numerical data remains attributed to its respective source organizations. Turnmark is an independent project and is not affiliated with or endorsed by NCAA, USA Swimming, U.S. Masters Swimming, or World Aquatics.
+
+## Install and offline use
+
+Chrome and Edge can install Turnmark from the address bar/browser menu; the app’s Install button invokes the native prompt when available and otherwise shows instructions. Safari on iPhone/iPad supports Share → Add to Home Screen. Icons include 192px/512px PNGs, a maskable icon, and an Apple touch icon. The manifest and service worker are scoped to `/turnmark/`.
+
+Once an online visit completes caching, calculations, standards, history, and saved swims work without a connection. Source links still need the internet. Browser-managed storage may be cleared or evicted; this is not cloud backup. New static builds are cached separately; a waiting service worker activates after existing app tabs close. The network is preferred for document navigation, so online visits receive the current release.
+
+## Discoverability
+
+The build pre-renders the actual Svelte page and FAQ answers, then hydrates it in the browser. A backend is not needed. Metadata lives in `index.html` and `src/data/site.ts`; `scripts/finish-build.mjs` emits app JSON-LD and `dist/sitemap.xml`. Keep the production URL, Vite base, manifest scope, and service worker base consistent if moving hosts. No search indexing or answer-engine placement is guaranteed, and no Search Console submission is performed automatically.

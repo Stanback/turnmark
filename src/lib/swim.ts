@@ -174,6 +174,14 @@ export function standardStatus(time: number, times: number[]) {
   });
   return { achieved, next: achieved < 5 ? achieved + 1 : null };
 }
+export const mastersAges = [
+  "18-24",
+  ...Array.from(
+    { length: 12 },
+    (_, index) => `${25 + index * 5}-${29 + index * 5}`,
+  ),
+  "85+",
+];
 export interface SwimState {
   time: string;
   stroke: Stroke;
@@ -182,6 +190,8 @@ export interface SwimState {
   category: Category;
   age: Age;
   altitude: number;
+  standardSystem: "youth" | "masters";
+  mastersAge: string;
 }
 export const defaultState: SwimState = {
   time: "58.32",
@@ -191,6 +201,8 @@ export const defaultState: SwimState = {
   category: "women",
   age: "15-16",
   altitude: 0,
+  standardSystem: "youth",
+  mastersAge: "18-24",
 };
 export function readState(hash: string): SwimState {
   const p = new URLSearchParams(hash.replace(/^#/, ""));
@@ -211,6 +223,8 @@ export function readState(hash: string): SwimState {
   const altitude = Number(p.get("h"));
   if (Number.isFinite(altitude) && altitude >= 0 && altitude <= 20000)
     state.altitude = altitude;
+  if (p.get("b") === "masters") state.standardSystem = "masters";
+  if (mastersAges.includes(p.get("ma") ?? "")) state.mastersAge = p.get("ma")!;
   return state;
 }
 export function stateHash(state: SwimState) {
@@ -222,6 +236,9 @@ export function stateHash(state: SwimState) {
     g: state.category,
     a: state.age,
     h: String(state.altitude),
+    ...(state.standardSystem === "masters"
+      ? { b: "masters", ma: state.mastersAge }
+      : {}),
   }).toString();
 }
 export function csvCell(value: string | number) {

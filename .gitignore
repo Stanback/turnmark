@@ -7,3 +7,5 @@ dist/
 playwright-report/
 test-results/
 *.tsbuildinfo
+
+test-results-production/

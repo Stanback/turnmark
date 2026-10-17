@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/finish-build.mjs",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
     "test": "vitest run",
     "test:browser": "playwright test",
+    "test:production": "playwright test --config playwright.production.config.ts",
     "data:refresh": "python3 scripts/import-standards.py",
     "data:points": "python3 scripts/import-points.py",
+    "data:masters": "python3 scripts/import-masters.py",
     "format": "prettier --write . --plugin=prettier-plugin-svelte"
   },
   "devDependencies": {

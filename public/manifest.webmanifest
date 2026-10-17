@@ -1,0 +1,34 @@
+{
+  "id": "/turnmark/",
+  "name": "Turnmark Swim Time Converter",
+  "short_name": "Turnmark",
+  "description": "Swim course conversions, altitude adjustments, time standards and points. Works offline after your first visit.",
+  "lang": "en",
+  "start_url": "/turnmark/",
+  "scope": "/turnmark/",
+  "display": "standalone",
+  "background_color": "#eff5f8",
+  "theme_color": "#032c43",
+  "categories": ["sports", "utilities"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

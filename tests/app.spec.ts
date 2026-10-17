@@ -204,3 +204,142 @@ test("history remembers target-course changes and explicit saves without duplica
   await page.locator(".history-remove").first().click();
   await expect(page.locator(".history-row")).toHaveCount(1);
 });
+
+test("elevation units preserve altitude and show the sea-level transformation", async ({
+  page,
+}) => {
+  await page.goto("./#t=21%3A00.20&s=FR&d=1500&c=SCY&g=women&a=17-18&h=7200");
+  await expect(page.locator("#altitude")).toBeVisible();
+  await expect(page.getByTestId("altitude-original")).toHaveText("21:00.20");
+  await expect(page.getByTestId("altitude-corrected")).toHaveText("20:27.70");
+  await expect(page.locator(".altitude-before")).toContainText("7,200 ft");
+  await expect(page.locator(".altitude-difference")).toContainText("−32.50s");
+  const units = page.getByRole("group", { name: "Elevation units" });
+  await units.getByRole("button", { name: "m", exact: true }).click();
+  await expect(page.locator("#altitude")).toHaveValue("2194.6");
+  await expect(page.locator(".altitude-before")).toContainText("2,194.6 m");
+  await expect(page.getByTestId("altitude-corrected")).toHaveText("20:27.70");
+  await units.getByRole("button", { name: "ft", exact: true }).click();
+  await expect(page.locator("#altitude")).toHaveValue("7200");
+  // Metric inputs use the same published bands as canonical feet.
+  await page.locator("#distance").selectOption("200");
+  await page.locator("#swim-time").fill("2:00");
+  await units.getByRole("button", { name: "m", exact: true }).click();
+  await page.locator("#altitude").fill("914.4");
+  await expect(page.getByTestId("altitude-corrected")).toHaveText("1:59.50");
+  await units.getByRole("button", { name: "ft", exact: true }).click();
+  await expect(page.locator("#altitude")).toHaveValue("3000");
+  await page.locator("#altitude").fill("2999");
+  await expect(page.locator(".altitude-conversion")).toHaveCount(0);
+  await expect(page.locator("#elevation-help")).toContainText(
+    "no adjustment applies",
+  );
+  await page.locator("#altitude").fill("5280");
+  await expect(page.getByTestId("altitude-corrected")).toHaveText("1:58.80");
+  const result = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+    .analyze();
+  expect(
+    result.violations.map((v) => ({
+      id: v.id,
+      targets: v.nodes.map((n) => n.target),
+    })),
+  ).toEqual([]);
+  await page.locator("#altitude").fill("");
+  await expect(page.getByRole("alert")).toBeVisible();
+  await expect(page.locator(".altitude-conversion")).toHaveCount(0);
+});
+
+test("USMS adult targets handle categories, courses, missing data and share context", async ({
+  page,
+}) => {
+  await page.goto("./");
+  await page.locator("#standards-system").selectOption("masters");
+  await expect(page.getByTestId("masters-target")).toHaveText("1:04.07");
+  await expect(page.locator(".masters-status")).toContainText("5.75s faster");
+  await page.locator("#masters-age").selectOption("25-29");
+  await page.locator("#category").selectOption("men");
+  await expect(page.getByTestId("masters-target")).toHaveText("53.00");
+  await page
+    .getByRole("group", { name: "Swum in" })
+    .getByRole("button", { name: "SCM" })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "No SCM Nationals target" }),
+  ).toBeVisible();
+  await page
+    .getByRole("group", { name: "Swum in" })
+    .getByRole("button", { name: "LCM" })
+    .click();
+  await expect(page.getByTestId("masters-target")).toHaveText("1:02.23");
+  await page.locator("#masters-age").selectOption("85+");
+  await expect(
+    page.getByRole("heading", { name: "No NQT for ages 85+" }),
+  ).toBeVisible();
+  await page.goto(
+    "./#t=58.32&s=FR&d=100&c=SCY&g=women&a=15-16&h=0&b=masters&ma=40-44",
+  );
+  await expect(page.locator("#standards-system")).toHaveValue("masters");
+  await expect(page.locator("#masters-age")).toHaveValue("40-44");
+  const results = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+    .analyze();
+  expect(
+    results.violations.map((v) => ({
+      id: v.id,
+      targets: v.nodes.map((n) => n.target),
+    })),
+  ).toEqual([]);
+});
+
+test("theme follows system changes, respects a saved override and keeps dark controls accessible", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
+  await page.goto("./");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  const themes = page.getByRole("group", { name: "Appearance", exact: true });
+  await themes.getByRole("button", { name: "Light", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await themes.getByRole("button", { name: "Auto", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.emulateMedia({ colorScheme: "light" });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  const results = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+    .analyze();
+  expect(
+    results.violations.map((v) => ({
+      id: v.id,
+      targets: v.nodes.map((n) => n.target),
+    })),
+  ).toEqual([]);
+});
+
+test("source chip links to the NCAA source and install instructions are usable", async ({
+  page,
+}, info) => {
+  await page.goto("./");
+  if (info.project.name === "desktop")
+    await expect(
+      page.getByRole("link", {
+        name: "NCAA factors — open published conversion source",
+      }),
+    ).toHaveAttribute("href", /PRXSW_RulesBook/);
+  await page.getByRole("button", { name: "Install app", exact: true }).click();
+  await expect(
+    page.getByRole("dialog", { name: "Install Turnmark" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Got it", exact: true }).click();
+  await expect(page.getByRole("dialog")).not.toBeVisible();
+  await page
+    .getByText("What do SCY, SCM, and LCM mean?", { exact: true })
+    .click();
+  await expect(
+    page.locator(".faq-answer").filter({ hasText: "25-yard pool" }),
+  ).toBeVisible();
+});

@@ -32,3 +32,9 @@ The generated `src/data/standards.json` records the source URL, revision, retrie
 Check USA Swimming’s official Times and Recognition Policy Manual §4.7. Review band boundaries and eligible events, then update the source metadata, numeric table, documentation, and boundary tests together.
 
 Run `npm run check`, `npm test`, `npm run test:browser`, and `npm run build` before publishing a data change.
+
+## U.S. Masters Swimming targets
+
+`npm run data:masters` fetches the official USMS NQT page with curl and extracts its first four 2026 tables. Exact headings, course/category order, 13 published age columns, row counts, unique event keys, and numeric cell formats are validated. The checked-in snapshot contains 70 event/category rows and 904 numeric targets. Six source cells say NO TIME and stay null. Source URL, checked date, year, and the source HTML SHA-256 are stored in `src/data/masters.json`.
+
+Review a newer edition before changing importer guards. Ages 85+ have no USMS NQT; SCM has no target in these Nationals tables. Never infer those missing values, interpolate adult age groups, or generate an adult B–AAAA ladder from NQTs. The UI uses the entered course/time and does not apply NCAA course estimates or USA Swimming altitude corrections to adult eligibility comparisons. USMS entry guidance and event exceptions remain authoritative.
