@@ -1,6 +1,7 @@
 # Native apps: implementation scope
 
-Status: shared-engine implementation in draft PR #2, October 17, 2026.
+Status: PR #2 delivers the shared SDK and web migration. Native app interfaces
+follow in a separate PR, with both platforms kept at equal scope.
 
 PR #1 established the JavaScript/TypeScript SDK and its source-backed contract.
 That package already supports web, embed, and Node consumers. The Rust proof now
@@ -17,8 +18,8 @@ been implemented yet.
 - One authoritative calculation engine and one canonical dataset produce the
   Swift, Kotlin, and JavaScript libraries. Generated artifacts are derived
   outputs; domain formulas and validation rules are not maintained independently
-  in each wrapper. The extracted TypeScript engine is a temporary migration
-  reference, not a second long-term calculation authority.
+  in each wrapper. The former TypeScript calculation implementation has been removed after
+  migration comparisons passed.
 - Shared calculations execute on-device, work offline, and use the same source
   editions, supported events, precision, and missing-data semantics.
 - Platform code owns navigation, controls, accessibility, lifecycle, persistence,

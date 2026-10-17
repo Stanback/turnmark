@@ -2,10 +2,10 @@ import { readFile, writeFile } from "node:fs/promises";
 import { gzipSync } from "node:zlib";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { createEngine } from "../packages/engine/dist/index.js";
+import { createEngine } from "../packages/sdk/dist/index.js";
 const wasm = await readFile(
   new URL(
-    "../packages/engine/dist/generated/turnmark_wasm_bg.wasm",
+    "../packages/sdk/dist/generated/turnmark_wasm_bg.wasm",
     import.meta.url,
   ),
 );

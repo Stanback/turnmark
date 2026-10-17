@@ -1,29 +1,12 @@
 import assert from "node:assert/strict";
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
-import { resolve } from "node:path";
+import { resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseTime } from "../packages/sdk/dist/time.js";
-import {
-  convertSwim,
-  adjustAltitude,
-} from "../packages/sdk/dist/conversion.js";
-import { getYouthStandards } from "../packages/sdk/dist/youth.js";
-import { getMastersTarget } from "../packages/sdk/dist/masters.js";
-import { getWorldPoints } from "../packages/sdk/dist/points.js";
-
 process.chdir(fileURLToPath(new URL("../", import.meta.url)));
 const mode = process.argv[2] ?? "wasm";
 const read = async (path) => JSON.parse(await readFile(path, "utf8"));
 const cases = (await read("fixtures/sdk-conformance.json")).cases;
-const implementations = {
-  parse: parseTime,
-  convert: convertSwim,
-  altitude: adjustAltitude,
-  youth: getYouthStandards,
-  masters: getMastersTarget,
-  points: getWorldPoints,
-};
 const strokes = {
   FR: "freestyle",
   BK: "backstroke",
@@ -37,7 +20,6 @@ function add(operation, input) {
     id: `differential-${++count}`,
     operation,
     input,
-    expected: implementations[operation](input),
   });
 }
 function event(row) {
@@ -82,8 +64,43 @@ for (const course of ["SCY", "SCM", "LCM"])
             add("altitude", { swim, elevation: { value, unit: "feet" } });
         }
   }
-// All existing JS outputs are an independent migration oracle. Remove the TS
-// implementation once the web app switches to the generated WASM library.
+// After the one-time TypeScript migration comparison, the native Rust CLI is
+// the cross-runtime reference. The first 62 cases retain independent source-backed
+// expected values; the larger corpus checks transport and architecture parity.
+// Keep this non-FFI build separate from the library used by Swift/Kotlin tests.
+const built = spawnSync(
+  "cargo",
+  [
+    "build",
+    "--locked",
+    "--target-dir",
+    "target/reference",
+    "-p",
+    "turnmark-core",
+    "--bin",
+    "conformance-runner",
+  ],
+  { stdio: "inherit" },
+);
+assert.equal(built.status, 0);
+const baseline = spawnSync("target/reference/debug/conformance-runner", [], {
+  input: cases
+    .map(({ operation, input }) => JSON.stringify({ operation, input }) + "\n")
+    .join(""),
+  encoding: "utf8",
+  maxBuffer: 32 * 1024 * 1024,
+});
+assert.equal(baseline.status, 0, baseline.stderr);
+const references = baseline.stdout
+  .trim()
+  .split("\n")
+  .map((line) => JSON.parse(line));
+assert.equal(references.length, cases.length);
+cases.forEach((entry, i) => {
+  if ("expected" in entry)
+    subset(references[i], entry.expected, `native:${entry.id}`);
+  else entry.expected = references[i];
+});
 function subset(actual, expected, path) {
   if (typeof expected === "number") {
     assert.equal(typeof actual, "number", path);
@@ -106,19 +123,17 @@ function verify(results, runtime) {
     subset(result, cases[i].expected, `${runtime}:${cases[i].id}`),
   );
   console.log(
-    `${runtime}: ${cases.length} conformance and differential cases passed`,
+    `${runtime}: ${cases.length} source-backed and cross-runtime cases passed`,
   );
 }
 await mkdir("target/conformance", { recursive: true });
 await writeFile("target/conformance/cases.json", JSON.stringify(cases));
 if (mode === "wasm") {
-  const { createEngine } = await import("../packages/engine/dist/index.js");
+  const { createEngine } = await import("../packages/sdk/dist/index.js");
   const { evaluate } =
-    await import("../packages/engine/dist/generated/turnmark_wasm.js");
+    await import("../packages/sdk/dist/generated/turnmark_wasm.js");
   const engine = await createEngine({
-    wasm: await readFile(
-      "packages/engine/dist/generated/turnmark_wasm_bg.wasm",
-    ),
+    wasm: await readFile("packages/sdk/dist/generated/turnmark_wasm_bg.wasm"),
   });
   const methods = {
     parse: "parseTime",
@@ -144,19 +159,16 @@ if (mode === "wasm") {
           ? "target/conformance/cases.json"
           : req.url === "/"
             ? null
-            : `packages/engine/dist/${req.url.slice(1)}`;
+            : `packages/sdk/dist/${req.url.slice(1)}`;
       if (name === null) {
         res.setHeader("Content-Type", "text/html");
         res.end("<!doctype html><title>Turnmark WASM conformance</title>");
         return;
       }
+      const sdkRoot = resolve("packages/sdk/dist") + sep;
       if (
-        ![
-          "target/conformance/cases.json",
-          "packages/engine/dist/index.js",
-          "packages/engine/dist/generated/turnmark_wasm.js",
-          "packages/engine/dist/generated/turnmark_wasm_bg.wasm",
-        ].includes(name)
+        name !== "target/conformance/cases.json" &&
+        (!resolve(name).startsWith(sdkRoot) || !/\.(js|json|wasm)$/.test(name))
       ) {
         res.writeHead(404);
         res.end();

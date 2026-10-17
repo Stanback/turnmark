@@ -78,6 +78,8 @@ fn all_published_points_bases_and_milestone_hundredths() {
 
 #[test]
 fn typed_native_contract_and_transport_errors() {
+    assert_eq!(parse_time("\u{feff}1:02.45\u{00a0}".into()), Some(62.45));
+    assert_eq!(parse_time("\u{0085}1:02.45".into()), None);
     let event = SwimEvent {
         distance: 100,
         stroke: Stroke::Freestyle,
@@ -98,4 +100,9 @@ fn typed_native_contract_and_transport_errors() {
     assert_eq!(provenance.id, "ncaa-2025-27");
     assert!(evaluate("convert".into(), "{".into()).is_err());
     assert!(evaluate("typo".into(), "{}".into()).is_err());
+    assert!(evaluate(
+        "compat".into(),
+        json!({"operation": "convert", "args": []}).to_string()
+    )
+    .is_err());
 }

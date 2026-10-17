@@ -7,12 +7,12 @@ import {
   formatTime,
   type ConversionRequest,
   type AltitudeRequest,
-} from "../src/index.js";
-import { getYouthStandards, type YouthRequest } from "../src/youth.js";
-import { getMastersTarget, type MastersRequest } from "../src/masters.js";
-import { getWorldPoints, type PointsRequest } from "../src/points.js";
+} from "../dist/index.js";
+import { getYouthStandards, type YouthRequest } from "../dist/youth.js";
+import { getMastersTarget, type MastersRequest } from "../dist/masters.js";
+import { getWorldPoints, type PointsRequest } from "../dist/points.js";
 import fixtures from "../../../fixtures/sdk-conformance.json";
-import pointData from "../src/data/points.json";
+import pointData from "../../../data/points.json";
 
 const operations: Record<string, (input: unknown) => unknown> = {
   parse: parseTime,
@@ -68,7 +68,7 @@ it("rejects non-JSON JavaScript values without throwing or coercing", () => {
   }
 });
 
-it("initializes without browser globals or I/O and exposes the same conversion contract", async () => {
+it("reuses the initialized engine and exposes the same conversion contract", async () => {
   const engine = await createEngine();
   const fixture = fixtures.cases.find(
     (entry) => entry.id === "ncaa-rulebook-example",

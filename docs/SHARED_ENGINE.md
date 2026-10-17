@@ -1,27 +1,25 @@
 # Shared engine implementation
 
-The Rust experiment now produces typed Swift/Kotlin APIs and a typed JavaScript
-adapter over WebAssembly. It passes the existing calculation contract and runs
-through an iOS Swift package/XCFramework and an Android Gradle/AAR consumer.
-This is sufficient to proceed with paired native converter apps. PR #2 remains
-a draft: native app workflows and the production web migration are still open.
+Rust is the single calculation implementation for the web app and generated
+Swift/Kotlin libraries. PR #2 completes the shared SDK and the web migration.
+The paired SwiftUI/Jetpack Compose app workflows follow in a separate PR.
 
 ## Ownership
 
-| Path                   | Owns                                                                                                                    |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `data/*.json`          | Canonical numerical snapshots, conversion/altitude factors, source editions and fingerprints.                           |
-| `crates/turnmark-core` | Calculation, semantic validation, coverage distinctions, provenance, clock parsing and typed native contracts.          |
-| `crates/turnmark-wasm` | A small wasm-bindgen transport into the same core.                                                                      |
-| `packages/swift`       | Swift package with generated Swift bindings and a device/simulator XCFramework.                                         |
-| `packages/android`     | Gradle library with generated Kotlin bindings, 64-bit native libraries and JNA.                                         |
-| `packages/engine`      | Experimental, explicitly initialized JavaScript engine and packaged Wasm asset.                                         |
-| `packages/sdk`         | Existing TypeScript implementation, temporarily retained as an independent migration oracle and current web dependency. |
+| Path                   | Owns                                                                                                           |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `data/*.json`          | Canonical numerical snapshots, conversion/altitude factors, source editions and fingerprints.                  |
+| `crates/turnmark-core` | Calculation, semantic validation, coverage distinctions, provenance, clock parsing and typed native contracts. |
+| `crates/turnmark-wasm` | A small wasm-bindgen transport into the same core.                                                             |
+| `packages/swift`       | Swift package with generated Swift bindings and a device/simulator XCFramework.                                |
+| `packages/android`     | Gradle library with generated Kotlin bindings, 64-bit native libraries and JNA.                                |
+| `packages/sdk`         | Typed JavaScript adapters and explicitly initialized Wasm, used by the web app.                                |
 
 Generated bindings, copied JSON, native binaries and Wasm are ignored build
 outputs. Edit root `data/` and Rust source; regenerate instead of editing copies.
-Import scripts now update root `data/`. The SDK build generates its self-contained
-JSON copies, so normal web development still needs only Node/npm.
+Import scripts now update root `data/`. The SDK build generates source metadata, embeds the numerical tables in Wasm,
+and packages the asset. Web development needs Node/npm, Rust, and the pinned
+wasm-bindgen CLI. Native builds do not require a JavaScript calculation runtime.
 
 Swift and Kotlin call typed functions such as `convertSwim`, with records and
 available/unavailable/invalid enum outcomes. Their application APIs do not pass
@@ -31,11 +29,13 @@ typed transport errors. Invalid calculation inputs return structured outcomes.
 Native requests use the library's pinned method/data editions; each result
 includes provenance. No platform wrapper contains a domain formula.
 
-The JavaScript adapter temporarily uses the existing SDK's declaration types.
-These imports are erased; its runtime calls Rust only. Keeping the TypeScript
-oracle is an intentional migration step, not the final single-engine state.
-Before merging a production migration, move the web app and compatibility
-helpers onto Rust and remove the independent TypeScript domain implementation.
+The old TypeScript calculation/validation implementation has been removed,
+including the numeric helpers used by the existing web UI. `compat` modules
+translate its argument/result shapes into Rust calls. Reactivity, labels,
+layout, navigation, local storage, sharing and other UI behavior stay in Svelte.
+The browser initializes the Wasm asset before hydration, and static pre-rendering
+initializes the same module from bytes in Node. Offline caches include Wasm.
+Initialization errors show a reload message instead of switching algorithms.
 
 ## Reproduce
 
@@ -48,13 +48,13 @@ built-in Kotlin compiler; no separate Kotlin Android plugin is needed.
 Web/Node and pure core checks:
 
 ```sh
+cargo install wasm-bindgen-cli --version 0.2.129 --locked
 npm ci
 cargo test --locked --workspace --features turnmark-core/native
 cargo clippy --locked --workspace --all-targets --features turnmark-core/native -- -D warnings
-cargo install wasm-bindgen-cli --version 0.2.129 --locked
 npx playwright install chromium
 npm run test:engine
-node scripts/test-engine-package.mjs
+npm run test:sdk:package
 node scripts/engine-metrics.mjs
 ```
 
@@ -103,11 +103,13 @@ Locally verified October 17, 2026:
 - All 62 source-backed portable cases pass in Rust, Swift, Kotlin, Node and
   Chromium. The iOS simulator and Android emulator each run these fixtures plus
   typed native API checks.
-- A larger 6,054-case corpus compares Rust bindings against existing TypeScript
-  answers in Swift, Kotlin/JVM, Node and Chromium. It covers all youth records,
-  USMS age cells including explicit nulls, points bases/unsafe results, course
-  combinations, missing factors, and altitude band edges. This comparison corpus
-  supplements the independently sourced fixtures; it does not replace them.
+- Before deleting the TypeScript implementation, 6,054 public cases and 1,776
+  numeric compatibility cases were compared to saved pre-deletion outputs and
+  matched. This was a migration check, not a retained second implementation.
+- Ongoing cross-runtime checks run the 6,054-case corpus through the pure Rust
+  CLI and the generated Node/browser/Swift/Kotlin bindings. The 62 portable cases
+  retain independently sourced expected values; additional cases check transport,
+  platform arithmetic and data coverage against the Rust host reference.
 - Rust additionally checks all 70 points bases yield 1,000 points and verifies
   that the next milestone's target hundredth meets the score while the following
   hundredth misses it. Differences in floating ratios/gaps are tolerated only
@@ -125,9 +127,9 @@ Locally verified October 17, 2026:
 - The packaged Android test APK passes 16 KB ZIP alignment and ELF alignment
   checks for both Rust and JNA libraries in both supported 64-bit ABIs.
 
-The initial optimized Wasm build was about 293 KB raw / 87 KB gzip, including
-all benchmark tables. One local Node run initialized it in about 9 ms and made
-the first conversion in about 2 ms. These are development-machine observations,
+The migrated optimized Wasm build is about 360 KB raw / 109 KB gzip, including
+all benchmark tables. One local Node run initialized it in about 7 ms and made
+the first conversion in about 1.5 ms. These are development-machine observations,
 not a cross-device performance budget. `engine-metrics.mjs` writes version,
 source commit/dirty state, toolchain, dataset hashes, payload sizes, and current
 measurements to `target/engine-metrics.json`; CI uploads its own measurements.
@@ -164,7 +166,8 @@ tests on macOS and Android instrumentation on a Linux emulator. Native artifacts
 are regenerated in each job; reports have seven-day retention. The existing web
 workflow continues separately.
 
-Before moving PR #2 out of draft, complete the paired converter workflow from
-`NATIVE_IMPLEMENTATION.md`, validate native debugging and accessibility, resolve
-the production web/SDK migration, and record the supported release targets. Do
-not publish packages or submit store builds as part of this proof.
+PR #2 closes the shared-engine/web scope after its SDK, application, packaging,
+offline and native-binding checks pass. Native converter screens, native sharing,
+saved targets, accessibility, IDE debugger integration and physical/16 KB device
+runtime testing remain acceptance work for the next app PR and release process.
+No package publication or store submission is part of this change.

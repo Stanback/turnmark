@@ -27,7 +27,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:engine
-      - run: node scripts/test-engine-package.mjs
+      - run: npm run test:sdk:package
       - run: node scripts/engine-metrics.mjs
       - uses: actions/upload-artifact@v4
         with:
@@ -43,7 +43,6 @@ jobs:
           node-version: 24
       - run: rustup target add aarch64-apple-ios aarch64-apple-ios-sim x86_64-apple-ios
       - run: node scripts/package-ios.mjs
-      - run: npm ci
       - run: node scripts/test-native-host.mjs swift
       - run: node scripts/test-ios.mjs
       - uses: actions/upload-artifact@v4

@@ -20,6 +20,7 @@ export {
   truncateTime,
   toYardFactor,
   altitudeAdjustment,
+  adjustedTime,
   convert,
   getStandards,
   standardStatus,

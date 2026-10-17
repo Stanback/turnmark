@@ -100,11 +100,11 @@ All three options below retain native SwiftUI and Android Compose screens.
 These assessments are engineering judgments for this repository, not benchmark
 results.
 
-| Engine strategy                                              | Benefits for Turnmark                                                                                                     | Costs and decision                                                                                                                                                                                         |
-| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Rust + UniFFI for mobile; Rust + wasm-bindgen for web        | One calculation implementation; generated Swift/Kotlin API; reusable native and npm distributions.                        | Adds cross-compilation, binary packaging, FFI, and WebAssembly initialization. Recommended first experiment.                                                                                               |
-| Swift and Kotlin implementations; existing TypeScript engine | Straightforward platform debugging; small calculations remain ordinary platform code; smallest binding/toolchain surface. | Three implementations can drift. Shared data, independent fixtures, and a parity gate are mandatory. Practical fallback if the Rust experiment costs too much.                                             |
-| Kotlin Multiplatform domain library with native UIs          | Shared domain implementation across mobile; Kotlin is already needed for Android.                                         | Still needs Apple integration and a decision about JavaScript SDK output. Consider if Kotlin ownership is preferred; test the actual export path rather than assuming all Swift interop is equally mature. |
+| Engine strategy                                              | Benefits for Turnmark                                                                                                     | Costs and decision                                                                                                                                                                                             |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rust + UniFFI for mobile; Rust + wasm-bindgen for web        | One calculation implementation; generated Swift/Kotlin API; reusable native and npm distributions.                        | Adds cross-compilation, binary packaging, FFI, and WebAssembly initialization. Recommended first experiment.                                                                                                   |
+| Swift and Kotlin implementations; existing TypeScript engine | Straightforward platform debugging; small calculations remain ordinary platform code; smallest binding/toolchain surface. | Three implementations can drift. Shared data, independent fixtures, and a parity gate are mandatory. Rejected for the single-source requirement; independent platform formulas are not an acceptable fallback. |
+| Kotlin Multiplatform domain library with native UIs          | Shared domain implementation across mobile; Kotlin is already needed for Android.                                         | Still needs Apple integration and a decision about JavaScript SDK output. Consider if Kotlin ownership is preferred; test the actual export path rather than assuming all Swift interop is equally mature.     |
 
 [UniFFI](https://mozilla.github.io/uniffi-rs/latest/) generates bindings for Rust
 libraries and supports Swift and Kotlin; packaging those libraries remains our
@@ -389,15 +389,15 @@ data and edge-case parity follows before production engine replacement.
 The first milestone introduces a private npm workspace at `packages/sdk`, with
 validated conversion/altitude operations and separate youth, Masters, and points
 entry points. Canonical numerical snapshots now live under root `data/` and are
-embedded by Rust or copied into generated SDK outputs during its build.
+embedded by Rust; the JavaScript SDK generates source metadata only.
 The existing web app uses transitional package adapters, preserving its links,
 storage, and calculation behavior while keeping UI labels and browser features
 in the app. Web framework choice remains open.
 
 There are 62 portable source-backed conformance cases. Packaging verification
 installs the SDK tarball outside the repository, checks Node/browser consumers
-and TypeScript declarations, and verifies conversion-only bundling excludes
-benchmark/points tables. The SDK has no runtime dependencies. See the
+and TypeScript declarations. Numerical tables live in the compiled Wasm asset;
+JavaScript entry points add no calculation dependencies. See the
 [implemented SDK guide](../packages/sdk/README.md).
 
 The shared Rust proof now derives Swift, Kotlin, and WebAssembly libraries with

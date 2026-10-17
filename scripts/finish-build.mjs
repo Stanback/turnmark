@@ -2,6 +2,13 @@ import { createServer } from "vite";
 import { readFile, writeFile, readdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { site } from "../src/data/site.ts";
+import { createEngine } from "@turnmark/sdk";
+
+await createEngine({
+  wasm: await readFile(
+    new URL(import.meta.resolve("@turnmark/sdk/engine.wasm")),
+  ),
+});
 
 // Render the same Svelte components at build time. Production hosting stays static.
 process.env.NODE_ENV = "production";
@@ -52,7 +59,7 @@ try {
 const paths = (await readdir("dist", { recursive: true }))
   .filter(
     (path) =>
-      /\.(html|js|css|png|svg|webp|woff2?|webmanifest)$/.test(path) &&
+      /\.(html|js|css|wasm|png|svg|webp|woff2?|webmanifest)$/.test(path) &&
       path !== "sw.js",
   )
   .sort();

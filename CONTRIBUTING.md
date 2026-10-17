@@ -20,15 +20,18 @@ Please follow the [code of conduct](CODE_OF_CONDUCT.md).
 ## Local development
 
 Use Node.js 22.12+ or a current supported release; CI uses Node.js 24. Fork the
-repository, clone your fork, and create a branch for your change.
+repository, clone your fork, and create a branch for your change. Rust is pinned
+in `rust-toolchain.toml`; install the matching Wasm generator first.
 
 ```sh
+cargo install wasm-bindgen-cli --version 0.2.129 --locked
 npm ci
 npm run dev
 ```
 
 Open `http://localhost:5173/turnmark/`. The app uses Svelte, TypeScript, and Vite.
-Shared calculations and data snapshots live in `packages/sdk/src/`; web-only
+Shared calculations live in `crates/turnmark-core`, numerical snapshots in
+`data/`, and the Wasm SDK adapters in `packages/sdk/src/`; web-only
 state, display helpers, and their tests live in `src/lib/`. Browser tests live
 in `tests/`, and built-app checks in `tests-production/`. Read the
 [SDK guide](packages/sdk/README.md) when changing the shared engine or API.

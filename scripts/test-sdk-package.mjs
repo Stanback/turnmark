@@ -55,7 +55,7 @@ try {
     "dist/index.js",
     "dist/index.d.ts",
     "src/index.ts",
-    "dist/data/standards.json",
+    "dist/generated/turnmark_wasm_bg.wasm",
   ])
     assert.ok(files.has(required), `Missing packed file: ${required}`);
   await writeFile(
@@ -90,8 +90,8 @@ try {
     import { getMastersTarget } from '@turnmark/sdk/masters';
     import { getWorldPoints } from '@turnmark/sdk/points';
     import fixtures from './fixtures.json' with { type: 'json' };
-    export async function run() {
-      const engine = await createEngine();
+    export async function run(options) {
+      const engine = await createEngine(options);
       const operations = { parse: parseTime, convert: engine.convert, altitude: engine.adjustAltitude, youth: getYouthStandards, masters: getMastersTarget, points: getWorldPoints };
       return fixtures.cases.map((fixture) => operations[fixture.operation](fixture.input));
     }
@@ -101,8 +101,14 @@ try {
     join(temporary, "node-consumer.mjs"),
     `
     globalThis.fetch = () => { throw new Error('SDK attempted a network request'); };
+    const assert = (await import('node:assert/strict')).default;
+    const {readFile} = await import('node:fs/promises');
+    const {createEngine, parseTime} = await import('@turnmark/sdk');
+    assert.throws(() => parseTime('58.32'), /Initialize the Turnmark SDK/);
+    await assert.rejects(createEngine({wasm:new Uint8Array()}));
     const { run } = await import('./consumer.js');
-    process.stdout.write(JSON.stringify(await run()));
+    const wasm = await readFile(new URL(import.meta.resolve('@turnmark/sdk/engine.wasm')));
+    process.stdout.write(JSON.stringify(await run({wasm})));
   `,
   );
   const results = JSON.parse(
@@ -151,7 +157,7 @@ try {
 
   await writeFile(
     join(temporary, "index.html"),
-    '<!doctype html><html lang="en"><title>SDK consumer</title><script type="module">import { run } from "./consumer.js"; globalThis.sdkResults = await run();</script></html>',
+    '<!doctype html><html lang="en"><title>SDK consumer</title><script type="module">import { run } from "./consumer.js"; import wasmUrl from "@turnmark/sdk/engine.wasm?url"; globalThis.sdkResults = await run({wasm:wasmUrl});</script></html>',
   );
   server = await createServer({
     configFile: false,
@@ -211,7 +217,7 @@ try {
     `Packed SDK: ${fixtures.cases.length} conformance cases pass in isolated Node and browser consumers; TypeScript declarations resolve.`,
   );
   console.log(
-    `Conversion-only browser bundle: ${bytes.toLocaleString()} bytes minified; no benchmark/points tables or runtime dependencies.`,
+    `Conversion-only browser bundle: ${bytes.toLocaleString()} bytes minified; tables live in the shared Wasm asset; no JavaScript calculation dependencies.`,
   );
 } finally {
   await browser?.close();

@@ -11,10 +11,11 @@
   },
   "files": [
     "dist",
-    "src",
+    "src/**/*.ts",
     "LICENSE"
   ],
   "exports": {
+    "./engine.wasm": "./dist/generated/turnmark_wasm_bg.wasm",
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
@@ -53,7 +54,7 @@
     }
   },
   "scripts": {
-    "build": "node ../../scripts/generate-sdk-data.mjs && tsc -p tsconfig.json",
+    "build": "node ../../scripts/build-sdk.mjs",
     "dev": "tsc -p tsconfig.json --watch",
     "prepack": "npm run build && node -e \"require('node:fs').copyFileSync('../../LICENSE', 'LICENSE')\""
   }

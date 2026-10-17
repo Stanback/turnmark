@@ -1,5 +1,6 @@
 //! Offline authoritative engine. Native bindings are typed; the JSON entry point
 //! supplies the identical validation contract to JavaScript and conformance tools.
+mod compat;
 mod engine;
 mod types;
 use serde_json::{json, Value};
@@ -15,6 +16,8 @@ pub enum EngineError {
     MalformedJson { detail: String },
     #[error("Unknown operation: {operation}")]
     UnknownOperation { operation: String },
+    #[error("Invalid compatibility request: {detail}")]
+    InvalidCompatibilityRequest { detail: String },
 }
 
 #[cfg_attr(feature = "native", uniffi::export)]
@@ -57,6 +60,7 @@ pub fn evaluate(operation: String, request_json: String) -> Result<String, Engin
             detail: e.to_string(),
         })?;
     let result = match operation.as_str() {
+        "compat" => compat::evaluate(&request)?,
         "parse" => json!(request.as_str().and_then(engine::parse_time)),
         "convert" => json!(ConversionOutcome::from(engine::convert(&request))),
         "altitude" => json!(AltitudeOutcome::from(engine::altitude(&request))),

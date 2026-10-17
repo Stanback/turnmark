@@ -13,6 +13,7 @@ packages/sdk/LICENSE
 /target/
 /bindings/generated/
 packages/sdk/src/data/*.json
+packages/sdk/src/generated/
 packages/swift/Artifacts/
 packages/swift/Sources/TurnmarkCore/turnmark_core.swift
 packages/swift/Tests/TurnmarkCoreTests/Fixtures/
@@ -21,5 +22,3 @@ packages/swift/.build/
 .gradle/
 **/build/
 local.properties
-packages/engine/src/generated/
-packages/engine/LICENSE

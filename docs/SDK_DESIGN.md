@@ -1,6 +1,6 @@
 # Draft SDK contract
 
-Status: first implementation, October 17, 2026. The private `0.1.0` workspace
+Status: Rust-backed implementation, October 17, 2026. The private `0.1.0` workspace
 implements the conversion, altitude, and separate benchmark/points APIs with
 runtime validation and portable conformance cases. It has not been published;
 the package name is still provisional. See the [SDK guide](../packages/sdk/README.md)
@@ -62,9 +62,9 @@ if (result.status === "available") {
 ```
 
 The workspace package name is provisional; registry ownership has not been
-established. The current TypeScript implementation initializes without I/O.
-For a WebAssembly implementation, document asynchronous initialization, custom
-asset URLs/bytes, Node support, and errors at startup. Do not perform network
+established. The Rust-backed JavaScript SDK initializes asynchronously from a
+packaged Wasm URL or caller-provided bytes; Node consumers pass bytes. Startup
+errors can be retried and are surfaced by the web app. Do not perform network
 requests during calculation calls or silently fall back to a different formula.
 
 Native Swift/Kotlin consumers call their generated or platform wrappers directly;

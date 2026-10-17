@@ -7,7 +7,7 @@ public/FONT-LICENSES.txt
 data/standards.json
 packages/sdk/src/data/*.json
 bindings/generated/
-packages/engine/src/generated/
+packages/sdk/src/generated/
 packages/swift/Artifacts/
 packages/swift/Sources/TurnmarkCore/turnmark_core.swift
 packages/swift/Tests/TurnmarkCoreTests/Fixtures/

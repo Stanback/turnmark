@@ -18,6 +18,7 @@ jobs:
         with:
           node-version: 24
           cache: npm
+      - run: cargo install wasm-bindgen-cli --version 0.2.129 --locked
       - run: npm ci
       - run: npm run check
       - run: npm test

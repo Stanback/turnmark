@@ -30,6 +30,7 @@
     eventLabel,
     availableEvent,
     altitudeAdjustment,
+    adjustedTime,
     getStandards,
     standardStatus,
     ladderPosition,
@@ -137,9 +138,7 @@
     altitudeValid ? altitudeAdjustment(form.distance, form.altitude) : 0,
   );
   const correctedTime = $derived(
-    time !== null && time > adjustment && altitudeValid
-      ? time - adjustment
-      : null,
+    adjustedTime(time, form.distance, form.altitude),
   );
   const results = $derived(
     courses.map((course) => ({

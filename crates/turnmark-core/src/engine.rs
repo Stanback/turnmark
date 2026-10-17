@@ -72,7 +72,7 @@ fn stroke_key(stroke: Stroke) -> &'static str {
         Stroke::IndividualMedley => "IM",
     }
 }
-fn actual_distance(distance: u32, course: Course, stroke: Stroke) -> u32 {
+pub(crate) fn actual_distance(distance: u32, course: Course, stroke: Stroke) -> u32 {
     if course == Course::SCY && stroke == Stroke::Freestyle {
         match distance {
             400 => 500,
@@ -100,11 +100,7 @@ fn event(input: &Value, field: &str) -> Result<(SwimEvent, u32), Failure> {
             ))
         }
     };
-    let distances: &[u32] = match stroke {
-        Stroke::Freestyle => &[50, 100, 200, 400, 800, 1500],
-        Stroke::IndividualMedley => &[100, 200, 400],
-        _ => &[50, 100, 200],
-    };
+    let distances = event_distances(stroke);
     // as_f64 also accepts JSON 100.0, just as the JavaScript number contract does.
     let distance = distances
         .iter()
@@ -136,7 +132,7 @@ fn swim(input: &Value) -> Result<(SwimEvent, u32, f64), Failure> {
     let (event, distance) = event(&input["event"], "swim.event")?;
     Ok((event, distance, seconds))
 }
-fn published(event: &SwimEvent, distance: u32) -> bool {
+pub(crate) fn published(event: &SwimEvent, distance: u32) -> bool {
     !(event.stroke == Stroke::IndividualMedley && distance == 100 && event.course == Course::LCM)
 }
 
@@ -173,10 +169,10 @@ pub(crate) fn parse_time(input: &str) -> Option<f64> {
     };
     (total.is_finite() && total > 0.0 && total <= 3600.0).then_some(total)
 }
-fn truncate(seconds: f64) -> f64 {
+pub(crate) fn truncate(seconds: f64) -> f64 {
     (seconds * 100.0 + 1e-8).floor() / 100.0
 }
-fn format_time(seconds: f64) -> String {
+pub(crate) fn format_time(seconds: f64) -> String {
     let ticks = (seconds * 100.0 + 1e-8).floor() as u64;
     let minutes = ticks / 6000;
     let seconds = ticks / 100 % 60;
@@ -212,7 +208,7 @@ fn conversion_provenance() -> Provenance {
         verified: Some(text(&source["verified"])),
     }
 }
-fn factor(event: &SwimEvent, distance: u32, table: Category) -> Option<f64> {
+pub(crate) fn factor(event: &SwimEvent, distance: u32, table: Category) -> Option<f64> {
     match event.course {
         Course::SCY => Some(1.0),
         Course::SCM => Some(if event.stroke == Stroke::Freestyle {
@@ -241,6 +237,16 @@ pub(crate) fn convert(input: &Value) -> Calculation<ConversionValue> {
     let to = course(&input["to"], "to")?;
     let table = category(&input["table"])?;
     let (event, distance, seconds) = swim(&input["swim"])?;
+    convert_seconds(event, distance, seconds, to, table)
+}
+
+pub(crate) fn convert_seconds(
+    event: SwimEvent,
+    distance: u32,
+    seconds: f64,
+    to: Course,
+    table: Category,
+) -> Calculation<ConversionValue> {
     let provenance = conversion_provenance();
     let target = SwimEvent {
         course: to,
@@ -249,6 +255,9 @@ pub(crate) fn convert(input: &Value) -> Calculation<ConversionValue> {
     };
     if !published(&event, distance) || !published(&target, distance) {
         return Err(unavailable(CoverageReason::EventNotPublished, provenance));
+    }
+    if !seconds.is_finite() || seconds <= 0.0 {
+        return Err(invalid("swim.time", ValidationReason::InvalidTime));
     }
     let (seconds, factor, kind) = if event.course == to {
         (seconds, 1.0, ConversionKind::Swum)
@@ -314,24 +323,11 @@ pub(crate) fn altitude(input: &Value) -> Calculation<AltitudeValue> {
     } else {
         value.unwrap()
     } as u32;
-    let band = if feet <= 4250 {
-        0
-    } else if feet <= 6500 {
-        1
-    } else {
-        2
-    };
-    let adjustment = if feet < 3000 {
-        0.0
-    } else {
-        CONVERSIONS["altitudeAdjustments"][distance.to_string()][band]
-            .as_f64()
-            .unwrap_or(0.0)
-    };
+    let adjustment = altitude_adjustment(distance, f64::from(feet));
     if seconds <= adjustment {
         return Err(invalid("swim.time", ValidationReason::InvalidTime));
     }
-    let adjusted = (seconds * 100.0 - adjustment * 100.0).round() / 100.0;
+    let adjusted = adjusted_seconds(seconds, adjustment);
     Ok((
         AltitudeValue {
             raw_time: format_time(seconds),
@@ -452,6 +448,17 @@ pub(crate) fn points(input: &Value) -> Calculation<PointsValue> {
     edition(input, "world-aquatics-2026")?;
     let table = category(&input["table"])?;
     let (event, _, seconds) = swim(&input["swim"])?;
+    points_seconds(event, seconds, table)
+}
+
+pub(crate) fn points_seconds(
+    event: SwimEvent,
+    seconds: f64,
+    table: Category,
+) -> Calculation<PointsValue> {
+    if !seconds.is_finite() || seconds <= 0.0 {
+        return Err(invalid("swim.time", ValidationReason::InvalidTime));
+    }
     let provenance = provenance(&POINTS, "world-aquatics-2026", "name", "checked");
     if event.course == Course::SCY {
         return Err(unavailable(CoverageReason::CourseNotSupported, provenance));
@@ -491,4 +498,32 @@ pub(crate) fn points(input: &Value) -> Calculation<PointsValue> {
         },
         provenance,
     ))
+}
+
+pub(crate) fn altitude_adjustment(distance: u32, feet: f64) -> f64 {
+    if !feet.is_finite() || feet < 3000.0 {
+        return 0.0;
+    }
+    let band = if feet <= 4250.0 {
+        0
+    } else if feet <= 6500.0 {
+        1
+    } else {
+        2
+    };
+    CONVERSIONS["altitudeAdjustments"][distance.to_string()][band]
+        .as_f64()
+        .unwrap_or(0.0)
+}
+
+pub(crate) fn adjusted_seconds(seconds: f64, adjustment: f64) -> f64 {
+    (seconds * 100.0 - adjustment * 100.0).round() / 100.0
+}
+
+pub(crate) fn event_distances(stroke: Stroke) -> &'static [u32] {
+    match stroke {
+        Stroke::Freestyle => &[50, 100, 200, 400, 800, 1500],
+        Stroke::IndividualMedley => &[100, 200, 400],
+        _ => &[50, 100, 200],
+    }
 }
