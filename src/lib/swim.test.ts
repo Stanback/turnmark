@@ -16,7 +16,7 @@ import {
   strokes,
   formatTime,
 } from "./swim";
-import data from "../data/standards.json";
+import data from "../../packages/sdk/src/data/standards.json";
 
 describe("swimmer time input and hundredths", () => {
   it.each([

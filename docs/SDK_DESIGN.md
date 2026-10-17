@@ -1,8 +1,11 @@
 # Draft SDK contract
 
-Status: design sketch, October 17, 2026. Package names and signatures below are
-proposals, not an installed or released API. Read the [platform plan](PLATFORM_PLAN.md)
-for native architecture, distribution, licensing, and rollout decisions.
+Status: first implementation, October 17, 2026. The private `0.1.0` workspace
+implements the conversion, altitude, and separate benchmark/points APIs with
+runtime validation and portable conformance cases. It has not been published;
+the package name is still provisional. See the [SDK guide](../packages/sdk/README.md)
+for the implemented interface and the [platform plan](PLATFORM_PLAN.md) for
+native architecture, distribution, licensing, and rollout decisions.
 
 ## Public boundaries
 
@@ -30,7 +33,7 @@ and read existing Turnmark fragments without changing old links.
 
 ## Example ergonomics
 
-Conceptual TypeScript API:
+Implemented TypeScript conversion API:
 
 ```ts
 import { createEngine } from "@turnmark/sdk";
@@ -58,8 +61,8 @@ if (result.status === "available") {
 }
 ```
 
-The namespaced package name is illustrative; registry ownership has not been
-established. A pure TypeScript implementation could initialize immediately.
+The workspace package name is provisional; registry ownership has not been
+established. The current TypeScript implementation initializes without I/O.
 For a WebAssembly implementation, document asynchronous initialization, custom
 asset URLs/bytes, Node support, and errors at startup. Do not perform network
 requests during calculation calls or silently fall back to a different formula.
@@ -107,12 +110,12 @@ is different from invalid input or an engine initialization failure:
 ```ts
 type Result<T> =
   | { status: "available"; value: T; provenance: Provenance }
-  | { status: "unavailable"; reason: CoverageReason }
+  | { status: "unavailable"; reason: CoverageReason; provenance: Provenance }
   | { status: "invalid"; field: string; reason: ValidationReason };
 ```
 
 Examples of coverage reasons are `event-not-published`, `course-not-supported`,
-`age-group-not-published`, and `factor-not-published`. Display text belongs in
+`age-group-not-published`, `factor-not-published`, and `no-time-published`. Display text belongs in
 the consuming UI, where it can be localized.
 
 Every language boundary must validate enum values, supported distances, numeric

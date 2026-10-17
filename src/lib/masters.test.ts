@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import data from "../data/masters.json";
+import data from "../../packages/sdk/src/data/masters.json";
 import { getMastersTarget } from "./masters";
 import { defaultState, readState, stateHash } from "./swim";
 it("matches independently checked USMS table cells and course distance mapping", () => {

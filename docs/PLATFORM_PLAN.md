@@ -5,8 +5,10 @@ Research date: October 17, 2026. Status: draft proposal for implementation.
 ## Direction
 
 Build native iOS and Android apps with equal product scope from the start:
-Swift/SwiftUI on iOS and Kotlin/Jetpack Compose on Android. Keep the Svelte web
-app and add an SDK and an embeddable calculator in the same repository.
+Swift/SwiftUI on iOS and Kotlin/Jetpack Compose on Android. Use the current
+Svelte web app as the first SDK consumer and add an embeddable calculator in
+the same repository. The web framework is an open choice; SDK consumers do
+not need Svelte, and a later web UI can be evaluated independently.
 React Native, Expo, and webview app shells are outside the requested direction.
 The owner already has an Apple Developer account.
 
@@ -380,6 +382,21 @@ data and edge-case parity follows before production engine replacement.
 - Store price and support model; keep subscriptions/accounts out of the first
   implementation unless separately chosen.
 
-This proposal adds no runtime dependency, publishes no package, and creates no
-mobile application or publisher integration yet. It defines the research-backed
-starting point for those implementation changes.
+## Current implementation
+
+The first milestone introduces a private npm workspace at `packages/sdk`, with
+validated conversion/altitude operations and separate youth, Masters, and points
+entry points. Canonical numerical snapshots live under `packages/sdk/src/data`
+for now; a standalone data package can follow when native consumers need it.
+The existing web app uses transitional package adapters, preserving its links,
+storage, and calculation behavior while keeping UI labels and browser features
+in the app. Web framework choice remains open.
+
+There are 62 portable source-backed conformance cases. Packaging verification
+installs the SDK tarball outside the repository, checks Node/browser consumers
+and TypeScript declarations, and verifies conversion-only bundling excludes
+benchmark/points tables. The SDK has no runtime dependencies. See the
+[implemented SDK guide](../packages/sdk/README.md).
+
+Rust bindings, native apps, and publisher embeds remain subsequent implementation
+milestones. No package has been published and the SDK/core license is unchanged.

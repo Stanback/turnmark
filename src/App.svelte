@@ -14,7 +14,7 @@
     pointsValidity,
   } from "./lib/points";
   import { altitudeSource, conversionSource } from "./data/conversions";
-  import standardData from "./data/standards.json";
+  import { standardsSource } from "@turnmark/sdk/youth";
   import {
     courses,
     courseInfo,
@@ -490,7 +490,7 @@
       ]),
       [],
       ["Conversion source", conversionSource.url],
-      ["Standards source", standardData.source.url],
+      ["Standards source", standardsSource.url],
       [
         "Note",
         "Course-converted times are estimates. Check the meet rules for entry eligibility.",
@@ -587,12 +587,7 @@
     aria-label="Swim time converter"
   >
     <div class="input-panel">
-      <div class="section-label">
-        <span class="section-number">01</span>CONVERT YOUR SWIM<button
-          class="text-button reset"
-          onclick={reset}>Reset</button
-        >
-      </div>
+      <button class="text-button reset" onclick={reset}>Reset</button>
       <div class="panel-title">
         <h2>Convert your swim</h2>
         <p>Compare times across pool courses.</p>
@@ -737,9 +732,6 @@
     >
       <div class="results-heading">
         <div>
-          <div class="section-label">
-            <span class="section-number">02</span>POOL VISUALIZATION & RESULTS
-          </div>
           <h2 id="results-title" tabindex="-1">Your conversion results</h2>
         </div>
         <a
@@ -766,7 +758,7 @@
             {courseInfo[focus].name}<span
               >{focused.kind === "swum"
                 ? "Your entered course"
-                : "A different kind of fast"}</span
+                : "Converted estimate"}</span
             >
           </div>
         </div>
@@ -1037,10 +1029,7 @@
         {:else}
           <div class="standards-title-row">
             <div>
-              <div class="section-label">
-                <span class="section-number">03</span>THE NEXT PERSONAL BEST
-              </div>
-              <h2 id="standards-title">A little context. A new target.</h2>
+              <h2 id="standards-title">USA Swimming time standards</h2>
               <p>Find your place on the USA Swimming motivational ladder.</p>
             </div>
             <div class="standards-controls">
@@ -1064,10 +1053,7 @@
                 {adjustment
                   ? "Altitude-adjusted input"
                   : "Your entered course"}</span
-              ><a
-                href={standardData.source.url}
-                target="_blank"
-                rel="noreferrer"
+              ><a href={standardsSource.url} target="_blank" rel="noreferrer"
                 >Official table<Icon name="external" size={12} /></a
               >
             </div>
@@ -1220,7 +1206,7 @@
               without altitude adjustment. {pointsValidity[form.course]}.
             </p>{/if}
           <div class="points-formula">
-            <span>THE MATH</span><code>1,000 × (base time / your time)³</code>
+            <span>Formula</span><code>1,000 × (base time / your time)³</code>
           </div>
           <a
             class="points-source"
@@ -1250,7 +1236,7 @@
     >
       <div class="board-heading">
         <h2 id="swimboard-title">Your swimboard<span>{saved.length}</span></h2>
-        <p>Saved on this device. Ready for another look.</p>
+        <p>Saved on this device.</p>
       </div>
       <div class="saved-grid">
         {#each saved as swim}<div class="saved-card">
@@ -1287,8 +1273,7 @@
     aria-labelledby="method-title"
   >
     <div class="method-intro">
-      <div class="eyebrow">A CLEARER VIEW, NOT A CRYSTAL BALL</div>
-      <h2 id="method-title">Every number has<br />a starting point.</h2>
+      <h2 id="method-title">Sources and methodology</h2>
       <p>
         Turns, technique, and race-day conditions make every swim different.
         Here’s what goes into your estimate.
@@ -1302,9 +1287,8 @@
     </div>
     <div class="method-items">
       <article>
-        <span>01</span>
         <div>
-          <h3>Published factors. Visible math.</h3>
+          <h3>Course conversion</h3>
           <p>
             NCAA metric-to-yards tables power course conversions. Reverse
             conversions and meter-to-meter comparisons use ratios of those
@@ -1320,15 +1304,14 @@
         </div>
       </article>
       <article>
-        <span>02</span>
         <div>
-          <h3>Real standards. A meaningful next step.</h3>
+          <h3>USA Swimming standards</h3>
           <p>
             2,892 published times from USA Swimming’s 2024–2028 age group
             standards, revised October 2025. The ladder compares your input in
             its original course, age group, and published category.
           </p>
-          <a href={standardData.source.url} target="_blank" rel="noreferrer"
+          <a href={standardsSource.url} target="_blank" rel="noreferrer"
             >USA Swimming motivational standards<Icon
               name="external"
               size={12}
@@ -1337,9 +1320,8 @@
         </div>
       </article>
       <article>
-        <span>03</span>
         <div>
-          <h3>A little elevation, accounted for.</h3>
+          <h3>Altitude adjustments</h3>
           <p>
             Optional altitude adjustments follow USA Swimming’s published table.
             They’re applied to eligible individual events before course
@@ -1354,9 +1336,8 @@
         </div>
       </article>
       <article>
-        <span>04</span>
         <div>
-          <h3>One swim. Another point of view.</h3>
+          <h3>World Aquatics points</h3>
           <p>
             World Aquatics points compare entered metric swims against published
             2026 base times. This is a separate scoring system from course

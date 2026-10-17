@@ -33,5 +33,5 @@ with tempfile.TemporaryDirectory() as temp:
    records.append({'age':age,'category':category,'course':course,'distance':int(distance),'stroke':stroke,'times':times})
  assert len(records)==482,len(records)
  result={'source':{'title':'USA Swimming 2024–2028 Motivational Standards','url':URL,'revision':'2025-10-10','retrieved':str(datetime.date.today()),'sha256':hashlib.sha256(raw).hexdigest(),'levels':['B','BB','A','AA','AAA','AAAA'],'scope':'Individual events; relays excluded. Categories follow the published girls/boys tables.'},'records':records}
- (ROOT/'src/data/standards.json').write_text(json.dumps(result,separators=(',',':'))+'\n')
+ (ROOT/'packages/sdk/src/data/standards.json').write_text(json.dumps(result,separators=(',',':'))+'\n')
  print(f'Imported {len(records)} event/category rows ({len(records)*6} published times).')

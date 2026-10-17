@@ -4,7 +4,7 @@ Source review: October 16, 2026. Turnmark provides perspective for training and 
 
 ## Course conversion
 
-Factors are transcribed from **Appendix C, printed page 120** of the [NCAA 2025–26 and 2026–27 Swimming and Diving Rules Book](https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125), updated October 1, 2026. Source metadata and SHA-256 are recorded in `src/data/sources.json`; factors live in `src/data/conversions.ts`.
+Factors are transcribed from **Appendix C, printed page 120** of the [NCAA 2025–26 and 2026–27 Swimming and Diving Rules Book](https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125), updated October 1, 2026. Source metadata and SHA-256 are recorded in `packages/sdk/src/data/sources.json`; factors live in `packages/sdk/src/data/conversions.ts`.
 
 NCAA publishes metric-to-short-course-yards factors. Long-course factors vary by event and published men/women table. Short-course factors are shared between categories. Turnmark applies the same published table labels; these are calculation categories, not a determination of athlete eligibility.
 
@@ -43,7 +43,7 @@ Adult comparisons use the raw entered swim, not NCAA course estimates or USA Swi
 
 Points are a separate way of comparing performances across events, using [World Aquatics’ cubic formula](https://www.worldaquatics.com/swimming/points): `floor(1000 × (base / enteredTime)^3)`. A floating-point epsilon of 1e-9 corrects representation at exact integer boundaries. Scores may exceed 1,000; they are not capped or interpreted as age-group rankings.
 
-The [official 2026 base times PDF](https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf) supplies 35 individual events across two published categories, or 70 base times. SCM validity is September 1, 2026–August 31, 2027; LCM validity is January 1–December 31, 2026. These are fixed, labeled snapshots, not live records. The importer excludes relays and verifies the clock-formatted and seconds-formatted columns agree. Source metadata and fingerprint live in `src/data/points.json`.
+The [official 2026 base times PDF](https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf) supplies 35 individual events across two published categories, or 70 base times. SCM validity is September 1, 2026–August 31, 2027; LCM validity is January 1–December 31, 2026. These are fixed, labeled snapshots, not live records. The importer excludes relays and verifies the clock-formatted and seconds-formatted columns agree. Source metadata and fingerprint live in `packages/sdk/src/data/points.json`.
 
 Points use the entered metric course and raw time, without altitude correction. Yards swims and unsupported events remain unscored. Course estimates are not silently scored as actual performances. World Aquatics points are open scoring, not an age-adjusted or Masters benchmark. The points view shows the 1,000-point base and the next 100-point training milestone. Its target is the slowest whole hundredth at or faster than the cubic threshold for that score; it is derived locally and labeled as a milestone, not a separate published qualification. Tests verify that the target meets the milestone and the following hundredth does not. No rankings, percentiles, age-adjusted performance categories, relay scoring, or live records comparisons are inferred.
 

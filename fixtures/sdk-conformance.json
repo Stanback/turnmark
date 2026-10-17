@@ -1,0 +1,1327 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    {
+      "id": "parse-1",
+      "operation": "parse",
+      "input": "58.32",
+      "expected": 58.32,
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Strict positive clock input, at most hundredths and no more than one hour; numbers are not coerced."
+    },
+    {
+      "id": "parse-2",
+      "operation": "parse",
+      "input": "1:02.45",
+      "expected": 62.45,
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Strict positive clock input, at most hundredths and no more than one hour; numbers are not coerced."
+    },
+    {
+      "id": "parse-3",
+      "operation": "parse",
+      "input": " 2:16.71 ",
+      "expected": 136.71,
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Strict positive clock input, at most hundredths and no more than one hour; numbers are not coerced."
+    },
+    {
+      "id": "parse-4",
+      "operation": "parse",
+      "input": "60:00",
+      "expected": 3600,
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Strict positive clock input, at most hundredths and no more than one hour; numbers are not coerced."
+    },
+    {
+      "id": "parse-5",
+      "operation": "parse",
+      "input": "0:00.01",
+      "expected": 0.01,
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Strict positive clock input, at most hundredths and no more than one hour; numbers are not coerced."
+    },
+    {
+      "id": "parse-6",
+      "operation": "parse",
+      "input": "1:60",
+      "expected": null,
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Strict positive clock input, at most hundredths and no more than one hour; numbers are not coerced."
+    },
+    {
+      "id": "parse-7",
+      "operation": "parse",
+      "input": "12.345",
+      "expected": null,
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Strict positive clock input, at most hundredths and no more than one hour; numbers are not coerced."
+    },
+    {
+      "id": "parse-8",
+      "operation": "parse",
+      "input": "0",
+      "expected": null,
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Strict positive clock input, at most hundredths and no more than one hour; numbers are not coerced."
+    },
+    {
+      "id": "parse-9",
+      "operation": "parse",
+      "input": "3601",
+      "expected": null,
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Strict positive clock input, at most hundredths and no more than one hour; numbers are not coerced."
+    },
+    {
+      "id": "parse-10",
+      "operation": "parse",
+      "input": "1e2",
+      "expected": null,
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Strict positive clock input, at most hundredths and no more than one hour; numbers are not coerced."
+    },
+    {
+      "id": "parse-11",
+      "operation": "parse",
+      "input": "",
+      "expected": null,
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Strict positive clock input, at most hundredths and no more than one hour; numbers are not coerced."
+    },
+    {
+      "id": "parse-12",
+      "operation": "parse",
+      "input": 42,
+      "expected": null,
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Strict positive clock input, at most hundredths and no more than one hour; numbers are not coerced."
+    },
+    {
+      "id": "ncaa-rulebook-example",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "2:16.71",
+          "event": {
+            "distance": 200,
+            "stroke": "breaststroke",
+            "course": "LCM"
+          }
+        },
+        "to": "SCY",
+        "table": "men"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "1:57.29",
+          "seconds": 117.29,
+          "hundredths": 11729,
+          "factor": 0.858,
+          "kind": "published",
+          "event": {
+            "distance": 200,
+            "stroke": "breaststroke",
+            "course": "SCY"
+          }
+        }
+      },
+      "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
+      "rationale": "Published Appendix C example: 136.71 × 0.858 = 117.29718; drop units below hundredths."
+    },
+    {
+      "id": "scm-400-to-500",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "4:00.00",
+          "event": {
+            "distance": 400,
+            "stroke": "freestyle",
+            "course": "SCM"
+          }
+        },
+        "to": "SCY",
+        "table": "women"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "4:34.32",
+          "hundredths": 27432,
+          "factor": 1.143,
+          "kind": "published",
+          "event": {
+            "distance": 500,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        }
+      },
+      "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
+      "rationale": "Published event factors and equivalent distances; reverse/cross-metric ratios are derived and only the final time is truncated."
+    },
+    {
+      "id": "scm-800-to-1000",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "8:00.00",
+          "event": {
+            "distance": 800,
+            "stroke": "freestyle",
+            "course": "SCM"
+          }
+        },
+        "to": "SCY",
+        "table": "women"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "9:08.64",
+          "hundredths": 54864,
+          "event": {
+            "distance": 1000,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        }
+      },
+      "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
+      "rationale": "Published event factors and equivalent distances; reverse/cross-metric ratios are derived and only the final time is truncated."
+    },
+    {
+      "id": "scm-1500-to-1650",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "15:00.00",
+          "event": {
+            "distance": 1500,
+            "stroke": "freestyle",
+            "course": "SCM"
+          }
+        },
+        "to": "SCY",
+        "table": "women"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "15:02.70",
+          "hundredths": 90270,
+          "event": {
+            "distance": 1650,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        }
+      },
+      "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
+      "rationale": "Published event factors and equivalent distances; reverse/cross-metric ratios are derived and only the final time is truncated."
+    },
+    {
+      "id": "yards-500-normalization",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "4:34.32",
+          "event": {
+            "distance": 500,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "SCM",
+        "table": "women"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "4:00.00",
+          "hundredths": 24000,
+          "kind": "derived",
+          "event": {
+            "distance": 400,
+            "stroke": "freestyle",
+            "course": "SCM"
+          }
+        }
+      },
+      "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
+      "rationale": "Published event factors and equivalent distances; reverse/cross-metric ratios are derived and only the final time is truncated."
+    },
+    {
+      "id": "women-lcm-factor",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "1:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "LCM"
+          }
+        },
+        "to": "SCY",
+        "table": "women"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "52.44",
+          "hundredths": 5244,
+          "kind": "published"
+        }
+      },
+      "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
+      "rationale": "Published event factors and equivalent distances; reverse/cross-metric ratios are derived and only the final time is truncated."
+    },
+    {
+      "id": "men-lcm-factor",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "1:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "LCM"
+          }
+        },
+        "to": "SCY",
+        "table": "men"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "51.78",
+          "hundredths": 5178,
+          "kind": "published"
+        }
+      },
+      "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
+      "rationale": "Published event factors and equivalent distances; reverse/cross-metric ratios are derived and only the final time is truncated."
+    },
+    {
+      "id": "same-course",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "1:02.45",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "SCY",
+        "table": "women"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "1:02.45",
+          "seconds": 62.45,
+          "hundredths": 6245,
+          "factor": 1,
+          "kind": "swum",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        }
+      },
+      "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
+      "rationale": "Published event factors and equivalent distances; reverse/cross-metric ratios are derived and only the final time is truncated."
+    },
+    {
+      "id": "derived-reverse",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "1:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "men"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "1:09.52",
+          "hundredths": 6952,
+          "kind": "derived"
+        }
+      },
+      "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
+      "rationale": "Published event factors and equivalent distances; reverse/cross-metric ratios are derived and only the final time is truncated."
+    },
+    {
+      "id": "derived-cross-metric",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "1:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCM"
+          }
+        },
+        "to": "LCM",
+        "table": "women"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "1:01.51",
+          "hundredths": 6151,
+          "kind": "derived"
+        }
+      },
+      "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
+      "rationale": "Published event factors and equivalent distances; reverse/cross-metric ratios are derived and only the final time is truncated."
+    },
+    {
+      "id": "no-lcm-50-backstroke",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "30.00",
+          "event": {
+            "distance": 50,
+            "stroke": "backstroke",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "women"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "factor-not-published"
+      },
+      "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
+      "rationale": "No published LCM conversion factor for these sprint events; do not infer one."
+    },
+    {
+      "id": "no-lcm-50-breaststroke",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "30.00",
+          "event": {
+            "distance": 50,
+            "stroke": "breaststroke",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "women"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "factor-not-published"
+      },
+      "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
+      "rationale": "No published LCM conversion factor for these sprint events; do not infer one."
+    },
+    {
+      "id": "no-lcm-50-butterfly",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "30.00",
+          "event": {
+            "distance": 50,
+            "stroke": "butterfly",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "women"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "factor-not-published"
+      },
+      "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
+      "rationale": "No published LCM conversion factor for these sprint events; do not infer one."
+    },
+    {
+      "id": "no-lcm-100-im",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "1:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "individual-medley",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "women"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "event-not-published"
+      },
+      "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
+      "rationale": "100 IM is a short-course event."
+    },
+    {
+      "id": "actual-distance-required",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "1:00.00",
+          "event": {
+            "distance": 400,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "women"
+      },
+      "expected": {
+        "status": "invalid",
+        "field": "swim.event.distance",
+        "reason": "invalid-distance"
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Public SDK validation must reject unsupported shape, values, and implicit coercion."
+    },
+    {
+      "id": "reject-distance-string",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "1:00.00",
+          "event": {
+            "distance": "100",
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "women"
+      },
+      "expected": {
+        "status": "invalid",
+        "field": "swim.event.distance",
+        "reason": "invalid-distance"
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Public SDK validation must reject unsupported shape, values, and implicit coercion."
+    },
+    {
+      "id": "reject-numeric-time",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": 60,
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "women"
+      },
+      "expected": {
+        "status": "invalid",
+        "field": "swim.time",
+        "reason": "invalid-time"
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Public SDK validation must reject unsupported shape, values, and implicit coercion."
+    },
+    {
+      "id": "reject-negative-time",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "-1",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "women"
+      },
+      "expected": {
+        "status": "invalid",
+        "field": "swim.time",
+        "reason": "invalid-time"
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Public SDK validation must reject unsupported shape, values, and implicit coercion."
+    },
+    {
+      "id": "reject-invalid-course",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "1:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "XXX",
+        "table": "women"
+      },
+      "expected": {
+        "status": "invalid",
+        "field": "to",
+        "reason": "invalid-course"
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Public SDK validation must reject unsupported shape, values, and implicit coercion."
+    },
+    {
+      "id": "reject-invalid-table",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "1:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "unknown"
+      },
+      "expected": {
+        "status": "invalid",
+        "field": "table",
+        "reason": "invalid-category"
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Public SDK validation must reject unsupported shape, values, and implicit coercion."
+    },
+    {
+      "id": "reject-invalid-stroke",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "1:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "constructor",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "women"
+      },
+      "expected": {
+        "status": "invalid",
+        "field": "swim.event.stroke",
+        "reason": "invalid-stroke"
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Public SDK validation must reject unsupported shape, values, and implicit coercion."
+    },
+    {
+      "id": "reject-method",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "1:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "women",
+        "method": "invented"
+      },
+      "expected": {
+        "status": "invalid",
+        "field": "method",
+        "reason": "unsupported-method"
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Public SDK validation must reject unsupported shape, values, and implicit coercion."
+    },
+    {
+      "id": "reject-null-request",
+      "operation": "convert",
+      "input": null,
+      "expected": {
+        "status": "invalid",
+        "field": "request",
+        "reason": "invalid-input"
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Public SDK validation must reject unsupported shape, values, and implicit coercion."
+    },
+    {
+      "id": "reject-array-request",
+      "operation": "convert",
+      "input": [],
+      "expected": {
+        "status": "invalid",
+        "field": "request",
+        "reason": "invalid-input"
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Public SDK validation must reject unsupported shape, values, and implicit coercion."
+    },
+    {
+      "id": "altitude-2999",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "2:00.00",
+          "event": {
+            "distance": 200,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 2999,
+          "unit": "feet"
+        }
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "rawSeconds": 120,
+          "adjustedSeconds": 120,
+          "adjustmentSeconds": 0,
+          "elevationFeet": 2999,
+          "kind": "swum"
+        }
+      },
+      "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
+      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
+    },
+    {
+      "id": "altitude-3000",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "2:00.00",
+          "event": {
+            "distance": 200,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 3000,
+          "unit": "feet"
+        }
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "rawSeconds": 120,
+          "adjustedSeconds": 119.5,
+          "adjustmentSeconds": 0.5,
+          "elevationFeet": 3000,
+          "kind": "altitude-adjusted"
+        }
+      },
+      "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
+      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
+    },
+    {
+      "id": "altitude-4250",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "2:00.00",
+          "event": {
+            "distance": 200,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 4250,
+          "unit": "feet"
+        }
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "rawSeconds": 120,
+          "adjustedSeconds": 119.5,
+          "adjustmentSeconds": 0.5,
+          "elevationFeet": 4250,
+          "kind": "altitude-adjusted"
+        }
+      },
+      "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
+      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
+    },
+    {
+      "id": "altitude-4251",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "2:00.00",
+          "event": {
+            "distance": 200,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 4251,
+          "unit": "feet"
+        }
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "rawSeconds": 120,
+          "adjustedSeconds": 118.8,
+          "adjustmentSeconds": 1.2,
+          "elevationFeet": 4251,
+          "kind": "altitude-adjusted"
+        }
+      },
+      "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
+      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
+    },
+    {
+      "id": "altitude-6500",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "2:00.00",
+          "event": {
+            "distance": 200,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 6500,
+          "unit": "feet"
+        }
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "rawSeconds": 120,
+          "adjustedSeconds": 118.8,
+          "adjustmentSeconds": 1.2,
+          "elevationFeet": 6500,
+          "kind": "altitude-adjusted"
+        }
+      },
+      "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
+      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
+    },
+    {
+      "id": "altitude-6501",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "2:00.00",
+          "event": {
+            "distance": 200,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 6501,
+          "unit": "feet"
+        }
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "rawSeconds": 120,
+          "adjustedSeconds": 118.4,
+          "adjustmentSeconds": 1.6,
+          "elevationFeet": 6501,
+          "kind": "altitude-adjusted"
+        }
+      },
+      "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
+      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
+    },
+    {
+      "id": "meters-exact-boundary",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "2:00.00",
+          "event": {
+            "distance": 200,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 1295.4,
+          "unit": "meters"
+        }
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "elevationFeet": 4250,
+          "adjustmentSeconds": 0.5
+        }
+      },
+      "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
+      "rationale": "Meters use exactly 0.3048 meters per foot and round to whole feet; adjustments follow equivalent events, with explicit validated units."
+    },
+    {
+      "id": "meters-above-boundary",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "2:00.00",
+          "event": {
+            "distance": 200,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 1295.7048,
+          "unit": "meters"
+        }
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "elevationFeet": 4251,
+          "adjustmentSeconds": 1.2
+        }
+      },
+      "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
+      "rationale": "Meters use exactly 0.3048 meters per foot and round to whole feet; adjustments follow equivalent events, with explicit validated units."
+    },
+    {
+      "id": "altitude-yards-500",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "2:00.00",
+          "event": {
+            "distance": 500,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 6000,
+          "unit": "feet"
+        }
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 5,
+          "adjustedSeconds": 115
+        }
+      },
+      "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
+      "rationale": "Meters use exactly 0.3048 meters per foot and round to whole feet; adjustments follow equivalent events, with explicit validated units."
+    },
+    {
+      "id": "altitude-sprint",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "2:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 8000,
+          "unit": "feet"
+        }
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 0,
+          "kind": "swum"
+        }
+      },
+      "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
+      "rationale": "Meters use exactly 0.3048 meters per foot and round to whole feet; adjustments follow equivalent events, with explicit validated units."
+    },
+    {
+      "id": "altitude-invalid-unit",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "2:00.00",
+          "event": {
+            "distance": 200,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 3000,
+          "unit": "yards"
+        }
+      },
+      "expected": {
+        "status": "invalid",
+        "field": "elevation",
+        "reason": "invalid-elevation"
+      },
+      "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
+      "rationale": "Meters use exactly 0.3048 meters per foot and round to whole feet; adjustments follow equivalent events, with explicit validated units."
+    },
+    {
+      "id": "altitude-negative",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "2:00.00",
+          "event": {
+            "distance": 200,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": -1,
+          "unit": "feet"
+        }
+      },
+      "expected": {
+        "status": "invalid",
+        "field": "elevation",
+        "reason": "invalid-elevation"
+      },
+      "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
+      "rationale": "Meters use exactly 0.3048 meters per foot and round to whole feet; adjustments follow equivalent events, with explicit validated units."
+    },
+    {
+      "id": "altitude-fractional-feet",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "2:00.00",
+          "event": {
+            "distance": 200,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 3000.5,
+          "unit": "feet"
+        }
+      },
+      "expected": {
+        "status": "invalid",
+        "field": "elevation",
+        "reason": "invalid-elevation"
+      },
+      "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
+      "rationale": "Meters use exactly 0.3048 meters per foot and round to whole feet; adjustments follow equivalent events, with explicit validated units."
+    },
+    {
+      "id": "masters-source-cell",
+      "operation": "masters",
+      "input": {
+        "event": {
+          "distance": 100,
+          "stroke": "freestyle",
+          "course": "SCY"
+        },
+        "table": "women",
+        "age": "18-24"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "1:04.07",
+          "hundredths": 6407
+        }
+      },
+      "source": "https://www.usms.org/events/national-championships/pool-national-championships/national-qualifying-times",
+      "rationale": "2026 Spring SCY women, 18–24, 100 freestyle table cell."
+    },
+    {
+      "id": "masters-distance-map",
+      "operation": "masters",
+      "input": {
+        "event": {
+          "distance": 500,
+          "stroke": "freestyle",
+          "course": "SCY"
+        },
+        "table": "women",
+        "age": "25-29"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "6:01.63",
+          "hundredths": 36163
+        }
+      },
+      "source": "https://www.usms.org/events/national-championships/pool-national-championships/national-qualifying-times",
+      "rationale": "2026 Spring SCY women, 25–29, 500 freestyle table cell; SDK uses actual yards distance."
+    },
+    {
+      "id": "masters-no-time",
+      "operation": "masters",
+      "input": {
+        "event": {
+          "distance": 200,
+          "stroke": "butterfly",
+          "course": "LCM"
+        },
+        "table": "women",
+        "age": "18-24"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "no-time-published"
+      },
+      "source": "https://www.usms.org/events/national-championships/pool-national-championships/national-qualifying-times",
+      "rationale": "Preserve the distinction between NO TIME cells, unsupported courses/ages, and absent events."
+    },
+    {
+      "id": "masters-85-plus",
+      "operation": "masters",
+      "input": {
+        "event": {
+          "distance": 100,
+          "stroke": "freestyle",
+          "course": "SCY"
+        },
+        "table": "women",
+        "age": "85+"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "age-group-not-published"
+      },
+      "source": "https://www.usms.org/events/national-championships/pool-national-championships/national-qualifying-times",
+      "rationale": "Preserve the distinction between NO TIME cells, unsupported courses/ages, and absent events."
+    },
+    {
+      "id": "masters-no-scm",
+      "operation": "masters",
+      "input": {
+        "event": {
+          "distance": 100,
+          "stroke": "freestyle",
+          "course": "SCM"
+        },
+        "table": "women",
+        "age": "18-24"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "course-not-supported"
+      },
+      "source": "https://www.usms.org/events/national-championships/pool-national-championships/national-qualifying-times",
+      "rationale": "Preserve the distinction between NO TIME cells, unsupported courses/ages, and absent events."
+    },
+    {
+      "id": "masters-missing-event",
+      "operation": "masters",
+      "input": {
+        "event": {
+          "distance": 100,
+          "stroke": "individual-medley",
+          "course": "LCM"
+        },
+        "table": "women",
+        "age": "18-24"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "event-not-published"
+      },
+      "source": "https://www.usms.org/events/national-championships/pool-national-championships/national-qualifying-times",
+      "rationale": "Preserve the distinction between NO TIME cells, unsupported courses/ages, and absent events."
+    },
+    {
+      "id": "youth-independent-cell",
+      "operation": "youth",
+      "input": {
+        "event": {
+          "distance": 100,
+          "stroke": "freestyle",
+          "course": "SCY"
+        },
+        "table": "women",
+        "age": "15-16"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "times": [68.79, 63.79, 58.89, 56.49, 53.99, 51.59],
+          "levels": ["B", "BB", "A", "AA", "AAA", "AAAA"]
+        }
+      },
+      "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/time-standards/2025/2028-motivational-standards-age-group.pdf",
+      "rationale": "2024–2028 revised October 10, 2025; independently inspected SCY 15–16 girls 100 FR row, B through AAAA."
+    },
+    {
+      "id": "youth-missing-event",
+      "operation": "youth",
+      "input": {
+        "event": {
+          "distance": 200,
+          "stroke": "butterfly",
+          "course": "SCY"
+        },
+        "table": "women",
+        "age": "10u"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "event-not-published"
+      },
+      "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/time-standards/2025/2028-motivational-standards-age-group.pdf",
+      "rationale": "No 10 & under SCY 200 butterfly standard is published."
+    },
+    {
+      "id": "points-cubic-eighth",
+      "operation": "points",
+      "input": {
+        "swim": {
+          "time": "1:39.86",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCM"
+          }
+        },
+        "table": "women"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "points": 125,
+          "baseTime": "49.93",
+          "baseSeconds": 49.93
+        }
+      },
+      "source": "https://www.worldaquatics.com/swimming/points",
+      "rationale": "Time is exactly twice the base, so the cubic formula gives 1000 / 8 = 125."
+    },
+    {
+      "id": "points-truncation",
+      "operation": "points",
+      "input": {
+        "swim": {
+          "time": "1:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "LCM"
+          }
+        },
+        "table": "men"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "points": 462
+        }
+      },
+      "source": "https://www.worldaquatics.com/swimming/points",
+      "rationale": "The 46.40-second base gives 1000 × (46.40/60)^3 = 462.487703…; truncate to 462."
+    },
+    {
+      "id": "points-no-yards",
+      "operation": "points",
+      "input": {
+        "swim": {
+          "time": "58.32",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "table": "women"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "course-not-supported"
+      },
+      "source": "https://www.worldaquatics.com/swimming/points",
+      "rationale": "No yards base-time table is published; converted estimates are not scored."
+    },
+    {
+      "id": "points-no-100-im-lcm",
+      "operation": "points",
+      "input": {
+        "swim": {
+          "time": "1:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "individual-medley",
+            "course": "LCM"
+          }
+        },
+        "table": "women"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "event-not-published"
+      },
+      "source": "https://www.worldaquatics.com/swimming/points",
+      "rationale": "100 IM LCM is absent from the published base-time table."
+    },
+    {
+      "id": "points-unsafe-output",
+      "operation": "points",
+      "input": {
+        "swim": {
+          "time": "0.01",
+          "event": {
+            "distance": 1500,
+            "stroke": "freestyle",
+            "course": "LCM"
+          }
+        },
+        "table": "men"
+      },
+      "expected": {
+        "status": "invalid",
+        "field": "swim.time",
+        "reason": "unsafe-result"
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Reject a score that cannot be represented as a safe JavaScript integer, rather than silently losing integer precision."
+    }
+  ]
+}

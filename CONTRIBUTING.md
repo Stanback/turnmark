@@ -28,9 +28,10 @@ npm run dev
 ```
 
 Open `http://localhost:5173/turnmark/`. The app uses Svelte, TypeScript, and Vite.
-Calculation helpers and unit tests live in `src/lib/`, data snapshots in
-`src/data/`, browser tests in `tests/`, and built-app checks in
-`tests-production/`.
+Shared calculations and data snapshots live in `packages/sdk/src/`; web-only
+state, display helpers, and their tests live in `src/lib/`. Browser tests live
+in `tests/`, and built-app checks in `tests-production/`. Read the
+[SDK guide](packages/sdk/README.md) when changing the shared engine or API.
 
 ## Making a change
 
@@ -61,6 +62,7 @@ For code or data changes, run the same checks used by CI:
 npm run check
 npm test
 npx playwright install chromium
+npm run test:sdk:package
 npm run test:browser
 npm run test:production
 ```

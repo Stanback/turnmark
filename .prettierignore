@@ -4,4 +4,4 @@ dist/
 test-results/
 playwright-report/
 public/FONT-LICENSES.txt
-src/data/standards.json
+packages/sdk/src/data/standards.json

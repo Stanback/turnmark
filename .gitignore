@@ -9,3 +9,4 @@ test-results/
 *.tsbuildinfo
 
 test-results-production/
+packages/sdk/LICENSE
