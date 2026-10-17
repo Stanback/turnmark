@@ -260,7 +260,10 @@ tool contracts for conversion, altitude, youth/Masters benchmarks, points and
 source metadata. Keep the SDK's explicit inputs, availability/validation states,
 precision and provenance; do not create another calculation implementation.
 
-Start MCP with offline stdio distribution. Treat WebMCP as progressive
+Start MCP with offline stdio distribution. Later, optionally add Streamable HTTP
+on a stateless Cloudflare Worker under an owner-controlled custom domain. GitHub
+Pages can continue serving the website and WebMCP integration; the remote MCP
+endpoint needs a server runtime. Treat WebMCP as progressive
 enhancement with feature detection and browser-version checks, since its API
 is still evolving. Native feature parity remains the next implementation
 milestone; agent adapters follow in focused PRs with the embed work. See the

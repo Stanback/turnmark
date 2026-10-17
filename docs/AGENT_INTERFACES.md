@@ -42,9 +42,32 @@ and do not read a person's browser history or saved swims.
 
 A provisional `packages/mcp` owns the server and launch/configuration examples.
 Add it when implementation starts, without another engine or dataset copy.
-A hosted Streamable HTTP endpoint is a later distribution option if needed;
-it needs its own hosting, access and request-limit decisions. The existing
-static website does not become an MCP server simply by adding WebMCP.
+
+### Hosting sequence
+
+1. **Local first:** stdio server with packaged Wasm, no hosted service required.
+2. **Optional later:** add Streamable HTTP using the same tool handlers. Prefer
+   a stateless Cloudflare Worker, eventually exposed on an owner-controlled
+   custom domain, for example `https://mcp.example.com/mcp`. The hostname is a
+   placeholder; domain selection and deployment remain future work.
+3. Verify the SDK's Worker initialization path with a bundled precompiled Wasm
+   module. Workers' Wasm loading differs from Node's file-byte initialization;
+   this runtime integration is not yet tested. Keep it in the loader/adapter,
+   without changing the engine or numerical contract. Test real remote clients
+   and decide access policy and request limits before enabling a public endpoint.
+
+Cloudflare documents stateless MCP handlers and Streamable HTTP, Worker Custom
+Domains, and precompiled Wasm modules.
+[Remote MCP on Workers](https://developers.cloudflare.com/agents/model-context-protocol/guides/remote-mcp-server/),
+[Custom Domains](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/),
+[Workers Wasm](https://developers.cloudflare.com/workers/runtime-apis/webassembly/).
+
+GitHub Pages hosts static HTML/JavaScript/Wasm, so it can serve the website and
+its browser-executed WebMCP integration on supporting browsers. It cannot run
+the remote MCP HTTP endpoint. Local MCP distribution can still use the GitHub
+repository and release assets; adding the future Worker does not require moving
+the website off Pages.
+[GitHub Pages hosting model](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages).
 
 ## WebMCP integration
 
