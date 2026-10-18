@@ -12,6 +12,8 @@ test-results/
 
 test-results-production/
 packages/sdk/LICENSE
+packages/mcp/LICENSE
+packages/mcp-worker/worker-configuration.d.ts
 /target/
 /release/
 /bindings/generated/

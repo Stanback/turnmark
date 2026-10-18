@@ -6,7 +6,7 @@ import initialize, {
 
 export interface EngineOptions {
   /** Default: packaged asset URL in browsers. The /node entry loads local bytes. */
-  wasm?: string | URL | ArrayBuffer | Uint8Array;
+  wasm?: string | URL | ArrayBuffer | Uint8Array | WebAssembly.Module;
 }
 let ready: Promise<void> | undefined;
 let initialized = false;

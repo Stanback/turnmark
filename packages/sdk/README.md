@@ -36,7 +36,9 @@ if (result.status === "available") {
 
 Bundlers should pass their resolved asset URL (for Vite, import
 `wasmUrl` from `"@turnmark/sdk/engine.wasm?url"` and call
-`await createEngine({ wasm: wasmUrl })`). For Node, use the filesystem entry:
+`await createEngine({ wasm: wasmUrl })`). Workers can pass an imported,
+precompiled `WebAssembly.Module` as `wasm`; the MCP Worker exercises this path.
+For Node, use the filesystem entry:
 
 ```ts
 import { createEngine } from "@turnmark/sdk/node";

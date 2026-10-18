@@ -1,9 +1,9 @@
 # MCP and WebMCP plan
 
-Status: planned follow-up work, researched October 17, 2026. PR #2 supplies the
-shared SDK; the next implementation milestone remains paired native apps.
-MCP and WebMCP adapters follow in focused PRs with the publisher/embed work.
-Neither interface is implemented or published yet.
+Status: the local stdio server and stateless Cloudflare Worker adapter are now
+implemented in `packages/mcp` and `packages/mcp-worker`. See [MCP setup, checks
+and deployment status](MCP.md). Package publication and production bootstrap
+remain pending. WebMCP remains a separate planned adapter.
 
 ## One engine, two access paths
 
@@ -54,8 +54,7 @@ Add it when implementation starts, without another engine or dataset copy.
 1. **Local first:** stdio server with packaged Wasm, no hosted service required.
 2. **Optional later:** add Streamable HTTP using the same tool handlers. Prefer
    a stateless Cloudflare Worker, eventually exposed on an owner-controlled
-   custom domain, for example `https://mcp.example.com/mcp`. The hostname is a
-   placeholder; domain selection and deployment remain future work.
+   custom domain, for example `https://mcp.example.com/mcp`. Turnmark uses `mcp.turnmark.app`; deployment status is tracked in [MCP.md](MCP.md).
 3. Verify the SDK's Worker initialization path with a bundled precompiled Wasm
    module. Workers' Wasm loading differs from Node's file-byte initialization;
    this runtime integration is not yet tested. Keep it in the loader/adapter,
@@ -68,7 +67,7 @@ Domains, and precompiled Wasm modules.
 [Custom Domains](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/),
 [Workers Wasm](https://developers.cloudflare.com/workers/runtime-apis/webassembly/).
 
-GitHub Pages hosts static HTML/JavaScript/Wasm, so it can serve the website and
+Static hosting serves HTML/JavaScript/Wasm, so it can serve the website and
 its browser-executed WebMCP integration on supporting browsers. It cannot run
 the remote MCP HTTP endpoint. Local MCP distribution can still use the GitHub
 repository and release assets; adding the future Worker does not require moving

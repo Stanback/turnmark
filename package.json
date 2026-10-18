@@ -26,7 +26,8 @@
     "data:refresh": "python3 scripts/import-standards.py",
     "data:points": "python3 scripts/import-points.py",
     "data:masters": "python3 scripts/import-masters.py",
-    "format": "prettier --write . --plugin=prettier-plugin-svelte"
+    "format": "prettier --write . --plugin=prettier-plugin-svelte",
+    "test:mcp": "npm run build:sdk && npm run build --workspace @turnmark/mcp && npm run check --workspace @turnmark/mcp-worker && node scripts/test-mcp.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",

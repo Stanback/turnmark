@@ -76,7 +76,12 @@ export function affectedChecks(paths) {
       ].includes(path)
     )
       select("web", "core");
-    else if (path === "scripts/engine-metrics.mjs") select("core");
+    else if (
+      path.startsWith("packages/mcp/") ||
+      path.startsWith("packages/mcp-worker/") ||
+      ["scripts/test-mcp.mjs", "scripts/engine-metrics.mjs"].includes(path)
+    )
+      select("core");
     else if (
       ["src/", "public/", "tests/", "tests-production/"].some((prefix) =>
         path.startsWith(prefix),
