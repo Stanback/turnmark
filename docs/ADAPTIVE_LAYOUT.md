@@ -66,6 +66,11 @@ bests when changing the layout.
 
 ## Implementation boundaries
 
+- Use Convert and History as the two native destinations, with contextual
+  methodology. Add to History confirms an actual entered swim; comparisons and
+  sharing remain available without a separate comparison-save action. Follow the
+  [agreed persistence contract](DESIGN_CONTRACT.md#result-and-terminology-contract)
+  when transitioning existing saved comparisons.
 - Keep `TabView` / navigation outside the adaptive content arrangement. Let iOS
   place native bars, menus and sheets; do not simulate Duo's side controls.
 - Preserve the draft, selected course/swim, editing focus and navigation when
@@ -126,7 +131,7 @@ Capture and inspect native screens in both appearances, with these checks:
 - Both sides of a half-window split, reduced height and keyboard visible.
 - Standard and accessibility text; long times; original, invalid and unavailable states.
 - 500-yard / 400-meter context, source details and unchanged original performance.
-- Folding/resizing during entry, selected History detail, save and native sharing.
+- Folding/resizing during entry, selected History detail, Add to History and native sharing.
 - Safe areas and active reserved regions: no clock, action or sheet obscured by
   the fold, camera, side navigation, keyboard or system overlays.
 

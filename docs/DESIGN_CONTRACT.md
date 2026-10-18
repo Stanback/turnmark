@@ -110,16 +110,16 @@ A saved conversion is not a recorded race, a personal best or a logged meet swim
 Keep conversion history and actual-swim history clearly named on each surface.
 MCP text fallback must retain the same context and provenance as its future UI.
 
-The proposed native simplification makes History the single place to save an
+The agreed native direction makes History the single place to save an
 actual swim. **Add to History** confirms the original performance, date and
 optional meet; a History record can reopen a course comparison without saving
-another estimate. Sharing remains available directly from the converter. This
-would remove the separate comparison-save action and Saved destination, leaving
-Convert and History with contextual methodology. It is a product proposal,
-not implemented navigation or an instruction to delete existing saved items.
-Existing comparison bookmarks need an explicit transition before removing their
-access. While both actions remain, name them **Add swim to History** and
-**Save comparison**, beside the entered swim and estimated result respectively.
+another estimate. Comparisons remain temporary, and sharing stays available
+directly from the converter. Native adoption removes the separate comparison-save
+action and Saved destination, leaving **Convert** and **History** with contextual
+methodology. This decision is approved; implementation is pending in the paired
+native work. Keep existing comparison bookmarks accessible through an explicit
+transition, preserving their original meaning rather than turning them into
+recorded performances.
 
 Course education is optional supporting detail. A short explanation may use
 100m as an example: three turns in SCM versus one in LCM. The converter uses
