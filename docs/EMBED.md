@@ -1,6 +1,6 @@
 # Embed the Turnmark converter
 
-Status: implemented on this branch, not yet deployed. The hosted v1 widget uses
+The hosted v1 widget uses
 `https://turnmark.app/embed/v1/`; no npm install, API key or parent-page script is
 required. The full website's **Add the converter to your site** section provides
 appearance selection, a preview, and copyable HTML.

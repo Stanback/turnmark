@@ -63,8 +63,8 @@ The adapter contains no calculation formulas or copied numerical tables.
 
 ## Remote endpoint
 
-The paired Worker is prepared for `https://mcp.turnmark.app/mcp` using stateless
-Streamable HTTP. It is not deployed yet. A remote client supplies explicit
+The paired Worker uses `https://mcp.turnmark.app/mcp` with stateless
+Streamable HTTP. A remote client supplies explicit
 calculation inputs to Cloudflare; the local stdio option keeps them on-device.
 Neither server reads saved swims, profiles, arbitrary files, URLs or browser
 state. There are no history writes or accounts. WebMCP is separate future work.
