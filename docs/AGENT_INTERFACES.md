@@ -7,6 +7,11 @@ are configured, with deployment through passing main CI. Both `@turnmark/sdk`
 and `@turnmark/mcp` are published on npm at `0.1.0`. WebMCP remains a separate
 planned adapter.
 
+Interactive results inside a conversation are a separate enhancement to the
+existing MCP path. See [MCP Apps research and implementation plan](MCP_APPS.md)
+for host support, the stateless capability probe, UI/security boundaries and
+release gates. That UI is planned, not deployed.
+
 ## One engine, two access paths
 
 Expose Turnmark calculations to assistants through an MCP server and to browser
