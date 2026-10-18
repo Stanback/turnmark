@@ -40,6 +40,12 @@ and do not read a person's browser history or saved swims.
 [MCP tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools),
 [transports](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports).
 
+Future personal-history access is a separate adapter and permission boundary,
+using the versioned record schema proposed in the [offline history plan](MEET_HISTORY.md).
+It must explicitly select a local store/import file and distinguish reads from
+reviewable writes. The planned public calculation service does not expose a
+person's device history.
+
 A provisional `packages/mcp` owns the server and launch/configuration examples.
 Add it when implementation starts, without another engine or dataset copy.
 

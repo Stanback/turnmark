@@ -26,6 +26,13 @@ class ConverterTest {
         compose.onNodeWithTag("inputCourse-LCM").performScrollTo().performClick()
         compose.onNodeWithTag("targetCourse-SCY").performScrollTo().performClick()
         compose.onNodeWithTag("resultTime").assertTextEquals("52.44")
+        compose.onNodeWithTag("resultContext").assertTextEquals("100 yd Freestyle · SCY · Women")
+        compose.onNodeWithTag("conversionDetails").performClick()
+        compose.onNodeWithText("Conversion details").assertExists()
+        compose.onNodeWithText("100 m Freestyle · LCM · Women").assertExists()
+        compose.onNodeWithText("Edition:", substring = true).performScrollTo().assertIsDisplayed()
+        capture("android-details")
+        compose.onNodeWithText("Done").performScrollTo().performClick()
         compose.onNodeWithText("Save swim").performScrollTo().performClick()
         compose.activityRule.scenario.recreate()
         compose.onNodeWithTag("nav-Saved").performClick()
@@ -52,6 +59,18 @@ class ConverterTest {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
             }
         } finally { bitmap.recycle() }
+    }
+
+    @Test fun resultContextUsesDestinationDistanceAndCategory() {
+        compose.onNodeWithTag("inputCourse-LCM").performScrollTo().performClick()
+        compose.onNodeWithText("Distance: 100 m").performScrollTo().performClick()
+        compose.onNodeWithText("400 m").performClick()
+        compose.onNodeWithText("Men", useUnmergedTree = true).performScrollTo().performClick()
+        compose.onNodeWithTag("targetCourse-SCY").performScrollTo().performClick()
+        compose.onNodeWithTag("resultContext").assertTextEquals("500 yd Freestyle · SCY · Men")
+        compose.onNodeWithTag("targetCourse-LCM").performScrollTo().performClick()
+        compose.onNodeWithTag("resultContext").assertTextEquals("400 m Freestyle · LCM · Men")
+        compose.onNodeWithText("Entered swim").assertExists()
     }
 
     @Test fun invalidTimeHasNoResult() {

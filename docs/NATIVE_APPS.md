@@ -10,7 +10,10 @@ offline on first launch, and use the same source editions and outcomes.
   target course controls. Available input events come from Rust, including
   yard-distance mappings and short-course-only events.
 - Conversion, entered/published/derived labels, source attribution, invalid
-  input and unsupported-comparison states.
+  input and unsupported-comparison states. The persistent result shows its
+  destination event, units, course and category alongside the original swim.
+  Details open a native sheet with entered/result context, multiplier and
+  source edition; the multiplier comes directly from the SDK.
 - One saved swim, restore/remove actions, current-input persistence and native
   sharing. Share links still open the existing GitHub Pages app. The
   `turnmark.app` website migration is a separate PR.
@@ -29,6 +32,10 @@ work. Physical-device, VoiceOver/TalkBack, large-text and 16 KB Android runtime
 checks are release gates; automated simulator tests do not establish those.
 Bundle/application ID `net.stanback.turnmark`, iOS 17 minimum and Android API 26
 minimum are provisional until release configuration is finalized.
+
+The next workflow is [offline meet and swim history](MEET_HISTORY.md): quick
+logging of actual performances, meet/date context and progress, with portable
+export/import. Existing saved conversions will not silently become race records.
 
 ## iOS
 
@@ -100,15 +107,18 @@ credentials, so the IaC repo now skips fork/Dependabot previews.
 ## Checks
 
 Both UI suites exercise a women’s 100 free swim of `1:00` LCM converted to
-`52.44` SCY, saved-swim restoration, zero-time rejection, and an unavailable
-100 IM to LCM comparison. The iOS saved-swim test terminates/relaunches the app;
+`52.44` SCY, source-detail access, saved-swim restoration, zero-time rejection,
+and an unavailable 100 IM to LCM comparison. A fourth test checks destination
+context for 400 m to 500 yd, category changes and same-course entered swims.
+The iOS saved-swim test terminates/relaunches the app;
 Android recreates the activity and reads persisted state. The portable SDK
 fixtures continue to test the numerical core independently of UI controls.
 
 The iOS result bundle retains screenshots of Convert, Saved and Method in light
 and dark appearance. For a local Android visual review, pass instrumentation
 argument `turnmarkScreenshots=true` to the conversion/restoration test. It writes
-`android-converter.png`, `android-saved.png` and `android-method.png` in the debug
+`android-converter.png`, `android-saved.png`, `android-method.png` and
+`android-details.png` in the debug
 app's private files directory, readable with `adb exec-out run-as
 net.stanback.turnmark cat files/<name>.png`. The app requests no screenshot or
 storage permission; capture code exists only in the test APK.

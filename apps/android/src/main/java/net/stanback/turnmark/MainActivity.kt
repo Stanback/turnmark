@@ -47,7 +47,11 @@ private data class Draft(
         Swim(time, SwimEvent(distance, strokes[strokeIndex], courses[courseIndex])),
         courses[targetIndex], if (categoryIndex == 0) Category.WOMEN else Category.MEN))
     val available get() = outcome is ConversionOutcome.Available
-    val label get() = "$distance ${strokeNames[strokeIndex]} · ${courses[courseIndex]}"
+    val category get() = if (categoryIndex == 0) "Women" else "Men"
+    val unit get() = if (courseIndex == 0) "yd" else "m"
+    val label get() = "$distance $unit ${strokeNames[strokeIndex]} · ${courses[courseIndex]} · $category"
+    fun resultLabel(event: SwimEvent): String =
+        "${event.distance} ${if (event.course == Course.SCY) "yd" else "m"} ${strokeNames[strokes.indexOf(event.stroke)]} · ${event.course} · $category"
     fun reconcile(): Draft = if (options.any { it.event.distance == distance }) this
         else copy(distance = options.first().event.distance)
     fun encode(): String = JSONObject().put("time", time).put("stroke", strokeIndex)
@@ -132,7 +136,7 @@ private fun share(context: Context, draft: Draft) {
                 when (tab) {
                     0 -> {
                         Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
-                            Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                                 Text("Your time", fontWeight = FontWeight.Bold)
                                 OutlinedTextField(draft.time, { update(draft.copy(time = it)) },
                                     modifier = Modifier.fillMaxWidth().testTag("timeInput"),
@@ -143,14 +147,17 @@ private fun share(context: Context, draft: Draft) {
                                     Choice("Stroke", strokeNames[draft.strokeIndex], strokeNames, Modifier.weight(1f)) {
                                         update(draft.copy(strokeIndex = it))
                                     }
-                                    Choice("Distance", draft.distance.toString(), draft.options.map { it.event.distance.toString() }, Modifier.weight(1f)) {
+                                    Choice("Distance", "${draft.distance} ${draft.unit}", draft.options.map { "${it.event.distance} ${draft.unit}" }, Modifier.weight(1f)) {
                                         update(draft.copy(distance = draft.options[it].event.distance))
                                     }
                                 }
                                 CourseControl("Swum in", "inputCourse", draft.courseIndex) { update(draft.copy(courseIndex = it)) }
-                                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    listOf("Women", "Men").forEachIndexed { i, text ->
-                                        FilterChip(draft.categoryIndex == i, { update(draft.copy(categoryIndex = i)) }, { Text(text) })
+                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Text("Published category", fontWeight = FontWeight.Bold)
+                                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                        listOf("Women", "Men").forEachIndexed { i, text ->
+                                            FilterChip(draft.categoryIndex == i, { update(draft.copy(categoryIndex = i)) }, { Text(text) })
+                                        }
                                     }
                                 }
                                 CourseControl("Compare with", "targetCourse", draft.targetIndex) { update(draft.copy(targetIndex = it)) }
@@ -173,7 +180,8 @@ private fun share(context: Context, draft: Draft) {
                             ResultCard(swim)
                             Button(onClick = { update(swim); tab = 0 }) { Text("Use this swim") }
                             OutlinedButton(onClick = { share(context, swim) }) { Text("Share saved swim") }
-                            TextButton(onClick = { saved = null; preferences.edit().remove("saved").apply() }) { Text("Remove saved swim") }
+                            TextButton(onClick = { saved = null; preferences.edit().remove("saved").apply() },
+                                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)) { Text("Remove saved swim") }
                         }
                     }
                     else -> {
@@ -196,36 +204,16 @@ private fun share(context: Context, draft: Draft) {
 }
 
 @Composable private fun ResultSummary(draft: Draft) {
-    Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)
-        .background(Ink, RoundedCornerShape(20.dp)).padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        when (val result = draft.outcome) {
-            is ConversionOutcome.Available -> {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Column {
-                        Text("${courses[draft.courseIndex]} → ${courses[draft.targetIndex]}", color = Lime, fontWeight = FontWeight.Bold)
-                        Text(when (result.value.kind) { ConversionKind.SWUM -> "Entered swim"; ConversionKind.PUBLISHED -> "Published factor"; ConversionKind.DERIVED -> "Derived estimate" }, color = Lime, style = MaterialTheme.typography.labelMedium)
-                    }
-                    Text(result.value.time, fontSize = 34.sp, fontWeight = FontWeight.Bold, color = Color.White, modifier = Modifier.testTag("resultTime"))
-                }
-                Text(result.provenance.title, color = Color.White.copy(alpha = 0.8f), style = MaterialTheme.typography.labelSmall)
-            }
-            is ConversionOutcome.Invalid -> {
-                Text("Check your time", color = Color.White, fontWeight = FontWeight.Bold, modifier = Modifier.testTag("invalidTime"))
-                Text("Try 58.32 or 1:02.45, up to 60 minutes.", color = Color.White, style = MaterialTheme.typography.bodySmall)
-            }
-            is ConversionOutcome.Unavailable -> {
-                Text("No published conversion", color = Color.White, fontWeight = FontWeight.Bold, modifier = Modifier.testTag("unavailableConversion"))
-                Text("Choose another event or course comparison.", color = Color.White, style = MaterialTheme.typography.bodySmall)
-            }
-        }
-    }
+    Box(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) { ResultCard(draft, compact = true) }
 }
 
 @Composable private fun CourseControl(label: String, tag: String, selected: Int, onSelect: (Int) -> Unit) {
-    Text(label, fontWeight = FontWeight.Bold)
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        courses.forEachIndexed { index, course ->
-            FilterChip(selected == index, { onSelect(index) }, { Text(course.name) }, modifier = Modifier.testTag("$tag-${course.name}"))
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(label, fontWeight = FontWeight.Bold)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            courses.forEachIndexed { index, course ->
+                FilterChip(selected == index, { onSelect(index) }, { Text(course.name) }, modifier = Modifier.testTag("$tag-${course.name}"))
+            }
         }
     }
 }
@@ -240,25 +228,84 @@ private fun share(context: Context, draft: Draft) {
     }
 }
 
-@Composable private fun ResultCard(draft: Draft) {
-    Column(Modifier.fillMaxWidth().background(Ink, RoundedCornerShape(24.dp)).padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text("${courses[draft.courseIndex]} → ${courses[draft.targetIndex]}", color = Lime, fontWeight = FontWeight.SemiBold)
-        when (val result = draft.outcome) {
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable private fun ResultCard(draft: Draft, compact: Boolean = false) {
+    var showingDetails by remember { mutableStateOf(false) }
+    val result = draft.outcome
+    Column(Modifier.fillMaxWidth().background(Ink, RoundedCornerShape(if (compact) 20.dp else 24.dp))
+        .padding(if (compact) 16.dp else 24.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        when (result) {
             is ConversionOutcome.Available -> {
-                Text(result.value.time, fontSize = 48.sp, fontWeight = FontWeight.Bold, color = Color.White, modifier = Modifier.testTag("resultTime"))
-                Text("${result.value.event.distance} ${strokeNames[draft.strokeIndex]} · ${courses[draft.targetIndex]}", color = Color.White)
-                Text(when (result.value.kind) { ConversionKind.SWUM -> "Entered swim"; ConversionKind.PUBLISHED -> "Published factor"; ConversionKind.DERIVED -> "Derived estimate" }, color = Lime, fontWeight = FontWeight.Bold)
-                HorizontalDivider(color = Color.White.copy(alpha = 0.2f))
-                Text("${result.provenance.title} · ${result.provenance.id}", color = Color.White.copy(alpha = 0.8f), style = MaterialTheme.typography.bodySmall)
+                Text(draft.resultLabel(result.value.event), color = Color.White, style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.testTag("resultContext"))
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                    Text(result.value.time, fontSize = if (compact) 34.sp else 48.sp, fontWeight = FontWeight.Bold,
+                        color = Color.White, modifier = Modifier.weight(1f).testTag("resultTime"))
+                    TextButton(onClick = { showingDetails = true }, modifier = Modifier.testTag("conversionDetails"),
+                        colors = ButtonDefaults.textButtonColors(contentColor = Lime)) {
+                        Icon(Icons.Default.Info, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(6.dp))
+                        Text("Details")
+                    }
+                }
+                Text(when (result.value.kind) { ConversionKind.SWUM -> "Entered swim"; ConversionKind.PUBLISHED -> "Published factor"; ConversionKind.DERIVED -> "Derived estimate" },
+                    color = Lime, style = MaterialTheme.typography.labelMedium)
+                if (result.value.kind != ConversionKind.SWUM) {
+                    Text("From ${draft.time} · ${draft.distance} ${draft.unit} ${courses[draft.courseIndex]}",
+                        color = Color.White.copy(alpha = 0.8f), style = MaterialTheme.typography.bodySmall)
+                }
             }
             is ConversionOutcome.Invalid -> {
-                Text("Check your time", color = Color.White, style = MaterialTheme.typography.headlineSmall, modifier = Modifier.testTag("invalidTime"))
-                Text("Enter a positive time such as 58.32 or 1:02.45, up to 60 minutes.", color = Color.White)
+                Text("Check your time", color = Color.White, fontWeight = FontWeight.Bold, modifier = Modifier.testTag("invalidTime"))
+                Text("Try 58.32 or 1:02.45, up to 60 minutes.", color = Color.White, style = MaterialTheme.typography.bodySmall)
             }
             is ConversionOutcome.Unavailable -> {
-                Text("No published conversion", color = Color.White, style = MaterialTheme.typography.headlineSmall, modifier = Modifier.testTag("unavailableConversion"))
-                Text("This event or course has no published NCAA factor. Choose another comparison.", color = Color.White)
+                Text("No published conversion", color = Color.White, fontWeight = FontWeight.Bold, modifier = Modifier.testTag("unavailableConversion"))
+                Text("Choose another event or course comparison.", color = Color.White, style = MaterialTheme.typography.bodySmall)
             }
         }
+    }
+    if (showingDetails && result is ConversionOutcome.Available) {
+        ModalBottomSheet(onDismissRequest = { showingDetails = false }, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
+            ConversionDetails(draft, result) { showingDetails = false }
+        }
+    }
+}
+
+@Composable private fun ConversionDetails(draft: Draft, result: ConversionOutcome.Available, onClose: () -> Unit) {
+    val context = LocalContext.current
+    Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+            Text("Conversion details", style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
+            TextButton(onClick = onClose) { Text("Done") }
+        }
+        Text("Entered swim", fontWeight = FontWeight.Bold)
+        Text(draft.time, style = MaterialTheme.typography.headlineSmall)
+        Text(draft.label)
+        HorizontalDivider()
+        Text(if (result.value.kind == ConversionKind.SWUM) "Same course" else "Comparison", fontWeight = FontWeight.Bold)
+        Text(result.value.time, style = MaterialTheme.typography.headlineSmall)
+        Text(draft.resultLabel(result.value.event))
+        Text(when (result.value.kind) {
+            ConversionKind.SWUM -> "The entered time is unchanged."
+            ConversionKind.PUBLISHED -> "Uses the published NCAA metric-to-yards factor."
+            ConversionKind.DERIVED -> "Derived from the published NCAA factors; this is an estimate."
+        })
+        Text("Time multiplier: ${result.value.factor}")
+        if (result.value.kind != ConversionKind.SWUM) {
+            Text("Multiplies the entered seconds by this factor, then truncates to hundredths.",
+                style = MaterialTheme.typography.bodySmall)
+        }
+        HorizontalDivider()
+        Text("Source", fontWeight = FontWeight.Bold)
+        Text(result.provenance.title)
+        Text("Edition: ${result.provenance.id}")
+        Text("Revision: ${result.provenance.revision}", style = MaterialTheme.typography.bodySmall)
+        TextButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(result.provenance.url))) }) { Text("Published source") }
+        Text("Source links need an internet connection. Calculation and source metadata work offline.", style = MaterialTheme.typography.bodySmall)
+        Text("A converted time is not a recorded performance or confirmation of meet-entry eligibility.", style = MaterialTheme.typography.bodySmall)
     }
 }

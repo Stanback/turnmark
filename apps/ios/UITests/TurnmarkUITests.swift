@@ -15,6 +15,14 @@ final class TurnmarkUITests: XCTestCase {
         app.segmentedControls["targetCourse"].buttons["SCY"].tap()
         XCTAssertTrue(app.segmentedControls["targetCourse"].buttons["SCY"].isSelected)
         XCTAssertEqual(app.staticTexts["resultTime"].label, "52.44")
+        XCTAssertEqual(app.staticTexts["resultContext"].label, "100 yd Freestyle · SCY · Women")
+        app.buttons["conversionDetails"].tap()
+        XCTAssertTrue(app.navigationBars["Conversion details"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["100 m Freestyle · LCM · Women"].exists)
+        app.swipeUp()
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Edition:")).firstMatch.exists)
+        capture(app, "Conversion details")
+        app.buttons["Done"].tap()
         capture(app, "Native converter")
         app.swipeUp()
         app.buttons["saveSwim"].tap()
@@ -45,6 +53,23 @@ final class TurnmarkUITests: XCTestCase {
         screenshot.name = name
         screenshot.lifetime = .keepAlways
         add(screenshot)
+    }
+
+    @MainActor func testResultContextUsesDestinationDistanceAndCategory() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uitesting-reset"]
+        app.launch()
+        XCTAssertTrue(app.textFields["timeInput"].waitForExistence(timeout: 10))
+        app.segmentedControls["inputCourse"].buttons["LCM"].tap()
+        app.buttons["distancePicker"].tap()
+        app.buttons["400 m"].tap()
+        app.segmentedControls["category"].buttons["Men"].tap()
+        app.swipeUp()
+        app.segmentedControls["targetCourse"].buttons["SCY"].tap()
+        XCTAssertEqual(app.staticTexts["resultContext"].label, "500 yd Freestyle · SCY · Men")
+        app.segmentedControls["targetCourse"].buttons["LCM"].tap()
+        XCTAssertEqual(app.staticTexts["resultContext"].label, "400 m Freestyle · LCM · Men")
+        XCTAssertTrue(app.staticTexts["Entered swim"].exists)
     }
 
     @MainActor func testInvalidTimeDoesNotProduceResult() {

@@ -68,3 +68,18 @@ which favors immediate interaction, matching the first screen and avoiding
 standalone launch branding, and [Android’s splash-screen guidance](https://developer.android.com/develop/ui/views/launch/splash-screen),
 which provides the launcher-icon splash and dismisses it when the first frame is
 ready. System Liquid Glass navigation and action buttons stay in use on iOS.
+
+## Result context
+
+The persistent result leads with its destination event, actual distance and
+units, course and category. The time remains prominent, with the
+entered/published/derived label and original swim nearby. Use the SDK's returned
+event rather than copying the input distance: 400 metres can compare with 500
+yards. Both apps expose a native Details sheet with the original/result pair,
+the SDK's multiplier and source edition. This keeps provenance available while
+giving the answer more space than a repeated source title.
+
+Input controls have explicit stroke, distance and published-category labels;
+distance choices include yards or metres. Save/Share follow the inputs. The
+next [offline history workflow](MEET_HISTORY.md) prioritizes actual performances
+and meet/date context, keeping converted estimates out of personal bests.
