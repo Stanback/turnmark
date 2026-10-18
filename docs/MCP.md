@@ -141,7 +141,7 @@ the committed result or conversation context.
 
 `npm run test:mcp` builds/types the card, exercises fresh packed offline consumers
 and workerd, then runs the official `AppBridge` in a strict opaque-origin sandbox
-with real stdio tool calls. Install Chromium first. The isolated deployment still
+with real stdio and Workers HTTP tool calls. Install Chromium first. The isolated deployment still
 uploads only the already-tested Worker artifact; the UI does not change token,
 route, rate-limit, billing or credential boundaries. The HTML has a 750,000-byte
 build budget (including the official bridge SDK); Worker size remains checked by

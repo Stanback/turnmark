@@ -119,7 +119,7 @@ remain explicit in responses and release notes.
 MCP Apps is implemented in the adapter's 0.2.0 source and Worker artifact. The
 registry remains at MCP 0.1.0 until a separately authenticated publication.
 `npm run test:mcp` verifies packed offline consumers, both HTTP protocol modes,
-resource metadata and the official browser bridge. A fresh MCP tarball was also
+resource metadata and the official browser bridge over stdio and Workers HTTP. A fresh MCP tarball was also
 installed against published SDK 0.1.0, with conversion/resource reads verified
 without runtime network access. The adapter does not require a new SDK release.
 See [MCP Apps review](MCP_APPS_REVIEW.md) for screenshots and host limits.

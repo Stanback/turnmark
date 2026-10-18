@@ -26,9 +26,9 @@ for (const input of Object.keys(bundle.metafile.inputs)) {
 const notices = [];
 for (const root of [...roots].sort()) {
   const metadata = JSON.parse(await readFile(`${root}/package.json`, "utf8"));
-  const files = (await readdir(root)).filter((name) =>
-    /^(licen[sc]e|notice)(\..*)?$/i.test(name),
-  );
+  const files = (await readdir(root))
+    .filter((name) => /^(licen[sc]e|notice)(\..*)?$/i.test(name))
+    .sort();
   if (!files.length)
     throw new Error(`Review bundled license notices for ${metadata.name}`);
   notices.push(

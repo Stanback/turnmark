@@ -142,7 +142,7 @@ server or Streamable HTTP URL. The immutable resource is
 local Apps require the forthcoming `0.2.0` package (or a source build).
 
 Verified with the official AppBridge in an opaque browser sandbox and real
-stdio tool calls, plus resource/protocol checks through local Workers HTTP.
+tool calls over both stdio and local Workers Streamable HTTP.
 Specific versions of ChatGPT, Claude and VS Code have **not** been visually
 verified in this release; rendering depends on the client and surface. See the
 [implementation review](https://github.com/Stanback/turnmark/blob/main/docs/MCP_APPS_REVIEW.md).

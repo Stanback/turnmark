@@ -64,7 +64,8 @@ text, the clock fits one line and surrounding copy wraps normally:
   installation against **registry SDK 0.1.0** also runs both protocol modes,
   full result fixtures and resource reads with runtime fetch disabled.
 - Actual local Worker bindings enforce request/body/Origin/rate/aggregate limits.
-- Official AppBridge in Chromium with a real stdio MCP server, an opaque-origin
+- Official AppBridge in Chromium with both a real stdio MCP server and a local
+  Workers Streamable HTTP server, an opaque-origin
   `allow-scripts` sandbox and strict CSP: rendering, resize, keyboard update,
   theme changes, 320 px width, 200% text, explicit cancellation/late response,
   denied tool/context/link calls, malformed/invalid/unavailable outcomes, hostile strings,
@@ -78,8 +79,7 @@ text, the clock fits one line and surrounding copy wraps normally:
 
 The browser screenshots are from the official bridge test host, **not** ChatGPT,
 Claude or VS Code. Specific desktop/mobile host versions still need a real-host
-visual/approval/context acceptance pass; the user's GUI was unavailable during
-this autonomous run. Protocol compatibility does not establish rendering in
+visual/approval/context acceptance pass. Protocol compatibility does not establish rendering in
 every host or directory approval. Local profiling does not establish edge CPU
 usage; verify production responses after deployment and monitor actual Free
 limits without enabling a paid plan.

@@ -5,17 +5,55 @@ import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
 import { chromium } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import { Client } from "@modelcontextprotocol/client";
+import {
+  Client,
+  StreamableHTTPClientTransport,
+} from "@modelcontextprotocol/client";
+import { unstable_dev } from "wrangler";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 process.chdir(fileURLToPath(new URL("../", import.meta.url)));
-const client = new Client({ name: "Turnmark UI test", version: "1" });
-await client.connect(
-  new StdioClientTransport({
-    command: process.execPath,
-    args: ["packages/mcp/dist/cli.js"],
-    stderr: "pipe",
-  }),
+const mode = process.argv[2] === "http" ? "HTTP" : "stdio";
+let worker;
+const client = new Client(
+  { name: "Turnmark UI test", version: "1" },
+  {
+    capabilities: {
+      extensions: {
+        "io.modelcontextprotocol/ui": {
+          mimeTypes: ["text/html;profile=mcp-app"],
+        },
+      },
+    },
+  },
 );
+if (mode === "HTTP") {
+  worker = await unstable_dev("packages/mcp-worker/src/index.ts", {
+    config: "packages/mcp-worker/wrangler.jsonc",
+    local: true,
+    port: 0,
+    ip: "127.0.0.1",
+    persist: false,
+    logLevel: "error",
+    experimental: {
+      disableExperimentalWarning: true,
+      disableDevRegistry: true,
+      watch: false,
+    },
+  });
+  await client.connect(
+    new StreamableHTTPClientTransport(
+      new URL(`http://${worker.address}:${worker.port}/mcp`),
+    ),
+  );
+} else {
+  await client.connect(
+    new StdioClientTransport({
+      command: process.execPath,
+      args: ["packages/mcp/dist/cli.js"],
+      stderr: "pipe",
+    }),
+  );
+}
 const uri = "ui://turnmark/conversion/0.2.0.html";
 const card = (await client.readResource({ uri })).contents[0].text;
 const host = await build({
@@ -55,7 +93,7 @@ const initial = await client.callTool({
   name: "convert_swim",
   arguments: input,
 });
-const shots = "target/mcp-ui-review";
+const shots = `target/mcp-ui-review${mode === "HTTP" ? "/http" : ""}`;
 await mkdir(shots, { recursive: true });
 try {
   const context = await browser.newContext({
@@ -252,7 +290,7 @@ try {
     .locator("body")
     .screenshot({ path: `${shots}/mcp-card-large-text.png` });
   console.log(
-    "MCP Apps: official AppBridge + real stdio tools; opaque sandbox/CSP, keyboard, theme, narrow/large text, cancellation, denied calls/context, invalid/unavailable, destination context and card isolation passed.",
+    `MCP Apps: official AppBridge + real ${mode} tools; opaque sandbox/CSP, keyboard, theme, narrow/large text, cancellation, denied calls/context, invalid/unavailable, destination context and card isolation passed.`,
   );
 } catch (error) {
   for (const p of browser.contexts().flatMap((c) => c.pages())) {
@@ -265,5 +303,6 @@ try {
 } finally {
   await browser.close();
   await client.close();
+  await worker?.stop();
   await new Promise((resolve) => server.close(resolve));
 }
