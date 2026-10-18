@@ -130,7 +130,6 @@
   </section>
 </main>
 <footer class="page-width">
-  <a href="/llms.txt">Agent documentation index</a> ·
   <a href="https://github.com/Stanback/turnmark">Source code</a>
 </footer>
 
