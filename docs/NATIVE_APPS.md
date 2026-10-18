@@ -104,6 +104,11 @@ and 20 minutes for Android, so a stalled toolchain cannot occupy a runner for th
 default six hours. The existing website deployment remains a main-branch-only
 job with its own permissions; do not use `pull_request_target` to execute PR code.
 
+The iOS wrapper disables bulk simulator diagnostic collection: Xcode was observed
+remaining in the test step after all five UI cases passed. Test exit status,
+xcresult results and screenshot attachments are still retained. Local app checks
+use the same option, so CI does not need a different test-success criterion.
+
 When releases are added, put signed builds and TestFlight/Play uploads in a
 separate trusted release workflow with a protected environment. Keep release
 credentials out of PR jobs and require deliberate promotion of the reviewed

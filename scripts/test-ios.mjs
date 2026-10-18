@@ -46,6 +46,10 @@ const result = spawnSync(
     application
       ? `target/${output}.xcresult`
       : `../../target/${output}.xcresult`,
+    // Xcode can wait for simulator diagnostics long after all tests pass.
+    // Keep xcresult test results/attachments without the bulk diagnostic dump.
+    "-collect-test-diagnostics",
+    "never",
     "CODE_SIGNING_ALLOWED=NO",
   ],
   { cwd: application ? "." : "packages/swift", stdio: "inherit" },
