@@ -59,7 +59,7 @@ npm run preview
 
 The production app is static files in `dist/`. CI checks types, unit tests, desktop/mobile interactions, accessibility and offline behavior through the local Cloudflare runtime. Trusted `main` builds deploy automatically from an isolated job using a token scoped to the website Worker. PRs have no Cloudflare credentials. See [hosting and deployment](docs/HOSTING.md) for setup and token rotation.
 
-The web app consumes the private [Turnmark SDK](packages/sdk/README.md). Its
+The web app consumes the [Turnmark SDK](packages/sdk/README.md). Its
 calculations, clock helpers, and numerical lookups execute in the same Rust core
 that generates Swift and Kotlin libraries. Canonical snapshots live in root
 `data/`; JavaScript contains API adapters and source metadata. `npm ci` and the
@@ -72,7 +72,8 @@ tradeoffs. The native apps use SwiftUI and Jetpack Compose. Publisher embeds
 and remaining platform work are tracked in the [platform plan](docs/PLATFORM_PLAN.md).
 The [agent interface plan](docs/AGENT_INTERFACES.md) covers future MCP and WebMCP
 adapters around that same SDK.
-No SDK package has been published.
+SDK 0.1 is prepared for npm distribution; no package has been published yet.
+See [SDK releases](docs/SDK_RELEASES.md) for installation and release status.
 
 The native apps in `apps/ios` and `apps/android` include the shared converter
 and offline meet history: log actual swims, correct records, compare personal

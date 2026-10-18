@@ -20,6 +20,7 @@
     "pretest": "npm run build:sdk",
     "test": "vitest run",
     "test:sdk:package": "npm run build:sdk && node scripts/test-sdk-package.mjs",
+    "pack:sdk": "npm run build:sdk && node scripts/test-sdk-package.mjs release",
     "test:browser": "playwright test",
     "test:production": "playwright test --config playwright.production.config.ts",
     "data:refresh": "python3 scripts/import-standards.py",

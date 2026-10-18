@@ -13,6 +13,7 @@ test-results/
 test-results-production/
 packages/sdk/LICENSE
 /target/
+/release/
 /bindings/generated/
 packages/sdk/src/data/*.json
 packages/sdk/src/generated/
