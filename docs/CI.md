@@ -3,18 +3,22 @@
 CI follows consumer dependencies. Editing the web app does not rebuild the
 native apps; editing canonical calculations or data tests every consumer.
 
-| Changed inputs                                                                                                        | Checks selected       |
-| --------------------------------------------------------------------------------------------------------------------- | --------------------- |
-| Web UI, public assets, browser tests, Vite/Svelte/TypeScript configuration                                            | Web                   |
-| JavaScript SDK, Wasm adapter, npm manifest/lockfile, JS packaging scripts                                             | Web and core/Wasm     |
-| SwiftUI app, Swift package/tests, iOS packaging/test scripts                                                          | iOS                   |
-| Compose app, Android package/tests, Gradle/NDK packaging/test scripts                                                 | Android               |
-| Canonical Rust core, data, conformance fixtures, Cargo manifest/lockfile/toolchain, shared binding build/test scripts | All                   |
-| Portable history contract/fixtures (`apps/history/`)                                                                  | iOS and Android       |
-| Native host-test helper                                                                                               | iOS and Android       |
-| Shared brand-generation script                                                                                        | Web, iOS and Android  |
-| Documentation, root Markdown instructions, issue/PR templates                                                         | Selection checks only |
-| Workflows, selection rules, or unfamiliar paths                                                                       | All                   |
+| Changed inputs                                                                                                        | Checks selected           |
+| --------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| Web UI, public assets, browser tests, Vite/Svelte/TypeScript configuration                                            | Web                       |
+| JavaScript SDK, Wasm adapter, npm manifest/lockfile, JS packaging scripts                                             | Web and core/Wasm         |
+| MCP server, Worker, protocol tests                                                                                    | Core/Wasm (including MCP) |
+| SwiftUI app, Swift package/tests, iOS packaging/test scripts                                                          | iOS                       |
+| Compose app, Android package/tests, Gradle/NDK packaging/test scripts                                                 | Android                   |
+| Canonical Rust core, data, conformance fixtures, Cargo manifest/lockfile/toolchain, shared binding build/test scripts | All                       |
+| Portable history contract/fixtures (`apps/history/`)                                                                  | iOS and Android           |
+| Native host-test helper                                                                                               | iOS and Android           |
+| Shared brand-generation script                                                                                        | Web, iOS and Android      |
+| Documentation, root Markdown instructions, issue/PR templates                                                         | Selection checks only     |
+| Workflows, selection rules, or unfamiliar paths                                                                       | All                       |
+
+Core/Wasm checks also build and test the MCP package and local Worker. Web-only
+edits skip those checks. SDK changes exercise their MCP consumer.
 
 Website hosting configuration (`wrangler.jsonc`) and isolated deployment tooling
 under `deployment/` select web checks only. Workflow changes still select all.

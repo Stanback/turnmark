@@ -70,8 +70,9 @@ uses the same engine in Node. Offline caching includes that versioned asset.
 See the [shared engine guide](docs/SHARED_ENGINE.md) for packaging, checks and
 tradeoffs. The native apps use SwiftUI and Jetpack Compose. Publisher embeds
 and remaining platform work are tracked in the [platform plan](docs/PLATFORM_PLAN.md).
-The [agent interface plan](docs/AGENT_INTERFACES.md) covers future MCP and WebMCP
-adapters around that same SDK.
+The [MCP adapter](docs/MCP.md) exposes the same SDK locally and through a
+prepared Cloudflare Worker; public deployment is pending.
+The [agent interface plan](docs/AGENT_INTERFACES.md) covers future WebMCP work.
 SDK 0.1 is prepared for npm distribution; no package has been published yet.
 See [SDK releases](docs/SDK_RELEASES.md) for installation and release status.
 
