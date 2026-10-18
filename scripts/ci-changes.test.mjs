@@ -25,6 +25,8 @@ const all = flags("web", "core", "ios", "android");
 for (const [path, expected] of [
   ["src/App.svelte", flags("web")],
   ["src/app.css", flags("web")],
+  ["apps/embed/Widget.svelte", flags("web")],
+  ["embed/v1/index.html", flags("web")],
   ["public/icons/app-icon.svg", flags("web")],
   ["tests-production/app.spec.ts", flags("web")],
   ["playwright.production.config.ts", flags("web")],

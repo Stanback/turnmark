@@ -5,7 +5,7 @@ native apps; editing canonical calculations or data tests every consumer.
 
 | Changed inputs                                                                                                        | Checks selected           |
 | --------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| Web UI, public assets, browser tests, Vite/Svelte/TypeScript configuration                                            | Web                       |
+| Web UI, embedded widget, public assets, browser tests, Vite/Svelte/TypeScript configuration                                            | Web                       |
 | JavaScript SDK, Wasm adapter, npm manifest/lockfile, JS packaging scripts                                             | Web and core/Wasm         |
 | MCP server, Worker, protocol tests                                                                                    | Core/Wasm (including MCP) |
 | SwiftUI app, Swift package/tests, iOS packaging/test scripts                                                          | iOS                       |

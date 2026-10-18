@@ -68,10 +68,12 @@ normal development/check/build commands compile the SDK automatically.
 The browser loads a bundled WebAssembly asset before hydration; pre-rendering
 uses the same engine in Node. Offline caching includes that versioned asset.
 See the [shared engine guide](docs/SHARED_ENGINE.md) for packaging, checks and
-tradeoffs. The native apps use SwiftUI and Jetpack Compose. Publisher embeds
-and remaining platform work are tracked in the [platform plan](docs/PLATFORM_PLAN.md).
-The [MCP adapter](docs/MCP.md) exposes the same SDK locally and through a
-prepared Cloudflare Worker; public deployment is pending.
+tradeoffs. The native apps use SwiftUI and Jetpack Compose. A
+[compact publisher embed](docs/EMBED.md) is prepared at `/embed/v1/`, with
+copyable HTML and a preview near the bottom of the website. Remaining platform work is tracked in the
+[platform plan](docs/PLATFORM_PLAN.md).
+The [MCP adapter](docs/MCP.md) supports offline stdio and stateless Streamable
+HTTP at `https://mcp.turnmark.app/mcp`, using the same SDK.
 The [agent interface plan](docs/AGENT_INTERFACES.md) covers future WebMCP work.
 SDK 0.1 is prepared for npm distribution; no package has been published yet.
 See [SDK releases](docs/SDK_RELEASES.md) for installation and release status.

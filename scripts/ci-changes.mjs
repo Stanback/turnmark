@@ -83,9 +83,14 @@ export function affectedChecks(paths) {
     )
       select("core");
     else if (
-      ["src/", "public/", "tests/", "tests-production/"].some((prefix) =>
-        path.startsWith(prefix),
-      ) ||
+      [
+        "src/",
+        "apps/embed/",
+        "embed/",
+        "public/",
+        "tests/",
+        "tests-production/",
+      ].some((prefix) => path.startsWith(prefix)) ||
       /^(vite|vitest|svelte|playwright(?:\.production)?)\.config\./.test(
         path,
       ) ||

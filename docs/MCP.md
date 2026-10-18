@@ -1,10 +1,9 @@
 # Turnmark MCP
 
-Status: local stdio and a Cloudflare Worker adapter are implemented. The
-dedicated Worker, Custom Domain and protected deployment credential are
-configured; the first application deployment follows merge and passing CI.
-The remote URL is `https://mcp.turnmark.app/mcp`. npm publication is separate
-and has not happened yet.
+Local stdio and a Cloudflare Worker adapter use the same tool server. The
+remote URL is `https://mcp.turnmark.app/mcp`; protected main CI owns deployment
+to the dedicated Worker and Custom Domain. npm publication is separate and
+has not happened yet.
 
 ## One calculation engine
 
