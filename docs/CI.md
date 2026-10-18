@@ -10,6 +10,7 @@ native apps; editing canonical calculations or data tests every consumer.
 | SwiftUI app, Swift package/tests, iOS packaging/test scripts                                                          | iOS                   |
 | Compose app, Android package/tests, Gradle/NDK packaging/test scripts                                                 | Android               |
 | Canonical Rust core, data, conformance fixtures, Cargo manifest/lockfile/toolchain, shared binding build/test scripts | All                   |
+| Portable history contract/fixtures (`apps/history/`)                                                                  | iOS and Android       |
 | Native host-test helper                                                                                               | iOS and Android       |
 | Shared brand-generation script                                                                                        | Web, iOS and Android  |
 | Documentation, root Markdown instructions, issue/PR templates                                                         | Selection checks only |

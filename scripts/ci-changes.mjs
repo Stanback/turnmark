@@ -36,7 +36,8 @@ export function affectedChecks(paths) {
       path.startsWith("scripts/import-")
     )
       return all();
-    if (
+    if (path.startsWith("apps/history/")) select("ios", "android");
+    else if (
       path.startsWith("apps/ios/") ||
       path.startsWith("packages/swift/") ||
       path === "bindings/tests/main.swift" ||

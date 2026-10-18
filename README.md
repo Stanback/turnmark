@@ -6,6 +6,8 @@
 
 Swim time conversion, published standards, and World Aquatics points, built around a shared Rust calculation engine. The web app is available today; native iOS and Android apps are in development. Built for swimmers, coaches, and parents who want to understand a swim across pool courses and find a useful next target.
 
+Available in the web app:
+
 - Live SCY / SCM / LCM comparisons with event-specific distance mapping
 - Published NCAA metric-to-yards factors, with explicitly labeled derived reverse conversions
 - 2,892 published USA Swimming 2024–2028 motivational times, revised October 10, 2025
@@ -66,15 +68,19 @@ normal development/check/build commands compile the SDK automatically.
 The browser loads a bundled WebAssembly asset before hydration; pre-rendering
 uses the same engine in Node. Offline caching includes that versioned asset.
 See the [shared engine guide](docs/SHARED_ENGINE.md) for packaging, checks and
-tradeoffs. Native SwiftUI/Android Compose app interfaces and publisher embeds
-are subsequent work, tracked in the [platform plan](docs/PLATFORM_PLAN.md).
+tradeoffs. The native apps use SwiftUI and Jetpack Compose. Publisher embeds
+and remaining platform work are tracked in the [platform plan](docs/PLATFORM_PLAN.md).
 The [agent interface plan](docs/AGENT_INTERFACES.md) covers future MCP and WebMCP
 adapters around that same SDK.
 No SDK package has been published.
 
-The first SwiftUI and Jetpack Compose converter screens are in `apps/ios` and
-`apps/android`. See [native app setup and scope](docs/NATIVE_APPS.md) for local
-builds, simulator/emulator tests, and the public-repository CI boundary.
+The native apps in `apps/ios` and `apps/android` include the shared converter
+and offline meet history: log actual swims, correct records, compare personal
+bests, and transfer records with a common JSON export/import format. Saved
+conversions remain separate from performances. They are development builds,
+not yet store releases, and do not yet have all web features. See
+[native app setup and scope](docs/NATIVE_APPS.md) for local builds,
+simulator/emulator tests, and the public-repository CI boundary.
 
 ## Data and calculations
 

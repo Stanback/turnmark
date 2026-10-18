@@ -1,0 +1,71 @@
+{
+  "format": "turnmark.swim-history",
+  "version": 1,
+  "swims": [
+    {
+      "id": "6f3dbf20-927a-43bc-8cd8-2112c866a999",
+      "time": "1:00",
+      "hundredths": 6000,
+      "distance": 100,
+      "stroke": "FR",
+      "course": "LCM",
+      "category": "women",
+      "date": "2026-10-17",
+      "meet": "Autumn Invitational",
+      "createdAt": 1792195200000,
+      "updatedAt": 1792195200000
+    },
+    {
+      "id": "6f3dbf20-927a-43bc-8cd8-2112c866a990",
+      "time": "59.32",
+      "hundredths": 5932,
+      "distance": 100,
+      "stroke": "FR",
+      "course": "LCM",
+      "category": "women",
+      "date": "2026-10-17",
+      "meet": "Autumn Invitational",
+      "createdAt": 1792195200000,
+      "updatedAt": 1792195200000
+    },
+    {
+      "id": "6f3dbf20-927a-43bc-8cd8-2112c866a991",
+      "time": "5:02.45",
+      "hundredths": 30245,
+      "distance": 400,
+      "stroke": "FR",
+      "course": "LCM",
+      "category": "women",
+      "date": "2026-10-17",
+      "meet": "Autumn Invitational",
+      "createdAt": 1792195200000,
+      "updatedAt": 1792195200000
+    },
+    {
+      "id": "6f3dbf20-927a-43bc-8cd8-2112c866a992",
+      "time": "5:02.45",
+      "hundredths": 30245,
+      "distance": 500,
+      "stroke": "FR",
+      "course": "SCY",
+      "category": "women",
+      "date": "2026-10-17",
+      "meet": "Autumn Invitational",
+      "createdAt": 1792195200000,
+      "updatedAt": 1792195200000
+    },
+    {
+      "id": "6f3dbf20-927a-43bc-8cd8-2112c866a993",
+      "time": "1:00",
+      "hundredths": 6000,
+      "distance": 100,
+      "stroke": "IM",
+      "course": "SCY",
+      "category": "women",
+      "date": null,
+      "meet": null,
+      "createdAt": 1792195200000,
+      "updatedAt": 1792195200000
+    }
+  ]
+}

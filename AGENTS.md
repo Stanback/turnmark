@@ -23,7 +23,8 @@ instructions here.
   [NATIVE_APPS.md](docs/NATIVE_APPS.md) for current native scope and setup, and
   [PLATFORM_PLAN.md](docs/PLATFORM_PLAN.md) for future work. Plans are not shipped
   features; keep that distinction clear in documentation.
-- The next native workflow is [offline meet history](docs/MEET_HISTORY.md).
+- Native [offline meet history](docs/MEET_HISTORY.md) uses the portable contract
+  in [apps/history](apps/history/README.md); keep both adapters and fixtures aligned.
   Existing saved conversions must not silently become recorded race results.
 
 ## Product conventions

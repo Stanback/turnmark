@@ -3,13 +3,13 @@ import TurnmarkCore
 
 private let ink = Color(red: 3 / 255, green: 44 / 255, blue: 67 / 255)
 private let lime = Color(red: 221 / 255, green: 245 / 255, blue: 140 / 255)
-private let courseNames = ["SCY", "SCM", "LCM"]
-private let courses: [Course] = [.scy, .scm, .lcm]
-private let strokeNames = ["Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual medley"]
-private let strokeCodes = ["FR", "BK", "BR", "FL", "IM"]
-private let strokes: [Stroke] = [.freestyle, .backstroke, .breaststroke, .butterfly, .individualMedley]
+let courseNames = ["SCY", "SCM", "LCM"]
+let courses: [Course] = [.scy, .scm, .lcm]
+let strokeNames = ["Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual medley"]
+let strokeCodes = ["FR", "BK", "BR", "FL", "IM"]
+let strokes: [Stroke] = [.freestyle, .backstroke, .breaststroke, .butterfly, .individualMedley]
 
-private struct Draft: Codable, Equatable {
+struct Draft: Codable, Equatable {
     var time = "58.32"
     var strokeIndex = 0
     var distance: UInt32 = 100
@@ -70,6 +70,12 @@ private struct TurnmarkView: View {
     @Environment(\.verticalSizeClass) private var heightClass
     @State private var draft: Draft
     @State private var tab = 0
+    @State private var history = HistoryController()
+    @State private var logging: Draft?
+    @State private var lastMeet = ""
+    @State private var logNotice: String?
+    @State private var lastLogDay = SwimRecord.day(Date())
+    @State private var lastDate = SwimRecord.day(Date())
     @AppStorage("savedSwim") private var savedJSON = ""
     @FocusState private var editingTime: Bool
     private var isSaved: Bool { Draft.decode(savedJSON) == draft }
@@ -80,6 +86,7 @@ private struct TurnmarkView: View {
         if ProcessInfo.processInfo.arguments.contains("-uitesting-reset") {
             UserDefaults.standard.removeObject(forKey: "draft")
             UserDefaults.standard.removeObject(forKey: "savedSwim")
+            if let store = try? SwimHistoryStore() { for swim in store.swims { try? store.remove(swim.id) } }
         }
         #endif
         _draft = State(initialValue: Draft.decode(UserDefaults.standard.string(forKey: "draft")) ?? Draft())
@@ -91,6 +98,11 @@ private struct TurnmarkView: View {
                     VStack(alignment: .leading, spacing: 20) {
                         if !pinResult { ConversionResult(input: draft, compact: true) }
                         inputCard
+                        Button { editingTime = false; logging = draft } label: { Label("Log swim", systemImage: "plus.circle.fill") }
+                            .buttonStyle(.borderedProminent).controlSize(.large).disabled(!draft.canLog || history.store == nil)
+                            .accessibilityIdentifier("logSwim")
+                        if let logNotice { Text(logNotice).font(.footnote).accessibilityIdentifier("logNotice") }
+                        if history.error != nil { Text("History is unavailable. Open History to try again.").font(.footnote) }
                         swimActions.modifier(SwimActionsStyle()).disabled(!draft.available)
                         Text("Calculated on your device. Works offline.")
                             .font(.footnote).foregroundStyle(.secondary)
@@ -109,12 +121,17 @@ private struct TurnmarkView: View {
                 }
             }.tabItem { Label("Convert", systemImage: "arrow.left.arrow.right") }.tag(0)
             NavigationStack {
+                HistoryScreen(controller: history) { record in draft = Draft(record: record, target: draft.targetIndex); tab = 0 }
+            }.tabItem { Label("History", systemImage: "list.bullet.rectangle") }.tag(1)
+            NavigationStack {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
                         if let saved = Draft.decode(savedJSON) {
                             Text(saved.label).font(.headline)
+                            Text("Saved conversion · not a logged performance").font(.footnote).foregroundStyle(.secondary)
                             Text("Entered time: \(saved.time)").foregroundStyle(.secondary)
                             ConversionResult(input: saved)
+                            Button("Log entered swim") { logging = saved }.disabled(!saved.canLog || history.store == nil)
                             Button("Use this swim") { draft = saved; tab = 0 }.buttonStyle(.borderedProminent)
                             ShareLink(item: saved.shareURL) { Label("Share saved swim", systemImage: "square.and.arrow.up") }
                             Button("Remove saved swim", role: .destructive) { savedJSON = "" }
@@ -123,7 +140,7 @@ private struct TurnmarkView: View {
                         }
                     }.padding()
                 }.navigationTitle("Saved swim").background(Color(uiColor: .systemGroupedBackground))
-            }.tabItem { Label("Saved", systemImage: "bookmark") }.tag(1)
+            }.tabItem { Label("Saved", systemImage: "bookmark") }.tag(2)
             NavigationStack {
                 List {
                     Section("How comparisons work") {
@@ -138,10 +155,21 @@ private struct TurnmarkView: View {
                         Link("Methodology and coverage", destination: URL(string: "https://turnmark.app/#method")!)
                     }
                     Section("Your data") {
-                        Text("Your current inputs and one saved swim stay on this device. Sharing uses a link containing the entered swim. Source links need an internet connection.")
+                        Text("Your inputs, saved conversion and logged swims stay on this device. History export/import moves a copy of your records; there is no account or cloud sync. Sharing uses a link containing the entered swim. Source links need an internet connection.")
                     }
                 }.navigationTitle("The method")
-            }.tabItem { Label("Method", systemImage: "info.circle") }.tag(2)
+            }.tabItem { Label("Method", systemImage: "info.circle") }.tag(3)
+        }
+        .task { if history.store == nil { history.open() } }
+        .sheet(isPresented: Binding(get: { logging != nil }, set: { if !$0 { logging = nil } })) {
+            if let logging {
+                SwimEditor(draft: logging, date: lastLogDay == SwimRecord.day(Date()) ? lastDate : SwimRecord.day(Date()),
+                    meet: lastLogDay == SwimRecord.day(Date()) ? lastMeet : "") { record in
+                    guard let store = history.store else { throw HistoryError.message("History is unavailable.") }
+                    try store.save(record); logNotice = "Logged \(record.time) · \(record.date ?? "Unknown date") · \(record.meet ?? "No meet")"; lastDate = record.date ?? ""; lastMeet = record.meet ?? ""; lastLogDay = SwimRecord.day(Date())
+                    UIAccessibility.post(notification: .announcement, argument: "Swim logged on this device")
+                }
+            }
         }
         .onChange(of: draft) { _, value in UserDefaults.standard.set(value.encoded, forKey: "draft") }
         .onChange(of: draft.courseIndex) { _, _ in draft.reconcile() }

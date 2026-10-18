@@ -26,6 +26,7 @@ class ConverterTest {
 
     @Before fun clearSavedState() {
         ApplicationProvider.getApplicationContext<Context>().getSharedPreferences("turnmark", Context.MODE_PRIVATE).edit().clear().commit()
+        SwimHistoryStore(ApplicationProvider.getApplicationContext()).use { store -> store.load().forEach { store.remove(it.id) } }
         compose.activityRule.scenario.recreate()
     }
 
@@ -112,6 +113,87 @@ class ConverterTest {
         compose.waitUntil(5_000) { automation.rootInActiveWindow?.packageName?.toString() == "net.stanback.turnmark" }
         compose.onNodeWithText("Use this swim").performScrollTo().performClick()
         compose.onNodeWithTag("timeInput").assertTextContains("58.32")
+    }
+
+    @Test fun loggingEditingComparingAndDeletingActualSwims() {
+        compose.onNodeWithText("Stroke: Freestyle").performScrollTo().performClick()
+        compose.onNodeWithText("Individual medley").performClick()
+        compose.onNodeWithTag("unavailableConversion").assertExists()
+        compose.onNodeWithTag("logSwim").performScrollTo().performClick()
+        compose.onNodeWithTag("logDate").performScrollTo().performTextReplacement("2026-10-17")
+        compose.onNodeWithTag("logMeet").performScrollTo().performTextReplacement("Autumn Invitational")
+        compose.onNodeWithTag("confirmLog").performClick()
+        compose.waitUntil(5_000) { compose.onAllNodesWithTag("nav-History").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithTag("nav-History").performClick()
+        compose.onNodeWithText("Autumn Invitational · 2026-10-17").assertExists()
+        compose.onNodeWithText("58.32 · PB").performClick()
+        compose.onNodeWithText("Manually logged performance").assertExists()
+        capture("android-history-detail")
+        compose.onNodeWithText("Edit swim").performScrollTo().performClick()
+        compose.onNodeWithTag("logTime").performTextReplacement("57.99")
+        compose.onNodeWithTag("logDate").performScrollTo().performTextReplacement("")
+        compose.onNodeWithTag("confirmLog").performClick()
+        compose.onNodeWithText("57.99").assertExists()
+        compose.onNodeWithText("Unknown date").assertExists()
+        compose.onNodeWithText("Compare this swim").performScrollTo().performClick()
+        compose.onNodeWithTag("timeInput").assertTextContains("57.99")
+        compose.onNodeWithTag("unavailableConversion").assertExists()
+        compose.onNodeWithTag("nav-Saved").performClick()
+        compose.onNodeWithText("No saved swim").assertExists()
+        compose.activityRule.scenario.recreate()
+        compose.onNodeWithTag("nav-History").performClick()
+        compose.onNodeWithText("57.99 · PB").assertExists()
+        capture("android-history")
+        compose.onNodeWithText("57.99 · PB").performClick()
+        compose.onNodeWithText("Delete swim").performScrollTo().performClick()
+        compose.onNodeWithText("Delete this logged swim?").assertExists()
+        compose.onAllNodesWithText("Delete swim").onLast().performClick()
+        compose.onNodeWithText("No logged swims").assertExists()
+    }
+
+    @Test fun documentImportPreviewAndExportPreserveThePortableRecords() {
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val context = instrumentation.targetContext
+        val input = java.io.File(context.cacheDir, "history-test-input.json")
+        input.writeBytes(instrumentation.context.assets.open("contract-v1.json").use { it.readBytes() })
+        val output = java.io.File(context.cacheDir, "history-test-output.json")
+        output.delete()
+        val monitor = object : Instrumentation.ActivityMonitor() {
+            override fun onStartActivity(intent: Intent): Instrumentation.ActivityResult? = when (intent.action) {
+                Intent.ACTION_OPEN_DOCUMENT -> Instrumentation.ActivityResult(Activity.RESULT_OK, Intent().setData(Uri.fromFile(input)))
+                Intent.ACTION_CREATE_DOCUMENT -> {
+                    assertEquals("application/json", intent.type)
+                    Instrumentation.ActivityResult(Activity.RESULT_OK, Intent().setData(Uri.fromFile(output)))
+                }
+                else -> null
+            }
+        }
+        instrumentation.addMonitor(monitor)
+        try {
+            compose.onNodeWithTag("nav-History").performClick()
+            compose.onNodeWithText("No logged swims").assertExists()
+            compose.onNodeWithText("Import").performClick()
+            compose.onNodeWithText("5 new swims · 0 duplicates · 0 rejected").assertExists()
+            capture("android-import-review")
+            compose.onNodeWithText("Cancel").performClick()
+            compose.onNodeWithText("No logged swims").assertExists()
+            compose.onNodeWithText("Import").performClick()
+            compose.onNodeWithText("5 new swims · 0 duplicates · 0 rejected").assertExists()
+            compose.onNodeWithTag("confirmImport").performClick()
+            compose.waitUntil(5_000) { compose.onAllNodesWithTag("confirmImport").fetchSemanticsNodes().isEmpty() }
+            compose.onNodeWithText("Export").performClick()
+            compose.waitUntil(5_000) { output.exists() && output.length() > 0 }
+            val exported = HistoryArchive.preview(output.readBytes(), emptyList()).records
+            val original = HistoryArchive.preview(input.readBytes(), emptyList()).records
+            assertEquals(original.toSet(), exported.toSet())
+            compose.onNodeWithText("Import").performClick()
+            compose.onNodeWithText("0 new swims · 5 duplicates · 0 rejected").assertExists()
+            compose.onNodeWithTag("confirmImport").assertIsNotEnabled()
+            compose.onNodeWithText("Cancel").performClick()
+        } finally {
+            instrumentation.removeMonitor(monitor)
+            input.delete(); output.delete()
+        }
     }
 
     private fun assertSharedTime(chooser: Intent?, time: String) {

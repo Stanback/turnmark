@@ -1,8 +1,11 @@
 # Offline swim and meet history
 
-Status: next native feature after the paired converter. The current apps store
-one saved conversion and current inputs; a meet log, progress view and export
-are not implemented yet. iOS and Android should ship this workflow together.
+Status: implemented on iOS and Android, pending physical-device release checks.
+The paired apps now log actual swims with optional meet/date context, edit/delete
+records, show personal bests, and import/export a portable JSON archive. The
+single saved conversion remains separate. See the
+[shared record contract](../apps/history/README.md) for format, validation,
+duplicate handling and platform storage details.
 
 ## Pool-deck workflow
 
@@ -56,9 +59,8 @@ for logging races.
   not zero-second swims. Keep the initial entry form small.
 - Native storage belongs outside the Rust calculation core. Use a structured
   local store with explicit schema migrations once multiple records are added;
-  preferences remain suitable for settings and the current draft. Pick platform
-  storage libraries in the implementation PR, rather than adding a second
-  database abstraction to the numerical SDK.
+  preferences remain suitable for settings and the current draft. Use SwiftData on iOS and SQLiteOpenHelper on Android, with explicit local schema
+  versions and no database abstraction in the numerical SDK.
 - Define one versioned, portable export/import schema for both apps and the
   eventual web adapter. Validate imported clock strings and events through the
   shared engine, report rejected records, and make duplicate handling explicit.
@@ -66,8 +68,8 @@ for logging races.
 - Store actual swims independently of comparison outputs. Recalculate estimates
   with the current SDK and display its method/data edition; do not rewrite a
   recorded performance when a factor snapshot changes.
-- Everything above works without an account or network connection. Provide
-  export/import before promising a durable personal archive. A device-only log
+- Everything above works without an account or network connection. Export/import
+  provides a portable copy; encourage users to keep a backup. A device-only log
   is not a synchronization or backup service.
 
 ## Agent access later
@@ -84,7 +86,7 @@ handling and a clear save result. A public remote calculation endpoint must
 not expose personal history. Logging and browsing remain fully usable without
 MCP or WebMCP.
 
-## Acceptance for the history PR
+## Acceptance and release checks
 
 - Log several races at one meet quickly on both platforms; edit the date/meet,
   log a swim without a meet, correct/delete a record and reopen after restart.

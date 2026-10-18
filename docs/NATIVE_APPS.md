@@ -18,7 +18,14 @@ offline on first launch, and use the same source editions and outcomes.
   sharing. Saving shows a checkmarked Saved state; editing the conversion
   returns the action to Save swim. Share links open `https://turnmark.app/`;
   [HOSTING.md](HOSTING.md) describes website deployment and credential isolation.
-- Convert, Saved and Method screens, system appearance, scalable native text
+- Offline actual-swim history: **Log swim** confirms the entered time, date and
+  optional meet; records can be edited/deleted and compared without changing
+  the original performance. Personal bests compare actual matching events only.
+  JSON export/import uses one [portable format](../apps/history/README.md), with
+  a preview, rejected-row reporting, duplicate-ID skipping and atomic inserts.
+  iOS uses versioned SwiftData; Android uses SQLiteOpenHelper with database and
+  document I/O off the main thread. Saved conversions remain separate.
+- Convert, History, Saved and Method screens, system appearance, scalable native text
   and native accessibility semantics. The converter opens directly into inputs,
   without an app-name banner or page heading. Shared wave launcher icons and
   platform launch behavior are described in [brand asset generation](BRANDING.md).
@@ -32,16 +39,17 @@ offline on first launch, and use the same source editions and outcomes.
   by temporarily moving the result into the form and hiding bottom navigation.
 
 This is the first converter workflow, not full web feature parity. Native youth
-and Masters benchmarks, points, altitude entry, full history/export,
+and Masters benchmarks, points, altitude entry,
 layered iOS icon/store artwork, verified app links and final release targets remain later
 work. Physical-device, VoiceOver/TalkBack, large-text and 16 KB Android runtime
 checks are release gates; automated simulator tests do not establish those.
 Bundle/application ID `net.stanback.turnmark`, iOS 17 minimum and Android API 26
 minimum are provisional until release configuration is finalized.
 
-The next workflow is [offline meet and swim history](MEET_HISTORY.md): quick
-logging of actual performances, meet/date context and progress, with portable
-export/import. Existing saved conversions will not silently become race records.
+The [offline meet and swim history](MEET_HISTORY.md) workflow is implemented
+with portable export/import. Existing saved conversions do not become race
+records unless explicitly logged. Charts, splits and synchronization are later
+work. The next release stage is physical-device testing and beta preparation.
 
 ## iOS
 
@@ -129,7 +137,10 @@ A fifth test exercises native sharing and cancellation for current and saved
 swims. Android additionally intercepts the chooser intents to check that the
 shared links contain the entered times and preserve saved values after editing.
 The iOS saved-swim test terminates/relaunches the app;
-Android recreates the activity and reads persisted state. The portable SDK
+Android recreates the activity and reads persisted state. The history suites share 25 import validation cases and a five-swim portable
+fixture, and check persistence, editing, deletion, duplicate handling, malformed
+files and unavailable conversions. The UI suites log an unsupported-comparison
+swim, edit it, compare it, relaunch and delete it. The portable SDK
 fixtures continue to test the numerical core independently of UI controls.
 
 The iOS result bundle retains screenshots of Convert, Saved and Method in light
