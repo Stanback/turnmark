@@ -209,7 +209,7 @@ test("share link restores inputs and CSV downloads", async ({ page }) => {
     .click();
   expect((await download).suggestedFilename()).toBe("turnmark-200-br.csv");
   await page.getByRole("button", { name: "Copy link", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText(
+  await expect(page.getByRole("status", { name: "Swim action" })).toContainText(
     /Link copied|Share link is ready/,
   );
 });
@@ -528,7 +528,10 @@ test("points explain the reference and next milestone; swimboard remove buttons 
   const bounds = await page.locator(".remove-swim").boundingBox();
   expect(bounds).not.toBeNull();
   expect(Math.abs(bounds!.width - bounds!.height)).toBeLessThan(1);
-  await expect(page.getByRole("status")).toHaveCSS("opacity", "1");
+  await expect(page.getByRole("status", { name: "Swim action" })).toHaveCSS(
+    "opacity",
+    "1",
+  );
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
     .analyze();

@@ -67,7 +67,10 @@ const fingerprint = createHash("sha256");
 for (const path of paths) fingerprint.update(await readFile(`dist/${path}`));
 const version = fingerprint.digest("hex").slice(0, 16);
 const base = "/";
-const urls = [...paths.map((path) => base + path), base];
+const routes = paths
+  .filter((path) => path.endsWith("/index.html"))
+  .map((path) => base + path.slice(0, -"index.html".length));
+const urls = [...paths.map((path) => base + path), ...routes, base];
 const worker = `const CACHE = 'turnmark-${version}';
 const BASE = '${base}';
 const URLS = ${JSON.stringify(urls)};
@@ -84,7 +87,7 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET' || url.origin !== self.location.origin || !ASSETS.has(url.pathname)) return;
   if (request.mode === 'navigate') {
     // Keep offline HTML paired with this cache's immutable asset revisions.
-    event.respondWith(fetch(request).catch(() => caches.match(BASE)));
+    event.respondWith(fetch(request).catch(async () => (await caches.match(url.pathname)) || caches.match(BASE)));
     return;
   }
   event.respondWith(caches.match(request, { ignoreSearch: true, ignoreVary: true }).then(cached => cached || fetch(request)));

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Icon from "./lib/Icon.svelte";
+  import Embed from "./lib/Embed.svelte";
   import Pool from "./lib/Pool.svelte";
   import Masters from "./lib/Masters.svelte";
   import Install from "./lib/Install.svelte";
@@ -1370,6 +1371,7 @@
         </details>{/each}
     </div>
   </section>
+  <Embed />
 </main>
 <div class="appearance-row page-width"><Theme /></div>
 <footer class="page-width">
@@ -1389,6 +1391,12 @@
     >
   {/each}
 </nav>
-<div class="toast" class:visible={!!toast} role="status" aria-live="polite">
+<div
+  class="toast"
+  class:visible={!!toast}
+  role="status"
+  aria-label="Swim action"
+  aria-live="polite"
+>
   {#if toast}<Icon name="check" size={17} />{toast}{/if}
 </div>
