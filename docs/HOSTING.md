@@ -8,8 +8,8 @@ The Worker Custom Domain manages DNS and certificates for `turnmark.app`. Do not
 Metadata, Vite's base, the PWA manifest, generated service worker and native
 share links use the new root URL. Browser storage starts fresh on this origin;
 no history transfer is included. Native device storage is unaffected. After
-production deployment succeeds, GitHub Pages publishes a small redirect which
-preserves shared query strings and URL fragments.
+production deployment succeeds, the custom domain serves that tested build.
+The short-lived GitHub Pages site and its redirect deployment are retired.
 
 ## Credential boundary
 
@@ -99,8 +99,7 @@ For suspected compromise, revoke immediately. Do not broaden permissions to
 work around an authorization error.
 
 Keep a known-good Worker version for Wrangler rollback or deployment through
-Cloudflare. GitHub Pages switches to its redirect only after production responds
-successfully. There is no application database to migrate or roll back.
+Cloudflare. There is no application database to migrate or roll back.
 
 References: [Worker permissions](https://developers.cloudflare.com/workers/authorization/workers/),
 [version deployment](https://developers.cloudflare.com/workers/versions-and-deployments/deployment-management/),

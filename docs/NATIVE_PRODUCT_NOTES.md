@@ -90,6 +90,16 @@ An existing record retains its own category; preferences are defaults, not edits
 to history. Converted estimates remain explicitly separate from the achieved
 performance.
 
+## README showcase after standards
+
+Once the native standards/points workflow is implemented and visually reviewed,
+add a small README gallery using actual web, iOS and Android captures. Include a
+useful benchmark result and native compact/expanded examples, with concise links
+to the live widget and MCP setup. Keep development previews distinct from store
+releases and avoid mockups or a screenshot for every form. Capture the completed
+workflow before choosing the gallery; the current redesign images are review
+evidence, not a substitute for that later showcase.
+
 ## Localization follow-up
 
 Start with English, Spanish, Brazilian Portuguese and French; consider German
