@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Icon from "./lib/Icon.svelte";
-  import HeroRipple from "./lib/HeroRipple.svelte";
+  import HeroCurrent from "./lib/HeroCurrent.svelte";
   import Masters from "./lib/Masters.svelte";
   import Install from "./lib/Install.svelte";
   import Theme from "./lib/Theme.svelte";
@@ -515,6 +515,7 @@
 
 <svelte:head><title>{site.title}</title></svelte:head>
 <a class="skip-link" href="#main">Skip to converter</a>
+<div class="hero-atmosphere" aria-hidden="true"></div>
 <header class="site-header">
   <div class="header-inner">
     <a class="wordmark" href="./" aria-label="Turnmark home"
@@ -559,7 +560,7 @@
         25-meter, and 50-meter pools.
       </p>
     </div>
-    <HeroRipple />
+    <HeroCurrent />
   </section>
 
   <section

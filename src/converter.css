@@ -24,6 +24,32 @@
   position: relative;
   z-index: 2;
 }
+.hero-atmosphere {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 780px;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--page) 95%, transparent),
+      color-mix(in srgb, var(--page) 85%, transparent) 76px,
+      transparent 220px
+    ),
+    linear-gradient(
+      90deg,
+      var(--page) 4%,
+      color-mix(in srgb, var(--page) 88%, transparent) 30%,
+      transparent 65%
+    ),
+    linear-gradient(0deg, var(--page), transparent 44%),
+    url("/images/water-ribbons.webp") center top / cover no-repeat;
+  opacity: 0.12;
+  mask-image: linear-gradient(to bottom, black 68%, transparent);
+}
+[data-theme="dark"] .hero-atmosphere {
+  opacity: 1;
+}
 .header-inner {
   max-width: 1136px;
   margin-inline: auto;
@@ -107,7 +133,7 @@
   right: 0;
   background: radial-gradient(
     ellipse closest-side at 77% 32%,
-    color-mix(in srgb, var(--accent) 13%, transparent),
+    color-mix(in srgb, var(--accent) 7%, transparent),
     transparent 100%
   );
 }
@@ -165,18 +191,10 @@
 }
 .input-panel {
   position: relative;
-  background:
-    radial-gradient(
-      ellipse 110% 65% at 2% -8%,
-      var(--surface-raised),
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 80% 60% at 108% 108%,
-      color-mix(in srgb, var(--surface-raised) 65%, transparent),
-      transparent 70%
-    ),
-    var(--surface);
+  background: color-mix(in srgb, var(--surface) 84%, transparent);
+  box-shadow:
+    inset 0 0 28px color-mix(in srgb, var(--accent) 3%, transparent),
+    inset 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 .results-panel {
   position: relative;
@@ -185,7 +203,7 @@
     radial-gradient(
       ellipse 95% 64% at 104% -5%,
       color-mix(in srgb, var(--surface-raised) 76%, var(--accent)) 0%,
-      var(--surface-raised) 34%,
+      color-mix(in srgb, var(--surface-raised) 72%, transparent) 34%,
       transparent 75%
     ),
     radial-gradient(
@@ -193,10 +211,7 @@
       color-mix(in srgb, var(--surface-raised) 80%, transparent),
       transparent 72%
     ),
-    var(--surface);
-  transition:
-    border-color 240ms ease,
-    box-shadow 240ms ease;
+    color-mix(in srgb, var(--surface) 88%, transparent);
   scroll-margin-top: 20px;
   container-type: inline-size;
 }
@@ -212,24 +227,7 @@
     color-mix(in srgb, var(--accent) 12%, transparent),
     transparent 72%
   );
-  opacity: 0;
-  transition: opacity 240ms ease;
-}
-.results-panel:focus-within {
-  border-color: color-mix(in srgb, var(--line) 65%, var(--accent));
-  box-shadow: 0 12px 36px color-mix(in srgb, var(--page) 30%, transparent);
-}
-.results-panel:focus-within::before {
-  opacity: 1;
-}
-@media (hover: hover) and (pointer: fine) {
-  .results-panel:hover {
-    border-color: color-mix(in srgb, var(--line) 65%, var(--accent));
-    box-shadow: 0 12px 36px color-mix(in srgb, var(--page) 30%, transparent);
-  }
-  .results-panel:hover::before {
-    opacity: 1;
-  }
+  opacity: 0.5;
 }
 .text-button {
   background: transparent;
@@ -382,12 +380,12 @@
   background-image: linear-gradient(
     115deg,
     transparent 15%,
-    color-mix(in srgb, var(--accent) 10%, transparent) 60%,
+    color-mix(in srgb, var(--accent) 3%, transparent) 60%,
     transparent
   );
   background-size: 180% 100%;
   background-position: 0% 50%;
-  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--ink) 5%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--ink) 3%, transparent);
   transition:
     background-position 320ms ease,
     border-color 240ms ease,
@@ -701,7 +699,7 @@
   background-image: linear-gradient(
     115deg,
     transparent 15%,
-    color-mix(in srgb, white 20%, transparent) 60%,
+    color-mix(in srgb, white 8%, transparent) 60%,
     transparent
   );
   color: var(--accent-ink);
@@ -713,7 +711,7 @@
   background-image: linear-gradient(
     115deg,
     transparent 15%,
-    color-mix(in srgb, var(--accent) 10%, transparent) 60%,
+    color-mix(in srgb, var(--accent) 3%, transparent) 60%,
     transparent
   );
   color: var(--ink);
@@ -726,8 +724,8 @@
 .secondary-button:focus-visible {
   background-position: 100% 50%;
   box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--ink) 8%, transparent),
-    0 0 22px color-mix(in srgb, var(--accent) 15%, transparent);
+    inset 0 1px 0 color-mix(in srgb, var(--ink) 4%, transparent),
+    0 0 22px color-mix(in srgb, var(--accent) 7%, transparent);
 }
 @media (hover: hover) and (pointer: fine) {
   .course-picker button:hover,
@@ -735,8 +733,8 @@
   .secondary-button:not(:disabled):hover {
     background-position: 100% 50%;
     box-shadow:
-      inset 0 1px 0 color-mix(in srgb, var(--ink) 8%, transparent),
-      0 0 22px color-mix(in srgb, var(--accent) 15%, transparent);
+      inset 0 1px 0 color-mix(in srgb, var(--ink) 4%, transparent),
+      0 0 22px color-mix(in srgb, var(--accent) 7%, transparent);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -749,6 +747,7 @@
   }
 }
 @media (max-width: 760px), print {
+  .hero-atmosphere,
   .intro::before {
     display: none;
   }

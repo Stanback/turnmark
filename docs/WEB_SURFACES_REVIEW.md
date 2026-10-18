@@ -1,17 +1,24 @@
 # Water, light and interaction
 
-The converter header now has a decorative inline SVG with uneven water contours,
-a small cyan origin and three outward ripples. Motion ends after 4.8 seconds;
-reduced-motion settings retain the still illustration. A radial wash fades into
-the header. The illustration and wash are hidden at 760 pixels and below so the
-mobile form stays close to the heading. There is no image download, animation
-library, pointer tracker or calculation change.
+The converter header combines a static water-light background with three faint
+open SVG currents. The user-supplied `Luminous Underwater Wave Ribbons.png`
+(1672 × 941) is encoded as `public/images/water-ribbons.webp` with cwebp quality 88,
+method 6 and metadata removed: 80,280 bytes. The original PNG is untouched.
+The darker blend behind navigation and copy preserves readability; light mode
+uses a much fainter treatment. The background is included in the offline build.
 
-Input and result cards use layered radial lighting; the result has the stronger
-upper-corner glow. Fine-pointer hover and keyboard focus add a small glow without
-moving the card. Action/course buttons shift their sheen. Reduced motion disables
-those transitions. Course rows have a wider rounded hit/hover area while their
-labels, times and dividers keep the existing alignment.
+The open currents fade in over 2.8 seconds, then stay still; reduced motion shows
+them immediately. Water and currents are hidden at 760 pixels and below to keep
+the mobile form close to the heading. No animation library, pointer tracker,
+shader, new dependency or calculation change is involved.
+
+The input card has a very subtle symmetric inner-edge glow. Both cards are
+slightly translucent; the result retains the stronger upper-corner radial light.
+Controls keep solid readable surfaces. The conversion card keeps a static,
+slightly brighter default glow with no container hover/focus effect. Fine-pointer
+hover and keyboard focus on action/course buttons add a faint sheen and glow;
+reduced motion disables those transitions. Course rows have a wider rounded
+hit/hover area while labels, times and dividers keep their alignment.
 
 Three decorative marks mirror the selected SCY, SCM or LCM result. The top source
 chip is removed; the calculation explanation and official NCAA source remain in
@@ -26,6 +33,6 @@ overflow, reduced motion and finite animation. Screenshots use actual calculated
 values, not illustrative conversion ratios. This web-only change needs no native
 rebuild.
 
-![Dark converter with ripple and pooled cyan light](screenshots/web-liquid-surfaces-dark.png)
+![Dark converter with ambient currents and pooled cyan light](screenshots/web-liquid-surfaces-dark.png)
 
 ![Light appearance and result controls](screenshots/web-liquid-surfaces-light.png)
