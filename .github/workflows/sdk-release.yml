@@ -45,9 +45,9 @@ jobs:
           JS
       - run: cargo install wasm-bindgen-cli --version 0.2.129 --locked
       - run: npm ci
+      - run: npx playwright install --with-deps chromium
       - run: npm test
       - run: npm run test:engine
-      - run: npx playwright install --with-deps chromium
       - name: Test the exact tarball retained for publishing
         run: npm run pack:sdk
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
