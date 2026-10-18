@@ -151,3 +151,7 @@ and output hashes in the unit suite, preventing silent export drift. Raster
 favicon URLs stay stable. Store screenshots and promotional
 artwork follow the native adoption so they represent actual screens; layered iOS
 icon artwork and physical-device/store release checks remain explicit work.
+
+The [adaptive-layout brief](ADAPTIVE_LAYOUT.md) records the researched iPhone Duo
+constraints, proposed expanded/compact workflows and simulator/physical-device
+acceptance matrix for the paired native adoption.
