@@ -9,9 +9,13 @@
       (next === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
     document.documentElement.dataset.theme = dark ? "dark" : "light";
     document.documentElement.dataset.themePreference = next;
-    document
-      .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", dark ? "#0b1d2c" : "#032c43");
+    const canvas = getComputedStyle(document.documentElement)
+      .getPropertyValue("--tm-color-canvas")
+      .trim();
+    if (canvas)
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute("content", canvas);
   }
   function choose(next: Preference) {
     apply(next);

@@ -17,7 +17,11 @@ The photograph and animated pool diagram are absent from the converter. Keep
 results readable rather than adding decorative race or lane visualizations.
 History starts empty and shows real local activity. Detailed standards, points,
 methodology and FAQs remain below the main converter, with navigation to each.
-Mobile keeps its results shortcut and persistent section navigation.
+Mobile keeps its results shortcut and persistent Converter/History/Standards
+navigation. Methodology is available beside the result and in the footer.
+
+The [shared design contract](DESIGN_CONTRACT.md) owns the semantic palette and
+records how widget/native adoption preserves platform conventions.
 
 Converter styles live in `src/converter.css`; `src/app.css` holds the shared
 foundation and secondary views. Review both appearances, keyboard operation,

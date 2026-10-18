@@ -3,6 +3,7 @@ import "@fontsource-variable/manrope";
 import "@fontsource-variable/dm-sans";
 import "@fontsource/dm-mono/400.css";
 import "./app.css";
+import "./generated/design-tokens.css";
 import "./converter.css";
 import App from "./App.svelte";
 import { createEngine } from "@turnmark/sdk";

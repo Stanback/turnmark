@@ -45,6 +45,12 @@ instructions here.
   banner or decorative heading. Use the wave identity for app icons and
   platform launch behavior; keep copy concrete. See [BRANDING.md](docs/BRANDING.md)
   and [NATIVE_DESIGN_REVIEW.md](docs/NATIVE_DESIGN_REVIEW.md).
+- Follow [the shared design contract](docs/DESIGN_CONTRACT.md) for semantic
+  colors, spacing, result hierarchy and platform adaptations. Change canonical
+  values in `design/turnmark.tokens.json`; regenerate the committed web output
+  with `node design/generate.mjs`. Native and widget adoption is tracked there;
+  do not claim parity from the web adapter alone. Native system controls,
+  accessibility behavior and logical text styles remain platform-owned.
 - Preserve native text scaling, accessible labels/order, keyboard dismissal,
   light/dark appearance and reduced-motion preferences. iOS uses system Liquid
   Glass controls on supported versions; numerical cards retain readable opaque

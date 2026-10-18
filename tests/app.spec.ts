@@ -388,6 +388,8 @@ test("mobile navigation reaches history and standards without covering content",
   await expect(resultsJump).toBeDisabled();
   await page.locator("#swim-time").fill("58.32");
   const nav = page.getByRole("navigation", { name: "Mobile navigation" });
+  await expect(nav.getByRole("button")).toHaveCount(3);
+  await expect(nav.getByRole("button", { name: "The method" })).toHaveCount(0);
   await nav.getByRole("button", { name: "History", exact: true }).click();
   await expect(page.locator("#history")).toBeInViewport();
   await nav.getByRole("button", { name: "Standards", exact: true }).click();
@@ -395,6 +397,8 @@ test("mobile navigation reaches history and standards without covering content",
   await expect(
     nav.getByRole("button", { name: "Standards", exact: true }),
   ).toHaveAttribute("aria-current", "location");
+  await page.getByRole("button", { name: "How this is calculated" }).click();
+  await expect(page.locator("#method")).toBeInViewport();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,

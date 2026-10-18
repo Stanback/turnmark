@@ -62,7 +62,14 @@ export function affectedChecks(paths) {
     )
       select("android");
     else if (path === "scripts/test-native-host.mjs") select("ios", "android");
-    else if (path === "scripts/generate-brand-assets.mjs")
+    else if (
+      [
+        "scripts/generate-brand-assets.mjs",
+        "design/turnmark.tokens.json",
+        "design/wave.svg",
+        "design/brand-manifest.json",
+      ].includes(path)
+    )
       select("web", "ios", "android");
     else if (
       path.startsWith("crates/turnmark-wasm/") ||
@@ -85,6 +92,7 @@ export function affectedChecks(paths) {
     else if (
       [
         "src/",
+        "design/",
         "apps/embed/",
         "embed/",
         "public/",

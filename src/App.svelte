@@ -847,6 +847,9 @@
               : "Derived from NCAA metric-to-yards factors."} Truncated to hundredths.{/if}
         </p>
       </div>
+      <button class="text-button method-link" onclick={() => go("method")}
+        >How this is calculated <Icon name="arrow" size={14} /></button
+      >
       <div class="result-actions">
         <button class="primary-button" onclick={save} disabled={!!error}
           ><Icon name="bookmark" size={16} />Save swim</button
@@ -1363,12 +1366,14 @@
     > · Open source, always.</span
   >
   <nav class="footer-docs" aria-label="Documentation">
-    <a href="/embed/">Widget setup</a><a href="/mcp/">MCP setup</a>
+    <a href="#method">Methodology</a><a href="/embed/">Widget setup</a><a
+      href="/mcp/">MCP setup</a
+    >
   </nav>
   <span>Sources checked October 16, 2026</span>
 </footer>
 <nav class="mobile-nav" aria-label="Mobile navigation">
-  {#each [{ id: "converter", icon: "wave", label: "Converter" }, { id: "history", icon: "history", label: "History" }, { id: "standards", icon: "standards", label: "Standards" }, { id: "method", icon: "info", label: "The method" }] as item}
+  {#each [{ id: "converter", icon: "wave", label: "Converter" }, { id: "history", icon: "history", label: "History" }, { id: "standards", icon: "standards", label: "Standards" }] as item}
     <button
       class:active={activeSection === item.id}
       aria-current={activeSection === item.id ? "location" : undefined}

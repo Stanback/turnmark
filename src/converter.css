@@ -1,33 +1,18 @@
 /* Converter layout. Secondary standards, history and dialog styles live in app.css. */
-:root {
-  --page: #f4f8f9;
-  --surface: #ffffff;
-  --surface-raised: #edf4f6;
-  --surface-input: #f8fbfc;
-  --ink: #102d3a;
-  --muted: #526c79;
-  --line: #d7e4e9;
-  --accent: #08778a;
-  --accent-fill: #61d3e1;
-  --accent-ink: #062b38;
-  --highlight: #446600;
-  --selected: #f0f7da;
-  color: var(--ink);
-  background: var(--page);
-}
+:root,
 :root[data-theme="dark"] {
-  --page: #081e29;
-  --surface: #122d3b;
-  --surface-raised: #193a49;
-  --surface-input: #0d2836;
-  --ink: #eff7fa;
-  --muted: #abc2cd;
-  --line: #2d4e5e;
-  --accent: #69d5e3;
-  --accent-fill: #61d3e1;
-  --accent-ink: #062b38;
-  --highlight: #c9ee7b;
-  --selected: #294752;
+  --page: var(--tm-color-canvas);
+  --surface: var(--tm-color-surface);
+  --surface-raised: var(--tm-color-surface-raised);
+  --surface-input: var(--tm-color-surface-input);
+  --ink: var(--tm-color-text);
+  --muted: var(--tm-color-text-muted);
+  --line: var(--tm-color-border-subtle);
+  --accent: var(--tm-color-accent);
+  --accent-fill: var(--tm-color-action-fill);
+  --accent-ink: var(--tm-color-on-action);
+  --highlight: var(--tm-color-result-highlight);
+  --selected: var(--tm-color-selected-surface);
   color: var(--ink);
   background: var(--page);
 }
@@ -64,7 +49,7 @@
   width: 33px;
   height: 33px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: var(--tm-radius-control);
   background: var(--surface-raised);
   color: var(--accent);
 }
@@ -154,9 +139,9 @@
 .input-panel,
 .results-panel {
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: var(--tm-radius-card);
   min-width: 0;
-  padding: 30px 32px;
+  padding: var(--tm-space-32);
   background: var(--surface);
 }
 .input-panel {
@@ -220,8 +205,8 @@
 .select-wrap select {
   width: 100%;
   appearance: none;
-  border: 1px solid var(--line);
-  border-radius: 9px;
+  border: 1px solid var(--tm-color-border-control);
+  border-radius: var(--tm-radius-control);
   background: var(--surface-raised);
   color: var(--ink);
   font-size: 16px;
@@ -244,8 +229,8 @@
   display: flex;
   align-items: center;
   padding: 12px 18px;
-  border: 1px solid var(--line);
-  border-radius: 11px;
+  border: 1px solid var(--tm-color-border-control);
+  border-radius: var(--tm-radius-control);
   background: var(--surface-input);
 }
 .time-entry input {
@@ -277,19 +262,19 @@
   height: 20px;
 }
 .time-entry.invalid {
-  border-color: #b13c2c;
+  border-color: var(--tm-color-error);
 }
 .field-error {
-  color: #a13c32;
+  color: var(--tm-color-error);
   font-size: 14px;
   line-height: 1.6;
   margin-block: 8px 22px;
 }
 [data-theme="dark"] .field-error {
-  color: #ffb5aa;
+  color: var(--tm-color-error);
 }
 [data-theme="dark"] .time-entry.invalid {
-  border-color: #ffb5aa;
+  border-color: var(--tm-color-error);
 }
 .time-help {
   color: var(--muted);
@@ -313,8 +298,8 @@
   align-items: center;
   gap: 5px;
   padding: 14px 4px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  border: 1px solid var(--tm-color-border-control);
+  border-radius: var(--tm-radius-control);
   background: var(--surface-raised);
 }
 .course-picker strong {
@@ -509,7 +494,7 @@
   text-align: left;
   min-width: 0;
   width: 100%;
-  padding: 17px 0;
+  padding: var(--tm-space-16) 0;
   background: transparent;
   border-bottom: 1px solid var(--line);
 }
@@ -539,9 +524,9 @@
 }
 .result-card-top > span {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 650;
-  letter-spacing: 0.65px;
+  letter-spacing: 0.1px;
 }
 .result-card-bottom {
   color: var(--muted);
@@ -595,7 +580,7 @@
   gap: 8px;
   min-height: 44px;
   padding: 11px 16px;
-  border-radius: 9px;
+  border-radius: var(--tm-radius-control);
   font-size: 14px;
   font-weight: 650;
 }
@@ -622,7 +607,7 @@
   height: 44px;
   color: var(--muted);
   background: transparent;
-  border-radius: 9px;
+  border-radius: var(--tm-radius-control);
 }
 .icon-button:hover {
   background: var(--surface-raised);
@@ -650,7 +635,7 @@
 .standards-section {
   padding: 28px;
   border-color: var(--line);
-  border-radius: 16px;
+  border-radius: var(--tm-radius-card);
   background: var(--surface);
   box-shadow: none;
 }
@@ -663,7 +648,7 @@
   font-size: 19px;
 }
 .history-wave {
-  border-radius: 10px;
+  border-radius: var(--tm-radius-control);
 }
 .method-section {
   margin-top: 44px;
@@ -735,7 +720,7 @@
     margin-left: 0;
   }
   .intro {
-    padding-block: 30px 32px;
+    padding-block: var(--tm-space-24);
   }
   .converter-eyebrow {
     margin-bottom: 16px;
@@ -743,7 +728,7 @@
     letter-spacing: 1.8px;
   }
   .intro h1 {
-    font-size: clamp(46px, 11.8vw, 64px);
+    font-size: clamp(40px, 10.6vw, 56px);
     letter-spacing: -2.8px;
     margin-bottom: 18px;
   }
@@ -760,14 +745,14 @@
   .input-panel,
   .results-panel {
     border-radius: 15px;
-    padding: 24px 22px;
+    padding: var(--tm-space-24) var(--tm-space-20);
   }
   .reset {
     right: 22px;
     top: 18px;
   }
   .panel-title {
-    margin-bottom: 26px;
+    margin-bottom: var(--tm-space-20);
   }
   .panel-title p {
     font-size: 13px;
@@ -802,6 +787,7 @@
   }
   .focused-result {
     margin-top: 26px;
+    margin-bottom: var(--tm-space-24);
   }
   .focused-context {
     font-size: 14px;
@@ -825,13 +811,14 @@
     font-size: 14px;
   }
   .result-card-top > span {
-    font-size: 9px;
+    font-size: 12px;
   }
   .result-card-bottom {
     font-size: 12px;
   }
   .result-actions {
     gap: 7px;
+    margin-top: var(--tm-space-16);
   }
   .result-actions .primary-button,
   .result-actions .secondary-button {
@@ -847,7 +834,7 @@
   }
   .history-panel,
   .standards-section {
-    padding: 24px 22px;
+    padding: var(--tm-space-24) var(--tm-space-20);
   }
   .method-section {
     gap: 24px;
@@ -905,4 +892,12 @@
   .focused-time {
     font-size: 70px;
   }
+}
+
+.method-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tm-space-8);
+  color: var(--accent);
+  margin-top: var(--tm-space-8);
 }

@@ -1,0 +1,328 @@
+{
+  "$description": "Turnmark shared visual tokens, DTCG 2025.10 subset. See docs/DESIGN_CONTRACT.md.",
+  "$extensions": {
+    "app.turnmark": {
+      "contractVersion": 1
+    }
+  },
+  "light": {
+    "$type": "color",
+    "canvas": {
+      "$description": "App content background; native system chrome is platform-owned.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.95686275, 0.97254902, 0.97647059],
+        "alpha": 1,
+        "hex": "#f4f8f9"
+      }
+    },
+    "surface": {
+      "$description": "Opaque content card.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [1.0, 1.0, 1.0],
+        "alpha": 1,
+        "hex": "#ffffff"
+      }
+    },
+    "surfaceRaised": {
+      "$description": "Raised content and secondary control fill.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.92941176, 0.95686275, 0.96470588],
+        "alpha": 1,
+        "hex": "#edf4f6"
+      }
+    },
+    "surfaceInput": {
+      "$description": "Time-entry background.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.97254902, 0.98431373, 0.98823529],
+        "alpha": 1,
+        "hex": "#f8fbfc"
+      }
+    },
+    "text": {
+      "$description": "Primary content text on content surfaces.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.0627451, 0.17647059, 0.22745098],
+        "alpha": 1,
+        "hex": "#102d3a"
+      }
+    },
+    "textMuted": {
+      "$description": "Secondary context and provenance; must remain readable.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.32156863, 0.42352941, 0.4745098],
+        "alpha": 1,
+        "hex": "#526c79"
+      }
+    },
+    "borderSubtle": {
+      "$description": "Decorative dividers; not an interactive control boundary.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.84313725, 0.89411765, 0.91372549],
+        "alpha": 1,
+        "hex": "#d7e4e9"
+      }
+    },
+    "borderControl": {
+      "$description": "Visible control boundary on canvas and content surfaces.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.44313725, 0.52941176, 0.57647059],
+        "alpha": 1,
+        "hex": "#718793"
+      }
+    },
+    "accent": {
+      "$description": "Links, focus rings and accent text on content surfaces.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.03137255, 0.46666667, 0.54117647],
+        "alpha": 1,
+        "hex": "#08778a"
+      }
+    },
+    "actionFill": {
+      "$description": "Filled primary action background; pair with onAction.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.38039216, 0.82745098, 0.88235294],
+        "alpha": 1,
+        "hex": "#61d3e1"
+      }
+    },
+    "onAction": {
+      "$description": "Text and icons on actionFill.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.02352941, 0.16862745, 0.21960784],
+        "alpha": 1,
+        "hex": "#062b38"
+      }
+    },
+    "resultHighlight": {
+      "$description": "Selected result emphasis; not a success or eligibility signal.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.26666667, 0.4, 0.0],
+        "alpha": 1,
+        "hex": "#446600"
+      }
+    },
+    "selectedSurface": {
+      "$description": "Selected course fill; selection also needs a mark and accessible state.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.94117647, 0.96862745, 0.85490196],
+        "alpha": 1,
+        "hex": "#f0f7da"
+      }
+    },
+    "error": {
+      "$description": "Invalid-input text; accompany with a concrete message.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.63137255, 0.23529412, 0.19607843],
+        "alpha": 1,
+        "hex": "#a13c32"
+      }
+    }
+  },
+  "dark": {
+    "$type": "color",
+    "canvas": {
+      "$description": "App content background; native system chrome is platform-owned.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.03137255, 0.11764706, 0.16078431],
+        "alpha": 1,
+        "hex": "#081e29"
+      }
+    },
+    "surface": {
+      "$description": "Opaque content card.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.07058824, 0.17647059, 0.23137255],
+        "alpha": 1,
+        "hex": "#122d3b"
+      }
+    },
+    "surfaceRaised": {
+      "$description": "Raised content and secondary control fill.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.09803922, 0.22745098, 0.28627451],
+        "alpha": 1,
+        "hex": "#193a49"
+      }
+    },
+    "surfaceInput": {
+      "$description": "Time-entry background.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.05098039, 0.15686275, 0.21176471],
+        "alpha": 1,
+        "hex": "#0d2836"
+      }
+    },
+    "text": {
+      "$description": "Primary content text on content surfaces.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9372549, 0.96862745, 0.98039216],
+        "alpha": 1,
+        "hex": "#eff7fa"
+      }
+    },
+    "textMuted": {
+      "$description": "Secondary context and provenance; must remain readable.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.67058824, 0.76078431, 0.80392157],
+        "alpha": 1,
+        "hex": "#abc2cd"
+      }
+    },
+    "borderSubtle": {
+      "$description": "Decorative dividers; not an interactive control boundary.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.17647059, 0.30588235, 0.36862745],
+        "alpha": 1,
+        "hex": "#2d4e5e"
+      }
+    },
+    "borderControl": {
+      "$description": "Visible control boundary on canvas and content surfaces.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.44313725, 0.58039216, 0.63921569],
+        "alpha": 1,
+        "hex": "#7194a3"
+      }
+    },
+    "accent": {
+      "$description": "Links, focus rings and accent text on content surfaces.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.41176471, 0.83529412, 0.89019608],
+        "alpha": 1,
+        "hex": "#69d5e3"
+      }
+    },
+    "actionFill": {
+      "$description": "Filled primary action background; pair with onAction.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.38039216, 0.82745098, 0.88235294],
+        "alpha": 1,
+        "hex": "#61d3e1"
+      }
+    },
+    "onAction": {
+      "$description": "Text and icons on actionFill.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.02352941, 0.16862745, 0.21960784],
+        "alpha": 1,
+        "hex": "#062b38"
+      }
+    },
+    "resultHighlight": {
+      "$description": "Selected result emphasis; not a success or eligibility signal.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.78823529, 0.93333333, 0.48235294],
+        "alpha": 1,
+        "hex": "#c9ee7b"
+      }
+    },
+    "selectedSurface": {
+      "$description": "Selected course fill; selection also needs a mark and accessible state.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.16078431, 0.27843137, 0.32156863],
+        "alpha": 1,
+        "hex": "#294752"
+      }
+    },
+    "error": {
+      "$description": "Invalid-input text; accompany with a concrete message.",
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [1.0, 0.70980392, 0.66666667],
+        "alpha": 1,
+        "hex": "#ffb5aa"
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "4": {
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      }
+    },
+    "8": {
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      }
+    },
+    "12": {
+      "$value": {
+        "value": 12,
+        "unit": "px"
+      }
+    },
+    "16": {
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      }
+    },
+    "20": {
+      "$value": {
+        "value": 20,
+        "unit": "px"
+      }
+    },
+    "24": {
+      "$value": {
+        "value": 24,
+        "unit": "px"
+      }
+    },
+    "32": {
+      "$value": {
+        "value": 32,
+        "unit": "px"
+      }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "control": {
+      "$description": "Custom content controls only; native controls keep platform shapes.",
+      "$value": {
+        "value": 10,
+        "unit": "px"
+      }
+    },
+    "card": {
+      "$description": "Default custom content card; native density may adapt this role.",
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      }
+    }
+  }
+}
