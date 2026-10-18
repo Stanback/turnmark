@@ -338,7 +338,10 @@ test("World Aquatics points score entered metric swims and leave yards unscored"
   await page
     .getByRole("button", { name: "World Aquatics points", exact: true })
     .click();
-  await expect(page.getByTestId("points-score")).toHaveText("—");
+  await expect(page.getByTestId("points-score")).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: "SCY isn’t scored" }),
+  ).toBeVisible();
   await expect(page.locator(".points-note")).toContainText("25m and 50m");
   await page
     .getByRole("group", { name: "Swum in" })
@@ -388,6 +391,11 @@ test("mobile navigation reaches history and standards without covering content",
   await expect(resultsJump).toBeDisabled();
   await page.locator("#swim-time").fill("58.32");
   const nav = page.getByRole("navigation", { name: "Mobile navigation" });
+  await expect(nav.getByRole("button")).toHaveText([
+    "Converter",
+    "Standards",
+    "History",
+  ]);
   await expect(nav.getByRole("button")).toHaveCount(3);
   await expect(nav.getByRole("button", { name: "The method" })).toHaveCount(0);
   await nav.getByRole("button", { name: "History", exact: true }).click();

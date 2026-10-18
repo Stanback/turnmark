@@ -153,8 +153,8 @@ event and supported whole pool lengths, not the entered distance for every cours
   Wallpaper-derived dynamic color is an optional future preference, not a
   requirement to replace Turnmark's brand colors.
 - **Web:** retain keyboard and browser navigation, reflow, theme preference,
-  reduced motion and useful static HTML. Mobile navigation prioritizes Converter,
-  History and Standards; methodology is contextual and in the footer.
+  reduced motion and useful static HTML. Mobile web navigation follows Converter,
+  Standards and History; methodology is contextual and in the footer.
 - **Widget:** keep its compact embed contract, keyboard labels, small-width
   layout, host isolation and explicit/automatic appearance options. Identity and
   result hierarchy carry across without the website hero or navigation.
