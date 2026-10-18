@@ -47,3 +47,21 @@ These checks establish simulator/emulator behavior. Physical devices,
 VoiceOver/TalkBack, actual fold hardware, store review and release signing remain
 release checks. The added JavaScript benchmark helper is **unreleased**; the
 published SDK 0.1.0 archive is unchanged.
+
+## iPhone Duo and keyboard follow-up
+
+The original-swim/settings/points test also passes on the iPhone Duo with iOS
+27.1. These actual inner-display captures use simctl display 3; XCTest's generic
+screenshot attachment is black on that simulator. Only local screenshot timing
+was paused to capture the display; application code was unchanged.
+
+| Duo · Standards | Duo · Points |
+| --- | --- |
+| <img src="screenshots/ios-duo-standards-light.png" width="430" alt="Standards and published youth targets on the Duo inner display"> | <img src="screenshots/ios-duo-points-light.png" width="430" alt="World Aquatics points and source on the Duo inner display"> |
+
+The first CI pass exposed a keyboard focus issue in the existing adaptive
+converter: raw GeometryReader height changes restarted focus restoration during
+keyboard dismissal. The layout key now describes the actual compact/expanded/
+divided input hierarchy. Done dismissal and keeping entry focus across rotation
+are checked together; the record/benchmark test confirms the actual category,
+time and successful transition to My times after the keyboard closes.

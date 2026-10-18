@@ -93,9 +93,13 @@ final class TurnmarkUITests: XCTestCase {
     @MainActor func testRecordedBenchmarkKeepsActualCategoryAndTime() {
         let app = launch()
         replace(app.textFields["timeInput"], with: "1:00.25", in: app)
-        app.textFields["timeInput"].typeText("\n")
-        let men = app.segmentedControls["category"].buttons["Men"]
-        reach(men, in: app); men.tap()
+        let done = app.buttons["dismissConverterKeyboard"]
+        if done.waitForExistence(timeout: 3) && done.isHittable { done.tap() }
+        else { app.textFields["timeInput"].typeText("\n") }
+        let keyboardClosed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: app.keyboards.firstMatch)
+        XCTAssertEqual(XCTWaiter.wait(for: [keyboardClosed], timeout: 5), .completed)
+        let category = app.segmentedControls["category"]
+        reach(category, in: app); category.buttons["Men"].tap()
         reach(app.buttons["logSwim"], in: app); app.buttons["logSwim"].tap()
         XCTAssertTrue(app.buttons["confirmLog"].waitForExistence(timeout: 5)); app.buttons["confirmLog"].tap()
         tab("My times", in: app); app.staticTexts["1:00.25"].tap()

@@ -132,7 +132,7 @@ private struct TurnmarkView: View {
                 .toolbar(.hidden, for: .navigationBar)
                 .toolbar {
                     if editingTime {
-                        ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("Done") { editingTime = false } }
+                        ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("Done") { editingTime = false }.accessibilityIdentifier("dismissConverterKeyboard") }
                     }
                 }
             }.tabItem { Label("Convert", systemImage: "arrow.left.arrow.right") }.tag(0)
@@ -168,11 +168,17 @@ private struct TurnmarkView: View {
     }
 
     private func converterLayoutKey(_ geometry: GeometryProxy) -> String {
-        var key = "\(geometry.size.width):\(geometry.size.height):\(typeSize)"
+        // Restore focus only when our view hierarchy moves the input field.
+        // Keyboard safe-area changes also resize GeometryReader; keying on raw
+        // height can restart an older focus task after the user presses Done.
         if #available(iOS 27.1, *) {
-            key += geometry.reservedRegions(kind: .division).map { String(describing: $0.frame) }.joined(separator: ";")
+            let regions = geometry.reservedRegions(kind: .division)
+            if !regions.isEmpty {
+                return regions.contains { $0.frame.width > $0.frame.height } ? "division-tabletop" : "division-book"
+            }
+            return geometry.size.width >= 620 && geometry.size.height >= 400 && !typeSize.isAccessibilitySize ? "expanded" : "compact"
         }
-        return key
+        return geometry.size.width >= 700 && geometry.size.height >= 400 && !typeSize.isAccessibilitySize ? "expanded" : "compact"
     }
 
     private var compactConverter: some View {
