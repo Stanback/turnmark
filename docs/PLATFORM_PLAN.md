@@ -294,6 +294,11 @@ plan an explicit export/import format. Preserve existing web links, then add
 verified app/universal links when domain ownership and association hosting are
 available.
 
+The next native workflow is [offline meet history](MEET_HISTORY.md): log actual
+swims with convenient meet/date context, browse progress and export/import
+records. Keep saved calculations distinct from recorded performances and
+exclude estimates from personal bests.
+
 Association files live at the host's well-known location, not under the app's
 `/turnmark/` project path. Plan a custom domain or root-site hosting controlled
 by the owner before promising verified links; test both installed and uninstalled

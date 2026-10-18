@@ -1,6 +1,23 @@
 use serde_json::{json, Value};
 use turnmark_core::*;
 
+#[test]
+fn native_event_options_use_authoritative_distances() {
+    let yards = get_event_options(Course::SCY, Stroke::Freestyle);
+    assert_eq!(
+        yards.iter().map(|o| o.event.distance).collect::<Vec<_>>(),
+        vec![50, 100, 200, 500, 1000, 1650]
+    );
+    assert_eq!(yards[3].canonical_distance, 400);
+    assert_eq!(
+        get_event_options(Course::LCM, Stroke::IndividualMedley)
+            .iter()
+            .map(|o| o.event.distance)
+            .collect::<Vec<_>>(),
+        vec![200, 400]
+    );
+}
+
 fn subset(actual: &Value, expected: &Value, path: &str) {
     match expected {
         Value::Object(fields) => {

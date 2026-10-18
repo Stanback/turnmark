@@ -35,12 +35,15 @@ Shared calculations live in `crates/turnmark-core`, numerical snapshots in
 state, display helpers, and their tests live in `src/lib/`. Browser tests live
 in `tests/`, and built-app checks in `tests-production/`. Read the
 [SDK guide](packages/sdk/README.md) when changing the shared engine or API.
+For native app setup and checks, see [the native guide](docs/NATIVE_APPS.md).
+[AGENTS.md](AGENTS.md) records the repository conventions for coding assistants;
+`CLAUDE.md` points to the same file.
 
 ## Making a change
 
 - Keep changes focused and follow the surrounding code style. Format changed
   files with `npx prettier --write <files> --plugin=prettier-plugin-svelte`.
-- Keep calculations usable offline and preserve the browser-only architecture:
+- Keep calculations usable offline and personal swim data on the device:
   no accounts, analytics, or uploaded swim data.
 - Preserve keyboard access, accessible labels, responsive layouts, reduced-motion
   support, and both light and dark appearances when changing the interface.
@@ -59,7 +62,8 @@ swims and original-course benchmarks.
 
 ## Checking your work
 
-For code or data changes, run the same checks used by CI:
+Run checks for the affected consumers; [the CI guide](docs/CI.md) explains the
+dependency boundaries. For web or JavaScript SDK changes:
 
 ```sh
 npm run check

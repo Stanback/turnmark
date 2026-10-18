@@ -1,0 +1,36 @@
+name: Select affected checks
+on:
+  workflow_call:
+    outputs:
+      web:
+        value: ${{ jobs.changes.outputs.web }}
+      core:
+        value: ${{ jobs.changes.outputs.core }}
+      ios:
+        value: ${{ jobs.changes.outputs.ios }}
+      android:
+        value: ${{ jobs.changes.outputs.android }}
+permissions:
+  contents: read
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      web: ${{ steps.select.outputs.web }}
+      core: ${{ steps.select.outputs.core }}
+      ios: ${{ steps.select.outputs.ios }}
+      android: ${{ steps.select.outputs.android }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Test selection rules
+        run: node --test scripts/ci-changes.test.mjs
+      - name: Select affected platforms
+        id: select
+        run: node scripts/ci-changes.mjs

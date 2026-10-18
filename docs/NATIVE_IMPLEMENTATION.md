@@ -1,14 +1,15 @@
 # Native apps: implementation scope
 
-Status: PR #2 delivers the shared SDK and web migration. Native app interfaces
-follow in a separate PR, with both platforms kept at equal scope.
+Status: PR #2 merged the shared SDK and web migration. The following native-app
+PR implements the paired converter workflow; see [current app setup and scope](NATIVE_APPS.md).
 
 PR #1 established the JavaScript/TypeScript SDK and its source-backed contract.
 That package already supports web, embed, and Node consumers. The Rust proof now
 provides generated Swift/Kotlin libraries with native packaging, plus a Wasm
 JavaScript adapter. See [implementation and evidence](SHARED_ENGINE.md). The next
-milestone is a working native converter on both platforms; these apps have not
-been implemented yet.
+milestone is a working native converter on both platforms. Its first screens,
+persistence and native sharing are now implemented; broader web feature parity
+and release acceptance remain separate work.
 
 ## Fixed product constraints
 

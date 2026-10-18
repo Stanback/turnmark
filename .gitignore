@@ -20,5 +20,8 @@ packages/swift/Tests/TurnmarkCoreTests/Fixtures/
 packages/swift/.build/
 .swiftpm/
 .gradle/
+.kotlin/
+**/xcuserdata/
+*.xcuserstate
 **/build/
 local.properties

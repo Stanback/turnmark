@@ -1,0 +1,3 @@
+# The configured Apple runner is newer than actionlint's bundled label list.
+self-hosted-runner:
+  labels: [xcode-27]

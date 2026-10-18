@@ -10,10 +10,17 @@ concurrency:
   group: shared-engine-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  changes:
+    uses: ./.github/workflows/changes.yml
   core-and-web:
+    needs: changes
+    if: needs.changes.outputs.core == 'true'
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -35,26 +42,47 @@ jobs:
           path: target/engine-metrics.json
           retention-days: 7
   ios:
-    runs-on: macos-15-intel
+    needs: changes
+    if: needs.changes.outputs.ios == 'true'
+    timeout-minutes: 30
+    runs-on: xcode-27
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
+      TURNMARK_IOS_RUNTIME: "27"
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+      - name: Verify current stable Apple SDK
+        run: |
+          xcodebuild -version
+          test "$(xcrun --sdk iphoneos --show-sdk-version)" = '27.1'
       - run: rustup target add aarch64-apple-ios aarch64-apple-ios-sim x86_64-apple-ios
       - run: node scripts/package-ios.mjs
       - run: node scripts/test-native-host.mjs swift
       - run: node scripts/test-ios.mjs
+      - name: Test unsigned native iOS app
+        run: node scripts/test-ios.mjs app
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: ios-engine-tests
-          path: target/ios-tests.xcresult
+          path: |
+            target/ios-tests.xcresult
+            target/ios-app-tests.xcresult
           retention-days: 7
   android:
+    needs: changes
+    if: needs.changes.outputs.android == 'true'
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -66,11 +94,11 @@ jobs:
         with:
           packages: platform-tools
           log-accepted-android-sdk-licenses: false
-      - run: sdkmanager 'ndk;30.0.16248370' 'platforms;android-36' 'build-tools;36.0.0'
+      - run: sdkmanager 'ndk;30.0.16248370' 'platforms;android-36' 'platforms;android-37.0' 'build-tools;36.0.0'
       - run: rustup target add aarch64-linux-android x86_64-linux-android
       - name: Generate Kotlin and Android native libraries
         run: ANDROID_NDK_HOME="$ANDROID_HOME/ndk/30.0.16248370" node scripts/package-android.mjs
-      - run: ./gradlew :sdk-android:assembleDebug :sdk-android:assembleDebugAndroidTest
+      - run: ./gradlew :sdk-android:assembleDebug :sdk-android:assembleDebugAndroidTest :app-android:assembleDebug :app-android:assembleDebugAndroidTest
       - run: node scripts/check-android-libraries.mjs
       - name: Enable KVM for emulator tests
         run: |
@@ -83,10 +111,31 @@ jobs:
           target: default
           arch: x86_64
           disable-animations: true
-          script: ./gradlew :sdk-android:connectedDebugAndroidTest
+          script: node scripts/test-android.mjs sdk && node scripts/test-android.mjs app
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: android-engine-tests
-          path: packages/android/build/reports/androidTests/
+          path: |
+            packages/android/build/reports/androidTests/
+            packages/android/build/outputs/androidTest-results/
+            apps/android/build/reports/androidTests/
+            apps/android/build/outputs/androidTest-results/
           retention-days: 7
+  engine-ci:
+    if: always()
+    needs: [changes, core-and-web, ios, android]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require successful selected checks
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          node --input-type=module <<'JS'
+          const jobs = JSON.parse(process.env.RESULTS);
+          if (jobs.changes.result !== 'success' ||
+              Object.values(jobs).some(({ result }) => !['success', 'skipped'].includes(result))) {
+            process.exit(1);
+          }
+          JS
