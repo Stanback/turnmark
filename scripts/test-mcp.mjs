@@ -179,7 +179,6 @@ try {
     "npm",
     [
       "install",
-      "--offline",
       "--ignore-scripts",
       "--no-audit",
       "--no-fund",
