@@ -138,8 +138,8 @@ test("CLI uses real Git history, preserves deleted paths and fails on missing re
     return git("rev-parse", "HEAD");
   };
   const run = (event) => {
-    const eventPath = join(repo, "event.json");
-    const outputPath = join(repo, "output.txt");
+    const eventPath = join(repo, ".git", "ci-event.json");
+    const outputPath = join(repo, ".git", "ci-output.txt");
     writeFileSync(eventPath, JSON.stringify(event));
     writeFileSync(outputPath, "");
     const result = spawnSync(
