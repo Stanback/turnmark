@@ -37,7 +37,8 @@ Corrections from reviewing the rendered screens:
 - The time hint uses concrete examples rather than a long compound format word
   that split awkwardly at accessibility text sizes.
 - My times guidance is a quiet footer on the canvas with shared muted text,
-  without a separate charcoal card or row divider.
+  without a separate charcoal card or row divider. Empty, error and previous-
+  comparison rows use the shared navy surface in dark appearance.
 - Android stroke/distance controls keep their natural width and flow when the
   pane is narrow; filters/file actions also flow. Large text uses a native
   two-row Material app bar for record/edit/detail titles instead of squeezing
@@ -54,18 +55,18 @@ Corrections from reviewing the rendered screens:
 
 ## Captures
 
-| Case                                            | Evidence                                                                                                                                                                                                        |
-| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| iPhone result, light / dark                     | [Light](screenshots/ios-native-result-light.png) · [Dark](screenshots/ios-native-result-dark.png)                                                                                                               |
-| iPhone Record time action                       | [Light](screenshots/ios-native-record-light.png)                                                                                                                                                                |
-| iPhone My times / bests                         | [My times, dark](screenshots/ios-native-times-dark.png) · [Bests, light](screenshots/ios-native-best-light.png)                                                                                                 |
-| iPhone largest accessibility text               | [Input and reflow](screenshots/ios-native-large-text.png) · [Long clock](screenshots/ios-native-long-clock.png)                                                                                                 |
-| Duo expanded and book fold                      | [Open](screenshots/ios-native-duo-open-light.png) · [Book](screenshots/ios-native-duo-book-light.png)                                                                                                           |
-| Duo tabletop and compact outer display          | [Tabletop, light](screenshots/ios-native-duo-tabletop-light.png) · [Tabletop, dark](screenshots/ios-native-duo-tabletop-dark.png) · [Outer](screenshots/ios-native-duo-outer-light.png)                         |
-| Android expanded converter, light / dark        | [Light](screenshots/android-native-book-light.png) · [Dark](screenshots/android-native-result-dark.png)                                                                                                         |
-| Android recorded swim and bests                 | [List/detail](screenshots/android-native-times-detail-dark.png) · [Bests](screenshots/android-native-best-dark.png) · [Muted help footer](screenshots/android-native-help-light.png)                            |
-| Android injected book / tabletop fold           | [Book](screenshots/android-native-book-test-dark.png) · [Tabletop](screenshots/android-native-tabletop-test-dark.png)                                                                                           |
-| Android narrow phone, 200% text, long meet name | [Editor](screenshots/android-long-editor-large.png) · [Meet](screenshots/android-long-meet-large.png) · [Detail](screenshots/android-long-detail-large.png) · [Input](screenshots/android-long-input-large.png) |
+| Case                                            | Evidence                                                                                                                                                                                                                                                |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| iPhone result, light / dark                     | [Light](screenshots/ios-native-result-light.png) · [Dark](screenshots/ios-native-result-dark.png)                                                                                                                                                       |
+| iPhone Record time action                       | [Light](screenshots/ios-native-record-light.png)                                                                                                                                                                                                        |
+| iPhone My times / bests                         | [My times, dark](screenshots/ios-native-times-dark.png) · [Bests, light](screenshots/ios-native-best-light.png)                                                                                                                                         |
+| iPhone largest accessibility text               | [Input and reflow](screenshots/ios-native-large-text.png) · [Long clock](screenshots/ios-native-long-clock.png)                                                                                                                                         |
+| Duo expanded and book fold                      | [Open](screenshots/ios-native-duo-open-light.png) · [Book](screenshots/ios-native-duo-book-light.png)                                                                                                                                                   |
+| Duo tabletop and compact outer display          | [Tabletop, light](screenshots/ios-native-duo-tabletop-light.png) · [Tabletop, dark](screenshots/ios-native-duo-tabletop-dark.png) · [Outer](screenshots/ios-native-duo-outer-light.png) · [My times surfaces](screenshots/ios-native-duo-help-dark.png) |
+| Android expanded converter, light / dark        | [Light](screenshots/android-native-book-light.png) · [Dark](screenshots/android-native-result-dark.png)                                                                                                                                                 |
+| Android recorded swim and bests                 | [List/detail](screenshots/android-native-times-detail-dark.png) · [Bests](screenshots/android-native-best-dark.png) · [Muted help footer](screenshots/android-native-help-light.png)                                                                    |
+| Android injected book / tabletop fold           | [Book](screenshots/android-native-book-test-dark.png) · [Tabletop](screenshots/android-native-tabletop-test-dark.png)                                                                                                                                   |
+| Android narrow phone, 200% text, long meet name | [Editor](screenshots/android-long-editor-large.png) · [Meet](screenshots/android-long-meet-large.png) · [Detail](screenshots/android-long-detail-large.png) · [Input](screenshots/android-long-input-large.png)                                         |
 
 The Android fold-test pictures use injected WindowManager geometry on a Pixel
 10 Pro Fold emulator profile. They verify the pane arrangement and hinge bounds;
@@ -76,8 +77,8 @@ part of a longer form; they do not claim all content fits at once.
 
 - 119 JavaScript/design unit checks and 50 CI selection cases passed. Generated
   native palettes are checked before both native app suites.
-- iPhone 18 Pro/iOS 27.0 passed the 15-case model/UI suite; the final Duo/iOS 27.1
-  suite passed 16 cases with the new rotation/focus regression. They exercise persistence,
+- iPhone 18 Pro/iOS 27.0 and Duo/iOS 27.1 passed all 16 model/UI cases, including
+  the rotation/focus regression. They exercise persistence,
   direct recording, best filtering, source details, invalid/unavailable states,
   original-value sharing, editing and legacy bookmark separation.
 - Android API 36 checks the same jobs plus portable import/export. The fold test

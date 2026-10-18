@@ -133,8 +133,8 @@ dark tabletop. Typing through open/book/tabletop preserves the draft and restore
 the active converter field after reattachment. These checks used the simulator
 hardware keyboard; soft-keyboard and physical-device transitions remain release work.
 
-The 15-case model/UI suite passed on iPhone 18 Pro/iOS 27.0. The final Duo/iOS
-27.1 suite passed all 16 cases, including the new rotation/focus regression. Android API 36
+The 16-case model/UI suite passed on both iPhone 18 Pro/iOS 27.0 and Duo/iOS
+27.1, including the rotation/focus regression. Android API 36
 passed all 17 tests on both the phone emulator and the expanded Pixel 10 Pro Fold
 profile.
 The folding test injects book/tabletop WindowManager regions, checks complete

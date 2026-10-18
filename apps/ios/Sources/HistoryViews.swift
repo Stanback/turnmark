@@ -207,17 +207,20 @@ struct HistoryScreen: View {
             }.listRowBackground(TurnmarkPalette.canvas)
             if let error = controller.error {
                 Section { Text(error); Button("Try again") { controller.open() } }
+                    .listRowBackground(TurnmarkPalette.surface)
             } else if groups.isEmpty {
                 ContentUnavailableView("No logged swims", systemImage: "list.bullet.rectangle",
                     description: Text("Record a race or practice time to start your personal record."))
+                    .listRowBackground(TurnmarkPalette.surface)
                 Button("Record time", action: recordNew)
+                    .listRowBackground(TurnmarkPalette.surface)
             }
             forGroups
             if legacy != nil {
                 Section("Previous saved comparison") {
                     Text("Your earlier bookmark is separate from recorded swims.").font(.footnote)
                     Button("Open previous comparison") { showingLegacy = true }
-                }
+                }.listRowBackground(TurnmarkPalette.surface)
             }
             Section {} footer: {
                 VStack(alignment: .leading, spacing: 8) {
