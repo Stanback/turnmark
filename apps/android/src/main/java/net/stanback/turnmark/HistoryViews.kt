@@ -203,8 +203,12 @@ fun Draft.record(date: String?, meet: String?, replacing: SwimRecord? = null): S
                 TextButton(onClick = openLegacy) { Text("Open previous comparison") }
             }
             item {
-                Text("Actual swims only. Personal bests compare the same distance, stroke, course and category.", style = MaterialTheme.typography.bodySmall)
-                Text("Stored on this device. Export a copy to keep a backup or move to another phone.", style = MaterialTheme.typography.bodySmall)
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("Actual swims only. Personal bests compare the same distance, stroke, course and category.",
+                        style = MaterialTheme.typography.bodySmall, color = LocalTurnmarkColors.current.textMuted)
+                    Text("Stored on this device. Export a copy to keep a backup or move to another phone.",
+                        style = MaterialTheme.typography.bodySmall, color = LocalTurnmarkColors.current.textMuted)
+                }
             }
         }
     }

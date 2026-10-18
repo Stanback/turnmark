@@ -219,10 +219,12 @@ struct HistoryScreen: View {
                     Button("Open previous comparison") { showingLegacy = true }
                 }
             }
-            Section {
-                Text("Actual swims only. Personal bests compare the same distance, stroke, course and category.")
-                Text("Stored on this device. Export a copy to keep a backup or move to another phone.")
-            }.font(.footnote).foregroundStyle(.secondary)
+            Section {} footer: {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Actual swims only. Personal bests compare the same distance, stroke, course and category.")
+                    Text("Stored on this device. Export a copy to keep a backup or move to another phone.")
+                }.font(.footnote).foregroundStyle(TurnmarkPalette.textMuted).textCase(nil)
+            }
         }.scrollContentBackground(.hidden).background(TurnmarkPalette.canvas)
             .navigationTitle("My times")
             .toolbar {

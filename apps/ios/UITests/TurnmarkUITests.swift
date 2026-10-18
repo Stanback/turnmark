@@ -15,7 +15,22 @@ final class TurnmarkUITests: XCTestCase {
             let nativeList = app.collectionViews.element(boundBy: max(app.collectionViews.count - 1, 0))
             let editor = app.descendants(matching: .any)["swimEditorForm"].firstMatch
             let scroll = editor.exists ? editor : (container.exists ? container : (nativeList.exists ? nativeList : app))
-            if element.exists && element.frame.minY < app.frame.minY + 80 { scroll.swipeDown() }
+            let downward = element.exists && element.frame.minY < app.frame.minY + 80
+            if app.keyboards.firstMatch.exists {
+                // The form extends behind the keyboard. XCTest's default swipe
+                // can start in its assistant bar, which never scrolls the form.
+                let visible = scroll.frame.intersection(app.frame)
+                let done = app.buttons["dismissSwimKeyboard"]
+                let bottom = min(visible.maxY, app.keyboards.firstMatch.frame.minY,
+                    done.exists ? done.frame.minY : visible.maxY) - 12
+                let top = max(visible.minY, app.frame.minY + 140)
+                let upper = top + (bottom - top) * 0.2
+                let lower = top + (bottom - top) * 0.8
+                let origin = app.coordinate(withNormalizedOffset: .zero)
+                let start = origin.withOffset(CGVector(dx: visible.midX, dy: downward ? upper : lower))
+                let end = origin.withOffset(CGVector(dx: visible.midX, dy: downward ? lower : upper))
+                start.press(forDuration: 0.1, thenDragTo: end)
+            } else if downward { scroll.swipeDown() }
             else { scroll.swipeUp() }
         }
         XCTAssertTrue(element.exists && element.isHittable, "Element must remain reachable: \(element)")

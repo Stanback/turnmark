@@ -36,6 +36,8 @@ Corrections from reviewing the rendered screens:
   is applied to long descriptions or meet names.
 - The time hint uses concrete examples rather than a long compound format word
   that split awkwardly at accessibility text sizes.
+- My times guidance is a quiet footer on the canvas with shared muted text,
+  without a separate charcoal card or row divider.
 - Android stroke/distance controls keep their natural width and flow when the
   pane is narrow; filters/file actions also flow. Large text uses a native
   two-row Material app bar for record/edit/detail titles instead of squeezing
@@ -61,7 +63,7 @@ Corrections from reviewing the rendered screens:
 | Duo expanded and book fold                      | [Open](screenshots/ios-native-duo-open-light.png) · [Book](screenshots/ios-native-duo-book-light.png)                                                                                                           |
 | Duo tabletop and compact outer display          | [Tabletop, light](screenshots/ios-native-duo-tabletop-light.png) · [Tabletop, dark](screenshots/ios-native-duo-tabletop-dark.png) · [Outer](screenshots/ios-native-duo-outer-light.png)                         |
 | Android expanded converter, light / dark        | [Light](screenshots/android-native-book-light.png) · [Dark](screenshots/android-native-result-dark.png)                                                                                                         |
-| Android recorded swim and bests                 | [List/detail](screenshots/android-native-times-detail-dark.png) · [Bests](screenshots/android-native-best-dark.png)                                                                                             |
+| Android recorded swim and bests                 | [List/detail](screenshots/android-native-times-detail-dark.png) · [Bests](screenshots/android-native-best-dark.png) · [Muted help footer](screenshots/android-native-help-light.png)                            |
 | Android injected book / tabletop fold           | [Book](screenshots/android-native-book-test-dark.png) · [Tabletop](screenshots/android-native-tabletop-test-dark.png)                                                                                           |
 | Android narrow phone, 200% text, long meet name | [Editor](screenshots/android-long-editor-large.png) · [Meet](screenshots/android-long-meet-large.png) · [Detail](screenshots/android-long-detail-large.png) · [Input](screenshots/android-long-input-large.png) |
 
