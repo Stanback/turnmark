@@ -177,13 +177,7 @@ try {
   );
   const installed = spawnSync(
     "npm",
-    [
-      "install",
-      "--ignore-scripts",
-      "--no-audit",
-      "--no-fund",
-      ...packed,
-    ],
+    ["install", "--ignore-scripts", "--no-audit", "--no-fund", ...packed],
     { cwd: temporary, encoding: "utf8" },
   );
   assert.equal(installed.status, 0, installed.stderr);
@@ -277,6 +271,10 @@ try {
     ).status,
     413,
   );
+  assert.equal(
+    (await fetch(`${base}/mcp`, { method: "POST", body: "{}" })).status,
+    415,
+  );
   // Exhaust the actual local binding rather than replacing it with a mock.
   let limited = false;
   for (let i = 0; i < 181; i++) {
@@ -296,6 +294,38 @@ try {
     }
   }
   assert.ok(limited, "Worker rate limit must be enforced");
+  // The aggregate guard must also reject health probes, independent of the
+  // much higher per-IP limit. Use a separate local runtime and real binding.
+  await worker.stop();
+  worker = undefined;
+  const aggregateConfig = join(temporary, "aggregate.jsonc");
+  await writeFile(
+    aggregateConfig,
+    (
+      await readFile(join(root, "packages/mcp-worker/wrangler.jsonc"), "utf8")
+    ).replace('"limit": 600', '"limit": 3'),
+  );
+  worker = await unstable_dev(join(root, "packages/mcp-worker/src/index.ts"), {
+    config: aggregateConfig,
+    local: true,
+    port: 0,
+    ip: "127.0.0.1",
+    logLevel: "error",
+    persist: false,
+    envFiles: [],
+    experimental: {
+      disableExperimentalWarning: true,
+      disableDevRegistry: true,
+      watch: false,
+    },
+  });
+  const limitedBase = `http://${worker.address}:${worker.port}`;
+  for (let i = 0; i < 3; i++)
+    assert.equal((await fetch(limitedBase)).status, 200);
+  const busy = await fetch(limitedBase);
+  assert.equal(busy.status, 429);
+  assert.equal(busy.headers.get("Retry-After"), "60");
+  assert.match(await busy.text(), /Service busy/);
   console.log(
     "Worker boundaries: route, method, Origin, body limit and rate limit passed.",
   );

@@ -13,6 +13,11 @@
       "namespace_id": "95418001",
       "simple": { "limit": 180, "period": 60 },
     },
+    {
+      "name": "REQUEST_BUDGET",
+      "namespace_id": "95418002",
+      "simple": { "limit": 600, "period": 60 },
+    },
   ],
   "observability": {
     "enabled": true,

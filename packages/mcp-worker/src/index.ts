@@ -29,10 +29,21 @@ const handler = createMcpHandler(async () => createServer(await engine()), {
   onerror: () => console.error(JSON.stringify({ event: "mcp_protocol_error" })),
 });
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, env) {
     const url = new URL(request.url);
     if (!["mcp.turnmark.app", "localhost", "127.0.0.1"].includes(url.hostname))
       return new Response("Forbidden", { status: 403 });
+    const ip = request.headers.get("CF-Connecting-IP") ?? "local";
+    if (!(await env.REQUEST_LIMITER.limit({ key: ip })).success)
+      return new Response("Too many requests", {
+        status: 429,
+        headers: { "Retry-After": "60" },
+      });
+    if (!(await env.REQUEST_BUDGET.limit({ key: "all" })).success)
+      return new Response("Service busy; retry later", {
+        status: 429,
+        headers: { "Retry-After": "60" },
+      });
     if (url.pathname === "/" && request.method === "GET") {
       try {
         return Response.json({
@@ -52,12 +63,14 @@ export default {
         status: 405,
         headers: { Allow: "POST" },
       });
-    const ip = request.headers.get("CF-Connecting-IP") ?? "local";
-    if (!(await env.REQUEST_LIMITER.limit({ key: ip })).success)
-      return new Response("Too many requests", {
-        status: 429,
-        headers: { "Retry-After": "60" },
-      });
+    if (
+      request.headers
+        .get("Content-Type")
+        ?.split(";")[0]
+        .trim()
+        .toLowerCase() !== "application/json"
+    )
+      return new Response("JSON content type required", { status: 415 });
     try {
       // Bound the read before the compatibility classifier parses JSON. The
       // upstream maxRequestBodySize alone does not cover that legacy lane.
