@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Icon from "./lib/Icon.svelte";
-  import Pool from "./lib/Pool.svelte";
   import Masters from "./lib/Masters.svelte";
   import Install from "./lib/Install.svelte";
   import Theme from "./lib/Theme.svelte";
@@ -186,13 +185,6 @@
   const sourceDistance = $derived(
     eventDistance(form.distance, form.course, form.stroke),
   );
-  const focusDistance = $derived(
-    eventDistance(form.distance, focus, form.stroke),
-  );
-  const lengths = $derived(focusDistance / (focus === "LCM" ? 50 : 25));
-  const pace = $derived(
-    focused.time !== null ? (focused.time / focusDistance) * 100 : null,
-  );
   const error = $derived(
     time === null
       ? "Enter a time like 58.32 or 1:02.45 (up to 60 minutes)."
@@ -204,6 +196,9 @@
           ? "The time must be longer than the altitude adjustment."
           : "",
   );
+  const focusedTime = $derived(formatTime(error ? null : focused.time));
+  const focusedClock = $derived(focusedTime.split("."));
+  const selectedEvent = $derived(`${form.stroke}:${form.distance}`);
   const currentLabel = $derived(
     eventLabel(form.distance, form.course, form.stroke),
   );
@@ -398,10 +393,18 @@
       block: "start",
     });
   }
-  function setStroke(stroke: Stroke) {
-    form.stroke = stroke;
-    if (!eventDistances(stroke).includes(form.distance))
-      form.distance = stroke === "IM" ? 200 : 100;
+  function poolLabel(course: Course) {
+    return courseInfo[course].pool
+      .replace("yards", "yd")
+      .replace("meters", "m");
+  }
+  function selectEvent(value: string) {
+    const [stroke, distance] = value.split(":");
+    const option = strokes.find((item) => item.id === stroke);
+    if (!option || !eventDistances(option.id).includes(Number(distance)))
+      return;
+    form.stroke = option.id;
+    form.distance = Number(distance);
     ensureCourse();
   }
   function ensureCourse() {
@@ -546,37 +549,14 @@
   </div>
 </header>
 <main id="main">
-  <section class="intro" aria-labelledby="page-title">
-    <img
-      class="hero-photo"
-      src={`${import.meta.env.BASE_URL}images/swimmer-hero.webp`}
-      alt=""
-      fetchpriority="high"
-    />
-    <div class="hero-inner page-width">
-      <div class="intro-copy">
-        <h1 id="page-title">
-          Your swim.<br />Any
-          <span class="course-word"
-            >course<svg viewBox="0 0 320 15" aria-hidden="true"
-              ><path d="M3 9q140-14 312-2" /></svg
-            ></span
-          >.
-        </h1>
-        <p>
-          Swim time converter for yards and meters.<br class="desktop-break" /> Compare
-          SCY, SCM, and LCM times and published standards.
-        </p>
-        <button
-          class="hero-cta"
-          onclick={() => {
-            go("converter");
-            document
-              .getElementById("swim-time")
-              ?.focus({ preventScroll: true });
-          }}>Start converting <Icon name="arrow" size={17} /></button
-        >
-      </div>
+  <section class="intro page-width" aria-labelledby="page-title">
+    <div class="intro-copy">
+      <p class="converter-eyebrow">The swim time converter</p>
+      <h1 id="page-title">Your swim.<br /><span>Any course.</span></h1>
+      <p>
+        Swim time converter for yards and meters.<br />Compare 25-yard,
+        25-meter, and 50-meter pools.
+      </p>
     </div>
   </section>
 
@@ -589,31 +569,31 @@
       <button class="text-button reset" onclick={reset}>Reset</button>
       <div class="panel-title">
         <h2>Convert your swim</h2>
-        <p>Compare times across pool courses.</p>
+        <p>Your race, your time, your equivalent.</p>
       </div>
-      <div class="field-label" id="stroke-label">Stroke</div>
-      <div class="stroke-picker" role="group" aria-labelledby="stroke-label">
-        {#each strokes as stroke}<button
-            class:active={form.stroke === stroke.id}
-            aria-pressed={form.stroke === stroke.id}
-            onclick={() => setStroke(stroke.id)}>{stroke.short}</button
-          >{/each}
-      </div>
-      <label class="field-label distance-label" for="distance"
-        >Distance <span>{form.course === "SCY" ? "yards" : "meters"}</span
-        ></label
+      <label class="field-label" for="event"
+        >Event <span>distance &amp; stroke</span></label
       >
       <div class="select-wrap">
-        <select id="distance" bind:value={form.distance} onchange={ensureCourse}
-          >{#each eventDistances(form.stroke) as distance}<option
-              value={distance}
-              >{eventDistance(distance, form.course, form.stroke)}
-              {form.course === "SCY" ? "yards" : "meters"}</option
-            >{/each}</select
-        ><Icon name="chevron" size={16} />
+        <select
+          id="event"
+          value={selectedEvent}
+          onchange={(event) => selectEvent(event.currentTarget.value)}
+        >
+          {#each strokes as stroke}
+            <optgroup label={stroke.name}>
+              {#each eventDistances(stroke.id) as distance}
+                <option value={`${stroke.id}:${distance}`}
+                  >{eventDistance(distance, form.course, stroke.id)}
+                  {stroke.name}</option
+                >
+              {/each}
+            </optgroup>
+          {/each}
+        </select><Icon name="chevron" size={16} />
       </div>
       <label class="field-label time-label" for="swim-time"
-        >Your time <span>minutes : seconds . hundredths</span></label
+        >Your time <span>mm:ss.hh</span></label
       >
       <div class:invalid={!!error} class="time-entry">
         <input
@@ -632,7 +612,9 @@
         </p>{:else}<div class="time-help" id="time-help">
           <span class="status-dot"></span>Results update as you type
         </div>{/if}
-      <div class="field-label course-label" id="course-label">Swum in</div>
+      <div class="field-label course-label" id="course-label">
+        Swum in <span>course length</span>
+      </div>
       <div class="course-picker" role="group" aria-labelledby="course-label">
         {#each courses as course}<button
             class:active={form.course === course}
@@ -731,7 +713,7 @@
     >
       <div class="results-heading">
         <div>
-          <h2 id="results-title" tabindex="-1">Your conversion results</h2>
+          <h2 id="results-title" tabindex="-1">Your conversion</h2>
         </div>
         <a
           class="method-chip"
@@ -742,42 +724,30 @@
           >NCAA factors <Icon name="external" size={12} /></a
         >
       </div>
-      <div class="pool-scene">
-        <div class="pool-scene-top">
-          <div>
-            <span class="tiny-label"
-              >{form.course} <span aria-hidden="true">→</span> {focus}</span
-            >
-            <h3>
-              {eventLabel(form.distance, focus, form.stroke)}
-              <span>· {focus}</span>
-            </h3>
-          </div>
-          <div class="pool-scene-caption">
-            {courseInfo[focus].name}<span
-              >{focused.kind === "swum"
-                ? "Your entered course"
-                : "Converted estimate"}</span
-            >
-          </div>
+      <div class="focused-result" aria-live="polite" aria-atomic="true">
+        <p class="focused-context">
+          {eventDistance(form.distance, focus, form.stroke)}
+          {strokes.find((stroke) => stroke.id === form.stroke)!.name} · {focus} ({poolLabel(
+            focus,
+          )} pool)
+        </p>
+        <div class="focused-time" data-testid="focused-time">
+          <span>{focusedClock[0]}</span>{#if focusedClock[1]}<span
+              class="hundredths">.{focusedClock[1]}</span
+            >{/if}
         </div>
-        <Pool
-          course={focus}
-          distance={focusDistance}
-          time={formatTime(focused.time)}
-        />
-        <div class="pool-scene-bottom">
-          <span
-            ><strong>{lengths}</strong> lengths
-            <span class="dot-separator">·</span>
-            <strong>{Math.max(0, lengths - 1)}</strong>
-            {lengths === 2 ? "turn" : "turns"}</span
-          ><span
-            >{focused.time !== null
-              ? `${formatTime(pace)} / 100 ${focus === "SCY" ? "yd" : "m"}`
-              : "Conversion unavailable"}</span
-          >
-        </div>
+        <p class="focused-provenance">
+          {#if error}Check your input to see a conversion.
+          {:else if focused.kind === "unavailable"}No conversion published for
+            this event.
+          {:else if focused.kind === "swum"}{adjustment
+              ? "Sea-level estimate"
+              : "Your original time"} · {form.course}
+          {:else}From {formatTime(time)} in {form.course} · {form.category ===
+            "women"
+              ? "Women / girls"
+              : "Men / boys"}{/if}
+        </p>
       </div>
       {#if adjustment > 0 && correctedTime !== null}
         <section
@@ -817,44 +787,58 @@
           </p>
         </section>
       {/if}
+      <h3 class="equivalents-title">
+        All course equivalents <span>Select a course to focus</span>
+      </h3>
       <div
         class="result-cards"
+        role="group"
         aria-label="Course comparison results"
-        aria-live="polite"
-        aria-atomic="true"
       >
-        {#each results as result}<button
+        {#each results as result}
+          <button
             class="result-card"
             class:selected={focus === result.course}
             class:unavailable={result.time === null}
             aria-pressed={focus === result.course}
             onclick={() => (focus = result.course)}
-            ><div class="result-card-top">
-              <strong>{result.course}</strong><span
-                >{result.course === form.course
-                  ? adjustment
-                    ? "ADJUSTED"
-                    : "YOUR INPUT"
-                  : "ESTIMATE"}</span
+          >
+            <span class="result-description">
+              <span class="result-card-top"
+                ><strong>{result.course}</strong
+                >{#if focus === result.course}<Icon
+                    name="check"
+                    size={13}
+                  />{/if}<span
+                  >{result.course === form.course
+                    ? adjustment
+                      ? "ADJUSTED"
+                      : "ORIGINAL"
+                    : result.kind === "published"
+                      ? "PUBLISHED FACTOR"
+                      : result.kind === "derived"
+                        ? "DERIVED ESTIMATE"
+                        : "UNAVAILABLE"}</span
+                ></span
               >
-            </div>
-            <div class="result-time" data-testid={`result-${result.course}`}>
-              {formatTime(result.time)}
-            </div>
-            <div class="result-card-bottom">
-              <span
+              <span class="result-card-bottom"
                 >{eventDistance(form.distance, result.course, form.stroke)}
-                {result.course === "SCY" ? "yards" : "meters"}</span
-              >{#if focus === result.course}<span class="selected-check"
-                  ><Icon name="check" size={12} /></span
-                >{:else}<Icon name="arrow" size={15} />{/if}
-            </div></button
-          >{/each}
+                {form.stroke === "IM"
+                  ? "IM"
+                  : strokes.find((stroke) => stroke.id === form.stroke)!.short} ·
+                {poolLabel(result.course)} pool</span
+              >
+            </span>
+            <span class="result-time" data-testid={`result-${result.course}`}
+              >{formatTime(error ? null : result.time)}</span
+            >
+          </button>
+        {/each}
       </div>
       <div class="result-explanation">
         <Icon name="info" size={15} />
         <p>
-          {#if focused.kind === "unavailable"}{focused.reason}{:else if focused.kind === "swum"}{adjustment
+          {#if error}Results will appear when your input is valid.{:else if focused.kind === "unavailable"}{focused.reason}{:else if focused.kind === "swum"}{adjustment
               ? `Your sea-level estimate in ${form.course}.`
               : "Your entered swim, exactly as timed."}{:else}{form.course} → {focus}:
             <strong>× {focused.factor?.toFixed(5)}</strong>. {focused.kind ===
@@ -863,6 +847,9 @@
               : "Derived from NCAA metric-to-yards factors."} Truncated to hundredths.{/if}
         </p>
       </div>
+      <button class="text-button method-link" onclick={() => go("method")}
+        >How this is calculated <Icon name="arrow" size={14} /></button
+      >
       <div class="result-actions">
         <button class="primary-button" onclick={save} disabled={!!error}
           ><Icon name="bookmark" size={16} />Save swim</button
@@ -1379,12 +1366,14 @@
     > · Open source, always.</span
   >
   <nav class="footer-docs" aria-label="Documentation">
-    <a href="/embed/">Widget setup</a><a href="/mcp/">MCP setup</a>
+    <a href="#method">Methodology</a><a href="/embed/">Widget setup</a><a
+      href="/mcp/">MCP setup</a
+    >
   </nav>
   <span>Sources checked October 16, 2026</span>
 </footer>
 <nav class="mobile-nav" aria-label="Mobile navigation">
-  {#each [{ id: "converter", icon: "wave", label: "Converter" }, { id: "history", icon: "history", label: "History" }, { id: "standards", icon: "standards", label: "Standards" }, { id: "method", icon: "info", label: "The method" }] as item}
+  {#each [{ id: "converter", icon: "wave", label: "Converter" }, { id: "history", icon: "history", label: "History" }, { id: "standards", icon: "standards", label: "Standards" }] as item}
     <button
       class:active={activeSection === item.id}
       aria-current={activeSection === item.id ? "location" : undefined}

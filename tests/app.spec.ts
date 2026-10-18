@@ -22,8 +22,7 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
   await units.getByRole("button", { name: "m", exact: true }).click();
   await page.locator("#altitude").fill("1600");
   await page.locator("#swim-time").fill("2:00");
-  await page.getByRole("button", { name: "Breast", exact: true }).click();
-  await page.locator("#distance").selectOption("200");
+  await page.locator("#event").selectOption("BR:200");
   await page
     .getByRole("button", { name: "World Aquatics points", exact: true })
     .click();
@@ -45,10 +44,7 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
     }),
   ).toBeVisible();
   await expect(page.locator("#swim-time")).toHaveValue("58.32");
-  await expect(page.locator("#distance")).toHaveValue("100");
-  await expect(
-    page.getByRole("button", { name: "Free", exact: true }),
-  ).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("#event")).toHaveValue("FR:100");
   await expect(page.locator("#category")).toHaveValue("men");
   await expect(
     page
@@ -151,8 +147,7 @@ test("live conversion, invalid input and course-specific unavailable events", as
   await page.goto("./");
   await expect(page.getByTestId("result-SCY")).toHaveText("58.32");
   await page.locator("#category").selectOption("men");
-  await page.getByRole("button", { name: "Breast", exact: true }).click();
-  await page.locator("#distance").selectOption("200");
+  await page.locator("#event").selectOption("BR:200");
   await page
     .getByRole("group", { name: "Swum in" })
     .getByRole("button", { name: "LCM" })
@@ -166,8 +161,7 @@ test("live conversion, invalid input and course-specific unavailable events", as
   ).toBeDisabled();
   await expect(page.getByTestId("result-SCY")).toHaveText("—");
   await page.locator("#swim-time").fill("1:00");
-  await page.getByRole("button", { name: "IM", exact: true }).click();
-  await page.locator("#distance").selectOption("100");
+  await page.locator("#event").selectOption("IM:100");
   await expect(page.getByTestId("result-LCM")).toHaveText("—");
   await expect(
     page
@@ -176,6 +170,45 @@ test("live conversion, invalid input and course-specific unavailable events", as
   ).toBeDisabled();
   expect(errors).toEqual([]);
 });
+test("focused results follow the selected course, mapped event and invalid input", async ({
+  page,
+}) => {
+  await page.goto("./");
+  await page.getByLabel("Event", { exact: false }).selectOption("FR:400");
+  await page.locator("#swim-time").fill("5:00");
+  // The engine's canonical 400 free maps to 500 yards and 400 meters.
+  await expect(page.locator("#event option:checked")).toHaveText(
+    "500 Freestyle",
+  );
+  await expect(page.locator(".focused-context")).toHaveText(
+    "400 Freestyle · LCM (50 m pool)",
+  );
+  await expect(page.getByTestId("focused-time")).toHaveText(
+    (await page.getByTestId("result-LCM").textContent()) ?? "",
+  );
+  const original = page.getByRole("button", { name: /SCY ORIGINAL/ });
+  await original.focus();
+  await page.keyboard.press("Enter");
+  await expect(original).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByTestId("focused-time")).toHaveText("5:00.00");
+  await expect(page.locator(".focused-context")).toHaveText(
+    "500 Freestyle · SCY (25 yd pool)",
+  );
+  await expect(page.locator(".focused-provenance")).toContainText(
+    "Your original time",
+  );
+  await page.locator("#swim-time").fill("1:60");
+  await expect(page.getByTestId("focused-time")).toHaveText("—");
+  await expect(page.locator(".hundredths")).toHaveCount(0);
+  await page.locator("#swim-time").fill("1:00");
+  await page.locator("#event").selectOption("IM:100");
+  await page.getByTestId("result-LCM").click();
+  await expect(page.getByTestId("focused-time")).toHaveText("—");
+  await expect(page.locator(".focused-provenance")).toContainText(
+    "No conversion published",
+  );
+});
+
 test("standards, altitude, local saves, restore and remove", async ({
   page,
 }) => {
@@ -193,7 +226,7 @@ test("standards, altitude, local saves, restore and remove", async ({
   await expect(page.locator("#swim-time")).toHaveValue("58.32");
   await page.locator(".remove-swim").click();
   await expect(page.locator(".saved-card")).toHaveCount(0);
-  await page.locator("#distance").selectOption("200");
+  await page.locator("#event").selectOption("FR:200");
   await page.locator("#swim-time").fill("2:00");
   await page.getByText("Swam at altitude?", { exact: true }).click();
   await page.locator("#altitude").fill("5280");
@@ -238,14 +271,28 @@ test("responsive layout and accessible controls", async ({
   });
 });
 
-test("long times fit the narrow desktop layout", async ({ page }) => {
-  await page.setViewportSize({ width: 681, height: 1000 });
-  await page.goto("./");
-  await page.locator("#swim-time").fill("60:00.00");
-  for (const time of await page.locator(".result-time").all()) {
+test("long times and expanded elevation fit narrow layouts", async ({
+  page,
+}) => {
+  for (const width of [320, 681]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.goto("./");
+    await page.locator("#swim-time").fill("60:00.00");
+    if (!(await page.locator("#altitude").isVisible()))
+      await page.getByText("Swam at altitude?", { exact: true }).click();
+    await page.locator("#altitude").fill("5280");
+    for (const time of await page
+      .locator(".result-time, .focused-time, .elevation-entry")
+      .all()) {
+      expect(
+        await time.evaluate(
+          (element) => element.scrollWidth <= element.clientWidth,
+        ),
+      ).toBe(true);
+    }
     expect(
-      await time.evaluate(
-        (element) => element.scrollWidth <= element.clientWidth,
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
   }
@@ -265,7 +312,7 @@ test("conversion history records settled edits, persists, filters, restores and 
     .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
     .analyze();
   expect(historyA11y.violations.map((v) => v.id)).toEqual([]);
-  await page.getByRole("button", { name: "Breast", exact: true }).click();
+  await page.locator("#event").selectOption("BR:100");
   await page.locator("#swim-time").fill("1:12.50");
   await expect(page.locator(".history-row")).toHaveCount(2);
   await page
@@ -274,11 +321,7 @@ test("conversion history records settled edits, persists, filters, restores and 
   await expect(page.locator(".history-row")).toHaveCount(1);
   await page.locator(".history-restore").click();
   await expect(page.locator("#swim-time")).toHaveValue("59.10");
-  await expect(
-    page
-      .getByRole("group", { name: "Stroke", exact: true })
-      .getByRole("button", { name: "Free", exact: true }),
-  ).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("#event")).toHaveValue("FR:100");
   // Invalid input must never enter history.
   await page.locator("#swim-time").fill("1:60");
   await page
@@ -339,11 +382,14 @@ test("mobile navigation reaches history and standards without covering content",
         document.querySelector(".results-panel")!.getBoundingClientRect().top,
     ),
   );
-  expect(seam).toBeLessThan(1);
+  expect(seam).toBeGreaterThanOrEqual(12);
+  expect(seam).toBeLessThanOrEqual(20);
   await page.locator("#swim-time").fill("invalid");
   await expect(resultsJump).toBeDisabled();
   await page.locator("#swim-time").fill("58.32");
   const nav = page.getByRole("navigation", { name: "Mobile navigation" });
+  await expect(nav.getByRole("button")).toHaveCount(3);
+  await expect(nav.getByRole("button", { name: "The method" })).toHaveCount(0);
   await nav.getByRole("button", { name: "History", exact: true }).click();
   await expect(page.locator("#history")).toBeInViewport();
   await nav.getByRole("button", { name: "Standards", exact: true }).click();
@@ -351,6 +397,8 @@ test("mobile navigation reaches history and standards without covering content",
   await expect(
     nav.getByRole("button", { name: "Standards", exact: true }),
   ).toHaveAttribute("aria-current", "location");
+  await page.getByRole("button", { name: "How this is calculated" }).click();
+  await expect(page.locator("#method")).toBeInViewport();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
@@ -390,7 +438,7 @@ test("elevation units preserve altitude and show the sea-level transformation", 
   await units.getByRole("button", { name: "ft", exact: true }).click();
   await expect(page.locator("#altitude")).toHaveValue("7200");
   // Metric inputs use the same published bands as canonical feet.
-  await page.locator("#distance").selectOption("200");
+  await page.locator("#event").selectOption("FR:200");
   await page.locator("#swim-time").fill("2:00");
   await units.getByRole("button", { name: "m", exact: true }).click();
   await page.locator("#altitude").fill("914.4");

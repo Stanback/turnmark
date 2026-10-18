@@ -1,0 +1,18 @@
+{
+  "sourceHash": "d5d7e1fa5a0c5d1b2578f2ddfd527629bce3cb898a9753ddbd7e4c407e92c97f",
+  "files": {
+    "apps/ios/Sources/Assets.xcassets/Contents.json": "f5fb0e1f3a8142892ed092efb5955c1c2cc537003a89ad7bbdb9dade7fe8985f",
+    "apps/ios/Sources/Assets.xcassets/AppIcon.appiconset/Contents.json": "852920cb36e95beb53771138a4b8195a16fcce1cc31250632f246081cc638f9a",
+    "public/icons/app-icon.svg": "67206100394c399e468f832c5ae2406639cd6700dd03350cc38053cbbe938f89",
+    "public/favicon.svg": "67206100394c399e468f832c5ae2406639cd6700dd03350cc38053cbbe938f89",
+    "public/manifest.webmanifest": "44ff33c3a57e05f683a0685e024ea8e7f313390aca63248ea985559e6c6b9294",
+    "apps/ios/Sources/Assets.xcassets/AppIcon.appiconset/AppIcon.png": "b34767bc71a3b1ef65c1f9d230ad094a6e3c912d169f6e3df11ec06f1a4eff3d",
+    "public/icons/icon-512.png": "47cb5b02feed61c8a8d71667db7c63540fba5b85ad82beaa9709a0ac8fe4222f",
+    "public/icons/icon-192.png": "d9935a8b64ac7cac711f24f6e48519b85b958df45ca080a65969ab22d546e0e7",
+    "public/icons/icon-180.png": "5558fc9478d26f66a7759f2dd032814f391478338e20f8868114eb2d6c6a2ec3",
+    "apps/android/src/main/res/drawable/ic_launcher_foreground.xml": "d03233bce76a2eada70f1dcc1a730339ad95e401baad1ba86911abf0dced51d3",
+    "apps/android/src/main/res/values/brand.xml": "bf4603e91c81f5f2cd14200d5556a45d0809820c4faa012a99c7c7b1e052fea1",
+    "apps/android/src/main/res/mipmap-anydpi-v26/ic_launcher.xml": "d0b7050d918713b6bd1598265d44b6553aecc667db9be269c11c75b61521ca75",
+    "apps/android/src/main/res/mipmap-anydpi-v33/ic_launcher.xml": "12856628d52f96190795feb84fe4d32ee8b371c67ebb1ac3c6c25c2af05d3595"
+  }
+}

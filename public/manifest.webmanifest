@@ -7,9 +7,12 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#eff5f8",
-  "theme_color": "#032c43",
-  "categories": ["sports", "utilities"],
+  "background_color": "#f4f8f9",
+  "theme_color": "#081e29",
+  "categories": [
+    "sports",
+    "utilities"
+  ],
   "prefer_related_applications": false,
   "icons": [
     {

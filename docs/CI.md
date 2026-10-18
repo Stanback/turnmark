@@ -5,7 +5,7 @@ native apps; editing canonical calculations or data tests every consumer.
 
 | Changed inputs                                                                                                        | Checks selected           |
 | --------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| Web UI, embedded widget, public assets, browser tests, Vite/Svelte/TypeScript configuration                                            | Web                       |
+| Web UI, embedded widget, public assets, browser tests, Vite/Svelte/TypeScript configuration                           | Web                       |
 | JavaScript SDK, Wasm adapter, npm manifest/lockfile, JS packaging scripts                                             | Web and core/Wasm         |
 | MCP server, Worker, protocol tests                                                                                    | Core/Wasm (including MCP) |
 | SwiftUI app, Swift package/tests, iOS packaging/test scripts                                                          | iOS                       |
@@ -16,6 +16,14 @@ native apps; editing canonical calculations or data tests every consumer.
 | Shared brand-generation script                                                                                        | Web, iOS and Android      |
 | Documentation, root Markdown instructions, issue/PR templates                                                         | Selection checks only     |
 | Workflows, selection rules, or unfamiliar paths                                                                       | All                       |
+
+The shared palette `design/turnmark.tokens.json`, wave geometry
+`design/wave.svg`, brand export manifest, and brand exporter select web, iOS and
+Android because all three consume launcher/favicon assets. They do not select
+core/calculation checks. The CSS generator and contract checks under `design/`
+currently select web; native screen adapters will be added during adoption.
+Web-only layout changes still skip native builds. Editing CI selection rules
+themselves selects all checks.
 
 Core/Wasm checks also build and test the MCP package and local Worker. Web-only
 edits skip those checks. SDK changes exercise their MCP consumer.
