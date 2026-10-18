@@ -121,10 +121,20 @@ final class TurnmarkUITests: XCTestCase {
         let distance = app.buttons["distancePicker"]
         reach(distance, in: app); distance.tap(); app.buttons["200 m"].tap()
         reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
+        XCTAssertTrue(app.staticTexts["benchmarkContext"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.staticTexts["benchmarkContext"].label, "200 m Butterfly · LCM · Women")
         let system = app.descendants(matching: .any)["benchmarkSystem"].firstMatch
         reach(system, in: app); system.tap(); app.buttons["USMS · Masters"].tap()
-        let missing = app.staticTexts["benchmarkUnavailable"]
+        let missing = app.descendants(matching: .any)["benchmarkUnavailable"].firstMatch
+        // Changing systems can preserve the settings row's scroll position.
+        // SwiftUI's lazy Form may not expose the preceding state until scrolled.
+        let form = app.descendants(matching: .any)["benchmarkForm"].firstMatch
+        for _ in 0..<6 {
+            if missing.exists && missing.isHittable { break }
+            form.swipeDown()
+        }
         reach(missing, in: app); XCTAssertTrue(missing.exists)
+        XCTAssertTrue(missing.label.contains("No published target"))
         capture(app, "Missing Masters target large text")
         app.buttons["closeBenchmarks"].tap()
     }

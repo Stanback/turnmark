@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import TurnmarkCore
 
 let courseNames = ["SCY", "SCM", "LCM"]
@@ -77,6 +78,7 @@ private struct TurnmarkView: View {
     @State private var showingMethod = false
     @AppStorage("savedSwim") private var savedJSON = ""
     @FocusState private var editingTime: Bool
+    @State private var focusDismissal = 0
     @ScaledMetric(relativeTo: .largeTitle) private var entrySize = 42
 
     init() {
@@ -99,6 +101,7 @@ private struct TurnmarkView: View {
             NavigationStack {
                 GeometryReader { geometry in
                     let restoreFocus = editingTime
+                    let focusRevision = focusDismissal
                     Group {
                         if #available(iOS 27.1, *) {
                             let regions = geometry.reservedRegions(kind: .division)
@@ -124,7 +127,7 @@ private struct TurnmarkView: View {
                         // location. Restore only an entry that was already active.
                         if restoreFocus {
                             await Task.yield()
-                            if !Task.isCancelled { editingTime = true }
+                            if !Task.isCancelled && focusRevision == focusDismissal { editingTime = true }
                         }
                     }
                 }
@@ -132,7 +135,7 @@ private struct TurnmarkView: View {
                 .toolbar(.hidden, for: .navigationBar)
                 .toolbar {
                     if editingTime {
-                        ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("Done") { editingTime = false }.accessibilityIdentifier("dismissConverterKeyboard") }
+                        ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("Done", action: dismissTimeEntry).accessibilityIdentifier("dismissConverterKeyboard") }
                     }
                 }
             }.tabItem { Label("Convert", systemImage: "arrow.left.arrow.right") }.tag(0)
@@ -167,6 +170,14 @@ private struct TurnmarkView: View {
         .onChange(of: draft.strokeIndex) { _, _ in draft.reconcile() }
     }
 
+    private func dismissTimeEntry() {
+        // Explicit dismissal supersedes any pane-change restoration still
+        // waiting on the main actor, including on a busy simulator/device.
+        focusDismissal &+= 1
+        editingTime = false
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+
     private func converterLayoutKey(_ geometry: GeometryProxy) -> String {
         // Restore focus only when our view hierarchy moves the input field.
         // Keyboard safe-area changes also resize GeometryReader; keying on raw
@@ -186,7 +197,7 @@ private struct TurnmarkView: View {
     private var compactConverter: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                ConversionResult(input: draft, compact: true, benchmarks: { editingTime = false; benchmarking = $0 }) { draft.targetIndex = $0 }
+                ConversionResult(input: draft, compact: true, benchmarks: { dismissTimeEntry(); benchmarking = $0 }) { draft.targetIndex = $0 }
                 inputContent
             }.padding(16).frame(maxWidth: 600).frame(maxWidth: .infinity)
         }.scrollDismissesKeyboard(.interactively)
@@ -200,7 +211,7 @@ private struct TurnmarkView: View {
     }
     private func comparisonPane(compact: Bool = false) -> some View {
         ScrollView {
-            ConversionResult(input: draft, compact: compact, benchmarks: { editingTime = false; benchmarking = $0 }) { draft.targetIndex = $0 }
+            ConversionResult(input: draft, compact: compact, benchmarks: { dismissTimeEntry(); benchmarking = $0 }) { draft.targetIndex = $0 }
                 .padding(20).frame(maxWidth: 620).frame(maxWidth: .infinity)
         }
     }
@@ -225,7 +236,7 @@ private struct TurnmarkView: View {
                 TextField("58.32", text: $draft.time)
                     .font(.system(size: entrySize, weight: .semibold)).monospacedDigit()
                     .keyboardType(.numbersAndPunctuation).focused($editingTime)
-                    .submitLabel(.done).onSubmit { editingTime = false }
+                    .submitLabel(.done).onSubmit(dismissTimeEntry)
                     .padding(12).background(TurnmarkPalette.surfaceInput, in: RoundedRectangle(cornerRadius: 10))
                     .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(TurnmarkPalette.borderControl))
                     .accessibilityLabel("Your time").accessibilityIdentifier("timeInput")
@@ -242,7 +253,7 @@ private struct TurnmarkView: View {
             }
             coursePicker("Compare with", selection: $draft.targetIndex, id: "targetCourse")
             Divider()
-            Button { editingTime = false; logging = draft } label: {
+            Button { dismissTimeEntry(); logging = draft } label: {
                 Label("Record time", systemImage: "plus").fontWeight(.semibold)
                     .foregroundStyle(TurnmarkPalette.onAction).frame(maxWidth: .infinity)
             }.buttonStyle(.borderedProminent).tint(TurnmarkPalette.actionFill).controlSize(.large)

@@ -9,7 +9,7 @@ Saved and Method retain functional page titles. The [shared design contract](DES
 defines palette ownership and the staged cross-platform adoption.
 
 The website declares the square 192px PNG at the stable
-`/icons/icon-192.png` URL as a favicon, alongside the scalable SVG for browsers.
+`/icons/favicon-192.png` URL as a favicon, alongside the scalable SVG for browsers.
 Keep a raster `rel="icon"` declaration in the homepage HTML: Google's current
 Search favicon guidelines list raster formats, including PNG, and recommend
 more than 48px. Both the homepage and icon must remain crawlable. Search display
@@ -21,6 +21,10 @@ that matches the app's appearance. iOS uses a matching light/dark launch backgro
 and opens directly into the form. Neither platform adds a timed splash or spinner.
 See [the design review](NATIVE_DESIGN_REVIEW.md) for the store comparisons and
 platform guidance behind this choice.
+
+Browser favicons have rounded backgrounds with transparent corners. The separate
+PNG/SVG favicon exports share that shape; native launcher and touch icons retain
+full-bleed backgrounds so the operating system owns their masks.
 
 After editing the wave geometry or shared palette, regenerate all brand assets:
 

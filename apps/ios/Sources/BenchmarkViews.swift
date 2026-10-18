@@ -58,7 +58,7 @@ struct BenchmarkScreen: View {
                         }
                     }.listRowBackground(TurnmarkPalette.surface)
                 }
-            }.scrollContentBackground(.hidden).background(TurnmarkPalette.canvas)
+            }.accessibilityIdentifier("benchmarkForm").scrollContentBackground(.hidden).background(TurnmarkPalette.canvas)
                 .foregroundStyle(TurnmarkPalette.text).tint(TurnmarkPalette.accent)
                 .navigationTitle("Standards & points").navigationBarTitleDisplayMode(.inline)
                 .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() }.accessibilityIdentifier("closeBenchmarks") } }

@@ -15,6 +15,12 @@ if (!path)
   throw new Error("Expected the canonical wave path in design/wave.svg");
 const [, wave, width] = path;
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="${background}"/><path d="${wave}" fill="none" stroke="${stroke}" stroke-width="${width}" stroke-linecap="round"/></svg>\n`;
+// Browser favicons own their shape. Launchers keep full-bleed artwork so each
+// platform can apply its native mask without a second set of rounded corners.
+const faviconSvg = svg.replace(
+  '<rect width="512" height="512"',
+  '<rect width="512" height="512" rx="112"',
+);
 const digest = (content) => createHash("sha256").update(content).digest("hex");
 const sourceHash = digest(
   geometry +
@@ -64,7 +70,7 @@ await output(
   }),
 );
 await output("public/icons/app-icon.svg", svg);
-await output("public/favicon.svg", svg);
+await output("public/favicon.svg", faviconSvg);
 const webManifest = JSON.parse(
   await readFile("public/manifest.webmanifest", "utf8"),
 );
@@ -77,6 +83,15 @@ try {
     viewport: { width: 1024, height: 1024 },
     deviceScaleFactor: 1,
   });
+  const html = (image) =>
+    `<style>html,body{margin:0;width:100%;height:100%}svg{display:block;width:100%;height:100%}</style>${image}`;
+  await page.setContent(html(faviconSvg));
+  await page.setViewportSize({ width: 192, height: 192 });
+  await page.screenshot({
+    path: "public/icons/favicon-192.png",
+    omitBackground: true,
+  });
+  exported.push("public/icons/favicon-192.png");
   await page.setContent(
     `<style>html,body{margin:0;width:100%;height:100%}svg{display:block;width:100%;height:100%}</style>${svg}`,
   );
