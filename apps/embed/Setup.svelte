@@ -21,12 +21,28 @@
   }
 </script>
 
-<nav class="page-width" aria-label="Documentation navigation">
-  <a href="/">← Turnmark calculator</a>
-  <a href="/mcp/">MCP setup</a>
-  <a href="/docs/embed.md">Markdown reference</a>
-</nav>
-<main class="embed-section page-width" aria-labelledby="embed-title">
+<header class="docs-header docs-width">
+  <a class="docs-brand" href="/" aria-label="Turnmark home"
+    ><span class="docs-brand-icon"
+      ><svg
+        viewBox="0 0 24 24"
+        width="23"
+        height="23"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.65"
+        stroke-linecap="round"
+        aria-hidden="true"><path d="M3 8q4-6 9 0t9 0M3 16q4-6 9 0t9 0" /></svg
+      ></span
+    >turnmark<span>.</span></a
+  >
+  <nav aria-label="Documentation navigation">
+    <a href="/">Calculator</a>
+    <a href="/mcp/">MCP setup</a>
+    <a href="/docs/embed.md">Markdown reference</a>
+  </nav>
+</header>
+<main class="embed-section docs-width" aria-labelledby="embed-title">
   <div>
     <h1 id="embed-title">Embed the swim time converter</h1>
     <p>
@@ -35,16 +51,27 @@
     </p>
   </div>
   <div class="embed-controls">
-    <label for="embed-theme">Appearance</label><select
-      id="embed-theme"
-      bind:value={theme}
-      onchange={() => {
-        copied = false;
-        failed = false;
-      }}
-      ><option value="auto">Match the reader’s device</option><option
-        value="light">Light</option
-      ><option value="dark">Dark</option></select
+    <label for="embed-theme">Appearance</label><span class="docs-select"
+      ><select
+        id="embed-theme"
+        bind:value={theme}
+        onchange={() => {
+          copied = false;
+          failed = false;
+        }}
+        ><option value="auto">Match the reader’s device</option><option
+          value="light">Light</option
+        ><option value="dark">Dark</option></select
+      ><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"
+        ><path
+          d="m4 6 4 4 4-4"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        /></svg
+      ></span
     >
   </div>
   <label class="code-label" for="embed-code">Embed code</label>
@@ -84,18 +111,19 @@
   </p>
   <section class="setup-notes" aria-labelledby="setup-notes-title">
     <h2 id="setup-notes-title">Add it to a page</h2>
-    <ol>
+    <ol class="setup-steps">
       <li>
-        Choose whether the widget follows the reader’s device or stays light or
-        dark.
+        <strong>Choose an appearance</strong>
+        Follow the reader’s device, or keep the widget light or dark.
       </li>
       <li>
-        Copy the HTML into a custom HTML or embed block in your editor. In
-        WordPress, use a Custom HTML block.
+        <strong>Paste the embed code</strong>
+        Copy the HTML into a custom HTML or embed block in your editor. In WordPress,
+        use a Custom HTML block.
       </li>
       <li>
-        Preview and publish the page. Some editors require permission to use
-        iframes.
+        <strong>Preview and publish</strong>
+        Check the converter in your page. Some editors require permission to use iframes.
       </li>
     </ol>
     <p>
@@ -129,82 +157,37 @@
     </p>
   </section>
 </main>
-<footer class="page-width">
+<footer class="docs-width">
   <a href="https://github.com/Stanback/turnmark">Source code</a>
 </footer>
 
 <style>
-  :global(html) {
-    color-scheme: light dark;
-    background: #f5f8fa;
-    color: #163348;
-    --line: #cad7df;
-    --muted: #4e687a;
-    --embed-surface: #fff;
-  }
-  :global(body) {
-    margin: 0;
-    font:
-      16px/1.65 "DM Sans Variable",
-      system-ui,
-      sans-serif;
-  }
-  :global(*),
-  :global(*::before),
-  :global(*::after) {
-    box-sizing: border-box;
-  }
-  .page-width {
-    width: min(100% - 48px, 760px);
-    margin-inline: auto;
-  }
-  nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px 22px;
-    padding-top: 32px;
-  }
-  a {
-    color: #00687c;
-    text-underline-offset: 3px;
-  }
-  a:focus-visible,
-  button:focus-visible,
-  select:focus-visible,
-  summary:focus-visible {
-    outline: 3px solid #1388ae;
-    outline-offset: 4px;
-  }
-  .embed-section {
-    padding-block: 36px;
-  }
-  h1 {
-    font-size: clamp(2rem, 6vw, 3rem);
-    line-height: 1.15;
-    letter-spacing: -0.035em;
-    margin: 0 0 22px;
-  }
-  h2 {
-    margin: 0 0 12px;
-  }
-  p {
-    line-height: 1.7;
-    max-width: 740px;
-  }
   .embed-controls {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 12px;
-    margin: 22px 0;
+    margin: 28px 0;
+  }
+  .docs-select {
+    position: relative;
+    max-width: 100%;
+  }
+  .docs-select svg {
+    position: absolute;
+    inset-inline-end: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
   }
   select {
+    appearance: none;
     max-width: 100%;
-    padding: 10px 12px;
-    background: var(--embed-surface);
+    padding: 12px 48px 12px 16px;
+    background: var(--docs-surface);
     color: inherit;
-    border: 1px solid var(--line);
-    border-radius: 8px;
+    border: 1px solid var(--docs-control);
+    border-radius: 10px;
     font: inherit;
   }
   .code-label {
@@ -218,12 +201,12 @@
     min-height: 130px;
     padding: 16px;
     resize: vertical;
-    background: var(--embed-surface);
+    background: var(--docs-surface);
     color: inherit;
-    border: 1px solid var(--line);
+    border: 1px solid var(--docs-control);
     border-radius: 10px;
     font:
-      13px/1.7 "DM Mono",
+      13px/1.7 ui-monospace,
       monospace;
   }
   .embed-actions {
@@ -247,45 +230,32 @@
   iframe {
     display: block;
     max-width: 640px;
-    border: 1px solid var(--line);
+    border: 1px solid var(--docs-line);
     border-radius: 16px;
     margin-top: 12px;
   }
-  textarea:focus-visible {
-    outline: 3px solid #1388ae;
-    outline-offset: 4px;
-  }
   .primary-button {
     border: 0;
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 12px 18px;
-    background: #00687c;
-    color: #fff;
+    background: var(--docs-action);
+    color: #062b38;
     font: inherit;
-    font-weight: 600;
+    font-weight: 650;
     cursor: pointer;
   }
   .setup-notes {
     margin-top: 36px;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid var(--docs-line);
     padding-top: 28px;
   }
-  .setup-notes h2:not(:first-child) {
-    margin-top: 28px;
+  .setup-notes h2:first-child {
+    margin-top: 0;
   }
-  ol {
-    padding-left: 24px;
-  }
-  li + li {
-    margin-top: 8px;
-  }
-  code {
-    font-size: 0.9em;
-    overflow-wrap: anywhere;
-  }
-  footer {
-    padding-block: 0 40px;
+  .embed-note {
     font-size: 14px;
+    color: var(--docs-muted);
+    margin-top: 22px;
   }
   @media (max-width: 367px) {
     iframe {
@@ -296,25 +266,13 @@
       border-radius: 0;
     }
   }
-  @media (prefers-color-scheme: dark) {
-    :global(html) {
-      background: #0b202b;
-      color: #dce9f1;
-      --line: #344e60;
-      --muted: #b3c9d7;
-      --embed-surface: #172f43;
+  @media (forced-colors: active) {
+    select {
+      appearance: auto;
+      padding-inline-end: 16px;
     }
-    a {
-      color: #9cdaea;
+    .docs-select svg {
+      display: none;
     }
-    .primary-button {
-      background: #9cdaea;
-      color: #0b202b;
-    }
-  }
-  .embed-note {
-    font-size: 14px;
-    color: var(--muted);
-    margin-top: 22px;
   }
 </style>

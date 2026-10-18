@@ -88,3 +88,16 @@ part of a longer form; they do not claim all content fits at once.
   benchmark/points parity, store submission or translation release is implied.
 - Half-window multitasking, physical folding transitions and assistive-technology
   reading/focus remain explicit release work. Standards/points are next, followed by localization; the proposed scope is in [native product notes](NATIVE_PRODUCT_NOTES.md).
+
+## Result gradient follow-up
+
+The result surface now uses a quiet, static diagonal gradient from the generated
+dark `surfaceRaised` to dark `surface` on both platforms, in both appearances.
+All stops remain opaque. White times, muted context, lime highlights and native
+button treatments are unchanged. No animation or new color values are added.
+Reviewed ordinary iPhone light/dark captures, the open Duo dark preview and
+Android's expanded light layout. All 16 iOS and 17 Android tests pass.
+
+| iPhone light                                                  | Duo dark                                                      | Android light                                                      |
+| ------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------ |
+| ![iPhone gradient](screenshots/ios-native-gradient-light.png) | ![Duo gradient](screenshots/ios-native-duo-gradient-dark.png) | ![Android gradient](screenshots/android-native-gradient-light.png) |

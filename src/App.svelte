@@ -267,7 +267,7 @@
       sectionFrame = 0;
       let next = "converter",
         nearest = -Infinity;
-      for (const id of ["converter", "history", "standards", "method"]) {
+      for (const id of ["converter", "standards", "history", "method"]) {
         const top = document.getElementById(id)?.getBoundingClientRect().top;
         if (
           top !== undefined &&
@@ -525,11 +525,11 @@
         class:nav-current={activeSection === "converter"}
         onclick={() => go("converter")}>Converter</button
       ><button
-        class:nav-current={activeSection === "history"}
-        onclick={() => go("history")}>History</button
-      ><button
         class:nav-current={activeSection === "standards"}
         onclick={() => go("standards")}>Time standards</button
+      ><button
+        class:nav-current={activeSection === "history"}
+        onclick={() => go("history")}>History</button
       ><button onclick={() => go("method")}>The method</button>
     </nav>
     <div class="header-actions">
@@ -867,110 +867,6 @@
   </section>
 
   <div class="insights-grid page-width">
-    <section class="history-panel" id="history" aria-labelledby="history-title">
-      <div class="history-heading">
-        <div>
-          <h2 id="history-title">
-            Recent conversions <span>{conversions.length}</span>
-          </h2>
-        </div>
-        {#if conversions.length}<button
-            class="text-button"
-            onclick={() => {
-              writeHistory([]);
-              notify("Conversion history cleared.");
-            }}>Clear history</button
-          >{/if}
-      </div>
-      <p class="history-subtitle">
-        Your last 50 conversions. Only on this device.
-      </p>
-      <div
-        class="history-filters"
-        role="group"
-        aria-label="Filter conversion history"
-      >
-        <button
-          class:active={historyFilter === "all"}
-          aria-pressed={historyFilter === "all"}
-          onclick={() => (historyFilter = "all")}>All</button
-        >
-        {#each strokes as stroke}<button
-            class:active={historyFilter === stroke.id}
-            aria-pressed={historyFilter === stroke.id}
-            aria-label={`Filter history: ${stroke.short}`}
-            onclick={() => (historyFilter = stroke.id)}>{stroke.short}</button
-          >{/each}
-      </div>
-      <div class="history-list">
-        {#each filteredHistory as entry (entry.id)}
-          <div class="history-row">
-            <button
-              class="history-restore"
-              onclick={() => restoreConversion(entry)}
-              aria-label={`Restore ${eventLabel(entry.form.distance, entry.form.course, entry.form.stroke)} ${entry.form.time}`}
-            >
-              <span
-                class="history-wave"
-                class:medley={entry.form.stroke === "IM"}
-                ><Icon name="wave" size={20} /></span
-              >
-              <span class="history-event"
-                ><strong
-                  >{eventLabel(
-                    entry.form.distance,
-                    entry.form.course,
-                    entry.form.stroke,
-                  )}</strong
-                ><small
-                  >{entry.form.course} <span aria-hidden="true">→</span>
-                  {entry.target} · {entry.form.category === "women"
-                    ? "Women"
-                    : "Men"}</small
-                ></span
-              >
-              <span class="history-times"
-                ><strong
-                  >{formatTime(parseTime(entry.form.time))} <span>→</span>
-                  {formatTime(historyResult(entry))}</strong
-                ><small>{dateLabel(entry.createdAt)}</small></span
-              >
-              <Icon name="chevron" size={14} />
-            </button>
-            <button
-              class="history-remove"
-              aria-label={`Remove conversion ${entry.form.time}`}
-              onclick={() =>
-                writeHistory(conversions.filter((x) => x.id !== entry.id))}
-              ><Icon name="close" size={14} /></button
-            >
-          </div>
-        {:else}
-          <div class="history-empty">
-            <span class="empty-icon"
-              ><Icon
-                name={conversions.length ? "wave" : "history"}
-                size={26}
-              /></span
-            >
-            <h3>
-              {conversions.length
-                ? "No conversions for this stroke."
-                : "No conversions yet."}
-            </h3>
-            <p>
-              {conversions.length
-                ? "Try another filter to find a previous conversion."
-                : "Change a time or event above. Your conversion will appear here automatically."}
-            </p>
-            <span
-              ><Icon name="lock" size={13} />Private to this browser. No account
-              needed.</span
-            >
-          </div>
-        {/each}
-      </div>
-    </section>
     <section
       class="standards-section"
       id="standards"
@@ -984,13 +880,14 @@
         <button
           class:active={standardMode === "targets"}
           aria-pressed={standardMode === "targets"}
-          onclick={() => (standardMode = "targets")}>Time standards</button
+          aria-label="Time standards"
+          onclick={() => (standardMode = "targets")}>Standards</button
         >
         <button
           class:active={standardMode === "points"}
           aria-pressed={standardMode === "points"}
-          onclick={() => (standardMode = "points")}
-          >World Aquatics points</button
+          aria-label="World Aquatics points"
+          onclick={() => (standardMode = "points")}>Points</button
         >
       </div>
       {#if standardMode === "targets"}
@@ -1126,16 +1023,16 @@
         <div class="points-panel">
           <h2 id="standards-title">World Aquatics points</h2>
           <p>
-            Compare performances across events and metric pool courses. Higher
-            points mean a faster performance relative to the event’s
-            world-record reference time.
+            Compare your entered metric swim with the published 2026 reference
+            times. Higher points mean a faster relative performance.
           </p>
-          <div class="points-score">
-            <strong data-testid="points-score"
-              >{points === null ? "—" : points.toLocaleString()}</strong
-            ><span>WORLD AQUATICS POINTS</span>
-          </div>
           {#if pointContext && points !== null}
+            <div class="points-score">
+              <strong data-testid="points-score"
+                >{points.toLocaleString()}</strong
+              >
+              <span>POINTS</span>
+            </div>
             <div class="points-context">
               <p class="points-event">
                 {currentLabel} · {form.course} · {form.category === "women"
@@ -1181,18 +1078,41 @@
                 /></button
               >
             </div>
+            {#if form.course !== "SCY"}<p class="points-note">
+                <Icon name="info" size={17} />Based on your entered {form.course}
+                time, without altitude adjustment. {pointsValidity[
+                  form.course
+                ]}.
+              </p>{/if}
+          {:else}
+            <div class="points-unavailable points-note" role="status">
+              <Icon name="info" size={22} />
+              <div>
+                <h3>
+                  {error
+                    ? "Enter a valid swim"
+                    : form.course === "SCY"
+                      ? "SCY isn’t scored"
+                      : "No published points for this event"}
+                </h3>
+                <p>
+                  {error
+                    ? "Check your entered time and event in the converter."
+                    : form.course === "SCY"
+                      ? "Points are published for 25m and 50m pools. Enter an SCM or LCM swim to see a score. Converted estimates aren’t scored as actual swims."
+                      : "The published table has no base time for this selection. Try another event or metric course."}
+                </p>
+                <button class="text-button" onclick={() => go("converter")}
+                  >Back to converter <Icon name="arrow" size={15} /></button
+                >
+              </div>
+            </div>
           {/if}
-          {#if form.course === "SCY"}<p class="points-note">
-              <Icon name="info" size={17} />World Aquatics publishes points for
-              25m and 50m pools. Select SCM or LCM for an entered metric swim;
-              we don’t score a yards conversion as an official swim.
-            </p>
-          {:else}<p class="points-note">
-              <Icon name="info" size={17} />Based on your entered {form.course} time,
-              without altitude adjustment. {pointsValidity[form.course]}.
-            </p>{/if}
           <div class="points-formula">
-            <span>Formula</span><code>1,000 × (base time / your time)³</code>
+            <span>Formula</span><code
+              title="Base time divided by your entered time"
+              >1,000 × (base / time)³</code
+            >
           </div>
           <a
             class="points-source"
@@ -1213,6 +1133,114 @@
           >
         </div>
       {/if}
+    </section>
+    <section class="history-panel" id="history" aria-labelledby="history-title">
+      <div class="history-heading">
+        <div>
+          <h2 id="history-title">
+            Recent conversions <span>{conversions.length}</span>
+          </h2>
+        </div>
+        {#if conversions.length}<button
+            class="text-button"
+            onclick={() => {
+              writeHistory([]);
+              notify("Conversion history cleared.");
+            }}>Clear history</button
+          >{/if}
+      </div>
+      <p class="history-subtitle">
+        Your last 50 conversions. Only on this device.
+      </p>
+      <div
+        class="history-filters"
+        role="group"
+        aria-label="Filter conversion history"
+      >
+        <button
+          class:active={historyFilter === "all"}
+          aria-pressed={historyFilter === "all"}
+          onclick={() => (historyFilter = "all")}>All</button
+        >
+        {#each strokes as stroke}<button
+            class:active={historyFilter === stroke.id}
+            aria-pressed={historyFilter === stroke.id}
+            aria-label={`Filter history: ${stroke.short}`}
+            onclick={() => (historyFilter = stroke.id)}>{stroke.short}</button
+          >{/each}
+      </div>
+      <div
+        class="history-list"
+        role="region"
+        aria-label="Recent conversion entries"
+      >
+        {#each filteredHistory as entry (entry.id)}
+          <div class="history-row">
+            <button
+              class="history-restore"
+              onclick={() => restoreConversion(entry)}
+              aria-label={`Restore ${eventLabel(entry.form.distance, entry.form.course, entry.form.stroke)} ${entry.form.time}`}
+            >
+              <span
+                class="history-wave"
+                class:medley={entry.form.stroke === "IM"}
+                ><Icon name="wave" size={20} /></span
+              >
+              <span class="history-event"
+                ><strong
+                  >{eventLabel(
+                    entry.form.distance,
+                    entry.form.course,
+                    entry.form.stroke,
+                  )}</strong
+                ><small
+                  >{entry.form.course} <span aria-hidden="true">→</span>
+                  {entry.target} · {entry.form.category === "women"
+                    ? "Women"
+                    : "Men"}</small
+                ></span
+              >
+              <span class="history-times"
+                ><strong
+                  >{formatTime(parseTime(entry.form.time))} <span>→</span>
+                  {formatTime(historyResult(entry))}</strong
+                ><small>{dateLabel(entry.createdAt)}</small></span
+              >
+              <Icon name="chevron" size={14} />
+            </button>
+            <button
+              class="history-remove"
+              aria-label={`Remove conversion ${entry.form.time}`}
+              onclick={() =>
+                writeHistory(conversions.filter((x) => x.id !== entry.id))}
+              ><Icon name="close" size={14} /></button
+            >
+          </div>
+        {:else}
+          <div class="history-empty">
+            <span class="empty-icon"
+              ><Icon
+                name={conversions.length ? "wave" : "history"}
+                size={26}
+              /></span
+            >
+            <h3>
+              {conversions.length
+                ? "No conversions for this stroke."
+                : "No conversions yet."}
+            </h3>
+            <p>
+              {conversions.length
+                ? "Try another filter to find a previous conversion."
+                : "Change a time or event above. Your conversion will appear here automatically."}
+            </p>
+            <span
+              ><Icon name="lock" size={13} />Private to this browser. No account
+              needed.</span
+            >
+          </div>
+        {/each}
+      </div>
     </section>
   </div>
 
@@ -1373,12 +1401,13 @@
   <span>Sources checked October 16, 2026</span>
 </footer>
 <nav class="mobile-nav" aria-label="Mobile navigation">
-  {#each [{ id: "converter", icon: "wave", label: "Converter" }, { id: "history", icon: "history", label: "History" }, { id: "standards", icon: "standards", label: "Standards" }] as item}
+  {#each [{ id: "converter", icon: "wave", label: "Converter" }, { id: "standards", icon: "standards", label: "Standards" }, { id: "history", icon: "history", label: "History" }] as item}
     <button
       class:active={activeSection === item.id}
       aria-current={activeSection === item.id ? "location" : undefined}
       onclick={() => go(item.id)}
-      ><Icon name={item.icon} size={21} /><span>{item.label}</span></button
+      ><span class="mobile-nav-icon"><Icon name={item.icon} size={21} /></span
+      ><span>{item.label}</span></button
     >
   {/each}
 </nav>

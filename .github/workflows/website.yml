@@ -101,27 +101,6 @@ jobs:
         run: node deployment/node_modules/wrangler/bin/wrangler.js versions deploy "$VERSION_ID@100" --yes --config wrangler.jsonc --message "$GITHUB_SHA"
       - name: Verify the production response
         run: curl --fail --silent --show-error --retry 5 --retry-delay 5 https://turnmark.app/ -o /dev/null
-  legacy-redirect:
-    needs: deploy
-    timeout-minutes: 5
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: https://stanback.github.io/turnmark/
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-          sparse-checkout-cone-mode: false
-          sparse-checkout: /deployment/legacy-pages/
-      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
-        with:
-          path: deployment/legacy-pages
-      - uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
   web-ci:
     if: always()
     needs: [changes, check-and-build]

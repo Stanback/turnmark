@@ -767,7 +767,7 @@ summary::-webkit-details-marker {
   font-size: 35px;
   line-height: 1.15;
   letter-spacing: -1.5px;
-  margin: 17px 0;
+  margin: 0 0 17px;
 }
 .method-intro > p {
   font-size: 14px;
@@ -1769,6 +1769,9 @@ footer > span > a {
   color: var(--muted);
   line-height: 1.85;
   max-width: 360px;
+}
+.faq-list details:first-child summary {
+  padding-top: 0;
 }
 .faq-list details {
   border-bottom: 1px solid #dce7ef;

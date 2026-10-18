@@ -650,9 +650,13 @@
 .history-wave {
   border-radius: var(--tm-radius-control);
 }
+.method-section,
+.faq-section {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 70px;
+}
 .method-section {
   margin-top: 44px;
-  gap: 70px;
 }
 .method-intro h2 {
   font-size: 30px;
@@ -836,8 +840,11 @@
   .standards-section {
     padding: var(--tm-space-24) var(--tm-space-20);
   }
-  .method-section {
+  .method-section,
+  .faq-section {
     gap: 24px;
+  }
+  .method-section {
     margin-top: 32px;
   }
 }
@@ -900,4 +907,143 @@
   gap: var(--tm-space-8);
   color: var(--accent);
   margin-top: var(--tm-space-8);
+}
+
+/* Let the standards content set the desktop row height; history scrolls inside it. */
+@media (min-width: 901px) {
+  .insights-grid {
+    align-items: stretch;
+  }
+  .history-panel {
+    display: flex;
+    flex-direction: column;
+  }
+  .history-list {
+    flex: 1 1 0;
+    min-height: 180px;
+    max-height: none;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+  }
+  .history-heading,
+  .history-subtitle,
+  .history-filters {
+    flex-shrink: 0;
+  }
+}
+@media (max-width: 900px) {
+  .history-list {
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+@media print {
+  .history-list {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+/* Compact comparison modes and a full-width mobile bar share the app palette. */
+.standards-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  width: min(100%, 320px);
+  padding: 4px;
+  gap: 4px;
+  background: var(--surface-input);
+  border: 1px solid var(--line);
+  border-radius: var(--tm-radius-control);
+}
+.standards-tabs button {
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 16px;
+  line-height: 1.3;
+  border-radius: 7px;
+  color: var(--muted);
+}
+.standards-tabs button.active,
+[data-theme="dark"] .standards-tabs button.active {
+  background: var(--surface-raised);
+  color: var(--ink);
+  box-shadow: none;
+}
+[data-theme="dark"] .standards-tabs {
+  background: var(--surface-input);
+}
+.points-unavailable {
+  margin-block: 24px;
+  align-items: flex-start;
+}
+.points-unavailable h3 {
+  margin: 0 0 8px;
+  color: var(--ink);
+  font-size: 16px;
+}
+.points-unavailable p {
+  margin: 0 0 14px;
+}
+.points-unavailable .text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent);
+  padding: 8px 0;
+}
+:root {
+  --mobile-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (max-width: 680px) {
+  body {
+    padding-bottom: calc(76px + var(--mobile-safe-bottom));
+  }
+  .standards-tabs {
+    width: 100%;
+    margin-bottom: 24px;
+  }
+  .standards-tabs button {
+    font-size: 14px;
+  }
+  .mobile-nav,
+  [data-theme="dark"] .mobile-nav {
+    bottom: 0;
+    gap: 4px;
+    padding: 6px max(12px, env(safe-area-inset-right))
+      max(4px, var(--mobile-safe-bottom)) max(12px, env(safe-area-inset-left));
+    background: var(--surface);
+    border-color: var(--line);
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+  .mobile-nav button,
+  [data-theme="dark"] .mobile-nav button {
+    min-height: 58px;
+    gap: 2px;
+    padding: 2px 4px;
+    border-radius: 0;
+    font-size: 12px;
+    line-height: 1.3;
+    color: var(--muted);
+  }
+  .mobile-nav button.active,
+  [data-theme="dark"] .mobile-nav button.active {
+    background: transparent;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .mobile-nav-icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    min-height: 28px;
+    border-radius: 16px;
+  }
+  .mobile-nav button.active .mobile-nav-icon {
+    background: var(--surface-raised);
+  }
+  .toast {
+    bottom: calc(80px + var(--mobile-safe-bottom));
+  }
 }

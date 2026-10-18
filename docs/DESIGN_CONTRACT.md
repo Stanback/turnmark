@@ -13,14 +13,15 @@ subset of the [DTCG Format Module 2025.10](https://www.designtokens.org/tr/2025.
 with Turnmark contract version 1 in `$extensions`. Light and dark are explicit
 groups, not an implementation of the separate DTCG Resolver specification.
 
-| Consumer                      | Current status                                               | Adapter boundary                                                |
-| ----------------------------- | ------------------------------------------------------------ | --------------------------------------------------------------- |
-| Web converter                 | Uses the generated palette and selected spacing/radius roles | CSS variables; responsive web layout                            |
-| Web history/standards/dialogs | Inherits base text roles; some older styles remain           | Further component-by-component adoption                         |
-| Embedded widget               | Existing independent palette; adoption next                  | Its own compact stylesheet and appearance selection             |
-| iOS                           | Generated screen palette; native controls and result adopted | SwiftUI palette and semantic system text styles                 |
-| Android                       | Generated screen palette; native controls and result adopted | Kotlin colors mapped into Material 3 and custom result roles    |
-| MCP Apps                      | Research/design only                                         | Shared web tokens plus host theme and accessibility preferences |
+| Consumer                      | Current status                                                  | Adapter boundary                                                |
+| ----------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
+| Web converter                 | Uses the generated palette and selected spacing/radius roles    | CSS variables; responsive web layout                            |
+| Web history/standards/dialogs | Inherits base text roles; some older styles remain              | Further component-by-component adoption                         |
+| Widget/MCP setup pages        | Shared generated palette, fonts, content width and brand header | Static HTML/CSS; setup remains readable without JavaScript      |
+| Embedded widget               | Existing independent palette; adoption next                     | Its own compact stylesheet and appearance selection             |
+| iOS                           | Generated screen palette; native controls and result adopted    | SwiftUI palette and semantic system text styles                 |
+| Android                       | Generated screen palette; native controls and result adopted    | Kotlin colors mapped into Material 3 and custom result roles    |
+| MCP Apps                      | Research/design only                                            | Shared web tokens plus host theme and accessibility preferences |
 
 The contract is a foundation, not a claim that every screen is already aligned.
 Do not create a shared UI runtime, move styling into the calculation SDK, or add
@@ -133,7 +134,10 @@ event and supported whole pool lengths, not the entered distance for every cours
 
 - **iOS:** retain SwiftUI navigation, pickers, sheets, sharing, keyboard Done and
   system Liquid Glass controls. The signature numerical card uses the shared dark palette in both appearances,
-  including contrasting action colors. Surrounding content uses the current
+  including contrasting action colors. Its subtle static gradient runs from dark
+  `surfaceRaised` at the top leading corner to dark `surface` at the bottom
+  trailing corner on both native platforms; both stops are opaque generated
+  palette roles. Surrounding content uses the current
   appearance. This gives the result a stable identity without repainting native
   forms and navigation.
   System materials respond to accessibility preferences; do not replace the tab
@@ -149,8 +153,8 @@ event and supported whole pool lengths, not the entered distance for every cours
   Wallpaper-derived dynamic color is an optional future preference, not a
   requirement to replace Turnmark's brand colors.
 - **Web:** retain keyboard and browser navigation, reflow, theme preference,
-  reduced motion and useful static HTML. Mobile navigation prioritizes Converter,
-  History and Standards; methodology is contextual and in the footer.
+  reduced motion and useful static HTML. Mobile web navigation follows Converter,
+  Standards and History; methodology is contextual and in the footer.
 - **Widget:** keep its compact embed contract, keyboard labels, small-width
   layout, host isolation and explicit/automatic appearance options. Identity and
   result hierarchy carry across without the website hero or navigation.

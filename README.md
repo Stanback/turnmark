@@ -30,7 +30,7 @@ Turnmark started long before it had that name. Bri Stanback swam competitively f
 
 The tool evolved from JavaScript to PHP and eventually came to GitHub as `php-swim-time-conversion`. Along the way, versions of the converter found a home on other swimming websites.
 
-In 2026, Bri returned to the project, modernized it, and gave it the Turnmark name. The familiar converter grew into an offline web app with documented factors, published standards and points, and local swim history. Its calculations now live in one Rust engine, shared through JavaScript, Swift, and Kotlin libraries. That foundation is carrying Turnmark toward native iOS and Android apps, an embeddable calculator, and MCP and WebMCP integrations, while keeping the original idea: a useful tool swimmers can trust.
+In 2026, Bri returned to the project, modernized it, and gave it the Turnmark name. The familiar converter grew into an offline web app with documented factors, published standards and points, and local swim history. Its calculations now live in one Rust engine, shared through JavaScript, Swift, and Kotlin libraries. That engine now powers the web app, an embeddable calculator, and a public MCP service, with native iOS and Android apps in development. WebMCP is planned. The original idea remains: a useful tool swimmers can trust.
 
 ## Develop
 
@@ -82,8 +82,8 @@ and [@turnmark/mcp](https://www.npmjs.com/package/@turnmark/mcp) are available a
 See [SDK releases](docs/SDK_RELEASES.md) for installation and release status.
 
 The native apps in `apps/ios` and `apps/android` include the shared converter
-and offline meet history: log actual swims, correct records, compare personal
-bests, and transfer records with a common JSON export/import format. Saved
+and offline meet history: record actual swims, correct records, compare personal
+bests in My times, and transfer records with a common JSON export/import format. Saved
 conversions remain separate from performances. They are development builds,
 not yet store releases, and do not yet have all web features. See
 [native app setup and scope](docs/NATIVE_APPS.md) for local builds,
