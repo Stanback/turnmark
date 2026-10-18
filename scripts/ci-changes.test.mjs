@@ -35,6 +35,8 @@ for (const [path, expected] of [
   ["package-lock.json", flags("web", "core")],
   ["crates/turnmark-wasm/src/lib.rs", flags("web", "core")],
   ["apps/ios/Sources/TurnmarkApp.swift", flags("ios")],
+  ["apps/history/contract-v1.json", flags("ios", "android")],
+  ["apps/history/import-cases.json", flags("ios", "android")],
   ["scripts/test-ios.mjs", flags("ios")],
   ["packages/swift/Package.swift", flags("ios")],
   [

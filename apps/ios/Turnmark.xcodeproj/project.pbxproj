@@ -8,8 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		0A7945AEF04A892E43ACE1DE /* TurnmarkUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D16C21D7F1C9E54F75FE74B /* TurnmarkUITests.swift */; };
+		25BDD3DCDCDC02D649F37AD0 /* import-cases.json in Resources */ = {isa = PBXBuildFile; fileRef = CB0DF0E31571F26A4B0E2671 /* import-cases.json */; };
 		63E8CB2D3A1891F1C44EAFA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649B64D9001836B5F659593C /* Assets.xcassets */; };
+		7021B17D569A7726FF765633 /* contract-v1.json in Resources */ = {isa = PBXBuildFile; fileRef = B83CCAF94B8A0F40C92CD669 /* contract-v1.json */; };
+		8EABCD3053B0E6F3B623BCAA /* HistoryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39394660EEDE87180EF55D8A /* HistoryViews.swift */; };
 		95DC7EBE8CEEAC85CA154B94 /* TurnmarkApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C2633BB30C9B5BFAEAFF94 /* TurnmarkApp.swift */; };
+		B5D2A47327957535D825CC89 /* HistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D34D981B4636FA064FA99CDF /* HistoryTests.swift */; };
+		F7BC59FAA031291CB5C7A3FE /* SwimHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0038E97C8B1BEAAE94D8DCBA /* SwimHistory.swift */; };
 		FA5150614CE151801FF7E62F /* TurnmarkCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0B509BAFE31A5ED85B9E5812 /* TurnmarkCore */; };
 /* End PBXBuildFile section */
 
@@ -21,15 +26,28 @@
 			remoteGlobalIDString = 633D3D4F4030CC1086780E00;
 			remoteInfo = Turnmark;
 		};
+		809A2D6643349A5EA01442CE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 542334C7CE1ADFB6BCC19A64 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 633D3D4F4030CC1086780E00;
+			remoteInfo = Turnmark;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0038E97C8B1BEAAE94D8DCBA /* SwimHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwimHistory.swift; sourceTree = "<group>"; };
+		39394660EEDE87180EF55D8A /* HistoryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViews.swift; sourceTree = "<group>"; };
 		649B64D9001836B5F659593C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6A0409D9F50C35CC7B2C84C6 /* Turnmark.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Turnmark.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		77652A273CB3E0E5519B5E11 /* TurnmarkUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TurnmarkUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C2633BB30C9B5BFAEAFF94 /* TurnmarkApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnmarkApp.swift; sourceTree = "<group>"; };
 		8D16C21D7F1C9E54F75FE74B /* TurnmarkUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnmarkUITests.swift; sourceTree = "<group>"; };
+		B83CCAF94B8A0F40C92CD669 /* contract-v1.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "contract-v1.json"; sourceTree = "<group>"; };
 		CA823D0CAEABAC2DC08AA70E /* swift */ = {isa = PBXFileReference; lastKnownFileType = folder; name = swift; path = ../../packages/swift; sourceTree = SOURCE_ROOT; };
+		CB0DF0E31571F26A4B0E2671 /* import-cases.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "import-cases.json"; sourceTree = "<group>"; };
+		D34D981B4636FA064FA99CDF /* HistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTests.swift; sourceTree = "<group>"; };
+		D3A3CBBB88D4B2EC6C468AC6 /* TurnmarkTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TurnmarkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +62,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		394788B0602F14338449421A /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				D34D981B4636FA064FA99CDF /* HistoryTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		61E0C37D6F2E7CEA9733D4D9 /* history */ = {
+			isa = PBXGroup;
+			children = (
+				B83CCAF94B8A0F40C92CD669 /* contract-v1.json */,
+				CB0DF0E31571F26A4B0E2671 /* import-cases.json */,
+			);
+			name = history;
+			path = ../history;
+			sourceTree = "<group>";
+		};
 		6A461FD9BDC2D9AD65AD51E2 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
@@ -55,8 +91,10 @@
 		8252D841DEF2E5B4EC89BC64 = {
 			isa = PBXGroup;
 			children = (
+				61E0C37D6F2E7CEA9733D4D9 /* history */,
 				6A461FD9BDC2D9AD65AD51E2 /* Packages */,
 				F0C66C82A1DE22236BC0E435 /* Sources */,
+				394788B0602F14338449421A /* Tests */,
 				C5307ADF10C9CC112DFB04B5 /* UITests */,
 				CEF908806A67223FB6281EA5 /* Products */,
 			);
@@ -74,6 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				6A0409D9F50C35CC7B2C84C6 /* Turnmark.app */,
+				D3A3CBBB88D4B2EC6C468AC6 /* TurnmarkTests.xctest */,
 				77652A273CB3E0E5519B5E11 /* TurnmarkUITests.xctest */,
 			);
 			name = Products;
@@ -83,6 +122,8 @@
 			isa = PBXGroup;
 			children = (
 				649B64D9001836B5F659593C /* Assets.xcassets */,
+				39394660EEDE87180EF55D8A /* HistoryViews.swift */,
+				0038E97C8B1BEAAE94D8DCBA /* SwimHistory.swift */,
 				89C2633BB30C9B5BFAEAFF94 /* TurnmarkApp.swift */,
 			);
 			path = Sources;
@@ -129,6 +170,25 @@
 			productReference = 6A0409D9F50C35CC7B2C84C6 /* Turnmark.app */;
 			productType = "com.apple.product-type.application";
 		};
+		648E5243C199F970A0C092FC /* TurnmarkTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2E6AF098D452C2DD8F54C86E /* Build configuration list for PBXNativeTarget "TurnmarkTests" */;
+			buildPhases = (
+				118263D39963514AF276FEB3 /* Sources */,
+				D0D8B8077C95AC2913CE7C79 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2510F1E527FF9884A3B96EA1 /* PBXTargetDependency */,
+			);
+			name = TurnmarkTests;
+			packageProductDependencies = (
+			);
+			productName = TurnmarkTests;
+			productReference = D3A3CBBB88D4B2EC6C468AC6 /* TurnmarkTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -161,6 +221,7 @@
 			projectRoot = "";
 			targets = (
 				633D3D4F4030CC1086780E00 /* Turnmark */,
+				648E5243C199F970A0C092FC /* TurnmarkTests */,
 				02BAF3338D10184D273E7B13 /* TurnmarkUITests */,
 			);
 		};
@@ -175,13 +236,32 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D0D8B8077C95AC2913CE7C79 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7021B17D569A7726FF765633 /* contract-v1.json in Resources */,
+				25BDD3DCDCDC02D649F37AD0 /* import-cases.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		118263D39963514AF276FEB3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B5D2A47327957535D825CC89 /* HistoryTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E9CFB02D71251791C4A1187E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EABCD3053B0E6F3B623BCAA /* HistoryViews.swift in Sources */,
+				F7BC59FAA031291CB5C7A3FE /* SwimHistory.swift in Sources */,
 				95DC7EBE8CEEAC85CA154B94 /* TurnmarkApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -197,6 +277,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		2510F1E527FF9884A3B96EA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 633D3D4F4030CC1086780E00 /* Turnmark */;
+			targetProxy = 809A2D6643349A5EA01442CE /* PBXContainerItemProxy */;
+		};
 		AFAB374AA346EDD0D1F1E497 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 633D3D4F4030CC1086780E00 /* Turnmark */;
@@ -255,6 +340,23 @@
 				PRODUCT_BUNDLE_IDENTIFIER = net.stanback.turnmark;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8FF1E7A61E3C953DB26B7F37 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = net.stanback.TurnmarkTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Turnmark.app/Turnmark";
 			};
 			name = Debug;
 		};
@@ -400,6 +502,23 @@
 			};
 			name = Release;
 		};
+		FA16EC7B8BC75C2E0F4C3268 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = net.stanback.TurnmarkTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Turnmark.app/Turnmark";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -408,6 +527,15 @@
 			buildConfigurations = (
 				2026F7F78810A37519752534 /* Debug */,
 				130828E0CA5269322CB38D2D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		2E6AF098D452C2DD8F54C86E /* Build configuration list for PBXNativeTarget "TurnmarkTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8FF1E7A61E3C953DB26B7F37 /* Debug */,
+				FA16EC7B8BC75C2E0F4C3268 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

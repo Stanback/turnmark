@@ -15,6 +15,7 @@ android {
         ndk.abiFilters += listOf("arm64-v8a", "x86_64")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    sourceSets.getByName("androidTest").assets.srcDir("../history")
     buildFeatures { compose = true }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

@@ -33,6 +33,20 @@ targets:
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
         INFOPLIST_KEY_CFBundleDisplayName: Turnmark
         TARGETED_DEVICE_FAMILY: '1,2'
+  TurnmarkTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - Tests
+      - path: ../history/contract-v1.json
+        buildPhase: resources
+      - path: ../history/import-cases.json
+        buildPhase: resources
+    dependencies:
+      - target: Turnmark
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
   TurnmarkUITests:
     type: bundle.ui-testing
     platform: iOS
@@ -48,4 +62,4 @@ schemes:
       targets:
         Turnmark: all
     test:
-      targets: [TurnmarkUITests]
+      targets: [TurnmarkTests, TurnmarkUITests]

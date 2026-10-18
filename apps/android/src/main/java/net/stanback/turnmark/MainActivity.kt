@@ -42,12 +42,12 @@ import uniffi.turnmark_core.*
 
 private val Ink = Color(0xFF032C43)
 private val Lime = Color(0xFFDDF58C)
-private val courses = Course.entries
-private val strokes = Stroke.entries
-private val strokeNames = listOf("Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual medley")
-private val strokeCodes = listOf("FR", "BK", "BR", "FL", "IM")
+val courses = Course.entries
+val strokes = Stroke.entries
+val strokeNames = listOf("Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual medley")
+val strokeCodes = listOf("FR", "BK", "BR", "FL", "IM")
 
-private data class Draft(
+data class Draft(
     val time: String = "58.32", val strokeIndex: Int = 0, val distance: UInt = 100u,
     val courseIndex: Int = 0, val categoryIndex: Int = 0, val targetIndex: Int = 2,
 ) {
@@ -110,13 +110,25 @@ private fun share(context: Context, draft: Draft) {
     var draft by remember { mutableStateOf(Draft.decode(preferences.getString("draft", null)) ?: Draft()) }
     var saved by remember { mutableStateOf(Draft.decode(preferences.getString("saved", null))) }
     var tab by remember { mutableIntStateOf(0) }
-    val scrollStates = listOf(rememberScrollState(), rememberScrollState(), rememberScrollState())
+    val scope = rememberCoroutineScope()
+    val appContext = LocalContext.current.applicationContext
+    val historyDb = remember { SwimHistoryStore(appContext) }
+    val history = remember { HistoryState(historyDb, scope) }
+    LaunchedEffect(history) { history.load() }
+    DisposableEffect(historyDb) { onDispose { historyDb.close() } }
+    var logging by remember { mutableStateOf<Draft?>(null) }
+    var lastDate by remember { mutableStateOf(java.time.LocalDate.now().toString()) }
+    var lastMeet by remember { mutableStateOf("") }
+    var lastLogDay by remember { mutableStateOf(java.time.LocalDate.now().toString()) }
+    val scrollStates = listOf(rememberScrollState(), rememberScrollState(), rememberScrollState(), rememberScrollState())
     val context = LocalContext.current
     val focus = LocalFocusManager.current
     val keyboard = LocalSoftwareKeyboardController.current
     val largeText = LocalDensity.current.fontScale >= 1.5f
     val keyboardVisible = WindowInsets.isImeVisible
     val pinResult = !largeText && LocalConfiguration.current.screenHeightDp >= 480 && !keyboardVisible
+    val snackbar = remember { SnackbarHostState() }
+    LaunchedEffect(history.notice) { history.notice?.let { snackbar.showSnackbar(it); history.notice = null } }
     val dark = isSystemInDarkTheme()
     fun update(value: Draft) {
         draft = value.reconcile()
@@ -126,27 +138,29 @@ private fun share(context: Context, draft: Draft) {
         surface = Color(0xFF122C3C), background = Color(0xFF091F2D))
         else lightColorScheme(primary = Ink, secondaryContainer = Lime, onSecondaryContainer = Ink,
             background = Color(0xFFF0F5F8), surface = Color.White)) {
-        Scaffold(modifier = Modifier.imePadding(), topBar = {
+        Scaffold(modifier = Modifier.imePadding(), snackbarHost = { SnackbarHost(snackbar) }, topBar = {
             if (tab != 0) TopAppBar(title = {
-                Text(if (tab == 1) "Saved swim" else "The method", fontWeight = FontWeight.Bold)
+                Text(when (tab) { 1 -> "History"; 2 -> "Saved swim"; else -> "The method" }, fontWeight = FontWeight.Bold)
             })
         },
             bottomBar = {
               Column {
                 if (tab == 0 && pinResult) ResultSummary(draft)
                 if (!keyboardVisible) NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
-                    listOf("Convert", "Saved", "Method").forEachIndexed { index, label ->
+                    listOf("Convert", "History", "Saved", "Method").forEachIndexed { index, label ->
                         NavigationBarItem(selected = tab == index, onClick = { tab = index },
                             modifier = Modifier.testTag("nav-$label"), label = { Text(label) },
                             icon = {
-                                if (index == 2) Icon(Icons.Default.Info, contentDescription = null)
+                                if (index == 3) Icon(Icons.Default.Info, contentDescription = null)
+                                else if (index == 1) Icon(Icons.Default.List, contentDescription = null)
                                 else Icon(painterResource(if (index == 0) R.drawable.ic_convert else R.drawable.ic_bookmark), contentDescription = null)
                             })
                     }
                 }
               }
             }) { insets ->
-            Column(Modifier.padding(insets).fillMaxSize().verticalScroll(scrollStates[tab]).padding(20.dp),
+            if (tab == 1) HistoryScreen(history, Modifier.padding(insets)) { update(it.draft(draft.targetIndex)); tab = 0 }
+            else Column(Modifier.padding(insets).fillMaxSize().verticalScroll(scrollStates[tab]).padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 when (tab) {
                     0 -> {
@@ -181,6 +195,9 @@ private fun share(context: Context, draft: Draft) {
                                 CourseControl("Compare with", "targetCourse", draft.targetIndex) { update(draft.copy(targetIndex = it)) }
                             }
                         }
+                        Button(onClick = { focus.clearFocus(); keyboard?.hide(); logging = draft },
+                            enabled = draft.canLog && history.ready && !history.busy, modifier = Modifier.testTag("logSwim")) { Text("Log swim") }
+                        if (!history.ready && !history.busy) Text("History is unavailable. Open History to try again.")
                         FlowRow(Modifier.fillMaxWidth(), maxItemsInEachRow = if (largeText) 1 else 2,
                             horizontalArrangement = Arrangement.SpaceBetween, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             OutlinedButton(onClick = { saved = draft; preferences.edit().putString("saved", draft.encode()).apply() },
@@ -195,15 +212,17 @@ private fun share(context: Context, draft: Draft) {
                         }
                         Text("Calculated on your device. Works offline.", style = MaterialTheme.typography.bodySmall)
                     }
-                    1 -> {
+                    2 -> {
                         val swim = saved
                         if (swim == null) {
                             Text("No saved swim", style = MaterialTheme.typography.headlineSmall)
                             Text("Save a conversion to return to it here.")
                         } else {
                             Text(swim.label, style = MaterialTheme.typography.titleMedium)
+                            Text("Saved conversion · not a logged performance", style = MaterialTheme.typography.bodySmall)
                             Text("Entered time: ${swim.time}")
                             ResultCard(swim)
+                            Button(onClick = { logging = swim }, enabled = swim.canLog && history.ready && !history.busy) { Text("Log entered swim") }
                             Button(onClick = { update(swim); tab = 0 }) { Text("Use this swim") }
                             OutlinedButton(onClick = { share(context, swim) }) { Text("Share saved swim") }
                             TextButton(onClick = { saved = null; preferences.edit().remove("saved").apply() },
@@ -221,10 +240,22 @@ private fun share(context: Context, draft: Draft) {
                             TextButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(result.provenance.url))) }) { Text("Published source") }
                         }
                         Text("Your data", style = MaterialTheme.typography.headlineSmall)
-                        Text("Your current inputs and one saved swim stay on this device. Sharing uses a link containing the entered swim. Source links need an internet connection.")
+                        Text("Your inputs, saved conversion and logged swims stay on this device. History export/import moves a copy of your records; there is no account or cloud sync. Sharing uses a link containing the entered swim. Source links need an internet connection.")
                     }
                 }
             }
+        }
+        logging?.let { input ->
+            val today = java.time.LocalDate.now().toString()
+            SwimEditor(input, initialDate = if (lastLogDay == today) lastDate else today,
+                initialMeet = if (lastLogDay == today) lastMeet else "", history = history, dismiss = { logging = null }) {
+                lastDate = it.date ?: ""; lastMeet = it.meet ?: ""; lastLogDay = today
+                history.notice = "Swim logged on this device."
+            }
+        }
+        history.message?.let { message ->
+            AlertDialog(onDismissRequest = { history.message = null }, title = { Text("History") }, text = { Text(message) },
+                confirmButton = { TextButton(onClick = { history.message = null }) { Text("OK") } })
         }
     }
 }
@@ -233,7 +264,7 @@ private fun share(context: Context, draft: Draft) {
     Box(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) { ResultCard(draft, compact = true) }
 }
 
-@Composable private fun CourseControl(label: String, tag: String, selected: Int, onSelect: (Int) -> Unit) {
+@Composable fun CourseControl(label: String, tag: String, selected: Int, onSelect: (Int) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(label, fontWeight = FontWeight.Bold)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -244,7 +275,7 @@ private fun share(context: Context, draft: Draft) {
     }
 }
 
-@Composable private fun Choice(label: String, selected: String, values: List<String>, modifier: Modifier, onSelect: (Int) -> Unit) {
+@Composable fun Choice(label: String, selected: String, values: List<String>, modifier: Modifier, onSelect: (Int) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     Box(modifier) {
         OutlinedButton(onClick = { expanded = true }) { Text("$label: $selected") }

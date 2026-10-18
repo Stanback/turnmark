@@ -63,6 +63,76 @@ final class TurnmarkUITests: XCTestCase {
         XCTAssertEqual(app.buttons["saveSwim"].label, "Save swim")
     }
 
+    @MainActor func testLoggingEditingComparingAndDeletingActualSwims() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uitesting-reset"]
+        app.launch()
+        XCTAssertTrue(app.textFields["timeInput"].waitForExistence(timeout: 10))
+        app.buttons["strokePicker"].tap(); app.buttons["Individual medley"].tap()
+        XCTAssertTrue(app.staticTexts["unavailableConversion"].exists)
+        app.swipeUp(); app.buttons["logSwim"].tap()
+        XCTAssertTrue(app.textFields["logDate"].waitForExistence(timeout: 5))
+        replace(app.textFields["logDate"], with: "2026-10-17")
+        app.textFields["logMeet"].tap(); app.textFields["logMeet"].typeText("Autumn Invitational")
+        app.buttons["confirmLog"].tap()
+        assertHittable(app.tabBars.buttons["History"])
+        app.tabBars.buttons["History"].tap()
+        XCTAssertTrue(app.staticTexts["Autumn Invitational · 2026-10-17"].exists)
+        app.staticTexts["58.32"].tap()
+        XCTAssertTrue(app.staticTexts["Manually logged performance"].exists)
+        capture(app, "Logged swim detail")
+        app.buttons["Edit swim"].tap()
+        replace(app.textFields["logTime"], with: "57.99")
+        replace(app.textFields["logDate"], with: "")
+        app.buttons["confirmLog"].tap()
+        XCTAssertTrue(app.staticTexts["57.99"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Unknown date"].exists)
+        app.buttons["Compare this swim"].tap()
+        assertHittable(app.textFields["timeInput"])
+        XCTAssertEqual(app.textFields["timeInput"].value as? String, "57.99")
+        XCTAssertTrue(app.staticTexts["unavailableConversion"].exists)
+        app.tabBars.buttons["Saved"].tap()
+        XCTAssertTrue(app.staticTexts["No saved swim"].exists)
+        app.terminate(); app.launchArguments = []; app.launch()
+        app.tabBars.buttons["History"].tap()
+        XCTAssertTrue(app.staticTexts["57.99"].waitForExistence(timeout: 5))
+        capture(app, "Offline swim history")
+        let appearance = XCUIDevice.shared.appearance
+        XCUIDevice.shared.appearance = .dark
+        capture(app, "Offline swim history dark")
+        XCUIDevice.shared.appearance = appearance
+        app.staticTexts["57.99"].tap(); app.buttons["Delete swim"].tap()
+        XCTAssertTrue(app.buttons["confirmDeleteSwim"].waitForExistence(timeout: 5))
+        app.buttons["confirmDeleteSwim"].firstMatch.tap()
+        XCTAssertTrue(app.staticTexts["No logged swims"].waitForExistence(timeout: 5))
+    }
+
+    @MainActor func testHistoryAtAccessibilityTextSize() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uitesting-reset", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"]
+        app.launch()
+        XCTAssertTrue(app.textFields["timeInput"].waitForExistence(timeout: 10))
+        for _ in 0..<8 {
+            if app.buttons["logSwim"].isHittable { break }
+            app.swipeUp()
+        }
+        app.buttons["logSwim"].tap()
+        XCTAssertTrue(app.buttons["confirmLog"].waitForExistence(timeout: 5))
+        capture(app, "Log swim large text")
+        app.buttons["confirmLog"].tap()
+        assertHittable(app.tabBars.buttons["History"])
+        app.tabBars.buttons["History"].tap()
+        XCTAssertTrue(app.staticTexts["58.32"].waitForExistence(timeout: 5))
+        capture(app, "History large text")
+        app.staticTexts["58.32"].tap()
+        capture(app, "Logged swim large text")
+    }
+
+    @MainActor private func replace(_ field: XCUIElement, with text: String) {
+        field.tap()
+        field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: (field.value as? String ?? "").count) + text)
+    }
+
     @MainActor private func capture(_ app: XCUIApplication, _ name: String) {
         let screenshot = XCTAttachment(screenshot: app.screenshot())
         screenshot.name = name

@@ -1,0 +1,182 @@
+[
+  {
+    "name": "invalid date",
+    "patch": {
+      "date": "2026-02-30"
+    },
+    "accepted": false
+  },
+  {
+    "name": "unknown date",
+    "patch": {
+      "date": null,
+      "meet": null
+    },
+    "accepted": true
+  },
+  {
+    "name": "wrong normalized time",
+    "patch": {
+      "hundredths": 5244
+    },
+    "accepted": false
+  },
+  {
+    "name": "converted event distance",
+    "patch": {
+      "distance": 500
+    },
+    "accepted": false
+  },
+  {
+    "name": "zero time",
+    "patch": {
+      "time": "0",
+      "hundredths": 0
+    },
+    "accepted": false
+  },
+  {
+    "name": "numeric text",
+    "patch": {
+      "distance": "100"
+    },
+    "accepted": false
+  },
+  {
+    "name": "boolean number",
+    "patch": {
+      "hundredths": true
+    },
+    "accepted": false
+  },
+  {
+    "name": "fractional distance",
+    "patch": {
+      "distance": 100.5
+    },
+    "accepted": false
+  },
+  {
+    "name": "bad UUID",
+    "patch": {
+      "id": "not-an-id"
+    },
+    "accepted": false
+  },
+  {
+    "name": "bad category",
+    "patch": {
+      "category": "other"
+    },
+    "accepted": false
+  },
+  {
+    "name": "unsupported event",
+    "patch": {
+      "stroke": "IM",
+      "course": "LCM",
+      "distance": 100
+    },
+    "accepted": false
+  },
+  {
+    "name": "backward timestamp",
+    "patch": {
+      "updatedAt": 0
+    },
+    "accepted": false
+  },
+  {
+    "name": "invalid meet type",
+    "patch": {
+      "meet": 123
+    },
+    "accepted": false
+  },
+  {
+    "name": "whitespace meet",
+    "patch": {
+      "meet": "   "
+    },
+    "accepted": false
+  },
+  {
+    "name": "non-ascii meet",
+    "patch": {
+      "meet": "\u6771\u4eac \u6c34\u6cf3\u5927\u4f1a"
+    },
+    "accepted": true
+  },
+  {
+    "name": "leap day",
+    "patch": {
+      "date": "2024-02-29"
+    },
+    "accepted": true
+  },
+  {
+    "name": "date rollover",
+    "patch": {
+      "date": "2026-13-01"
+    },
+    "accepted": false
+  },
+  {
+    "name": "unknown stroke",
+    "patch": {
+      "stroke": "free"
+    },
+    "accepted": false
+  },
+  {
+    "name": "unsupported seconds",
+    "patch": {
+      "time": "1:99",
+      "hundredths": 15900
+    },
+    "accepted": false
+  },
+  {
+    "name": "Gregorian century",
+    "patch": {
+      "date": "1500-02-29"
+    },
+    "accepted": false
+  },
+  {
+    "name": "Gregorian leap century",
+    "patch": {
+      "date": "1600-02-29"
+    },
+    "accepted": true
+  },
+  {
+    "name": "Gregorian cutover",
+    "patch": {
+      "date": "1582-10-10"
+    },
+    "accepted": true
+  },
+  {
+    "name": "early year",
+    "patch": {
+      "date": "0001-01-01"
+    },
+    "accepted": true
+  },
+  {
+    "name": "zero year",
+    "patch": {
+      "date": "0000-01-01"
+    },
+    "accepted": false
+  },
+  {
+    "name": "too many year digits",
+    "patch": {
+      "date": "10000-01-01"
+    },
+    "accepted": false
+  }
+]
