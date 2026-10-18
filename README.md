@@ -77,7 +77,8 @@ HTTP at `https://mcp.turnmark.app/mcp`, using the same SDK.
 See the [public MCP quick start](https://turnmark.app/mcp/) for connection
 settings and [llms.txt](https://turnmark.app/llms.txt) for the agent documentation index.
 The [agent interface plan](docs/AGENT_INTERFACES.md) covers future WebMCP work.
-SDK 0.1 is prepared for npm distribution; no package has been published yet.
+The public npm packages [@turnmark/sdk](https://www.npmjs.com/package/@turnmark/sdk)
+and [@turnmark/mcp](https://www.npmjs.com/package/@turnmark/mcp) are available at `0.1.0`.
 See [SDK releases](docs/SDK_RELEASES.md) for installation and release status.
 
 The native apps in `apps/ios` and `apps/android` include the shared converter

@@ -2,8 +2,9 @@
 
 Local stdio and a Cloudflare Worker adapter use the same tool server. The
 remote URL is `https://mcp.turnmark.app/mcp`; protected main CI owns deployment
-to the dedicated Worker and Custom Domain. npm publication is separate and
-has not happened yet.
+to the dedicated Worker and Custom Domain. The local server is published as
+[@turnmark/mcp@0.1.0](https://www.npmjs.com/package/@turnmark/mcp); it includes
+the SDK dependency and requires no Rust toolchain to install.
 
 The public [MCP quick start](https://turnmark.app/mcp/) covers hosted connection
 settings and links to the [Markdown reference](https://turnmark.app/mcp/index.md).

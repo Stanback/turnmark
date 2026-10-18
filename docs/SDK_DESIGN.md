@@ -1,9 +1,8 @@
-# Draft SDK contract
+# SDK contract
 
-Status: Rust-backed implementation, October 17, 2026. The private `0.1.0` workspace
-implements the conversion, altitude, and separate benchmark/points APIs with
-runtime validation and portable conformance cases. It has not been published;
-the package name is still provisional. See the [SDK guide](../packages/sdk/README.md)
+Status: Rust-backed implementation, published October 18, 2026 as
+`@turnmark/sdk@0.1.0`. The SDK implements conversion, altitude, and separate
+benchmark/points APIs with runtime validation and portable conformance cases. See the [SDK guide](../packages/sdk/README.md)
 for the implemented interface and the [platform plan](PLATFORM_PLAN.md) for
 native architecture, distribution, licensing, and rollout decisions.
 

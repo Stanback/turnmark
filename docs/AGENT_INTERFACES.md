@@ -3,8 +3,9 @@
 Status: the local stdio server and stateless Cloudflare Worker adapter are now
 implemented in `packages/mcp` and `packages/mcp-worker`. See [MCP setup, checks
 and deployment](MCP.md). The dedicated Worker and protected credential
-are configured, with deployment through passing main CI. npm publication
-remains pending. WebMCP remains a separate planned adapter.
+are configured, with deployment through passing main CI. Both `@turnmark/sdk`
+and `@turnmark/mcp` are published on npm at `0.1.0`. WebMCP remains a separate
+planned adapter.
 
 ## One engine, two access paths
 
