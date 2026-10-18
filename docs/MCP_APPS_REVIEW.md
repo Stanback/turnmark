@@ -59,8 +59,8 @@ text, the clock fits one line and surrounding copy wraps normally:
   42 exact SDK-equal outcomes, eight malformed requests, all tools, cancellation,
   resource discovery/read/unknown URI, MIME, immutable URI, CSP and text fallback.
 - Packed stdio runs outside the workspace with network disabled. A second fresh
-  installation of the MCP 0.2.0 tarball against **registry SDK 0.1.0** also verified
-  conversion, server version and bundled resource with runtime fetch disabled.
+  installation against **registry SDK 0.1.0** also runs both protocol modes,
+  full result fixtures and resource reads with runtime fetch disabled.
 - Actual local Worker bindings enforce request/body/Origin/rate/aggregate limits.
 - Official AppBridge in Chromium with a real stdio MCP server, an opaque-origin
   `allow-scripts` sandbox and strict CSP: rendering, resize, keyboard update,
@@ -84,7 +84,9 @@ limits without enabling a paid plan.
 
 The source/server/UI version is MCP **0.2.0**. Public npm MCP **0.1.0** remains the
 published text-only version until a separately authenticated release. A tested
-0.2.0 tarball is retained under ignored `target/releases/`. The SDK stays at
+0.2.0 tarball can be retained with `npm run pack:mcp` under ignored `release/`,
+with a SHA-256 checksum. The main-only manual release workflow accepts a package
+choice and keeps SDK/MCP versions independent. The SDK stays at
 published 0.1.0 for this adapter release. Follow [SDK releases](SDK_RELEASES.md)
 for the protected trusted-publisher setup; do not add an npm token to CI or
 replace an existing registry version.

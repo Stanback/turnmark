@@ -1,8 +1,16 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { mkdtemp, readFile, writeFile, copyFile, rm } from "node:fs/promises";
+import {
+  mkdtemp,
+  readFile,
+  writeFile,
+  copyFile,
+  mkdir,
+  rm,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   Client,
@@ -64,6 +72,7 @@ async function verify(transport, mode, label, ui = false) {
   client.onerror = (e) => errors.push(e);
   try {
     await client.connect(transport);
+    assert.equal(client.getServerVersion().version, "0.2.0");
     const listed = (await client.listTools()).tools;
     assert.deepEqual(
       listed.map((t) => t.name).sort(),
@@ -231,6 +240,40 @@ try {
         `Packed offline stdio ${JSON.stringify(mode)} Apps=${ui}`,
         ui,
       );
+  // Verify the adapter against its actual published SDK dependency as well as
+  // the workspace tarball. Adapter and engine versions are independent.
+  const registry = join(temporary, "registry");
+  await mkdir(registry);
+  await writeFile(
+    join(registry, "package.json"),
+    JSON.stringify({
+      name: "registry-sdk-mcp-check",
+      private: true,
+      type: "module",
+    }),
+  );
+  const registryInstall = spawnSync(
+    "npm",
+    ["install", "--ignore-scripts", "--no-audit", "--no-fund", packed[1]],
+    { cwd: registry, encoding: "utf8" },
+  );
+  assert.equal(registryInstall.status, 0, registryInstall.stderr);
+  for (const mode of ["legacy", { pin: "2026-07-28" }])
+    await verify(
+      new StdioClientTransport({
+        command: process.execPath,
+        args: [
+          "--import",
+          guard,
+          join(registry, "node_modules/@turnmark/mcp/dist/cli.js"),
+        ],
+        cwd: registry,
+        stderr: "pipe",
+      }),
+      mode,
+      `Registry SDK stdio ${JSON.stringify(mode)}`,
+      true,
+    );
   // Missing bundled Wasm fails before accepting protocol messages, with no stdout.
   const wasm = join(
     temporary,
@@ -370,6 +413,18 @@ try {
   console.log(
     "Worker boundaries: route, method, Origin, body limit and rate limit passed.",
   );
+  if (process.argv[2] === "release") {
+    const destination = join(root, "release");
+    await mkdir(destination, { recursive: true });
+    const filename = basename(packed[1]);
+    const bytes = await readFile(packed[1]);
+    await copyFile(packed[1], join(destination, filename));
+    await writeFile(
+      join(destination, "SHA256SUMS"),
+      `${createHash("sha256").update(bytes).digest("hex")}  ${filename}\n`,
+    );
+    console.log(`Verified release tarball: ${join(destination, filename)}`);
+  }
 } finally {
   await worker?.stop();
   await rm(temporary, { recursive: true, force: true });
