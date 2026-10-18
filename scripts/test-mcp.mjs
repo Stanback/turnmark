@@ -20,6 +20,8 @@ import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { CfWorkerJsonSchemaValidator } from "@modelcontextprotocol/server/validators/cf-worker";
 import { unstable_dev } from "wrangler";
 import { createEngine } from "@turnmark/sdk/node";
+import { conversionHtml } from "../packages/mcp/dist/generated/ui.js";
+const htmlDigest = createHash("sha256").update(conversionHtml).digest("hex");
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(join(tmpdir(), "turnmark-mcp-"));
@@ -89,6 +91,11 @@ async function verify(transport, mode, label, ui = false) {
     const resource = (await client.readResource({ uri })).contents[0];
     assert.equal(resource.mimeType, "text/html;profile=mcp-app");
     assert.match(resource.text, /Update comparison/);
+    assert.equal(
+      createHash("sha256").update(resource.text).digest("hex"),
+      htmlDigest,
+      "Packed/HTTP UI must match the browser-tested bundle",
+    );
     assert.ok(Buffer.byteLength(resource.text) <= 750000);
     assert.deepEqual(resource._meta.ui.csp, {
       connectDomains: [],
