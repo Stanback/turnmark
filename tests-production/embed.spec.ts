@@ -146,7 +146,7 @@ test("copy section provides a versioned embed, theme preview and manual copy fal
     .evaluate((node) => ((node as HTMLDetailsElement).open = false));
   await expect(section.locator("select")).toHaveCSS(
     "background-color",
-    "rgb(23, 47, 67)",
+    "rgb(18, 45, 59)",
   );
   expect(
     (await new AxeBuilder({ page }).include(".embed-section").analyze())

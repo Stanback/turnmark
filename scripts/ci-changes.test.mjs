@@ -31,6 +31,7 @@ for (const [path, expected] of [
   ["design/generate.mjs", flags("web", "ios", "android")],
   ["apps/embed/Widget.svelte", flags("web")],
   ["embed/v1/index.html", flags("web")],
+  ["mcp/index.html", flags("web")],
   ["public/icons/app-icon.svg", flags("web")],
   ["tests-production/app.spec.ts", flags("web")],
   ["playwright.production.config.ts", flags("web")],

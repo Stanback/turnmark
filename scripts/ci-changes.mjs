@@ -96,6 +96,7 @@ export function affectedChecks(paths) {
         "design/",
         "apps/embed/",
         "embed/",
+        "mcp/",
         "public/",
         "tests/",
         "tests-production/",

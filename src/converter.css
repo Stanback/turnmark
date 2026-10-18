@@ -650,9 +650,13 @@
 .history-wave {
   border-radius: var(--tm-radius-control);
 }
+.method-section,
+.faq-section {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 70px;
+}
 .method-section {
   margin-top: 44px;
-  gap: 70px;
 }
 .method-intro h2 {
   font-size: 30px;
@@ -836,8 +840,11 @@
   .standards-section {
     padding: var(--tm-space-24) var(--tm-space-20);
   }
-  .method-section {
+  .method-section,
+  .faq-section {
     gap: 24px;
+  }
+  .method-section {
     margin-top: 32px;
   }
 }
@@ -900,4 +907,39 @@
   gap: var(--tm-space-8);
   color: var(--accent);
   margin-top: var(--tm-space-8);
+}
+
+/* Let the standards content set the desktop row height; history scrolls inside it. */
+@media (min-width: 901px) {
+  .insights-grid {
+    align-items: stretch;
+  }
+  .history-panel {
+    display: flex;
+    flex-direction: column;
+  }
+  .history-list {
+    flex: 1 1 0;
+    min-height: 180px;
+    max-height: none;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+  }
+  .history-heading,
+  .history-subtitle,
+  .history-filters {
+    flex-shrink: 0;
+  }
+}
+@media (max-width: 900px) {
+  .history-list {
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+@media print {
+  .history-list {
+    max-height: none;
+    overflow: visible;
+  }
 }

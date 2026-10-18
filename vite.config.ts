@@ -7,7 +7,12 @@ export default defineConfig({
   base: "/",
   build: {
     rolldownOptions: {
-      input: ["index.html", "embed/index.html", "embed/v1/index.html"],
+      input: [
+        "index.html",
+        "embed/index.html",
+        "embed/v1/index.html",
+        "mcp/index.html",
+      ],
     },
   },
   ssr: {

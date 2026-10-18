@@ -902,7 +902,11 @@
             onclick={() => (historyFilter = stroke.id)}>{stroke.short}</button
           >{/each}
       </div>
-      <div class="history-list">
+      <div
+        class="history-list"
+        role="region"
+        aria-label="Recent conversion entries"
+      >
         {#each filteredHistory as entry (entry.id)}
           <div class="history-row">
             <button
