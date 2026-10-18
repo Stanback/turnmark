@@ -56,6 +56,9 @@ instructions here.
   edition, reproducible example and corresponding metadata/test updates.
 - Use the pinned toolchains and lockfiles. Run checks appropriate to the change;
   documentation-only work does not require application tests.
+- Follow [CI.md](docs/CI.md) when selecting affected consumers. Web-only changes
+  do not need native builds. Update the shared CI selection rules and their
+  tests when introducing a new package, build input or dependency boundary.
 - Web: `npm run check`, `npm test`, and relevant Playwright tests
   (`npm run test:browser` / `npm run test:production`). Package/API changes also
   need `npm run test:sdk:package`.

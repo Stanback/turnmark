@@ -10,7 +10,11 @@ concurrency:
   group: shared-engine-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  changes:
+    uses: ./.github/workflows/changes.yml
   core-and-web:
+    needs: changes
+    if: needs.changes.outputs.core == 'true'
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
@@ -38,6 +42,8 @@ jobs:
           path: target/engine-metrics.json
           retention-days: 7
   ios:
+    needs: changes
+    if: needs.changes.outputs.ios == 'true'
     timeout-minutes: 30
     runs-on: xcode-27
     env:
@@ -69,6 +75,8 @@ jobs:
             target/ios-app-tests.xcresult
           retention-days: 7
   android:
+    needs: changes
+    if: needs.changes.outputs.android == 'true'
     timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
@@ -114,3 +122,20 @@ jobs:
             apps/android/build/reports/androidTests/
             apps/android/build/outputs/androidTest-results/
           retention-days: 7
+  engine-ci:
+    if: always()
+    needs: [changes, core-and-web, ios, android]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require successful selected checks
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          node --input-type=module <<'JS'
+          const jobs = JSON.parse(process.env.RESULTS);
+          if (jobs.changes.result !== 'success' ||
+              Object.values(jobs).some(({ result }) => !['success', 'skipped'].includes(result))) {
+            process.exit(1);
+          }
+          JS

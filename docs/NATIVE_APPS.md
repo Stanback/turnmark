@@ -93,8 +93,11 @@ after the test APK could not install on a still-booting emulator.
 
 ## Public-repository CI
 
-Pull-request checks run Rust/web tests, unsigned iOS simulator builds/UI tests,
-and Android debug builds/emulator tests. They use `contents: read` and contain no
+Pull-request checks select affected platforms using the dependency rules in
+[CI.md](CI.md). Web-only changes do not start native jobs. Shared Rust/data
+changes run every consumer; Swift and Kotlin changes run their own platform.
+Selected native jobs build unsigned iOS simulator apps and Android debug apps,
+then run UI tests. They use `contents: read` and contain no
 Cloudflare, Apple signing or store-upload credentials. The iOS job uses the
 `xcode-27` runner, pins Xcode 27.1 and verifies SDK 27.1 before building. Simulator
 selection prefers the latest installed iOS runtime; CI requires iOS 27. Local

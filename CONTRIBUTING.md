@@ -62,7 +62,8 @@ swims and original-course benchmarks.
 
 ## Checking your work
 
-For code or data changes, run the same checks used by CI:
+Run checks for the affected consumers; [the CI guide](docs/CI.md) explains the
+dependency boundaries. For web or JavaScript SDK changes:
 
 ```sh
 npm run check

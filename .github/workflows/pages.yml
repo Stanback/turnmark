@@ -10,7 +10,12 @@ concurrency:
   group: turnmark-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  changes:
+    uses: ./.github/workflows/changes.yml
   check-and-build:
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,3 +51,20 @@ jobs:
       - name: Deploy static app
         id: deployment
         uses: actions/deploy-pages@v4
+  web-ci:
+    if: always()
+    needs: [changes, check-and-build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require successful selected checks
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          node --input-type=module <<'JS'
+          const jobs = JSON.parse(process.env.RESULTS);
+          if (jobs.changes.result !== 'success' ||
+              Object.values(jobs).some(({ result }) => !['success', 'skipped'].includes(result))) {
+            process.exit(1);
+          }
+          JS
