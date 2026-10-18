@@ -199,6 +199,7 @@ try {
     for (const file of [
       "LICENSE",
       "README.md",
+      ...(workspace.endsWith("/mcp") ? ["THIRD_PARTY_NOTICES.txt"] : []),
       "dist/" + (workspace.endsWith("/mcp") ? "cli.js" : "node.js"),
     ])
       assert.ok(

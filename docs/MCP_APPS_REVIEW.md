@@ -34,9 +34,11 @@ text, the clock fits one line and surrounding copy wraps normally:
   `text/html;profile=mcp-app`. Change the resource version for later view releases.
   Both list/read carry CSP with empty connect/resource/frame domain lists.
 - One self-contained HTML asset, including the official bridge SDK: approximately
-  612 KB raw / 134 KB gzip, under an enforced 750,000-byte build budget. No CDN,
+  656 KB raw / 139 KB gzip, under an enforced 750,000-byte build budget. No CDN,
   font request, direct fetch, local storage, history access or nested iframe.
-- Worker dry run: approximately 2,221 KiB total / 457 KiB gzip. This fits the
+  Installed third-party license notices are derived from the bundle graph and
+  included in both the HTML resource and npm archive.
+- Worker dry run: approximately 2,264 KiB total / 462 KiB gzip. This fits the
   [Workers Free compressed-script allowance](https://developers.cloudflare.com/workers/platform/limits/).
   Local workerd startup profiling measured a 33.7 ms window / 18.3 ms active
   sample time; that is module startup, not an edge request CPU measurement.

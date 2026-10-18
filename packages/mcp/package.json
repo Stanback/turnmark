@@ -21,7 +21,8 @@
     "dist",
     "src/**/*.ts",
     "LICENSE",
-    "ui"
+    "ui",
+    "THIRD_PARTY_NOTICES.txt"
   ],
   "repository": {
     "type": "git",

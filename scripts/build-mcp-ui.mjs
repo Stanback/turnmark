@@ -1,5 +1,5 @@
 import { build } from "esbuild";
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 process.chdir(fileURLToPath(new URL("../", import.meta.url)));
 const bundle = await build({
@@ -7,17 +7,54 @@ const bundle = await build({
   entryPoints: ["packages/mcp/ui/app.ts"],
   bundle: true,
   write: false,
+  metafile: true,
   minify: true,
   format: "iife",
   target: "es2022",
 });
+// Carry the actual installed licenses for every bundled browser dependency.
+// Derive this from the build graph so a dependency change cannot silently drop
+// redistribution notices from the single-file resource or npm archive.
+const roots = new Set();
+for (const input of Object.keys(bundle.metafile.inputs)) {
+  const matches = [
+    ...input.matchAll(/(?:^|\/)node_modules\/((?:@[^/]+\/)?[^/]+)/g),
+  ];
+  const last = matches.at(-1);
+  if (last) roots.add(input.slice(0, last.index + last[0].length));
+}
+const notices = [];
+for (const root of [...roots].sort()) {
+  const metadata = JSON.parse(await readFile(`${root}/package.json`, "utf8"));
+  const files = (await readdir(root)).filter((name) =>
+    /^(licen[sc]e|notice)(\..*)?$/i.test(name),
+  );
+  if (!files.length)
+    throw new Error(`Review bundled license notices for ${metadata.name}`);
+  notices.push(
+    `${metadata.name}@${metadata.version}\n` +
+      (
+        await Promise.all(
+          files.map((name) => readFile(`${root}/${name}`, "utf8")),
+        )
+      ).join("\n"),
+  );
+}
+const licenseNotices = notices.join(
+  "\n\n========================================\n\n",
+);
+await writeFile("packages/mcp/THIRD_PARTY_NOTICES.txt", licenseNotices);
+const licenseJSON = JSON.stringify({ notices: licenseNotices }).replaceAll(
+  "<",
+  "\\u003c",
+);
 const css =
   (await readFile("src/generated/design-tokens.css", "utf8")) +
   (await readFile("packages/mcp/ui/app.css", "utf8"));
 const wave = (await readFile("design/wave.svg", "utf8"))
   .trim()
   .replace("<svg ", '<svg aria-hidden="true" ');
-const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Turnmark conversion</title><style>${css}</style></head><body><main><header>${wave}turnmark</header><p id="original"></p><section id="result" aria-label="Conversion result" aria-live="polite"><p>Waiting for your swim…</p></section><div id="convert" role="group" aria-label="Update comparison"><label>Your time<input id="time" name="time" inputmode="decimal" maxlength="128" required autocomplete="off"></label><label>Compare in<select id="course" name="course"><option>SCY</option><option>SCM</option><option>LCM</option></select></label><button id="update" type="button" disabled>Update comparison</button><button id="cancel" type="button" hidden>Cancel update</button></div><p id="status" role="status"></p><footer>Estimates help compare courses. They aren’t recorded performances or confirmation of meet eligibility.</footer></main><script>${bundle.outputFiles[0].text.replaceAll("</script", "<\\/script")}</script></body></html>`;
+const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Turnmark conversion</title><style>${css}</style></head><body><main><header>${wave}turnmark</header><p id="original"></p><section id="result" aria-label="Conversion result" aria-live="polite"><p>Waiting for your swim…</p></section><div id="convert" role="group" aria-label="Update comparison"><label>Your time<input id="time" name="time" inputmode="decimal" maxlength="128" required autocomplete="off"></label><label>Compare in<select id="course" name="course"><option>SCY</option><option>SCM</option><option>LCM</option></select></label><button id="update" type="button" disabled>Update comparison</button><button id="cancel" type="button" hidden>Cancel update</button></div><p id="status" role="status"></p><footer>Estimates help compare courses. They aren’t recorded performances or confirmation of meet eligibility.</footer></main><script>${bundle.outputFiles[0].text.replaceAll("</script", "<\\/script")}</script><script type="application/json" id="turnmark-licenses">${licenseJSON}</script></body></html>`;
 if (Buffer.byteLength(html) > 750000)
   throw new Error("MCP card exceeds 750 KB budget");
 await mkdir("packages/mcp/src/generated", { recursive: true });
