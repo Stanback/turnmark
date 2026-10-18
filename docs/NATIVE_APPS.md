@@ -26,6 +26,11 @@ offline on first launch, and use the same source editions and outcomes.
   preview, rejected-row reporting, duplicate-ID skipping and atomic inserts.
   iOS uses versioned SwiftData; Android uses SQLiteOpenHelper with database and
   document I/O off the main thread.
+- Contextual **Standards & points** from Convert and recorded-swim detail, including
+  B–AAAA youth levels, 2026 USMS targets and 2026 World Aquatics points. Rust
+  owns assessment and next-target gaps. Original swim context, source editions,
+  missing-data states and locally remembered comparison settings remain visible.
+  See the [standards review](NATIVE_STANDARDS_REVIEW.md).
 - Generated semantic palettes from the [shared design contract](DESIGN_CONTRACT.md).
   A navy result card, tabular clock, cyan actions and lime result emphasis give
   both apps the same identity. Native forms, pickers, sheets and navigation retain
@@ -39,8 +44,7 @@ offline on first launch, and use the same source editions and outcomes.
   navigation. Native keyboard Done, scalable text and system sharing remain.
   [Adaptive layout notes](ADAPTIVE_LAYOUT.md) track verification and limits.
 
-This is the first converter workflow, not full web feature parity. Native youth
-and Masters benchmarks, points, altitude entry,
+This is the first converter workflow, not full web feature parity. Native altitude entry,
 layered iOS icon/store artwork, verified app links and final release targets remain later
 work. Physical-device, VoiceOver/TalkBack, large-text and 16 KB Android runtime
 checks are release gates; automated simulator tests do not establish those.

@@ -75,7 +75,7 @@ for primary specifications, adapter boundaries and validation requirements.
 Native Standards & points includes USA Swimming motivational standards
 (including AAAA), USMS targets and World Aquatics points.
 The native screens now consume the shared Rust lookups and benchmark assessment
-through generated Swift/Kotlin APIs. Add contextual Standards & points
+through generated Swift/Kotlin APIs. Open contextual Standards & points
 from the entered/recorded performance with age-group controls, source editions,
 coverage states and the achieved course visible. Compare actual performances,
 not converted estimates. Missing source data stays unavailable. This is a contextual
@@ -90,15 +90,12 @@ An existing record retains its own category; preferences are defaults, not edits
 to history. Converted estimates remain explicitly separate from the achieved
 performance.
 
-## README showcase after standards
+## README showcase
 
-Once the native standards/points workflow is implemented and visually reviewed,
-add a small README gallery using actual web, iOS and Android captures. Include a
-useful benchmark result and native compact/expanded examples, with concise links
-to the live widget and MCP setup. Keep development previews distinct from store
-releases and avoid mockups or a screenshot for every form. Capture the completed
-workflow before choosing the gallery; the current redesign images are review
-evidence, not a substitute for that later showcase.
+The README now includes actual web, iOS and Android captures after completing
+and visually reviewing native Standards & points. Native screenshots are
+clearly labeled development previews, with links to the live widget/MCP setup
+and detailed [standards review](NATIVE_STANDARDS_REVIEW.md).
 
 ## Localization follow-up
 

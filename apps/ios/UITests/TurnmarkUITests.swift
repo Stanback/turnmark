@@ -60,11 +60,11 @@ final class TurnmarkUITests: XCTestCase {
         reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
         XCTAssertEqual(app.staticTexts["benchmarkOriginalTime"].label, "58.32")
         XCTAssertEqual(app.staticTexts["benchmarkSummary"].label, "A standard")
+        capture(app, "Youth standards summary")
         XCUIDevice.shared.orientation = .landscapeLeft
         XCTAssertEqual(app.staticTexts["benchmarkOriginalTime"].label, "58.32")
         XCUIDevice.shared.orientation = .portrait
         XCTAssertEqual(app.staticTexts["benchmarkSummary"].label, "A standard")
-        capture(app, "Youth standards summary")
         let aaaa = app.descendants(matching: .any)["benchmark-level-AAAA"].firstMatch
         reach(aaaa, in: app); capture(app, "Youth standards targets")
         let system = app.descendants(matching: .any)["benchmarkSystem"].firstMatch
