@@ -2,8 +2,9 @@
 
 The hosted v1 widget uses
 `https://turnmark.app/embed/v1/`; no npm install, API key or parent-page script is
-required. The full website's **Add the converter to your site** section provides
-appearance selection, a preview, and copyable HTML.
+required. The dedicated [widget setup page](https://turnmark.app/embed/) provides
+appearance selection, a live preview, and copyable HTML. Find it under **Widget
+setup** in the website footer.
 
 ```html
 <iframe
@@ -39,7 +40,9 @@ Preserve its license and source attribution when redistributing code. Numerical
 sources remain credited to their respective owners.
 
 `apps/embed/` contains the widget consumer; `embed/v1/index.html` is its HTML
-entry. The web build emits both pages with shared versioned JS/Wasm assets.
+entry. The web build emits the app, setup page and widget with shared versioned assets.
+`apps/embed/Setup.svelte` is pre-rendered for the setup page; only the calculator
+iframe loads the SDK/Wasm.
 The hosted `/embed/v1/` path gets compatible updates; it is not an immutable
 snapshot. Breaking configuration/embedding changes need a new versioned path
 while existing paths remain supported. There are no configurable messages,

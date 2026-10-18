@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Icon from "./lib/Icon.svelte";
-  import Embed from "./lib/Embed.svelte";
   import Pool from "./lib/Pool.svelte";
   import Masters from "./lib/Masters.svelte";
   import Install from "./lib/Install.svelte";
@@ -1371,7 +1370,6 @@
         </details>{/each}
     </div>
   </section>
-  <Embed />
 </main>
 <div class="appearance-row page-width"><Theme /></div>
 <footer class="page-width">
@@ -1381,7 +1379,9 @@
     > · Open source, always.</span
   >
   <nav class="footer-docs" aria-label="Documentation">
-    <a href="/mcp/">MCP setup</a><a href="/llms.txt">llms.txt</a>
+    <a href="/embed/">Widget setup</a><a href="/mcp/">MCP setup</a><a
+      href="/llms.txt">llms.txt</a
+    >
   </nav>
   <span>Sources checked October 16, 2026</span>
 </footer>

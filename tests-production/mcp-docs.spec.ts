@@ -16,8 +16,15 @@ test("agent index serves canonical Markdown references through the production ho
   for (const [, link] of links) {
     const response = await request.get(new URL(link).pathname);
     expect(response.ok(), link).toBe(true);
-    expect(response.headers()["content-type"], link).toContain("text/markdown");
-    expect(await response.text(), link).toMatch(/^# /);
+    if (new URL(link).pathname.endsWith(".md")) {
+      expect(response.headers()["content-type"], link).toContain(
+        "text/markdown",
+      );
+      expect(await response.text(), link).toMatch(/^# /);
+    } else {
+      expect(response.headers()["content-type"], link).toContain("text/html");
+      expect(await response.text(), link).toContain('<link rel="canonical"');
+    }
   }
   expect(await (await request.get("mcp/index.md")).text()).toBe(
     await readFile("packages/mcp/README.md", "utf8"),

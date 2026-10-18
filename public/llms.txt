@@ -27,6 +27,7 @@ WebMCP remains planned work.
 
 - [MCP reference](https://turnmark.app/mcp/index.md): Remote client configuration, local stdio setup, tool inputs, result semantics and troubleshooting.
 - [JavaScript SDK](https://turnmark.app/docs/sdk.md): Browser, Node and Wasm initialization, public APIs and current release status.
+- [Widget setup](https://turnmark.app/embed/): Interactive preview, appearance choices and copyable iframe HTML for publishers.
 - [Publisher widget](https://turnmark.app/docs/embed.md): Versioned iframe code, appearance, attribution, privacy and offline behavior.
 
 ## Calculation sources

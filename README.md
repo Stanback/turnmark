@@ -70,7 +70,7 @@ uses the same engine in Node. Offline caching includes that versioned asset.
 See the [shared engine guide](docs/SHARED_ENGINE.md) for packaging, checks and
 tradeoffs. The native apps use SwiftUI and Jetpack Compose. A
 [compact publisher embed](docs/EMBED.md) is prepared at `/embed/v1/`, with
-copyable HTML and a preview near the bottom of the website. Remaining platform work is tracked in the
+copyable HTML and a live preview on the [widget setup page](https://turnmark.app/embed/). Remaining platform work is tracked in the
 [platform plan](docs/PLATFORM_PLAN.md).
 The [MCP adapter](docs/MCP.md) supports offline stdio and stateless Streamable
 HTTP at `https://mcp.turnmark.app/mcp`, using the same SDK.

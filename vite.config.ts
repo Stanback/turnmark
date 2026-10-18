@@ -5,7 +5,11 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [svelte()],
   base: "/",
-  build: { rolldownOptions: { input: ["index.html", "embed/v1/index.html"] } },
+  build: {
+    rolldownOptions: {
+      input: ["index.html", "embed/index.html", "embed/v1/index.html"],
+    },
+  },
   ssr: {
     external: [
       "@turnmark/sdk",
