@@ -19,8 +19,9 @@ eligibility. Missing published data stays unavailable.
 The MCP server cannot read or edit saved swims, profiles, files or browser
 history. On HTTP 429, respect Retry-After. The service runs on Cloudflare Free;
 temporary unavailability does not affect offline SDK or stdio calculations.
-The SDK and MCP npm packages are prepared at 0.1.0 but are not published yet.
-Use the documented checkout/tarball setup. WebMCP remains planned work.
+JavaScript packages: @turnmark/sdk@0.1.0 and @turnmark/mcp@0.1.0. The MCP
+package depends on the SDK and provides the turnmark-mcp stdio executable.
+WebMCP remains planned work.
 
 ## Integrations
 

@@ -1,7 +1,7 @@
 # Turnmark MCP
 
 Read-only swimming calculations over local stdio, using `@turnmark/sdk` and its
-bundled Rust/Wasm engine. Version 0.1.0 is not published yet. Node 22.12+ is
+bundled Rust/Wasm engine. The package is `@turnmark/mcp@0.1.0`. Node 22.12+ is
 required; calculations run offline after installation, without Rust or a browser.
 
 ## Hosted connection
@@ -43,15 +43,17 @@ calculation inputs, use the offline stdio connection below.
 
 ## Local connection
 
-Build from the repository root with `npm ci && npm run build --workspace @turnmark/mcp`.
-Use an absolute Node executable and checkout path in your MCP client's config:
+Install in a project with `npm install @turnmark/mcp@0.1.0`. Use an absolute
+Node executable and installed package path in your MCP client's config:
 
 ```json
 {
   "mcpServers": {
     "turnmark": {
       "command": "/absolute/path/to/node",
-      "args": ["/absolute/path/to/turnmark/packages/mcp/dist/cli.js"]
+      "args": [
+        "/absolute/path/to/project/node_modules/@turnmark/mcp/dist/cli.js"
+      ]
     }
   }
 }
@@ -59,9 +61,11 @@ Use an absolute Node executable and checkout path in your MCP client's config:
 
 The server loads its bundled engine before accepting requests. Stdout contains
 MCP messages only; diagnostics go to stderr. No runtime downloads are needed.
-Once both npm packages are released, install `@turnmark/mcp@0.1.0` and use its
-`turnmark-mcp` executable. Until then, test/install the SDK and MCP tarballs
-together; the package test exercises exactly that outside the monorepo.
+The package also provides the `turnmark-mcp` executable. A source checkout can
+build it with `npm ci && npm run build --workspace @turnmark/mcp`; use that
+checkout's `packages/mcp/dist/cli.js` path instead. See the repository's
+[development setup](https://github.com/Stanback/turnmark/blob/main/CONTRIBUTING.md)
+for the Rust/Wasm build toolchain. Installed npm packages need no Rust toolchain.
 
 ## Tools
 

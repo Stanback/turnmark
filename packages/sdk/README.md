@@ -2,11 +2,11 @@
 
 Offline course conversion, altitude, USA Swimming standards, USMS targets, and
 World Aquatics points, calculated by the shared Rust engine. Swift and Kotlin
-libraries are generated from the same core. Version `0.1.0` is prepared for
-public npm distribution as `@turnmark/sdk`; it has not been published yet.
+libraries are generated from the same core. The JavaScript package is
+`@turnmark/sdk`, version `0.1.0`.
 
-Once released, install with `npm install @turnmark/sdk`. Until then, a checkout
-can produce a tested installable tarball with `npm run pack:sdk`; install
+Install with `npm install @turnmark/sdk@0.1.0`. A source checkout
+can also produce a tested installable tarball with `npm run pack:sdk`; install
 `release/turnmark-sdk-0.1.0.tgz` in your consumer project. Consumers need neither
 Rust nor package install scripts. The ESM package supports modern browsers and
 Node 22.12 or newer.
