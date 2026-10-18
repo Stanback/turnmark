@@ -66,9 +66,20 @@ try {
     `${head}\n<script type="application/ld+json">${JSON.stringify(structuredData).replaceAll("<", "\\u003c")}</script>\n</head>`,
   );
   await writeFile("dist/index.html", html);
+  const { default: EmbedSetup } = await vite.ssrLoadModule(
+    "/apps/embed/Setup.svelte",
+  );
+  const setup = render(EmbedSetup);
+  const setupHtml = (await readFile("dist/embed/index.html", "utf8"))
+    .replace(
+      '<div id="embed-setup"></div>',
+      `<div id="embed-setup">${setup.body}</div>`,
+    )
+    .replace("</head>", `${setup.head}</head>`);
+  await writeFile("dist/embed/index.html", setupHtml);
   await writeFile(
     "dist/sitemap.xml",
-    `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${site.url}</loc></url><url><loc>${site.url}mcp/</loc></url></urlset>\n`,
+    `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${site.url}</loc></url><url><loc>${site.url}mcp/</loc></url><url><loc>${site.url}embed/</loc></url></urlset>\n`,
   );
 } finally {
   await vite.close();

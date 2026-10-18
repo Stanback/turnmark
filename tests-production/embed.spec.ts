@@ -114,12 +114,8 @@ test("copy section provides a versioned embed, theme preview and manual copy fal
   context,
 }, testInfo) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-  await page.goto("./");
-  const section = page.locator("section").filter({
-    has: page.getByRole("heading", {
-      name: "Add the converter to your site",
-    }),
-  });
+  await page.goto("./embed/");
+  const section = page.locator("main.embed-section");
   await section.getByLabel("Appearance").selectOption("dark");
   await expect(section.getByLabel("Embed code")).toHaveValue(
     /https:\/\/turnmark.app\/embed\/v1\/\?theme=dark/,
@@ -129,7 +125,8 @@ test("copy section provides a versioned embed, theme preview and manual copy fal
   expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(
     "Swim time converter by Turnmark",
   );
-  await section.getByText("Preview the converter", { exact: true }).click();
+  await expect(section.locator("details")).toHaveAttribute("open", "");
+  await expect(section.locator("iframe")).toHaveAttribute("src", /theme=dark/);
   await expect(
     section
       .frameLocator("iframe")
@@ -143,10 +140,7 @@ test("copy section provides a versioned embed, theme preview and manual copy fal
   await section.getByLabel("Appearance").selectOption("light");
   await section.getByRole("button", { name: "Copy embed code" }).click();
   await expect(section.getByRole("status")).toContainText("copy it manually");
-  await page
-    .getByRole("group", { name: "Appearance", exact: true })
-    .getByRole("button", { name: "Dark", exact: true })
-    .click();
+  await page.emulateMedia({ colorScheme: "dark" });
   await section
     .locator("details")
     .evaluate((node) => ((node as HTMLDetailsElement).open = false));
@@ -206,4 +200,74 @@ test("installed app caches the widget route for offline navigation", async ({
   await expect(
     page.locator("article").filter({ hasText: "100 Freestyle · SCY" }),
   ).toContainText("52.44");
+  await page.goto("./embed/");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "Embed the swim time converter",
+  );
+  await page.getByLabel("Appearance", { exact: true }).selectOption("dark");
+  await expect(page.getByLabel("Embed code")).toHaveValue(/theme=dark/);
+  await expect(
+    page
+      .frameLocator("iframe")
+      .getByRole("heading", { name: "Swim time converter", exact: true }),
+  ).toBeVisible();
+});
+
+test("widget setup has pre-rendered instructions, its own route and accessible responsive appearances", async ({
+  browser,
+  page,
+  request,
+}, testInfo) => {
+  await page.goto("./");
+  await page.getByRole("link", { name: "Widget setup", exact: true }).click();
+  await expect(page).toHaveURL(/\/embed\/$/);
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  const staticContext = await browser.newContext({ javaScriptEnabled: false });
+  try {
+    const staticPage = await staticContext.newPage();
+    await staticPage.goto("http://127.0.0.1:4175/embed/");
+    await expect(staticPage.getByRole("heading", { level: 1 })).toHaveText(
+      "Embed the swim time converter",
+    );
+    await expect(staticPage.getByLabel("Embed code")).toHaveValue(
+      /https:\/\/turnmark.app\/embed\/v1\//,
+    );
+    await expect(
+      staticPage.getByText("Add it to a page", { exact: true }),
+    ).toBeVisible();
+    await expect(staticPage.locator('link[rel="canonical"]')).toHaveAttribute(
+      "href",
+      "https://turnmark.app/embed/",
+    );
+  } finally {
+    await staticContext.close();
+  }
+  expect(await (await request.get("sitemap.xml")).text()).toContain(
+    "https://turnmark.app/embed/",
+  );
+  for (const colorScheme of ["light", "dark"] as const) {
+    await page.emulateMedia({ colorScheme });
+    await page.setViewportSize({
+      width: colorScheme === "dark" ? 320 : 900,
+      height: 900,
+    });
+    await page.goto("./embed/");
+    await expect(
+      page
+        .frameLocator("iframe")
+        .getByRole("heading", { name: "Swim time converter", exact: true }),
+    ).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+    await page.screenshot({
+      path: testInfo.outputPath(`widget-setup-${colorScheme}.png`),
+      fullPage: true,
+    });
+  }
+  expect(errors).toEqual([]);
 });
