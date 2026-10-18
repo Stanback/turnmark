@@ -147,15 +147,22 @@ final class TurnmarkUITests: XCTestCase {
         XCTAssertTrue(app.textFields["timeInput"].waitForExistence(timeout: 10))
         app.swipeUp()
         app.buttons["saveSwim"].tap()
+        let resultTime = app.staticTexts["resultTime"].label
+        let resultContext = app.staticTexts["resultContext"].label
         app.buttons["shareSwim"].tap()
         dismissShareSheet(app)
-        assertHittable(app.buttons["shareSwim"])
+        // ShareLink's accessibility element can remain stale after the system
+        // sheet closes. Verify the next real action, rather than immediately
+        // querying the original share element again.
+        assertHittable(app.tabBars.buttons["Saved"])
         app.tabBars.buttons["Saved"].tap()
         app.buttons["Share saved swim"].tap()
         dismissShareSheet(app)
         assertHittable(app.buttons["Use this swim"])
         app.buttons["Use this swim"].tap()
         XCTAssertEqual(app.textFields["timeInput"].value as? String, "58.32")
+        XCTAssertEqual(app.staticTexts["resultTime"].label, resultTime)
+        XCTAssertEqual(app.staticTexts["resultContext"].label, resultContext)
     }
 
     @MainActor private func dismissShareSheet(_ app: XCUIApplication) {
