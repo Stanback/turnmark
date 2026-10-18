@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 — prepared, not yet published
+## 0.1.0 — 2026-10-18
 
 - Rust-backed course conversion, altitude adjustment, youth standards, Masters
   targets, World Aquatics points and time helpers, with typed ESM exports.

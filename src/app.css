@@ -1557,6 +1557,7 @@ details[open] .summary-plus {
 
 footer {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 25px;
   font-size: 14px;
@@ -1571,6 +1572,15 @@ footer {
   font-weight: 800;
   letter-spacing: -1px;
   color: var(--navy);
+}
+.footer-docs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.footer-docs a {
+  color: inherit;
+  text-underline-offset: 3px;
 }
 footer > span:last-child {
   margin-left: auto;

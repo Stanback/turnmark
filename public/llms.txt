@@ -1,0 +1,39 @@
+# Turnmark
+
+> Swimming time conversions, published standards, altitude adjustments and World Aquatics points, backed by one shared Rust engine.
+
+The web calculator and publisher widget run calculations locally after loading.
+The public read-only MCP server is https://mcp.turnmark.app/mcp over Streamable
+HTTP, with no authentication or API key. Use an MCP client; browser GET at that
+endpoint returns 405. Remote inputs are processed by Cloudflare. The local
+stdio server runs calculations offline and does not make runtime network calls.
+
+Tools: convert_swim, adjust_altitude, get_youth_standards, get_masters_target,
+get_world_points and get_sources. Call get_sources for bundled editions,
+coverage and attribution; these are published snapshots, not live records.
+Preserve available, unavailable and invalid outcomes, actual destination event
+distances, and published/derived labels. Converted estimates are not recorded
+performances. Qualifying targets are benchmarks, not confirmation of entry
+eligibility. Missing published data stays unavailable.
+
+The MCP server cannot read or edit saved swims, profiles, files or browser
+history. On HTTP 429, respect Retry-After. The service runs on Cloudflare Free;
+temporary unavailability does not affect offline SDK or stdio calculations.
+JavaScript packages: @turnmark/sdk@0.1.0 and @turnmark/mcp@0.1.0. The MCP
+package depends on the SDK and provides the turnmark-mcp stdio executable.
+WebMCP remains planned work.
+
+## Integrations
+
+- [MCP reference](https://turnmark.app/mcp/index.md): Remote client configuration, local stdio setup, tool inputs, result semantics and troubleshooting.
+- [JavaScript SDK](https://turnmark.app/docs/sdk.md): Browser, Node and Wasm initialization, public APIs and current release status.
+- [Publisher widget](https://turnmark.app/docs/embed.md): Versioned iframe code, appearance, attribution, privacy and offline behavior.
+
+## Calculation sources
+
+- [Methodology](https://turnmark.app/docs/methodology.md): Source editions, covered events, conversion directions, rounding and limitations.
+
+## Optional
+
+- [MCP operations](https://raw.githubusercontent.com/Stanback/turnmark/main/docs/MCP.md): Transport implementation, verification, hosting and abuse limits.
+- [Source repository](https://github.com/Stanback/turnmark): GPL-3.0-or-later source, native app development and contribution guides.

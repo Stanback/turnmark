@@ -1,11 +1,38 @@
 # SDK releases
 
-Status: SDK `0.1.0` is prepared for npm distribution as `@turnmark/sdk`, but has
-not been published. The website version is independent. This first public
+Status: [@turnmark/sdk@0.1.0](https://www.npmjs.com/package/@turnmark/sdk) and
+[@turnmark/mcp@0.1.0](https://www.npmjs.com/package/@turnmark/mcp) were published
+on October 18, 2026. The website version is independent. This first public
 package targets JavaScript/TypeScript. The native apps already consume generated
 Swift and Kotlin libraries from the same Rust core; standalone SwiftPM binary
 and Maven releases are still follow-up work. No native registry release is
 implied by an npm release.
+
+## Published 0.1.0 artifacts
+
+```sh
+npm install @turnmark/sdk@0.1.0
+# Optional local MCP server, including its SDK dependency:
+npm install @turnmark/mcp@0.1.0
+```
+
+The release source snapshot is
+`73ec79928c85d6a18bffcf3978b336f48479b856`. Calculation code and datasets match
+main's `98db218089518dc77ea5b0d25bba37ff313da7cf`; the release adds public package
+installation instructions. npm registry SHA-1 checksums match the tested tarballs:
+
+| Package         | Version | Registry `dist.shasum`                     |
+| --------------- | ------- | ------------------------------------------ |
+| `@turnmark/sdk` | `0.1.0` | `51189fc30ac64a5cae08c6a868666056ffe170d8` |
+| `@turnmark/mcp` | `0.1.0` | `64e583a00db9b6e86a027cacf9a66296aed07325` |
+
+A fresh external project installed both packages from npm with lifecycle scripts
+disabled. The registry SDK passed all 62 portable cases without network access;
+the installed `turnmark-mcp` executable passed tool discovery, 42 exact SDK-result
+comparisons and eight malformed-input cases in each supported protocol mode,
+also without network access. Maintainer login and two-factor authentication
+were used for this bootstrap release; these artifacts do not carry GitHub
+provenance. Trusted publishing remains a prerequisite for future CI publication.
 
 ## Prepare and verify
 
@@ -45,7 +72,8 @@ npm publish ./release/turnmark-sdk-0.1.0.tgz --ignore-scripts --access public --
 ```
 
 The initial local bootstrap cannot carry GitHub provenance. Subsequent CI
-releases use OIDC and provenance. This document does not authorize publishing an
+releases are designed to use OIDC and provenance once the configuration below
+is completed. This document does not authorize publishing an
 unreviewed commit or changing the existing GPL-3.0-or-later license.
 
 ## Subsequent releases

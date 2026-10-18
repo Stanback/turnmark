@@ -8,3 +8,15 @@
 
 /manifest.webmanifest
   Cache-Control: no-cache
+
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: no-cache
+
+/mcp/index.md
+  Content-Type: text/markdown; charset=utf-8
+  Cache-Control: no-cache
+
+/docs/*
+  Content-Type: text/markdown; charset=utf-8
+  Cache-Control: no-cache

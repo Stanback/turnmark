@@ -1379,7 +1379,11 @@
     >Built by <a href="https://bristanback.com" target="_blank" rel="noreferrer"
       >Bri Stanback</a
     > · Open source, always.</span
-  ><span>Sources checked October 16, 2026</span>
+  >
+  <nav class="footer-docs" aria-label="Documentation">
+    <a href="/mcp/">MCP setup</a><a href="/llms.txt">llms.txt</a>
+  </nav>
+  <span>Sources checked October 16, 2026</span>
 </footer>
 <nav class="mobile-nav" aria-label="Mobile navigation">
   {#each [{ id: "converter", icon: "wave", label: "Converter" }, { id: "history", icon: "history", label: "History" }, { id: "standards", icon: "standards", label: "Standards" }, { id: "method", icon: "info", label: "The method" }] as item}

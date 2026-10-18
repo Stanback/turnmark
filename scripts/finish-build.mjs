@@ -1,5 +1,11 @@
 import { createServer } from "vite";
-import { readFile, writeFile, readdir } from "node:fs/promises";
+import {
+  readFile,
+  writeFile,
+  readdir,
+  mkdir,
+  copyFile,
+} from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { site } from "../src/data/site.ts";
 import { createEngine } from "@turnmark/sdk";
@@ -9,6 +15,19 @@ await createEngine({
     new URL(import.meta.resolve("@turnmark/sdk/engine.wasm")),
   ),
 });
+
+// Publish canonical Markdown references without maintaining a second copy.
+for (const [source, destination] of [
+  ["packages/mcp/README.md", "mcp/index.md"],
+  ["packages/sdk/README.md", "docs/sdk.md"],
+  ["docs/EMBED.md", "docs/embed.md"],
+  ["docs/METHODOLOGY.md", "docs/methodology.md"],
+]) {
+  await mkdir(`dist/${destination.slice(0, destination.lastIndexOf("/"))}`, {
+    recursive: true,
+  });
+  await copyFile(source, `dist/${destination}`);
+}
 
 // Render the same Svelte components at build time. Production hosting stays static.
 process.env.NODE_ENV = "production";
@@ -49,7 +68,7 @@ try {
   await writeFile("dist/index.html", html);
   await writeFile(
     "dist/sitemap.xml",
-    `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${site.url}</loc></url></urlset>\n`,
+    `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${site.url}</loc></url><url><loc>${site.url}mcp/</loc></url></urlset>\n`,
   );
 } finally {
   await vite.close();
@@ -59,8 +78,9 @@ try {
 const paths = (await readdir("dist", { recursive: true }))
   .filter(
     (path) =>
-      /\.(html|js|css|wasm|png|svg|webp|woff2?|webmanifest)$/.test(path) &&
-      path !== "sw.js",
+      /\.(html|md|txt|js|css|wasm|png|svg|webp|woff2?|webmanifest)$/.test(
+        path,
+      ) && path !== "sw.js",
   )
   .sort();
 const fingerprint = createHash("sha256");
