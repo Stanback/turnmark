@@ -8,7 +8,8 @@ the SDK dependency and requires no Rust toolchain to install.
 
 The public [MCP quick start](https://turnmark.app/mcp/) covers hosted connection
 settings and links to the [Markdown reference](https://turnmark.app/mcp/index.md).
-The website footer and [llms.txt](https://turnmark.app/llms.txt) make it discoverable.
+The website footer links to the setup guide; page metadata identifies
+[llms.txt](https://turnmark.app/llms.txt) for agent discovery.
 The build publishes the canonical package README as that Markdown reference;
 update `packages/mcp/README.md` rather than maintaining a second copy. The
 `llms.txt` index follows the [llms.txt proposal](https://llmstxt.org/); it documents

@@ -1379,9 +1379,7 @@
     > · Open source, always.</span
   >
   <nav class="footer-docs" aria-label="Documentation">
-    <a href="/embed/">Widget setup</a><a href="/mcp/">MCP setup</a><a
-      href="/llms.txt">llms.txt</a
-    >
+    <a href="/embed/">Widget setup</a><a href="/mcp/">MCP setup</a>
   </nav>
   <span>Sources checked October 16, 2026</span>
 </footer>
