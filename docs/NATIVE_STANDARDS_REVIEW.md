@@ -65,3 +65,9 @@ keyboard dismissal. The layout key now describes the actual compact/expanded/
 divided input hierarchy. Done dismissal and keeping entry focus across rotation
 are checked together; the record/benchmark test confirms the actual category,
 time and successful transition to My times after the keyboard closes.
+
+A second Duo check verified that the keyboard no longer collapses a wide input
+pane. Width/native divisions/text size now choose the arrangement; height stays
+scrollable. The extended rotation test also starts a fresh wide entry and checks
+Done dismissal in both orientations. The paired recording/rotation checks pass
+on iPhone 18 Pro/iOS 27.0 and Duo/iOS 27.1.

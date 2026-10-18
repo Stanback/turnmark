@@ -158,3 +158,13 @@ Capture and inspect native screens in both appearances, with these checks:
 Store screenshots follow the native implementation and this review. Physical
 Duo testing, VoiceOver and device ergonomics remain release checks; a concept
 preview or successful ordinary-phone CI run does not establish them.
+
+## Keyboard-stable pane selection
+
+The converter chooses compact/expanded panes from width, native division regions
+and accessibility text size. Keyboard height does not collapse an already-wide
+workspace. Both panes scroll independently in a short landscape window. Focus
+restoration is keyed to an actual hierarchy change, rather than every geometry
+resize, so Done remains dismissed. The rotation test covers typing across pane
+changes, starting a new entry while already wide, and dismissing the keyboard in
+both orientations on iPhone 18 Pro/iOS 27.0 and Duo/iOS 27.1.

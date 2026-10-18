@@ -103,7 +103,7 @@ private struct TurnmarkView: View {
                         if #available(iOS 27.1, *) {
                             let regions = geometry.reservedRegions(kind: .division)
                             let tabletop = regions.contains { $0.frame.width > $0.frame.height }
-                            let expanded = (geometry.size.width >= 620 && geometry.size.height >= 400) || !regions.isEmpty
+                            let expanded = geometry.size.width >= 620 || !regions.isEmpty
                             if regions.isEmpty && expanded && !typeSize.isAccessibilitySize {
                                 HStack(alignment: .top, spacing: 0) { inputPane; resultPane }
                                     .accessibilityIdentifier("expandedConverter")
@@ -115,7 +115,7 @@ private struct TurnmarkView: View {
                                 }.arrangementViewStyle(.split)
                                     .accessibilityIdentifier("expandedConverter")
                             } else { compactConverter }
-                        } else if geometry.size.width >= 700 && geometry.size.height >= 400 && !typeSize.isAccessibilitySize {
+                        } else if geometry.size.width >= 700 && !typeSize.isAccessibilitySize {
                             HStack(alignment: .top, spacing: 0) { inputPane; resultPane }
                                 .accessibilityIdentifier("expandedConverter")
                         } else { compactConverter }
@@ -171,14 +171,16 @@ private struct TurnmarkView: View {
         // Restore focus only when our view hierarchy moves the input field.
         // Keyboard safe-area changes also resize GeometryReader; keying on raw
         // height can restart an older focus task after the user presses Done.
+        // Width, native fold regions and text size determine the pane layout;
+        // keyboard height must not collapse a wide input workspace.
         if #available(iOS 27.1, *) {
             let regions = geometry.reservedRegions(kind: .division)
             if !regions.isEmpty {
                 return regions.contains { $0.frame.width > $0.frame.height } ? "division-tabletop" : "division-book"
             }
-            return geometry.size.width >= 620 && geometry.size.height >= 400 && !typeSize.isAccessibilitySize ? "expanded" : "compact"
+            return geometry.size.width >= 620 && !typeSize.isAccessibilitySize ? "expanded" : "compact"
         }
-        return geometry.size.width >= 700 && geometry.size.height >= 400 && !typeSize.isAccessibilitySize ? "expanded" : "compact"
+        return geometry.size.width >= 700 && !typeSize.isAccessibilitySize ? "expanded" : "compact"
     }
 
     private var compactConverter: some View {

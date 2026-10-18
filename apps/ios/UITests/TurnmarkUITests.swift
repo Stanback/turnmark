@@ -266,6 +266,19 @@ final class TurnmarkUITests: XCTestCase {
         XCUIDevice.shared.orientation = .portrait
         app.typeText(XCUIKeyboardKey.delete.rawValue)
         XCTAssertEqual(field.value as? String, "1:00.2")
+        let done = app.buttons["dismissConverterKeyboard"]
+        XCTAssertTrue(done.waitForExistence(timeout: 5)); done.tap()
+        let keyboardClosed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: app.keyboards.firstMatch)
+        XCTAssertEqual(XCTWaiter.wait(for: [keyboardClosed], timeout: 5), .completed)
+        // Starting entry in an already-wide workspace must not collapse its
+        // field when the keyboard reduces the available height.
+        XCUIDevice.shared.orientation = .landscapeLeft
+        replace(field, with: "58.32", in: app)
+        XCTAssertEqual(field.value as? String, "58.32")
+        XCTAssertTrue(app.descendants(matching: .any)["expandedConverter"].firstMatch.exists)
+        XCTAssertTrue(done.waitForExistence(timeout: 5)); done.tap()
+        let wideKeyboardClosed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: app.keyboards.firstMatch)
+        XCTAssertEqual(XCTWaiter.wait(for: [wideKeyboardClosed], timeout: 5), .completed)
     }
 
     @MainActor func testSharingCanBeCancelledWithoutRecordingATime() {
