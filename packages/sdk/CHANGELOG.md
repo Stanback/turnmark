@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- `assessSwimBenchmark` / `engine.benchmark` compare an original swim against
+  youth or USMS targets, returning met states, the achieved level, next target
+  and gaps from the authoritative Rust engine.
+
 ## 0.1.0 — 2026-10-18
 
 - Rust-backed course conversion, altitude adjustment, youth standards, Masters

@@ -70,16 +70,16 @@ already provides a local backup and transfer route; additional import formats
 and agent integrations remain separate work. See the [SDIF/LENEX interchange notes](MEET_HISTORY.md#standard-interchange-follow-up)
 for primary specifications, adapter boundaries and validation requirements.
 
-## Next native feature: standards and points
+## Native standards and points
 
-After this visual/adaptive pass, expose USA Swimming motivational standards
-(including AAAA), USMS targets and World Aquatics points before localization.
-The shared Rust SDK and generated Swift/Kotlin APIs already expose these lookups;
-the native screens do not yet consume them. Add contextual Standards & points
+Native Standards & points includes USA Swimming motivational standards
+(including AAAA), USMS targets and World Aquatics points.
+The native screens now consume the shared Rust lookups and benchmark assessment
+through generated Swift/Kotlin APIs. Add contextual Standards & points
 from the entered/recorded performance with age-group controls, source editions,
 coverage states and the achieved course visible. Compare actual performances,
-not converted estimates. Missing source data stays unavailable. This is planned
-native feature work, separate from the current UI adoption.
+not converted estimates. Missing source data stays unavailable. This is a contextual
+feature, separate from course conversion and recorded-performance storage.
 
 Use one view/component per platform, accessible from both My times and Convert.
 Carry the actual swim's time/event/course into it. Lead with the useful benchmark
@@ -118,3 +118,18 @@ boundary. Source editions and numerical rules stay unchanged by a display locale
 The current English compact stroke label is IM, with Individual medley in the
 selection menu, full event context and accessible value. Each future locale
 needs its own reviewed equivalent rather than blindly copying that abbreviation.
+
+### Implemented comparison defaults
+
+Both native apps reuse one contextual Standards & points sheet from Convert and
+recorded-swim detail. The sheet uses the original time, event, course and category;
+category follows that swim, and the converter's existing saved draft retains its
+category across launches. Standard type, youth age, Masters age and comparison
+mode are stored locally and do not edit history. Comparison settings start
+expanded for first use and remain available behind a labeled disclosure. No
+profile inference or age-at-meet eligibility check is added.
+
+The sheet's presentation state lives above adaptive pane branches. Rotation or
+fold changes retain its original input. Sources and coverage are progressively
+available, while missing targets are explained in the result itself. Source
+links require connectivity; lookups and preferences work offline.

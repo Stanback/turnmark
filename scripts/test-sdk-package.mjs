@@ -104,7 +104,7 @@ try {
     import fixtures from './fixtures.json' with { type: 'json' };
     export async function run(options) {
       const engine = await createEngine(options);
-      const operations = { parse: parseTime, convert: engine.convert, altitude: engine.adjustAltitude, youth: getYouthStandards, masters: getMastersTarget, points: getWorldPoints };
+      const operations = { parse: parseTime, convert: engine.convert, altitude: engine.adjustAltitude, youth: getYouthStandards, masters: getMastersTarget, points: getWorldPoints, benchmark: engine.benchmark };
       return fixtures.cases.map((fixture) => operations[fixture.operation](fixture.input));
     }
   `,
@@ -174,6 +174,10 @@ try {
     getYouthStandards({ event: request.swim.event, table: 'women', age: '15-16' });
     getMastersTarget({ event: request.swim.event, table: 'women', age: '18-24' });
     getWorldPoints({ swim: request.swim, table: 'men' });
+    const benchmark = engine.benchmark({ swim: request.swim, table: 'men', age: '15-16', system: 'youth' });
+    if (benchmark.status === 'available') { const met: boolean = benchmark.value.targets[0].met; void met; }
+    // @ts-expect-error public types reject unknown benchmark systems.
+    engine.benchmark({ swim: request.swim, table: 'men', age: '15-16', system: 'unknown' });
     // @ts-expect-error public types reject unknown courses.
     engine.convert({ ...request, to: 'invalid' });
     // @ts-expect-error public types reject numeric times.

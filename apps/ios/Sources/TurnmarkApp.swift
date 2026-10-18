@@ -69,6 +69,7 @@ private struct TurnmarkView: View {
     @State private var tab = 0
     @State private var history = HistoryController()
     @State private var logging: Draft?
+    @State private var benchmarking: Draft?
     @State private var lastMeet = ""
     @State private var logNotice: String?
     @State private var lastLogDay = SwimRecord.day(Date())
@@ -83,6 +84,7 @@ private struct TurnmarkView: View {
         if ProcessInfo.processInfo.arguments.contains("-uitesting-reset") {
             UserDefaults.standard.removeObject(forKey: "draft")
             UserDefaults.standard.removeObject(forKey: "savedSwim")
+            for key in ["benchmarkMode", "benchmarkSystem", "benchmarkYouthAge", "benchmarkMastersAge", "benchmarkConfigured"] { UserDefaults.standard.removeObject(forKey: key) }
             if let store = try? SwimHistoryStore() { for swim in store.swims { try? store.remove(swim.id) } }
         }
         if ProcessInfo.processInfo.arguments.contains("-uitesting-legacy") {
@@ -145,6 +147,9 @@ private struct TurnmarkView: View {
         .tint(TurnmarkPalette.accent)
         .task { if history.store == nil { history.open() } }
         .sheet(isPresented: $showingMethod) { MethodScreen() }
+        .sheet(isPresented: Binding(get: { benchmarking != nil }, set: { if !$0 { benchmarking = nil } })) {
+            if let benchmarking { BenchmarkScreen(input: benchmarking) }
+        }
         .sheet(isPresented: Binding(get: { logging != nil }, set: { if !$0 { logging = nil } })) {
             if let logging {
                 SwimEditor(draft: logging, date: lastLogDay == SwimRecord.day(Date()) ? lastDate : SwimRecord.day(Date()),
@@ -173,7 +178,7 @@ private struct TurnmarkView: View {
     private var compactConverter: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                ConversionResult(input: draft, compact: true) { draft.targetIndex = $0 }
+                ConversionResult(input: draft, compact: true, benchmarks: { editingTime = false; benchmarking = $0 }) { draft.targetIndex = $0 }
                 inputContent
             }.padding(16).frame(maxWidth: 600).frame(maxWidth: .infinity)
         }.scrollDismissesKeyboard(.interactively)
@@ -187,7 +192,7 @@ private struct TurnmarkView: View {
     }
     private func comparisonPane(compact: Bool = false) -> some View {
         ScrollView {
-            ConversionResult(input: draft, compact: compact) { draft.targetIndex = $0 }
+            ConversionResult(input: draft, compact: compact, benchmarks: { editingTime = false; benchmarking = $0 }) { draft.targetIndex = $0 }
                 .padding(20).frame(maxWidth: 620).frame(maxWidth: .infinity)
         }
     }
@@ -276,6 +281,7 @@ private struct TurnmarkView: View {
 struct ConversionResult: View {
     let input: Draft
     var compact = false
+    var benchmarks: ((Draft) -> Void)? = nil
     var selectCourse: ((Int) -> Void)? = nil
     @State private var showingDetails = false
     @State private var showingCourses = false
@@ -311,6 +317,11 @@ struct ConversionResult: View {
             case .unavailable:
                 Text("No published conversion").font(.headline).accessibilityIdentifier("unavailableConversion")
                 Text("Choose another event or course comparison.").font(.subheadline).foregroundStyle(TurnmarkResultPalette.textMuted)
+            }
+            if let benchmarks {
+                Button { benchmarks(input) } label: { Label("Standards & points", systemImage: "chart.bar.xaxis") }
+                    .buttonStyle(.bordered).tint(TurnmarkResultPalette.accent).environment(\.colorScheme, .dark)
+                    .disabled(parseTime(input: input.time) == nil).accessibilityIdentifier("openBenchmarks")
             }
         }.frame(maxWidth: .infinity, alignment: .leading).padding(compact ? 20 : 24)
             .foregroundStyle(TurnmarkResultPalette.text)

@@ -218,3 +218,31 @@ outcome!(AltitudeOutcome, AltitudeValue);
 outcome!(YouthOutcome, YouthValue);
 outcome!(MastersOutcome, MastersValue);
 outcome!(PointsOutcome, PointsValue);
+
+/// The benchmark dataset; a qualifying target is not entry eligibility.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+#[cfg_attr(feature = "native", derive(uniffi::Enum))]
+pub enum StandardSystem {
+    Youth,
+    Masters,
+}
+record!(BenchmarkRequest {
+    swim: Swim,
+    table: Category,
+    age: String,
+    system: StandardSystem
+});
+record!(TimeTarget {
+    label: String,
+    time: String,
+    seconds: f64,
+    met: bool,
+    gap_seconds: f64
+});
+record!(BenchmarkValue {
+    event: SwimEvent, age: String, system: StandardSystem,
+    entered_time: String, entered_seconds: f64,
+    targets: Vec<TimeTarget>, achieved_level: Option<String>, next_target: Option<TimeTarget>
+});
+outcome!(BenchmarkOutcome, BenchmarkValue);

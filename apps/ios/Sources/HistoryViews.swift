@@ -116,6 +116,7 @@ struct HistoryScreen: View {
     let compare: (SwimRecord) -> Void
     @State private var selectedID: String?
     @State private var editingRecord: SwimRecord?
+    @State private var benchmarkRecord: SwimRecord?
     @State private var deletingRecord: SwimRecord?
     @State private var showingLegacy = false
     @State private var bestOnly = false
@@ -148,6 +149,7 @@ struct HistoryScreen: View {
                 }
             }
         }
+            .sheet(item: $benchmarkRecord) { BenchmarkScreen(input: Draft(record: $0), isRecorded: true) }
             .sheet(item: $editingRecord) { record in
                 SwimEditor(draft: Draft(record: record), original: record, date: record.date ?? "", meet: record.meet ?? "") {
                     guard let store = controller.store else { throw HistoryError.message("History is unavailable.") }
@@ -190,7 +192,7 @@ struct HistoryScreen: View {
     }
     @ViewBuilder private func recordedDetail(_ id: String?) -> some View {
         if let record = controller.store?.swims.first(where: { $0.id == id }) {
-            SwimDetail(record: record, controller: controller, edit: { editingRecord = $0 }, delete: { deletingRecord = $0 }, compare: {
+            SwimDetail(record: record, controller: controller, edit: { editingRecord = $0 }, delete: { deletingRecord = $0 }, benchmarks: { benchmarkRecord = $0 }, compare: {
                 selectedID = nil; compare($0)
             }, close: { selectedID = nil })
         } else {
@@ -295,6 +297,7 @@ private struct SwimDetail: View {
     let controller: HistoryController
     let edit: (SwimRecord) -> Void
     let delete: (SwimRecord) -> Void
+    let benchmarks: (SwimRecord) -> Void
     let compare: (SwimRecord) -> Void
     let close: () -> Void
     private var current: SwimRecord { controller.store?.swims.first { $0.id == record.id } ?? record }
@@ -308,6 +311,7 @@ private struct SwimDetail: View {
                     Text("Manually logged performance").font(.footnote).foregroundStyle(.secondary)
                 }
                 Section {
+                    Button("Standards & points") { benchmarks(current) }.accessibilityIdentifier("recordBenchmarks")
                     Button("Compare this swim") { compare(current) }
                     Button("Edit swim") { edit(current) }
                     Button("Delete swim", role: .destructive) { delete(current) }

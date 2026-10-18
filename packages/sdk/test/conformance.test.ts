@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   createEngine,
+  assessSwimBenchmark,
+  type BenchmarkRequest,
   convertSwim,
   adjustAltitude,
   parseTime,
@@ -16,6 +18,7 @@ import pointData from "../../../data/points.json";
 
 const operations: Record<string, (input: unknown) => unknown> = {
   parse: parseTime,
+  benchmark: (input) => assessSwimBenchmark(input as BenchmarkRequest),
   convert: (input) => convertSwim(input as ConversionRequest),
   altitude: (input) => adjustAltitude(input as AltitudeRequest),
   youth: (input) => getYouthStandards(input as YouthRequest),

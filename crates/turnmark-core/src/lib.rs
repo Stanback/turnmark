@@ -72,6 +72,16 @@ pub fn get_world_points(request: PointsRequest) -> PointsOutcome {
     engine::points(&json!(request)).into()
 }
 
+#[cfg_attr(feature = "native", uniffi::export)]
+pub fn assess_swim_benchmark(request: BenchmarkRequest) -> BenchmarkOutcome {
+    engine::benchmark(&json!(request)).into()
+}
+
+#[cfg_attr(feature = "native", uniffi::export)]
+pub fn get_standard_age_groups(system: StandardSystem) -> Vec<String> {
+    engine::standard_age_groups(system)
+}
+
 /// Invalid requests return structured outcomes. Malformed JSON and unknown
 /// operation names are transport errors, rather than calculation results.
 #[cfg_attr(feature = "native", uniffi::export)]
@@ -88,6 +98,7 @@ pub fn evaluate(operation: String, request_json: String) -> Result<String, Engin
         "youth" => json!(YouthOutcome::from(engine::youth(&request))),
         "masters" => json!(MastersOutcome::from(engine::masters(&request))),
         "points" => json!(PointsOutcome::from(engine::points(&request))),
+        "benchmark" => json!(BenchmarkOutcome::from(engine::benchmark(&request))),
         _ => return Err(EngineError::UnknownOperation { operation }),
     };
     Ok(result.to_string())

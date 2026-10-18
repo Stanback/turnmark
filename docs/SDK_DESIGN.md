@@ -167,3 +167,27 @@ installed artifacts work outside the monorepo and without network access.
 Release examples should include plain JavaScript, TypeScript, a native Swift
 consumer, a native Kotlin consumer, and a static HTML embed. Publish API docs,
 coverage/methodology, license/notices, a changelog, and a clear support policy.
+
+## Original-swim benchmark assessment
+
+The `benchmark` operation accepts an original `swim`, published `table`, `age`
+and `system` (`youth` or `masters`). The native `assessSwimBenchmark` function and
+unreleased JS root export/`engine.benchmark` use the same typed Rust request and
+outcome. It reuses the existing published lookups; canonical snapshots, source
+editions, event mappings and validity rules are unchanged.
+
+Available values return all `targets` with a label, formatted time, seconds,
+`met` boolean and a nonnegative `gapSeconds` rounded to hundredths. The achieved
+level is the highest satisfied youth standard (or NQT); `nextTarget` is the
+first stricter target, or null when all targets are met. The existing web
+compatibility helper shares the same Rust boundary comparison. Neither course
+estimates nor altitude adjustments enter this operation. Invalid swim inputs
+remain invalid; unavailable ages, courses and unpublished event targets retain
+their coverage reason and source provenance. No placeholder is treated as a cut.
+
+Language-neutral fixtures cover below-B, achieved A, top AAAA, invalid time,
+unsupported Masters SCM, an unpublished young-adult butterfly target and 85+
+coverage. A Rust source-backed sweep checks exact target and one-hundredth-slower
+boundaries for every published youth cutoff. Masters boundary checks preserve
+source metadata and the original event. Matching a benchmark is separate from
+meet entry eligibility.

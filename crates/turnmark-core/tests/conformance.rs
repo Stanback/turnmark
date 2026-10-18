@@ -123,3 +123,87 @@ fn typed_native_contract_and_transport_errors() {
     )
     .is_err());
 }
+
+#[test]
+fn benchmark_targets_preserve_every_published_youth_boundary() {
+    let data: Value = serde_json::from_str(include_str!("../../../data/standards.json")).unwrap();
+    for row in data["records"].as_array().unwrap() {
+        let stroke = match row["stroke"].as_str().unwrap() {
+            "FR" => "freestyle",
+            "BK" => "backstroke",
+            "BR" => "breaststroke",
+            "FL" => "butterfly",
+            _ => "individual-medley",
+        };
+        for (index, cutoff) in row["times"].as_array().unwrap().iter().enumerate() {
+            let cutoff = cutoff.as_f64().unwrap();
+            for (offset, met) in [(0.0, true), (0.01, false)] {
+                let result = run(
+                    "benchmark",
+                    &json!({"system":"youth", "age":row["age"], "table":row["category"],
+                    "swim":{"time":format!("{:.2}", cutoff + offset), "event":{"distance":row["distance"], "stroke":stroke, "course":row["course"]}}}),
+                );
+                let target = &result["value"]["targets"][index];
+                assert_eq!(result["status"], "available", "{row}");
+                assert_eq!(target["met"], met, "{row} target {index}");
+                assert!((target["gapSeconds"].as_f64().unwrap() - offset).abs() < 1e-9);
+                let parsed = parse_time(target["time"].as_str().unwrap().to_owned()).unwrap();
+                assert!((parsed - cutoff).abs() < 1e-9);
+            }
+        }
+    }
+}
+
+#[test]
+fn benchmark_masters_compares_original_time_and_keeps_source() {
+    let event = SwimEvent {
+        distance: 100,
+        stroke: Stroke::Freestyle,
+        course: Course::SCY,
+    };
+    let MastersOutcome::Available {
+        value: target,
+        provenance: source,
+    } = get_masters_target(StandardsRequest {
+        event: event.clone(),
+        table: Category::Women,
+        age: "18-24".to_owned(),
+    })
+    else {
+        panic!("Published target required")
+    };
+    for (time, met, gap) in [
+        (target.time.clone(), true, 0.0),
+        (format!("{:.2}", target.seconds + 0.01), false, 0.01),
+    ] {
+        let BenchmarkOutcome::Available { value, provenance } =
+            assess_swim_benchmark(BenchmarkRequest {
+                swim: Swim {
+                    time,
+                    event: event.clone(),
+                },
+                table: Category::Women,
+                age: "18-24".to_owned(),
+                system: StandardSystem::Masters,
+            })
+        else {
+            panic!("Assessment required")
+        };
+        assert_eq!(provenance, source);
+        assert_eq!(value.event, event);
+        assert_eq!(value.targets.len(), 1);
+        assert_eq!(value.targets[0].met, met);
+        assert_eq!(value.targets[0].gap_seconds, gap);
+        assert_eq!(value.next_target.is_none(), met);
+    }
+    assert_eq!(
+        get_standard_age_groups(StandardSystem::Youth),
+        ["10u", "11-12", "13-14", "15-16", "17-18"]
+    );
+    assert_eq!(
+        get_standard_age_groups(StandardSystem::Masters)
+            .last()
+            .unwrap(),
+        "85+"
+    );
+}

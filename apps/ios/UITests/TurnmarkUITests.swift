@@ -9,7 +9,12 @@ final class TurnmarkUITests: XCTestCase {
     }
     @MainActor private func reach(_ element: XCUIElement, in app: XCUIApplication) {
         for _ in 0..<10 {
-            if element.exists && element.isHittable { return }
+            if element.exists && element.isHittable {
+                // XCTest may call a one-pixel sliver hittable. A tap must land
+                // inside the visible form, above the keyboard and home area.
+                let keyboardTop = app.keyboards.firstMatch.exists ? app.keyboards.firstMatch.frame.minY : app.frame.maxY - 40
+                if element.frame.midY > app.frame.minY + 80 && element.frame.midY < keyboardTop - 16 { return }
+            }
             let container = !element.exists || element.identifier.isEmpty ? app.scrollViews.element(boundBy: max(app.scrollViews.count - 1, 0)) :
                 app.scrollViews.containing(.any, identifier: element.identifier).firstMatch
             let nativeList = app.collectionViews.element(boundBy: max(app.collectionViews.count - 1, 0))
@@ -48,6 +53,76 @@ final class TurnmarkUITests: XCTestCase {
     @MainActor private func capture(_ app: XCUIApplication, _ name: String) {
         let screenshot = XCTAttachment(screenshot: app.screenshot())
         screenshot.name = name; screenshot.lifetime = .keepAlways; add(screenshot)
+    }
+
+    @MainActor func testBenchmarksUseOriginalSwimAndRememberAgeSettings() {
+        let app = launch()
+        reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
+        XCTAssertEqual(app.staticTexts["benchmarkOriginalTime"].label, "58.32")
+        XCTAssertEqual(app.staticTexts["benchmarkSummary"].label, "A standard")
+        XCUIDevice.shared.orientation = .landscapeLeft
+        XCTAssertEqual(app.staticTexts["benchmarkOriginalTime"].label, "58.32")
+        XCUIDevice.shared.orientation = .portrait
+        XCTAssertEqual(app.staticTexts["benchmarkSummary"].label, "A standard")
+        capture(app, "Youth standards summary")
+        let aaaa = app.descendants(matching: .any)["benchmark-level-AAAA"].firstMatch
+        reach(aaaa, in: app); capture(app, "Youth standards targets")
+        let system = app.descendants(matching: .any)["benchmarkSystem"].firstMatch
+        reach(system, in: app); system.tap(); app.buttons["USMS · Masters"].tap()
+        let age = app.descendants(matching: .any)["benchmarkAge"].firstMatch
+        reach(age, in: app); age.tap(); app.buttons["40–44"].tap()
+        reach(app.staticTexts["benchmarkSummary"], in: app)
+        XCTAssertEqual(app.staticTexts["benchmarkSummary"].label, "NQT target met")
+        capture(app, "Masters benchmark")
+        app.buttons["closeBenchmarks"].tap()
+        app.terminate(); app.launchArguments = []; app.launch()
+        reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
+        XCTAssertTrue(app.staticTexts["40–44 · Women · SCY"].waitForExistence(timeout: 5))
+        app.segmentedControls["benchmarkMode"].buttons["Points"].tap()
+        XCTAssertTrue(app.staticTexts["benchmarkUnavailable"].exists)
+        XCTAssertFalse(app.staticTexts["benchmarkPoints"].exists)
+        capture(app, "Points unavailable for yards")
+        app.buttons["closeBenchmarks"].tap()
+        let course = app.segmentedControls["inputCourse"].buttons["LCM"]
+        reach(course, in: app); course.tap()
+        reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
+        XCTAssertEqual(app.staticTexts["benchmarkPoints"].label, "697")
+        capture(app, "World Aquatics points")
+    }
+
+    @MainActor func testRecordedBenchmarkKeepsActualCategoryAndTime() {
+        let app = launch()
+        replace(app.textFields["timeInput"], with: "1:00.25", in: app)
+        app.textFields["timeInput"].typeText("\n")
+        let men = app.segmentedControls["category"].buttons["Men"]
+        reach(men, in: app); men.tap()
+        reach(app.buttons["logSwim"], in: app); app.buttons["logSwim"].tap()
+        XCTAssertTrue(app.buttons["confirmLog"].waitForExistence(timeout: 5)); app.buttons["confirmLog"].tap()
+        tab("My times", in: app); app.staticTexts["1:00.25"].tap()
+        reach(app.buttons["recordBenchmarks"], in: app); app.buttons["recordBenchmarks"].tap()
+        XCTAssertEqual(app.staticTexts["benchmarkOriginalTime"].label, "1:00.25")
+        XCTAssertEqual(app.staticTexts["benchmarkContext"].label, "100 yd Freestyle · SCY · Men")
+        XCTAssertEqual(app.staticTexts["benchmarkOriginLabel"].label, "Recorded swim")
+        capture(app, "Recorded swim standards")
+        app.buttons["closeBenchmarks"].tap()
+        XCTAssertTrue(app.staticTexts["Manually logged performance"].exists)
+    }
+
+    @MainActor func testBenchmarkMissingTargetAtAccessibilityTextSize() {
+        let app = launch(["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
+        let course = app.segmentedControls["inputCourse"].buttons["LCM"]
+        reach(course, in: app); course.tap()
+        let stroke = app.buttons["strokePicker"]
+        reach(stroke, in: app); stroke.tap(); app.buttons["Butterfly"].tap()
+        let distance = app.buttons["distancePicker"]
+        reach(distance, in: app); distance.tap(); app.buttons["200 m"].tap()
+        reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
+        let system = app.descendants(matching: .any)["benchmarkSystem"].firstMatch
+        reach(system, in: app); system.tap(); app.buttons["USMS · Masters"].tap()
+        let missing = app.staticTexts["benchmarkUnavailable"]
+        reach(missing, in: app); XCTAssertTrue(missing.exists)
+        capture(app, "Missing Masters target large text")
+        app.buttons["closeBenchmarks"].tap()
     }
 
     @MainActor func testConversionDetailsAndDraftSurviveRestart() {

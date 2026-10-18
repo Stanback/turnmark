@@ -1,8 +1,10 @@
 use crate::types::*;
-use serde_json::Value;
+use serde_json::{json, Value};
 use std::sync::LazyLock;
 
 // Snapshots are immutable and embedded: no network, filesystem or platform API.
+const YOUTH_AGES: [&str; 5] = ["10u", "11-12", "13-14", "15-16", "17-18"];
+
 static CONVERSIONS: LazyLock<Value> =
     LazyLock::new(|| snapshot(include_str!("../../../data/conversions.json")));
 static SOURCES: LazyLock<Value> =
@@ -363,7 +365,7 @@ pub(crate) fn youth(input: &Value) -> Calculation<YouthValue> {
     let table = category(&input["table"])?;
     let age = input["age"]
         .as_str()
-        .filter(|a| ["10u", "11-12", "13-14", "15-16", "17-18"].contains(a))
+        .filter(|a| YOUTH_AGES.contains(a))
         .ok_or_else(|| invalid("age", ValidationReason::InvalidAgeGroup))?;
     let (event, distance) = event(&input["event"], "event")?;
     let provenance = provenance(&YOUTH, "usa-swimming-2024-28", "title", "revision");
@@ -526,4 +528,79 @@ pub(crate) fn event_distances(stroke: Stroke) -> &'static [u32] {
         Stroke::IndividualMedley => &[100, 200, 400],
         _ => &[50, 100, 200],
     }
+}
+
+pub(crate) fn standard_age_groups(system: StandardSystem) -> Vec<String> {
+    match system {
+        StandardSystem::Youth => YOUTH_AGES.iter().map(|age| (*age).to_owned()).collect(),
+        StandardSystem::Masters => MASTERS["ages"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(text)
+            .chain(std::iter::once("85+".to_owned()))
+            .collect(),
+    }
+}
+
+pub(crate) fn achieved_standard(time: f64, times: &[f64]) -> Option<usize> {
+    times.iter().rposition(|cut| time <= *cut + 1e-8)
+}
+
+/// Assess only the original swim, without course or altitude conversion.
+pub(crate) fn benchmark(input: &Value) -> Calculation<BenchmarkValue> {
+    object(input, "request")?;
+    let system = match input["system"].as_str() {
+        Some("youth") => StandardSystem::Youth,
+        Some("masters") => StandardSystem::Masters,
+        _ => return Err(invalid("system", ValidationReason::UnsupportedDataset)),
+    };
+    let (event, _, seconds) = swim(&input["swim"])?;
+    let mut request = json!({"event": event, "table": input["table"], "age": input["age"]});
+    if let Some(edition) = input.get("edition") {
+        request["edition"] = edition.clone();
+    }
+    let (age, labels, times, provenance) = match system {
+        StandardSystem::Youth => {
+            let (value, provenance) = youth(&request)?;
+            (value.age, value.levels, value.times, provenance)
+        }
+        StandardSystem::Masters => {
+            let (value, provenance) = masters(&request)?;
+            (
+                value.age,
+                vec!["NQT".to_owned()],
+                vec![value.seconds],
+                provenance,
+            )
+        }
+    };
+    let achieved = achieved_standard(seconds, &times);
+    let targets: Vec<_> = labels
+        .into_iter()
+        .zip(times)
+        .enumerate()
+        .map(|(index, (label, target))| TimeTarget {
+            label,
+            time: format_time(target),
+            seconds: target,
+            met: achieved.is_some_and(|last| index <= last),
+            gap_seconds: ((seconds - target).max(0.0) * 100.0).round() / 100.0,
+        })
+        .collect();
+    let achieved_level = achieved.map(|index| targets[index].label.clone());
+    let next_target = targets.iter().find(|target| !target.met).cloned();
+    Ok((
+        BenchmarkValue {
+            event,
+            age,
+            system,
+            entered_time: format_time(seconds),
+            entered_seconds: seconds,
+            targets,
+            achieved_level,
+            next_target,
+        },
+        provenance,
+    ))
 }

@@ -118,6 +118,7 @@ private fun share(context: Context, draft: Draft) {
     var saved by remember { mutableStateOf(Draft.decode(preferences.getString("saved", null))) }
     var tab by rememberSaveable { mutableIntStateOf(0) }
     var loggingJSON by rememberSaveable { mutableStateOf<String?>(null) }
+    var benchmarkingJSON by rememberSaveable { mutableStateOf<String?>(null) }
     var showingMethod by rememberSaveable { mutableStateOf(false) }
     var showingLegacy by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -172,10 +173,11 @@ private fun share(context: Context, draft: Draft) {
                         openLegacy = { showingLegacy = true }, recordNew = { loggingJSON = draft.copy(time = "").encode() }) { update(it.draft(draft.targetIndex)); tab = 0 }
                     else ConverterWorkspace(draft, Modifier.padding(insets), history.ready && !history.busy,
                         update = ::update, add = { focus.clearFocus(); keyboard?.hide(); loggingJSON = draft.encode() },
-                        about = { showingMethod = true })
+                        about = { showingMethod = true }, benchmarks = { focus.clearFocus(); keyboard?.hide(); benchmarkingJSON = it.encode() })
                 }
             }
         }
+        Draft.decode(benchmarkingJSON)?.let { input -> BenchmarkSheet(input) { benchmarkingJSON = null } }
         Draft.decode(loggingJSON)?.let { input ->
             val today = java.time.LocalDate.now().toString()
             SwimEditor(input, initialDate = if (lastLogDay == today) lastDate else today,
@@ -218,7 +220,7 @@ private fun share(context: Context, draft: Draft) {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable private fun ConverterWorkspace(draft: Draft, modifier: Modifier, historyReady: Boolean,
-    update: (Draft) -> Unit, add: () -> Unit, about: () -> Unit) {
+    update: (Draft) -> Unit, add: () -> Unit, about: () -> Unit, benchmarks: (Draft) -> Unit) {
     val timeFocus = remember { FocusRequester() }
     var editingTime by remember { mutableStateOf(false) }
     val restoreTimeFocus = editingTime
@@ -235,11 +237,11 @@ private fun share(context: Context, draft: Draft) {
         Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp)) { inputs(draft, historyReady) }
     }, supporting = { tabletop ->
         Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp)) {
-            ResultCard(draft, compact = tabletop, selectCourse = { update(draft.copy(targetIndex = it)) })
+            ResultCard(draft, compact = tabletop, benchmarks = benchmarks, selectCourse = { update(draft.copy(targetIndex = it)) })
         }
     }, compact = {
         Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            ResultCard(draft, compact = true, selectCourse = { update(draft.copy(targetIndex = it)) })
+            ResultCard(draft, compact = true, benchmarks = benchmarks, selectCourse = { update(draft.copy(targetIndex = it)) })
             inputs(draft, historyReady)
         }
     }, onPaneChange = { if (restoreTimeFocus) timeFocus.requestFocus() })
@@ -313,7 +315,7 @@ private fun share(context: Context, draft: Draft) {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable fun ResultCard(draft: Draft, compact: Boolean = false, selectCourse: ((Int) -> Unit)? = null) {
+@Composable fun ResultCard(draft: Draft, compact: Boolean = false, benchmarks: ((Draft) -> Unit)? = null, selectCourse: ((Int) -> Unit)? = null) {
     var showingDetails by remember { mutableStateOf(false) }
     var showingCourses by rememberSaveable { mutableStateOf(false) }
     val result = draft.outcome
@@ -369,6 +371,7 @@ private fun share(context: Context, draft: Draft) {
                     Text("Choose another event or course comparison.", color = c.textMuted, style = MaterialTheme.typography.bodyMedium)
                 }
             }
+            benchmarks?.let { open -> OutlinedButton(onClick = { open(draft) }, enabled = parseTime(draft.time) != null, modifier = Modifier.testTag("openBenchmarks")) { Text("Standards & points") } }
         }
     }
     if (showingDetails && result is ConversionOutcome.Available) ModalBottomSheet(onDismissRequest = { showingDetails = false },

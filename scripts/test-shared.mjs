@@ -65,7 +65,7 @@ for (const course of ["SCY", "SCM", "LCM"])
         }
   }
 // After the one-time TypeScript migration comparison, the native Rust CLI is
-// the cross-runtime reference. The first 62 cases retain independent source-backed
+// the cross-runtime reference. The fixture cases retain independent source-backed
 // expected values; the larger corpus checks transport and architecture parity.
 // Keep this non-FFI build separate from the library used by Swift/Kotlin tests.
 const built = spawnSync(
@@ -142,6 +142,7 @@ if (mode === "wasm") {
     youth: "youth",
     masters: "masters",
     points: "points",
+    benchmark: "benchmark",
   };
   verify(
     cases.map(({ operation, input }) => engine[methods[operation]](input)),
@@ -210,6 +211,7 @@ if (mode === "wasm") {
         youth: "youth",
         masters: "masters",
         points: "points",
+        benchmark: "benchmark",
       };
       return cases.map(({ operation, input }) =>
         engine[methods[operation]](input),

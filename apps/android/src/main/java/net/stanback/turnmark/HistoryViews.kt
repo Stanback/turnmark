@@ -125,9 +125,11 @@ fun Draft.record(date: String?, meet: String?, replacing: SwimRecord? = null): S
 @Composable fun HistoryScreen(history: HistoryState, modifier: Modifier = Modifier, legacy: Draft? = null,
     openLegacy: () -> Unit = {}, recordNew: () -> Unit = {}, compare: (SwimRecord) -> Unit) {
     var selectedID by rememberSaveable { mutableStateOf<String?>(null) }
+    var benchmarkID by rememberSaveable { mutableStateOf<String?>(null) }
     var editingID by rememberSaveable { mutableStateOf<String?>(null) }
     var deletingID by rememberSaveable { mutableStateOf<String?>(null) }
     val selected = history.swims.firstOrNull { it.id == selectedID }
+    history.swims.firstOrNull { it.id == benchmarkID }?.let { record -> BenchmarkSheet(record.draft(), isRecorded = true) { benchmarkID = null } }
     var bestOnly by rememberSaveable { mutableStateOf(false) }
     var preview by remember { mutableStateOf<HistoryImport?>(null) }
     var export by remember { mutableStateOf<ByteArray?>(null) }
@@ -213,7 +215,7 @@ fun Draft.record(date: String?, meet: String?, replacing: SwimRecord? = null): S
         }
     }
     AdaptiveWorkspace(modifier, name = "history", primary = list, supporting = {
-        if (selected != null) RecordedSwimDetail(selected, history, edit = { editingID = it.id }, delete = { deletingID = it.id }, compare = { compare(it); selectedID = null }, close = { selectedID = null })
+        if (selected != null) RecordedSwimDetail(selected, history, edit = { editingID = it.id }, delete = { deletingID = it.id }, benchmarks = { benchmarkID = it.id }, compare = { compare(it); selectedID = null }, close = { selectedID = null })
         else Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text("Select a swim", style = MaterialTheme.typography.headlineSmall)
             Text("View an actual performance and compare courses.")
@@ -221,7 +223,7 @@ fun Draft.record(date: String?, meet: String?, replacing: SwimRecord? = null): S
     }, compact = {
         list()
         if (selected != null && editingID == null && deletingID == null) Dialog(onDismissRequest = { selectedID = null }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-            RecordedSwimDetail(selected, history, edit = { editingID = it.id }, delete = { deletingID = it.id }, compare = { compare(it); selectedID = null }, close = { selectedID = null })
+            RecordedSwimDetail(selected, history, edit = { editingID = it.id }, delete = { deletingID = it.id }, benchmarks = { benchmarkID = it.id }, compare = { compare(it); selectedID = null }, close = { selectedID = null })
         }
     })
     history.swims.firstOrNull { it.id == editingID }?.let { current ->
@@ -253,7 +255,7 @@ fun Draft.record(date: String?, meet: String?, replacing: SwimRecord? = null): S
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable private fun RecordedSwimDetail(record: SwimRecord, history: HistoryState,
-    edit: (SwimRecord) -> Unit, delete: (SwimRecord) -> Unit, compare: (SwimRecord) -> Unit, close: () -> Unit) {
+    edit: (SwimRecord) -> Unit, delete: (SwimRecord) -> Unit, benchmarks: (SwimRecord) -> Unit, compare: (SwimRecord) -> Unit, close: () -> Unit) {
     val current = history.swims.firstOrNull { it.id == record.id } ?: record
     Scaffold(topBar = { RecordTopAppBar(title = "Recorded swim", actions = { TextButton(onClick = close) { Text("Done") } }) }) { insets ->
         Column(Modifier.padding(insets).fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -263,6 +265,7 @@ fun Draft.record(date: String?, meet: String?, replacing: SwimRecord? = null): S
             if (history.isBest(current)) Text("Personal best", fontWeight = FontWeight.Bold)
             Text(current.date ?: "Unknown date"); Text(current.meet ?: "No meet")
             Text("Manually logged performance", style = MaterialTheme.typography.bodySmall)
+            OutlinedButton(onClick = { benchmarks(current) }, modifier = Modifier.testTag("recordBenchmarks")) { Text("Standards & points") }
             Button(onClick = { compare(current) }) { Text("Compare this swim") }
             OutlinedButton(onClick = { edit(current) }, enabled = !history.busy) { Text("Edit swim") }
             TextButton(onClick = { delete(current) }, enabled = !history.busy) { Text("Delete swim") }

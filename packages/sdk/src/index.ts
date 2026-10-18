@@ -1,4 +1,12 @@
 export {
+  assessSwimBenchmark,
+  type BenchmarkRequest,
+  type BenchmarkValue,
+  type TimeTarget,
+  type StandardSystem,
+} from "./benchmarks.js";
+import { assessSwimBenchmark } from "./benchmarks.js";
+export {
   convertSwim,
   adjustAltitude,
   conversionMethod,
@@ -38,6 +46,7 @@ export async function createEngine(options: EngineOptions = {}) {
     youth: getYouthStandards,
     masters: getMastersTarget,
     points: getWorldPoints,
+    benchmark: assessSwimBenchmark,
   });
 }
 export type Engine = Awaited<ReturnType<typeof createEngine>>;
