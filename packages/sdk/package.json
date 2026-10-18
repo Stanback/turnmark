@@ -1,7 +1,7 @@
 {
   "name": "@turnmark/sdk",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "description": "Offline swim calculations, published benchmarks, and source provenance.",
   "license": "GPL-3.0-or-later",
   "type": "module",
@@ -12,6 +12,7 @@
   "files": [
     "dist",
     "src/**/*.ts",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "exports": {
@@ -51,11 +52,37 @@
     "./compat/points": {
       "types": "./dist/internal/points.d.ts",
       "import": "./dist/internal/points.js"
+    },
+    "./node": {
+      "types": "./dist/node.d.ts",
+      "import": "./dist/node.js"
     }
   },
   "scripts": {
     "build": "node ../../scripts/build-sdk.mjs",
     "dev": "tsc -p tsconfig.json --watch",
     "prepack": "npm run build && node -e \"require('node:fs').copyFileSync('../../LICENSE', 'LICENSE')\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stanback/turnmark.git",
+    "directory": "packages/sdk"
+  },
+  "homepage": "https://github.com/Stanback/turnmark/tree/main/packages/sdk#readme",
+  "bugs": {
+    "url": "https://github.com/Stanback/turnmark/issues"
+  },
+  "author": "Brianna Stanback",
+  "keywords": [
+    "swimming",
+    "swim-times",
+    "conversion",
+    "wasm",
+    "rust",
+    "offline"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }

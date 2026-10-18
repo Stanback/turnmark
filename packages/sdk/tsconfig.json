@@ -13,7 +13,7 @@
     "resolveJsonModule": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
-    "types": [],
+    "types": ["node"],
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },

@@ -5,7 +5,7 @@ import initialize, {
 } from "./generated/turnmark_wasm.js";
 
 export interface EngineOptions {
-  /** Default: packaged asset URL in browsers. Node callers supply its bytes. */
+  /** Default: packaged asset URL in browsers. The /node entry loads local bytes. */
   wasm?: string | URL | ArrayBuffer | Uint8Array;
 }
 let ready: Promise<void> | undefined;

@@ -2,8 +2,14 @@
 
 Offline course conversion, altitude, USA Swimming standards, USMS targets, and
 World Aquatics points, calculated by the shared Rust engine. Swift and Kotlin
-libraries are generated from the same core. This is an **unpublished private
-workspace** at version `0.1.0`; `@turnmark/sdk` has not been reserved on npm.
+libraries are generated from the same core. Version `0.1.0` is prepared for
+public npm distribution as `@turnmark/sdk`; it has not been published yet.
+
+Once released, install with `npm install @turnmark/sdk`. Until then, a checkout
+can produce a tested installable tarball with `npm run pack:sdk`; install
+`release/turnmark-sdk-0.1.0.tgz` in your consumer project. Consumers need neither
+Rust nor package install scripts. The ESM package supports modern browsers and
+Node 22.12 or newer.
 
 Initialize explicitly before using any calculation helpers. In an unbundled
 browser application, the default loads the packaged WebAssembly asset:
@@ -30,15 +36,11 @@ if (result.status === "available") {
 
 Bundlers should pass their resolved asset URL (for Vite, import
 `wasmUrl` from `"@turnmark/sdk/engine.wasm?url"` and call
-`await createEngine({ wasm: wasmUrl })`). Node callers pass the asset's bytes:
+`await createEngine({ wasm: wasmUrl })`). For Node, use the filesystem entry:
 
 ```ts
-import { readFile } from "node:fs/promises";
-import { createEngine } from "@turnmark/sdk";
-const wasm = await readFile(
-  new URL(import.meta.resolve("@turnmark/sdk/engine.wasm")),
-);
-const engine = await createEngine({ wasm });
+import { createEngine } from "@turnmark/sdk/node";
+const engine = await createEngine(); // reads the bundled Wasm; no fetch
 ```
 
 After initialization every operation is synchronous and offline. Repeated
@@ -46,12 +48,13 @@ After initialization every operation is synchronous and offline. Repeated
 retried; there is no fallback calculation engine. Direct named exports such as
 `convertSwim` and `formatTime` use that initialized module too. Swift/Kotlin
 consumers do not load WebAssembly or JavaScript. See the
-[shared engine guide](../../docs/SHARED_ENGINE.md) for native packaging.
+[shared engine guide](https://github.com/Stanback/turnmark/blob/main/docs/SHARED_ENGINE.md) for native packaging.
 
 ## Entry points
 
 | Import                     | Operations                                                              |
 | -------------------------- | ----------------------------------------------------------------------- |
+| `@turnmark/sdk/node`       | Same engine/API, with local Wasm loading for Node.                      |
 | `@turnmark/sdk`            | Engine, conversion, altitude, time helpers, contract types.             |
 | `@turnmark/sdk/conversion` | Conversion/altitude operations, source metadata and method identifiers. |
 | `@turnmark/sdk/time`       | `parseTime`, `formatTime`, `truncateTime`.                              |
@@ -132,7 +135,22 @@ metadata. The pinned Rust toolchain is selected by `rust-toolchain.toml`. Source
 `fixtures/`. The package check installs a tarball into a temporary project and
 validates Node, browser, declaration resolution, and conversion-only bundling.
 
-GPL-3.0-or-later remains in effect. Publication and broader SDK licensing are
-separate decisions. Preserve source attribution, metadata, and third-party
-notices. The repository's `docs/METHODOLOGY.md` and `docs/DATA.md` document sources
-and calculation limitations.
+## Versioning and release
+
+The package and Rust engine start at `0.1.0`. Consumers should pin their SDK
+version and retain returned source editions when storing results. During 0.x,
+incompatible public API changes increment the minor version; compatible fixes
+increment the patch version. Dataset edition updates are documented in release
+notes and do not silently replace a published package. The `compat` exports
+serve the existing web app and are not the integration contract for new callers.
+
+The initial npm release covers JavaScript/TypeScript. Swift and Android already
+use generated libraries from the same engine in this repository; public SwiftPM
+binary distribution and Maven publication remain separate distribution work.
+See the [release guide](https://github.com/Stanback/turnmark/blob/main/docs/SDK_RELEASES.md)
+for the package checks, first publish and token-free subsequent releases.
+
+GPL-3.0-or-later remains in effect. Preserve source attribution, metadata, and third-party
+notices. [Methodology](https://github.com/Stanback/turnmark/blob/main/docs/METHODOLOGY.md)
+and [data maintenance](https://github.com/Stanback/turnmark/blob/main/docs/DATA.md)
+document sources and calculation limitations.

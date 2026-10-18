@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtemp, writeFile, readFile, rm } from "node:fs/promises";
+import {
+  mkdtemp,
+  writeFile,
+  readFile,
+  rm,
+  mkdir,
+  copyFile,
+} from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,6 +17,7 @@ import { chromium } from "@playwright/test";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const temporary = await mkdtemp(join(tmpdir(), "turnmark-sdk-"));
+const destination = process.argv[2] && resolve(process.argv[2]);
 let browser;
 let server;
 function command(name, args, cwd = root) {
@@ -52,8 +61,11 @@ try {
   for (const required of [
     "LICENSE",
     "README.md",
+    "CHANGELOG.md",
     "dist/index.js",
     "dist/index.d.ts",
+    "dist/node.js",
+    "dist/node.d.ts",
     "src/index.ts",
     "dist/generated/turnmark_wasm_bg.wasm",
   ])
@@ -118,6 +130,33 @@ try {
     subset(results[index], fixture.expected, `Node: ${fixture.id}`),
   );
 
+  // A fresh process verifies first initialization through the documented Node
+  // entry, including recovery from a bad Wasm input and no fetch dependency.
+  await writeFile(
+    join(temporary, "automatic-node-consumer.mjs"),
+    `
+    globalThis.fetch = () => { throw new Error('SDK attempted a network request'); };
+    const assert = (await import('node:assert/strict')).default;
+    const {createEngine} = await import('@turnmark/sdk/node');
+    await assert.rejects(createEngine({wasm: new Uint8Array()}));
+    const engines = await Promise.all([createEngine(), createEngine()]);
+    assert.equal(engines[0].version, ${JSON.stringify(JSON.parse(await readFile(join(root, "packages/sdk/package.json"), "utf8")).version)});
+    assert.ok(Object.isFrozen(engines[0]));
+    const {run} = await import('./consumer.js');
+    process.stdout.write(JSON.stringify(await run()));
+  `,
+  );
+  const automaticResults = JSON.parse(
+    command(process.execPath, ["automatic-node-consumer.mjs"], temporary),
+  );
+  fixtures.cases.forEach((fixture, index) =>
+    subset(
+      automaticResults[index],
+      fixture.expected,
+      `Node automatic: ${fixture.id}`,
+    ),
+  );
+
   await writeFile(
     join(temporary, "consumer.ts"),
     `
@@ -125,7 +164,9 @@ try {
     import { getYouthStandards } from '@turnmark/sdk/youth';
     import { getMastersTarget } from '@turnmark/sdk/masters';
     import { getWorldPoints } from '@turnmark/sdk/points';
+    import { createEngine as createNodeEngine } from '@turnmark/sdk/node';
     const engine = await createEngine();
+    const nodeEngine: typeof engine = await createNodeEngine(); void nodeEngine;
     const request: ConversionRequest = { swim: { time: '2:16.71', event: { distance: 200, stroke: 'breaststroke', course: 'LCM' } }, to: 'SCY', table: 'men' };
     const result = engine.convert(request);
     if (result.status === 'available') { const hundredths: number = result.value.hundredths; void hundredths; }
@@ -219,6 +260,22 @@ try {
   console.log(
     `Conversion-only browser bundle: ${bytes.toLocaleString()} bytes minified; tables live in the shared Wasm asset; no JavaScript calculation dependencies.`,
   );
+  if (destination) {
+    await mkdir(destination, { recursive: true });
+    const tarball = await readFile(join(temporary, packed.filename));
+    const checksum = createHash("sha256").update(tarball).digest("hex");
+    await copyFile(
+      join(temporary, packed.filename),
+      join(destination, packed.filename),
+    );
+    await writeFile(
+      join(destination, "SHA256SUMS"),
+      `${checksum}  ${packed.filename}\n`,
+    );
+    console.log(
+      `Verified release tarball: ${join(destination, packed.filename)}`,
+    );
+  }
 } finally {
   await browser?.close();
   await server?.close();
