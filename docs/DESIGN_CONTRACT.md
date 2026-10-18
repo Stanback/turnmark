@@ -62,6 +62,12 @@ availability or errors. The lighter action fill needs its dark `onAction` text;
 use `accent` for a readable link on a light surface. Do not map the light action
 fill blindly to every Material primary/text role.
 
+For iOS adoption, use the appearance-dependent `accent` role as the starting
+native tint: deeper teal on light surfaces and brighter cyan in dark appearance.
+Keep lime for result emphasis rather than links or general controls. Check
+actual SwiftUI/Liquid Glass control foregrounds and selected states in both
+appearances; content-surface contrast tests alone do not validate system tint.
+
 Tests protect at least 4.5:1 contrast for text/accent/highlight/error on their
 intended content surfaces, and 3:1 for control boundaries. Decorative dividers
 are not control outlines. These palette checks complement actual rendered
@@ -103,6 +109,17 @@ Use the engine's returned destination event; 500 yards can become 400 meters.
 A saved conversion is not a recorded race, a personal best or a logged meet swim.
 Keep conversion history and actual-swim history clearly named on each surface.
 MCP text fallback must retain the same context and provenance as its future UI.
+
+The proposed native simplification makes History the single place to save an
+actual swim. **Add to History** confirms the original performance, date and
+optional meet; a History record can reopen a course comparison without saving
+another estimate. Sharing remains available directly from the converter. This
+would remove the separate comparison-save action and Saved destination, leaving
+Convert and History with contextual methodology. It is a product proposal,
+not implemented navigation or an instruction to delete existing saved items.
+Existing comparison bookmarks need an explicit transition before removing their
+access. While both actions remain, name them **Add swim to History** and
+**Save comparison**, beside the entered swim and estimated result respectively.
 
 Course education is optional supporting detail. A short explanation may use
 100m as an example: three turns in SCM versus one in LCM. The converter uses

@@ -50,6 +50,13 @@ Use the [shared palette and hierarchy](DESIGN_CONTRACT.md), native typography an
 system controls. Keep the result opaque. The time must never straddle the crease;
 move the whole result/context block into a usable region.
 
+The converter's supporting pane belongs to the current conversion. History and
+personal bests should not replace that immediate feedback. History owns a
+separate list/detail workspace; a matching recorded personal best could later
+appear as secondary context alongside an estimate, explicitly labeled as an
+actual performance. Do not add that comparison until its purpose and matching
+rules are clear.
+
 History offers the strongest second benefit: select a meet swim without losing
 the surrounding list. A recorded 1:00.00 LCM stays the recorded performance;
 52.44 SCY remains a separate published-factor estimate. Those sample values were
@@ -77,13 +84,41 @@ bests when changing the layout.
   verify persistence behavior. Multiple scenes and simultaneous use of both
   displays are separate capabilities, not prerequisites for a good expanded UI.
 
+## Baseline review after the Xcode upgrade
+
+On October 18, Xcode was updated to 27.1 (27A9275), and the iOS 27.1 simulator
+runtime (24A94232) was installed. The SDK contains `ArrangementView` and reserved
+region APIs. The existing app builds successfully with this SDK; no numerical
+engine changes were needed.
+
+Device Hub review covered the closed outer display, fully open inner display,
+partially open book fold and rotated tabletop configuration. Light appearance
+was inspected throughout, with an additional dark tabletop review. Baseline
+captures show the [open light layout](screenshots/ios-duo-baseline-open-light.png)
+and [tabletop dark layout](screenshots/ios-duo-baseline-tabletop-dark.png).
+These are existing native screens, not the redesigned concepts or store assets.
+
+The current converter stretches a single input card and a bottom result across
+the expanded display. Both cards span the fold instead of forming useful panes.
+System navigation already changes between side and bottom placements; preserve
+that behavior. The current default blue controls and lime Details link also need
+the planned semantic color adoption. This baseline review supports the proposed
+adaptive layout; it does not establish that the new layout is implemented.
+
+The baseline `TURNMARK_IOS_RUNTIME=27.1 node scripts/test-ios.mjs app` run on the
+closed, rotated Duo reported 9 passing and 4 failing tests out of 13, with no
+skips. All six History model tests passed. UI failures include a missing Done
+button, queries scoped to a bottom `tabBars` container, and a log-sheet field
+expectation; runtime warnings also reported invalid frame dimensions. Investigate
+both actual presentation behavior and phone-specific test assumptions during
+native adoption. Do not call this a passing Duo suite or suppress these failures
+to claim support. Fold transitions and other poses still need dedicated tests.
+
 ## Acceptance evidence still required
 
-The local inventory on October 18 contains Xcode 27.0 and iOS 27.0 simulators,
-including iPhone 18 Pro and iPad; it contains no Duo device type/runtime. Current
-CI phone tests do not prove Duo behavior. Add a compatible SDK/runtime before
-using the 27.1 arrangement APIs and claiming a Duo review. iPad/resizable previews
-can exercise wide layouts earlier but are not substitutes for fold regions.
+Current CI phone tests do not prove Duo behavior. iPad/resizable previews can
+exercise wide layouts but are not substitutes for fold regions. The upgraded
+toolchain enables native implementation and validation of the proposed layout.
 
 Capture and inspect native screens in both appearances, with these checks:
 
