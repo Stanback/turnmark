@@ -94,7 +94,26 @@
   display: none;
 }
 .intro {
+  position: relative;
   padding-block: 60px 56px;
+}
+.intro::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  top: -100px;
+  bottom: -15px;
+  left: 38%;
+  right: 0;
+  background: radial-gradient(
+    ellipse closest-side at 77% 32%,
+    color-mix(in srgb, var(--accent) 13%, transparent),
+    transparent 100%
+  );
+}
+.intro-copy {
+  position: relative;
+  z-index: 1;
 }
 .converter-eyebrow {
   display: flex;
@@ -146,15 +165,71 @@
 }
 .input-panel {
   position: relative;
+  background:
+    radial-gradient(
+      ellipse 110% 65% at 2% -8%,
+      var(--surface-raised),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 80% 60% at 108% 108%,
+      color-mix(in srgb, var(--surface-raised) 65%, transparent),
+      transparent 70%
+    ),
+    var(--surface);
 }
 .results-panel {
-  background: linear-gradient(
-    145deg,
-    var(--surface-raised),
-    var(--surface) 65%
-  );
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(
+      ellipse 95% 64% at 104% -5%,
+      color-mix(in srgb, var(--surface-raised) 76%, var(--accent)) 0%,
+      var(--surface-raised) 34%,
+      transparent 75%
+    ),
+    radial-gradient(
+      ellipse 80% 60% at -8% 30%,
+      color-mix(in srgb, var(--surface-raised) 80%, transparent),
+      transparent 72%
+    ),
+    var(--surface);
+  transition:
+    border-color 240ms ease,
+    box-shadow 240ms ease;
   scroll-margin-top: 20px;
   container-type: inline-size;
+}
+.results-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 85% 60% at 100% 0%,
+    color-mix(in srgb, var(--accent) 12%, transparent),
+    transparent 72%
+  );
+  opacity: 0;
+  transition: opacity 240ms ease;
+}
+.results-panel:focus-within {
+  border-color: color-mix(in srgb, var(--line) 65%, var(--accent));
+  box-shadow: 0 12px 36px color-mix(in srgb, var(--page) 30%, transparent);
+}
+.results-panel:focus-within::before {
+  opacity: 1;
+}
+@media (hover: hover) and (pointer: fine) {
+  .results-panel:hover {
+    border-color: color-mix(in srgb, var(--line) 65%, var(--accent));
+    box-shadow: 0 12px 36px color-mix(in srgb, var(--page) 30%, transparent);
+  }
+  .results-panel:hover::before {
+    opacity: 1;
+  }
 }
 .text-button {
   background: transparent;
@@ -167,6 +242,9 @@
   color: var(--accent);
 }
 .reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   position: absolute;
   top: 24px;
   right: 32px;
@@ -300,7 +378,20 @@
   padding: 14px 4px;
   border: 1px solid var(--tm-color-border-control);
   border-radius: var(--tm-radius-control);
-  background: var(--surface-raised);
+  background-color: var(--surface-raised);
+  background-image: linear-gradient(
+    115deg,
+    transparent 15%,
+    color-mix(in srgb, var(--accent) 10%, transparent) 60%,
+    transparent
+  );
+  background-size: 180% 100%;
+  background-position: 0% 50%;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--ink) 5%, transparent);
+  transition:
+    background-position 320ms ease,
+    border-color 240ms ease,
+    box-shadow 240ms ease;
 }
 .course-picker strong {
   font-size: 15px;
@@ -310,7 +401,7 @@
   font-size: 13px;
 }
 .course-picker button.active {
-  background: var(--selected);
+  background-color: var(--selected);
   border-color: var(--highlight);
 }
 .course-picker button.active strong {
@@ -414,17 +505,19 @@
   color: var(--muted);
   font-weight: 750;
 }
-.method-chip {
+.course-position {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  color: var(--accent);
-  font-size: 12px;
-  text-decoration: none;
+  gap: 5px;
   min-height: 30px;
 }
-.method-chip:hover {
-  text-decoration: underline;
+.course-position span {
+  width: 27px;
+  height: 2px;
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+.course-position span.active {
+  background: var(--highlight);
 }
 .focused-result {
   margin-block: 36px 32px;
@@ -487,23 +580,36 @@
   flex-direction: column;
 }
 .result-card {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   text-align: left;
   min-width: 0;
-  width: 100%;
-  padding: var(--tm-space-16) 0;
+  width: calc(100% + 24px);
+  margin-inline: -12px;
+  padding: var(--tm-space-16) 12px;
   background: transparent;
-  border-bottom: 1px solid var(--line);
+  border-radius: 10px;
 }
-.result-card:last-child {
-  border-bottom: 0;
+.result-card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  inset-inline: 12px;
+  height: 1px;
+  background: var(--line);
 }
-@media (hover: hover) {
+.result-card:last-child::after {
+  display: none;
+}
+.result-card:focus-visible {
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
   .result-card:hover {
-    background: color-mix(in srgb, var(--accent) 6%, transparent);
+    background: color-mix(in srgb, var(--accent) 7%, transparent);
   }
 }
 .result-card.selected .result-card-top svg {
@@ -583,22 +689,69 @@
   border-radius: var(--tm-radius-control);
   font-size: 14px;
   font-weight: 650;
+  background-size: 180% 100%;
+  background-position: 0% 50%;
+  transition:
+    background-position 320ms ease,
+    border-color 240ms ease,
+    box-shadow 240ms ease;
 }
 .primary-button {
-  background: var(--accent-fill);
+  background-color: var(--accent-fill);
+  background-image: linear-gradient(
+    115deg,
+    transparent 15%,
+    color-mix(in srgb, white 20%, transparent) 60%,
+    transparent
+  );
   color: var(--accent-ink);
   border: 1px solid transparent;
 }
-.primary-button:hover {
-  background: #8ae4ed;
-}
 .secondary-button {
   border: 1px solid var(--line);
-  background: var(--surface-raised);
+  background-color: var(--surface-raised);
+  background-image: linear-gradient(
+    115deg,
+    transparent 15%,
+    color-mix(in srgb, var(--accent) 10%, transparent) 60%,
+    transparent
+  );
   color: var(--ink);
 }
 .secondary-button:hover {
   border-color: var(--accent);
+}
+.course-picker button:focus-visible,
+.primary-button:focus-visible,
+.secondary-button:focus-visible {
+  background-position: 100% 50%;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--ink) 8%, transparent),
+    0 0 22px color-mix(in srgb, var(--accent) 15%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .course-picker button:hover,
+  .primary-button:not(:disabled):hover,
+  .secondary-button:not(:disabled):hover {
+    background-position: 100% 50%;
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--ink) 8%, transparent),
+      0 0 22px color-mix(in srgb, var(--accent) 15%, transparent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .results-panel,
+  .results-panel::before,
+  .course-picker button,
+  .primary-button,
+  .secondary-button {
+    transition: none;
+  }
+}
+@media (max-width: 760px), print {
+  .intro::before {
+    display: none;
+  }
 }
 .icon-button {
   display: grid;
@@ -612,11 +765,13 @@
 .icon-button:hover {
   background: var(--surface-raised);
 }
-.local-note {
-  width: 100%;
-  color: var(--muted);
-  font-size: 12px;
-  margin-top: 4px;
+.footer-brand.wordmark {
+  font-weight: 850;
+  color: var(--ink);
+  gap: 6px;
+}
+.footer-privacy {
+  font-size: 13px;
 }
 .mobile-results-jump {
   display: none;
@@ -873,9 +1028,6 @@
   }
   .factor-row label span {
     max-width: 88px;
-  }
-  .method-chip {
-    font-size: 11px;
   }
 }
 @media print {

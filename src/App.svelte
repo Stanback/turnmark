@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Icon from "./lib/Icon.svelte";
+  import HeroRipple from "./lib/HeroRipple.svelte";
   import Masters from "./lib/Masters.svelte";
   import Install from "./lib/Install.svelte";
   import Theme from "./lib/Theme.svelte";
@@ -558,6 +559,7 @@
         25-meter, and 50-meter pools.
       </p>
     </div>
+    <HeroRipple />
   </section>
 
   <section
@@ -566,7 +568,9 @@
     aria-label="Swim time converter"
   >
     <div class="input-panel">
-      <button class="text-button reset" onclick={reset}>Reset</button>
+      <button class="text-button reset" onclick={reset}
+        >Reset <Icon name="reset" size={14} /></button
+      >
       <div class="panel-title">
         <h2>Convert your swim</h2>
         <p>Your race, your time, your equivalent.</p>
@@ -715,14 +719,10 @@
         <div>
           <h2 id="results-title" tabindex="-1">Your conversion</h2>
         </div>
-        <a
-          class="method-chip"
-          href={conversionSource.url}
-          target="_blank"
-          rel="noreferrer"
-          aria-label="NCAA factors — open published conversion source"
-          >NCAA factors <Icon name="external" size={12} /></a
-        >
+        <div class="course-position" aria-hidden="true">
+          {#each courses as course}<span class:active={course === focus}
+            ></span>{/each}
+        </div>
       </div>
       <div class="focused-result" aria-live="polite" aria-atomic="true">
         <p class="focused-context">
@@ -861,7 +861,7 @@
           disabled={!!error}
           aria-label="Download course comparison as CSV"
           title="Download CSV"><Icon name="download" size={18} /></button
-        ><span class="local-note">No account. No uploads.</span>
+        >
       </div>
     </div>
   </section>
@@ -1386,9 +1386,13 @@
     </div>
   </section>
 </main>
-<div class="appearance-row page-width"><Theme /></div>
+<div class="appearance-row page-width" role="region" aria-label="Appearance">
+  <Theme />
+</div>
 <footer class="page-width">
-  <a class="footer-brand" href="./">turnmark.</a><span
+  <a class="footer-brand wordmark" href="./" aria-label="Turnmark home"
+    >turnmark<span class="brand-period">.</span></a
+  ><span
     >Built by <a href="https://bristanback.com" target="_blank" rel="noreferrer"
       >Bri Stanback</a
     > · Open source, always.</span
@@ -1398,6 +1402,7 @@
       href="/mcp/">MCP setup</a
     >
   </nav>
+  <span class="footer-privacy">No account. No uploads.</span>
   <span>Sources checked October 16, 2026</span>
 </footer>
 <nav class="mobile-nav" aria-label="Mobile navigation">
