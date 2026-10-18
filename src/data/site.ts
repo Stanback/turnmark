@@ -1,7 +1,7 @@
 export const site = {
   name: "Turnmark",
   title: "Swim Time Converter: SCY, SCM & LCM | Turnmark",
-  url: "https://stanback.github.io/turnmark/",
+  url: "https://turnmark.app/",
   description:
     "Convert swim times between yards and meters (SCY, SCM, LCM). Compare USA Swimming and USMS standards, calculate World Aquatics points, and adjust for altitude.",
 };

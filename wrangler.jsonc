@@ -1,0 +1,15 @@
+{
+  "$schema": "./deployment/node_modules/wrangler/config-schema.json",
+  "name": "turnmark-web",
+  "account_id": "7daa807beaaf490bed57ae3ebeb16444",
+  "compatibility_date": "2026-10-17",
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+  },
+  "routes": [
+    { "pattern": "turnmark.app", "custom_domain": true },
+  ],
+}

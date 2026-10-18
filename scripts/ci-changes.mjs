@@ -84,6 +84,8 @@ export function affectedChecks(paths) {
         path,
       ) ||
       /^tsconfig(?:\.[^/]+)?\.json$/.test(path) ||
+      path.startsWith("deployment/") ||
+      path === "wrangler.jsonc" ||
       ["index.html", "scripts/finish-build.mjs"].includes(path)
     )
       select("web");

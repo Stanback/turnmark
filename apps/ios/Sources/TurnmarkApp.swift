@@ -54,8 +54,7 @@ private struct Draft: Codable, Equatable {
             URLQueryItem(name: "c", value: courseNames[courseIndex]),
             URLQueryItem(name: "g", value: categoryIndex == 0 ? "women" : "men"),
             URLQueryItem(name: "h", value: "0")]
-        // Keep existing web links working until the separate domain migration.
-        var url = URLComponents(string: "https://stanback.github.io/turnmark/")!
+        var url = URLComponents(string: "https://turnmark.app/")!
         url.percentEncodedFragment = query.percentEncodedQuery
         return url.url!
     }
@@ -136,7 +135,7 @@ private struct TurnmarkView: View {
                             Link(source.title, destination: url)
                             Text("Edition: \(source.id)").font(.footnote)
                         }
-                        Link("Methodology and coverage", destination: URL(string: "https://stanback.github.io/turnmark/#method")!)
+                        Link("Methodology and coverage", destination: URL(string: "https://turnmark.app/#method")!)
                     }
                     Section("Your data") {
                         Text("Your current inputs and one saved swim stay on this device. Sharing uses a link containing the entered swim. Source links need an internet connection.")

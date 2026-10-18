@@ -5,7 +5,7 @@ export default defineConfig({
   workers: process.env.CI ? 2 : undefined,
   retries: process.env.CI ? 1 : 0,
   use: {
-    baseURL: "http://127.0.0.1:4173/turnmark/",
+    baseURL: "http://127.0.0.1:4173/",
     trace: "retain-on-failure",
   },
   projects: [
@@ -17,7 +17,7 @@ export default defineConfig({
   ],
   webServer: {
     command: "npm run dev -- --host 127.0.0.1 --port 4173",
-    url: "http://127.0.0.1:4173/turnmark/",
+    url: "http://127.0.0.1:4173/",
     reuseExistingServer: !process.env.CI,
   },
 });

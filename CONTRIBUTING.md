@@ -29,7 +29,7 @@ npm ci
 npm run dev
 ```
 
-Open `http://localhost:5173/turnmark/`. The app uses Svelte, TypeScript, and Vite.
+Open `http://localhost:5173/`. The app uses Svelte, TypeScript, and Vite.
 Shared calculations live in `crates/turnmark-core`, numerical snapshots in
 `data/`, and the Wasm SDK adapters in `packages/sdk/src/`; web-only
 state, display helpers, and their tests live in `src/lib/`. Browser tests live
@@ -74,7 +74,9 @@ npm run test:browser
 npm run test:production
 ```
 
-The production browser suite runs `npm run build` and checks the static build.
+Install hosting tools with `npm ci --prefix deployment --ignore-scripts`.
+The production browser suite runs `npm run build` and checks the static build
+through Cloudflare’s local runtime, without deployment credentials.
 You can also build and inspect it manually with `npm run build` and
 `npm run preview`. On Linux, Playwright may need system dependencies installed
 with `npx playwright install --with-deps chromium`.

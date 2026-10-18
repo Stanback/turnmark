@@ -3,7 +3,7 @@
 ## Supported versions
 
 Security fixes target the latest code on `main` and the current
-[hosted app](https://stanback.github.io/turnmark/). Older releases, cached offline
+[hosted app](https://turnmark.app/). Older releases, cached offline
 builds, and forks do not receive separate maintenance. Reconnect and reload to
 receive updates; a waiting service worker activates after existing app tabs close.
 
@@ -29,6 +29,13 @@ channel before sending exploit details.
 Reports are reviewed by the maintainer, who will coordinate investigation,
 fixes, and disclosure through the private report. This is a volunteer-maintained
 project; response and fix times are not guaranteed.
+
+## Deployment credentials
+
+Website publishing separates credential-free application builds from an isolated
+production job. The token belongs in the main-only `cloudflare-production`
+environment and is scoped to the website Worker. See [the hosting guide](docs/HOSTING.md)
+for permissions, setup and rotation.
 
 ## Scope
 

@@ -66,7 +66,7 @@ const paths = (await readdir("dist", { recursive: true }))
 const fingerprint = createHash("sha256");
 for (const path of paths) fingerprint.update(await readFile(`dist/${path}`));
 const version = fingerprint.digest("hex").slice(0, 16);
-const base = "/turnmark/";
+const base = "/";
 const urls = [...paths.map((path) => base + path), base];
 const worker = `const CACHE = 'turnmark-${version}';
 const BASE = '${base}';

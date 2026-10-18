@@ -16,8 +16,8 @@ offline on first launch, and use the same source editions and outcomes.
   source edition; the multiplier comes directly from the SDK.
 - One saved swim, restore/remove actions, current-input persistence and native
   sharing. Saving shows a checkmarked Saved state; editing the conversion
-  returns the action to Save swim. Share links still open the existing GitHub Pages app. The
-  `turnmark.app` website migration is a separate PR.
+  returns the action to Save swim. Share links open `https://turnmark.app/`;
+  [HOSTING.md](HOSTING.md) describes website deployment and credential isolation.
 - Convert, Saved and Method screens, system appearance, scalable native text
   and native accessibility semantics. The converter opens directly into inputs,
   without an app-name banner or page heading. Shared wave launcher icons and
