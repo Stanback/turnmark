@@ -1,9 +1,11 @@
-# Swimming hero
+# Swimming photograph
 
 `public/images/swimmer-hero.webp` was regenerated with the built-in image-generation
 tool on October 17, 2026, then encoded as WebP for the website. The existing hero
 was the edit reference. The correction aligns the swimmer's direction of travel
 with the lane ropes while keeping the wide composition and blue pool palette.
+The October 18 redesign removes it from the visible converter; it remains the
+social-preview image declared in `index.html`.
 
 Generation prompt:
 
