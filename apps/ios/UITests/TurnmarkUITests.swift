@@ -82,14 +82,24 @@ final class TurnmarkUITests: XCTestCase {
         XCTAssertTrue(dismiss.waitForExistence(timeout: 5))
         capture(app, "Native share sheet")
         dismiss.tap()
-        XCTAssertTrue(app.buttons["shareSwim"].isHittable)
+        // The system sheet can finish its dismissal after XCTest's idle wait.
+        assertHittable(app.buttons["shareSwim"])
         app.tabBars.buttons["Saved"].tap()
         app.buttons["Share saved swim"].tap()
         XCTAssertTrue(dismiss.waitForExistence(timeout: 5))
         dismiss.tap()
-        XCTAssertTrue(app.buttons["Use this swim"].isHittable)
+        assertHittable(app.buttons["Use this swim"])
         app.buttons["Use this swim"].tap()
         XCTAssertEqual(app.textFields["timeInput"].value as? String, "58.32")
+    }
+
+    @MainActor private func assertHittable(
+        _ element: XCUIElement, file: StaticString = #filePath, line: UInt = #line
+    ) {
+        let ready = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "exists == true AND hittable == true"), object: element
+        )
+        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 10), .completed, file: file, line: line)
     }
 
     @MainActor func testResultContextUsesDestinationDistanceAndCategory() {
