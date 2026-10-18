@@ -1696,7 +1696,7 @@ footer > span > a {
   padding: 9px 12px;
   border: 1px solid #d5e3ed;
   border-radius: 7px;
-  background: #f7fafc;
+  background: color-mix(in srgb, var(--surface-raised) 82%, transparent);
   font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
@@ -2064,7 +2064,7 @@ footer > span > a {
   color: #a8c9de;
 }
 [data-theme="dark"] .install-button {
-  background: #183549;
+  background: color-mix(in srgb, var(--surface-raised) 82%, transparent);
   border-color: #3b596f;
   color: #ddecf5;
 }

@@ -26,10 +26,13 @@
 }
 .hero-atmosphere {
   position: absolute;
-  inset: 0 0 auto;
+  inset: 0 auto auto 50%;
+  width: min(100%, 1672px);
+  transform: translateX(-50%);
   height: 780px;
   pointer-events: none;
   background:
+    linear-gradient(90deg, transparent 78%, var(--page)),
     linear-gradient(
       180deg,
       color-mix(in srgb, var(--page) 95%, transparent),

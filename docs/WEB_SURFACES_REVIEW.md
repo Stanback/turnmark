@@ -4,7 +4,9 @@ The converter header combines a static water-light background with three faint
 open SVG currents. The user-supplied `Luminous Underwater Wave Ribbons.png`
 (1672 × 941) is encoded as `public/images/water-ribbons.webp` with cwebp quality 88,
 method 6 and metadata removed: 80,280 bytes. The original PNG is untouched.
-The darker blend behind navigation and copy preserves readability; light mode
+Artwork is centered and capped at its natural 1672-pixel width, with a fading
+outer edge instead of scaling up on wide screens. The darker blend behind
+navigation and copy preserves readability; light mode
 uses a much fainter treatment. The background is included in the offline build.
 
 The open currents fade in over 2.8 seconds, then stay still; reduced motion shows
@@ -14,7 +16,7 @@ shader, new dependency or calculation change is involved.
 
 The input card has a very subtle symmetric inner-edge glow. Both cards are
 slightly translucent; the result retains the stronger upper-corner radial light.
-Controls keep solid readable surfaces. The conversion card keeps a static,
+Input fields keep solid readable surfaces; Install app has a slightly translucent fill. The conversion card keeps a static,
 slightly brighter default glow with no container hover/focus effect. Fine-pointer
 hover and keyboard focus on action/course buttons add a faint sheen and glow;
 reduced motion disables those transitions. Course rows have a wider rounded
@@ -28,7 +30,7 @@ controls have a named Appearance landmark.
 
 Validation: Svelte/TypeScript; unit, browser and production suites; direct
 Chromium and WebKit checks in light/dark with no Axe violations, stable hover
-bounds, all three indicator states, 320–1440-pixel layouts without horizontal
+bounds, all three indicator states, 320–3440-pixel layouts without horizontal
 overflow, reduced motion and finite animation. Screenshots use actual calculated
 values, not illustrative conversion ratios. This web-only change needs no native
 rebuild.
