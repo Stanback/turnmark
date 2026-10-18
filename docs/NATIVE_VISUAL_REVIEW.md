@@ -3,7 +3,8 @@
 October 18, 2026. These are actual simulator/emulator app captures, not mockups
 or App Store artwork. The earlier images in NATIVE_DESIGN_REVIEW and the Duo
 baseline remain historical references. Physical-device ergonomics, VoiceOver
-and TalkBack are still release checks.
+and TalkBack are still release checks. Subsequent Standards & points work and
+its current verification are recorded in [the standards review](NATIVE_STANDARDS_REVIEW.md).
 
 ## What changed
 
@@ -87,7 +88,7 @@ part of a longer form; they do not claim all content fits at once.
 - No numerical engine, source snapshot, signing or deployment changes. No native
   benchmark/points parity, store submission or translation release is implied.
 - Half-window multitasking, physical folding transitions and assistive-technology
-  reading/focus remain explicit release work. Standards/points are next, followed by localization; the proposed scope is in [native product notes](NATIVE_PRODUCT_NOTES.md).
+  reading/focus remain explicit release work. Standards/points were subsequently implemented; see [their review](NATIVE_STANDARDS_REVIEW.md). Localization remains a follow-up in [native product notes](NATIVE_PRODUCT_NOTES.md).
 
 ## Result gradient follow-up
 

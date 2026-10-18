@@ -1,6 +1,8 @@
 # Turnmark SDK, embeds, native apps, and agent interfaces
 
-Research date: October 17, 2026. Status: draft proposal for implementation.
+Research date: October 17, 2026. This is the original design/research record.
+The [current implementation](#current-implementation) below supersedes its
+earlier milestone/status wording.
 
 ## Direction
 
@@ -61,7 +63,7 @@ UI is outside Turnmark's native UI direction.
 ### There is an existing publisher use case
 
 The current [SwimSwam converter](https://swimswam.com/swimming-times-conversion-tool/)
-credits Brian Stanback and describes Colorado Timing conversion factors. This
+credits Stanback’s original converter and describes Colorado Timing conversion factors. This
 was verified in the page's publicly served HTML. Turnmark currently documents
 NCAA factors and its own derived reverse/cross-metric estimates. A publisher
 migration therefore needs a methodology explanation and examples of changed
@@ -260,10 +262,10 @@ tool contracts for conversion, altitude, youth/Masters benchmarks, points and
 source metadata. Keep the SDK's explicit inputs, availability/validation states,
 precision and provenance; do not create another calculation implementation.
 
-Start MCP with offline stdio distribution. Later, optionally add Streamable HTTP
-on a stateless Cloudflare Worker under an owner-controlled custom domain. GitHub
-Pages can continue serving the website and WebMCP integration; the remote MCP
-endpoint needs a server runtime. Treat WebMCP as progressive
+MCP now supports offline stdio and stateless Streamable HTTP on its own
+Cloudflare Worker at `mcp.turnmark.app`. The website and publisher iframe use
+a separate static-assets Worker at `turnmark.app`; legacy GitHub Pages has been
+retired. Treat WebMCP as progressive
 enhancement with feature detection and browser-version checks, since its API
 is still evolving. Native feature parity remains the next implementation
 milestone; agent adapters follow in focused PRs with the embed work. See the
@@ -406,32 +408,31 @@ data and edge-case parity follows before production engine replacement.
 
 ## Open decisions
 
-- SDK/core license and package/distribution names.
-- Rust experiment outcome and practical shared-engine packaging.
 - First supported iOS/Android versions and available physical test devices.
-- Embed hosting/domain, publisher upgrade policy, and initial partner feedback.
+- Publisher upgrade policy and initial partner feedback.
 - Store price and support model; keep subscriptions/accounts out of the first
   implementation unless separately chosen.
 
 ## Current implementation
 
-The first milestone introduces a private npm workspace at `packages/sdk`, with
-validated conversion/altitude operations and separate youth, Masters, and points
-entry points. Canonical numerical snapshots now live under root `data/` and are
-embedded by Rust; the JavaScript SDK generates source metadata only.
-The existing web app uses transitional package adapters, preserving its links,
-storage, and calculation behavior while keeping UI labels and browser features
-in the app. Web framework choice remains open.
+Rust is the single calculation implementation, with canonical snapshots in
+`data/`, typed generated Swift/Kotlin libraries and a Wasm-backed JavaScript SDK.
+The web UI, native UI and agent/publisher adapters retain their own platform
+state and controls. SDK consumers do not require Svelte.
 
-There are 62 portable source-backed conformance cases. Packaging verification
-installs the SDK tarball outside the repository, checks Node/browser consumers
-and TypeScript declarations. Numerical tables live in the compiled Wasm asset;
-JavaScript entry points add no calculation dependencies. See the
-[implemented SDK guide](../packages/sdk/README.md).
+| Surface | Current scope | Details |
+| --- | --- | --- |
+| SDK | Published JavaScript 0.1.0; shared Rust/native bindings; original-swim benchmark assessment added in unreleased source | [Engine](SHARED_ENGINE.md), [SDK](../packages/sdk/README.md), [release status](SDK_RELEASES.md) |
+| Web | Converter, standards/points, browser-local history, offline installation | [Live app](https://turnmark.app/) |
+| Publisher widget | Versioned isolated iframe, light/dark/device appearance and copyable setup | [Setup](https://turnmark.app/embed/) |
+| Native apps | SwiftUI/Compose converter, offline My times/import/export, Standards & points including B–AAAA, adaptive layouts | [Native scope](NATIVE_APPS.md), [standards review](NATIVE_STANDARDS_REVIEW.md) |
+| MCP | Published text-only stdio 0.1.0, hosted Streamable HTTP, six read-only tools; official Apps card implemented for adapter 0.2.0 | [MCP](MCP.md), [Apps review](MCP_APPS_REVIEW.md) |
+| WebMCP | Planned, separate from the MCP Apps iframe extension | [Agent interfaces](AGENT_INTERFACES.md) |
 
-The shared Rust proof now derives Swift, Kotlin, and WebAssembly libraries with
-native platform packaging and simulator/emulator tests. Its implementation and
-remaining acceptance work are recorded in [the engine guide](SHARED_ENGINE.md).
-Native app workflows, publisher embeds and MCP/WebMCP adapters remain subsequent
-implementation milestones. No package has been published and the SDK/core
-license is unchanged.
+The source has 69 portable fixtures and a 6,061-case cross-runtime corpus.
+Packed artifacts are tested outside the monorepo. The native apps remain
+development builds: physical devices, screen readers, signing/store metadata
+and beta/submission are release work. Standalone SwiftPM/Maven registry releases
+and native altitude entry are also follow-ups. Public npm versions and prepared
+changes are distinguished in the release documentation; an implementation plan
+is not evidence of registry publication or store approval.

@@ -40,7 +40,7 @@ text, the clock fits one line and surrounding copy wraps normally:
   included in both the HTML resource and npm archive.
 - Worker dry run: approximately 2,264 KiB total / 462 KiB gzip. This fits the
   [Workers Free compressed-script allowance](https://developers.cloudflare.com/workers/platform/limits/).
-  Local workerd startup profiling measured a 33.7 ms window / 18.3 ms active
+  Local workerd startup profiling measured a 40.4 ms window / 22.7 ms active
   sample time; that is module startup, not an edge request CPU measurement.
   Existing body limits, approximate per-IP/aggregate rate limits, Free plan,
   Origin policy and protected deployment credentials remain unchanged.
