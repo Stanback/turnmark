@@ -28,7 +28,7 @@ for (const [path, expected] of [
   ["design/turnmark.tokens.json", flags("web", "ios", "android")],
   ["design/wave.svg", flags("web", "ios", "android")],
   ["design/brand-manifest.json", flags("web", "ios", "android")],
-  ["design/generate.mjs", flags("web")],
+  ["design/generate.mjs", flags("web", "ios", "android")],
   ["apps/embed/Widget.svelte", flags("web")],
   ["embed/v1/index.html", flags("web")],
   ["public/icons/app-icon.svg", flags("web")],

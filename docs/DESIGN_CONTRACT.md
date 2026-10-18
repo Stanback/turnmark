@@ -13,21 +13,21 @@ subset of the [DTCG Format Module 2025.10](https://www.designtokens.org/tr/2025.
 with Turnmark contract version 1 in `$extensions`. Light and dark are explicit
 groups, not an implementation of the separate DTCG Resolver specification.
 
-| Consumer                      | Current status                                               | Adapter boundary                                                               |
-| ----------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------ |
-| Web converter                 | Uses the generated palette and selected spacing/radius roles | CSS variables; responsive web layout                                           |
-| Web history/standards/dialogs | Inherits base text roles; some older styles remain           | Further component-by-component adoption                                        |
-| Embedded widget               | Existing independent palette; adoption next                  | Its own compact stylesheet and appearance selection                            |
-| iOS                           | Shared launcher palette; screen palette adoption next        | Generated named colors or a small SwiftUI palette; semantic system text styles |
-| Android                       | Shared launcher palette; screen palette adoption next        | Generated Kotlin colors mapped into Material 3 roles and custom result roles   |
-| MCP Apps                      | Research/design only                                         | Shared web tokens plus host theme and accessibility preferences                |
+| Consumer                      | Current status                                               | Adapter boundary                                                |
+| ----------------------------- | ------------------------------------------------------------ | --------------------------------------------------------------- |
+| Web converter                 | Uses the generated palette and selected spacing/radius roles | CSS variables; responsive web layout                            |
+| Web history/standards/dialogs | Inherits base text roles; some older styles remain           | Further component-by-component adoption                         |
+| Embedded widget               | Existing independent palette; adoption next                  | Its own compact stylesheet and appearance selection             |
+| iOS                           | Generated screen palette; native controls and result adopted | SwiftUI palette and semantic system text styles                 |
+| Android                       | Generated screen palette; native controls and result adopted | Kotlin colors mapped into Material 3 and custom result roles    |
+| MCP Apps                      | Research/design only                                         | Shared web tokens plus host theme and accessibility preferences |
 
 The contract is a foundation, not a claim that every screen is already aligned.
 Do not create a shared UI runtime, move styling into the calculation SDK, or add
 runtime JSON parsing to native screens. Add each generated native adapter when
 its consuming screen adopts it, and verify both native platforms together.
 
-Edit source values, then regenerate and verify the committed web output:
+Edit source values, then regenerate and verify the committed CSS, Swift and Kotlin outputs:
 
 ```sh
 node design/generate.mjs
@@ -37,7 +37,8 @@ node scripts/generate-brand-assets.mjs --check
 npm test
 ```
 
-`src/generated/design-tokens.css` is derived output. The small generator supports
+`src/generated/design-tokens.css`, `apps/ios/Sources/TurnmarkPalette.swift` and
+`apps/android/src/main/java/net/stanback/turnmark/TurnmarkTokens.kt` are derived outputs. The small generator supports
 our opaque sRGB colors and pixel dimensions, rejects unsupported inputs, checks
 matching mode roles, and verifies the human-readable hex against sRGB components.
 It is not a general DTCG translator. A future adapter must read the same source.
@@ -101,7 +102,7 @@ result scroll when large text or the keyboard needs space.
 3. Original input and any altitude correction remain distinguishable.
 4. Kind stays visible: **Original time** (compact **Original**), **Published
    factor**, **Derived estimate**, or **Unavailable**. Invalid input shows no
-   stale time. Native wording will be aligned during adoption.
+   stale time. Native wording follows these kinds.
 5. “How this is calculated” / native Details exposes the multiplier, source,
    edition and explanation. Benchmark/eligibility distinctions stay intact.
 
@@ -110,16 +111,16 @@ A saved conversion is not a recorded race, a personal best or a logged meet swim
 Keep conversion history and actual-swim history clearly named on each surface.
 MCP text fallback must retain the same context and provenance as its future UI.
 
-The agreed native direction makes History the single place to save an
-actual swim. **Add to History** confirms the original performance, date and
-optional meet; a History record can reopen a course comparison without saving
-another estimate. Comparisons remain temporary, and sharing stays available
-directly from the converter. Native adoption removes the separate comparison-save
-action and Saved destination, leaving **Convert** and **History** with contextual
-methodology. This decision is approved; implementation is pending in the paired
-native work. Keep existing comparison bookmarks accessible through an explicit
-transition, preserving their original meaning rather than turning them into
-recorded performances.
+Native navigation is **Convert · My times**. **Record time** confirms an actual
+performance, date and optional meet. From Convert it prefills the entered swim;
+from My times it starts with a blank time. **Recent / Best times** filters actual
+records; a recorded swim can reopen a course comparison without changing the
+performance. The current comparison draft persists, but comparison recents are
+not implemented. Sharing remains directly available from Convert. An older saved
+comparison stays accessible as **Previous saved comparison**, with explicit use
+and removal actions; it never silently becomes an actual swim or personal best.
+See [native product notes](NATIVE_PRODUCT_NOTES.md) for the workflow evidence and
+entry-eligibility distinction.
 
 Course education is optional supporting detail. A short explanation may use
 100m as an example: three turns in SCM versus one in LCM. The converter uses
@@ -131,7 +132,10 @@ event and supported whole pool lengths, not the entered distance for every cours
 ## Platform experience remains authoritative
 
 - **iOS:** retain SwiftUI navigation, pickers, sheets, sharing, keyboard Done and
-  system Liquid Glass controls. Opaque numerical content uses the shared palette.
+  system Liquid Glass controls. The signature numerical card uses the shared dark palette in both appearances,
+  including contrasting action colors. Surrounding content uses the current
+  appearance. This gives the result a stable identity without repainting native
+  forms and navigation.
   System materials respond to accessibility preferences; do not replace the tab
   bar or sheet with a painted web imitation. Apple documents automatic Liquid
   Glass adoption in standard controls and its accessibility behavior in
@@ -153,8 +157,8 @@ event and supported whole pool lengths, not the entered distance for every cours
 
 ## Adoption and assets
 
-After the web direction is reviewed, adopt the widget and then the paired native
-screens in separate PRs. Show light/dark and large-text screenshots using the
+The paired native adoption is separate from the web foundation; widget palette
+adoption remains follow-up work. Show light/dark and large-text screenshots using the
 same sample swims. Review invalid, unavailable, original and derived results,
 yard/metric mappings, focus, contrast, keyboard space and native sharing.
 Update [CI selection](CI.md) as each generated adapter becomes a real consumer;

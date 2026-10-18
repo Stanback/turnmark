@@ -30,89 +30,120 @@ class ConverterTest {
         compose.activityRule.scenario.recreate()
     }
 
-    @Test fun conversionAndSavedSwimSurviveRecreation() {
-        compose.onNodeWithTag("timeInput").performClick().performTextReplacement("1:00")
-        compose.onNodeWithTag("timeInput").assertIsDisplayed()
-        capture("android-keyboard")
+    @Test fun conversionKeepsOriginalAndSupportsContextualDetails() {
+        compose.onNodeWithTag("timeInput").performScrollTo().performClick().performTextReplacement("1:00")
         compose.onNodeWithTag("timeInput").performImeAction()
         compose.waitUntil(5_000) { compose.onAllNodesWithTag("nav-Convert").fetchSemanticsNodes().isNotEmpty() }
-        compose.onNodeWithTag("nav-Convert").assertIsDisplayed()
+        compose.onNodeWithTag("nav-Saved").assertDoesNotExist()
+        compose.onNodeWithTag("nav-Method").assertDoesNotExist()
         compose.onNodeWithTag("inputCourse-LCM").performScrollTo().performClick()
         compose.onNodeWithTag("targetCourse-SCY").performScrollTo().performClick()
         compose.onNodeWithTag("resultTime").assertTextEquals("52.44")
         compose.onNodeWithTag("resultContext").assertTextEquals("100 yd Freestyle · SCY · Women")
-        val details = compose.onNodeWithTag("conversionDetails")
-        if (compose.activity.resources.configuration.fontScale >= 1.5f) details.performScrollTo()
-        details.performClick()
+        compose.onNodeWithTag("conversionDetails").performScrollTo().performClick()
         compose.onNodeWithText("Conversion details").assertExists()
         compose.onNodeWithText("100 m Freestyle · LCM · Women").assertExists()
         compose.onNodeWithText("Edition:", substring = true).performScrollTo().assertIsDisplayed()
         capture("android-details")
         compose.onNodeWithText("Done").performScrollTo().performClick()
-        compose.onNodeWithTag("saveSwim").performScrollTo().performClick()
-        compose.onNodeWithTag("saveSwim").assertTextContains("Saved")
-        capture("android-save-feedback")
-        compose.activityRule.scenario.recreate()
-        compose.onNodeWithTag("nav-Saved").performClick()
-        compose.onNodeWithTag("resultContext").assertIsDisplayed()
-        compose.onNodeWithTag("resultTime").assertTextEquals("52.44")
-        capture("android-saved")
-        compose.onNodeWithTag("nav-Method").performClick()
+        compose.onNodeWithTag("resultTime").performScrollTo()
+        capture("android-converter-result")
+        compose.onNodeWithTag("timeInput").performScrollTo()
+        capture("android-converter-input")
+        compose.onNodeWithTag("methodology").performScrollTo().performClick()
         compose.onNodeWithText("How comparisons work").assertExists()
-        capture("android-method")
-        compose.onNodeWithTag("nav-Saved").performClick()
-        compose.onNodeWithText("Use this swim").performScrollTo().performClick()
-        compose.onNodeWithTag("timeInput").assertTextContains("1:00").performScrollTo()
-        capture("android-converter")
-        if (compose.activity.resources.configuration.fontScale >= 1.5f) {
-            compose.onNodeWithTag("resultContext").performScrollTo()
-            capture("android-large-result")
-        }
-        compose.onNodeWithTag("nav-Saved").performClick()
-        compose.onNodeWithText("Remove saved swim").performScrollTo().performClick()
-        compose.onNodeWithText("No saved swim").assertExists()
-        compose.activityRule.scenario.recreate()
-        compose.onNodeWithTag("nav-Saved").performClick()
-        compose.onNodeWithText("No saved swim").assertExists()
+        compose.onNodeWithText("Done").performScrollTo().performClick()
+        compose.onNodeWithTag("nav-My times").performClick()
+        compose.onNodeWithText("No logged swims").assertExists()
         compose.onNodeWithTag("nav-Convert").performClick()
-        compose.onNodeWithTag("saveSwim").assertTextContains("Save swim")
+        compose.onNodeWithTag("timeInput").assertTextContains("1:00")
+        compose.activityRule.scenario.recreate()
+        compose.onNodeWithTag("timeInput").assertTextContains("1:00")
     }
 
-    @Test fun sharingUsesEnteredValuesAndCanBeCancelled() {
+    @Test fun sharingUsesOriginalValuesWithoutRecordingAResult() {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val captured = AtomicReference<Intent>()
         val monitor = object : Instrumentation.ActivityMonitor() {
             override fun onStartActivity(intent: Intent): Instrumentation.ActivityResult? {
                 if (intent.action != Intent.ACTION_CHOOSER) return null
-                captured.set(Intent(intent))
-                return Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null)
+                captured.set(Intent(intent)); return Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null)
             }
         }
         instrumentation.addMonitor(monitor)
         try {
-            compose.onNodeWithTag("saveSwim").performScrollTo().performClick()
             compose.onNodeWithTag("timeInput").performScrollTo().performTextReplacement("1:00")
             compose.onNodeWithTag("timeInput").performImeAction()
-            compose.onNodeWithTag("saveSwim").assertTextContains("Save swim")
-            compose.onNodeWithText("Share", useUnmergedTree = true).performScrollTo().performClick()
+            compose.onNodeWithTag("shareSwim").performScrollTo().performClick()
             assertSharedTime(captured.get(), "1:00")
-            captured.set(null)
-            compose.onNodeWithTag("nav-Saved").performClick()
-            compose.onNodeWithText("Share saved swim").performScrollTo().performClick()
-            assertSharedTime(captured.get(), "58.32")
-        } finally {
-            instrumentation.removeMonitor(monitor)
-        }
-        compose.onNodeWithText("Share saved swim").performScrollTo().performClick()
+        } finally { instrumentation.removeMonitor(monitor) }
+        compose.onNodeWithTag("shareSwim").performScrollTo().performClick()
         val automation = instrumentation.uiAutomation
-        compose.waitUntil(5_000) {
-            automation.rootInActiveWindow?.packageName?.toString() in listOf("android", "com.android.intentresolver")
-        }
+        compose.waitUntil(5_000) { automation.rootInActiveWindow?.packageName?.toString() in listOf("android", "com.android.intentresolver") }
         capture("android-share")
         assertTrue(automation.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK))
         compose.waitUntil(5_000) { automation.rootInActiveWindow?.packageName?.toString() == "net.stanback.turnmark" }
-        compose.onNodeWithText("Use this swim").performScrollTo().performClick()
-        compose.onNodeWithTag("timeInput").assertTextContains("58.32")
+        compose.onNodeWithTag("nav-My times").performClick()
+        compose.onNodeWithText("No logged swims").assertExists()
+    }
+
+    @Test fun earlierBookmarkRemainsSeparateFromActualTimes() {
+        ApplicationProvider.getApplicationContext<Context>().getSharedPreferences("turnmark", Context.MODE_PRIVATE)
+            .edit().putString("saved", Draft(time = "57.25").encode()).commit()
+        compose.activityRule.scenario.recreate()
+        compose.onNodeWithTag("nav-My times").performClick()
+        compose.onNodeWithText("No logged swims").assertExists()
+        compose.onNodeWithText("Open previous comparison").performScrollTo().performClick()
+        compose.onNodeWithText("Use these inputs").performScrollTo().performClick()
+        compose.onNodeWithTag("timeInput").assertTextContains("57.25")
+        compose.onNodeWithTag("nav-My times").performClick()
+        compose.onNodeWithText("Open previous comparison").performScrollTo().performClick()
+        compose.onNodeWithText("Remove previous comparison").performScrollTo().performClick()
+        compose.activityRule.scenario.recreate()
+        compose.onNodeWithText("Open previous comparison").assertDoesNotExist()
+        compose.onNodeWithText("No logged swims").assertExists()
+    }
+
+    @Test fun actualTimeCanBeRecordedDirectlyFromMyTimes() {
+        compose.onNodeWithTag("nav-My times").performClick()
+        compose.onNodeWithTag("recordTime").performClick()
+        compose.onNodeWithTag("confirmLog").assertIsNotEnabled()
+        compose.onNodeWithTag("logTime").performTextReplacement("57.99")
+        compose.onNodeWithTag("confirmLog").performClick()
+        compose.onNodeWithText("57.99 · PB").assertExists()
+        compose.onNodeWithTag("recordTime").performClick()
+        compose.onNodeWithTag("logTime").performTextReplacement("1:00")
+        compose.onNodeWithTag("confirmLog").performClick()
+        compose.onNodeWithText("1:00").assertExists()
+        compose.onNodeWithTag("times-Best").performClick()
+        compose.onNodeWithText("57.99 · PB").assertExists()
+        compose.onNodeWithText("1:00").assertDoesNotExist()
+        capture("android-my-times")
+    }
+
+    @Test fun longEventAndMeetKeepRecordingAndComparisonReachable() {
+        val meet = "Pacific Northwest Masters Long Course Championships"
+        compose.onNodeWithTag("timeInput").performScrollTo().performTextReplacement("2:12.34")
+        compose.onNodeWithTag("timeInput").performImeAction()
+        compose.onNodeWithText("Stroke: Freestyle").performScrollTo().performClick()
+        compose.onNodeWithText("Individual medley").performClick()
+        compose.onNodeWithText("Distance: 100 yd").performScrollTo().performClick()
+        compose.onNodeWithText("200 yd").performClick()
+        compose.onNodeWithTag("resultTime").performScrollTo().assertIsDisplayed()
+        capture("android-long-result")
+        compose.onNodeWithTag("logSwim").performScrollTo().performClick()
+        compose.onNodeWithTag("logMeet").performScrollTo().performTextReplacement(meet)
+        capture("android-long-editor")
+        compose.onNodeWithTag("confirmLog").performClick()
+        compose.onNodeWithTag("nav-My times").performClick()
+        compose.onNodeWithText(meet, substring = true).assertExists()
+        capture("android-long-meet")
+        compose.onNodeWithText("2:12.34 · PB").performScrollTo().performClick()
+        compose.onNodeWithText("Compare this swim").performScrollTo().assertIsDisplayed()
+        capture("android-long-detail")
+        compose.onNodeWithText("Compare this swim").performClick()
+        compose.onNodeWithTag("timeInput").performScrollTo().assertTextContains("2:12.34")
+        capture("android-long-input")
     }
 
     @Test fun loggingEditingComparingAndDeletingActualSwims() {
@@ -123,8 +154,8 @@ class ConverterTest {
         compose.onNodeWithTag("logDate").performScrollTo().performTextReplacement("2026-10-17")
         compose.onNodeWithTag("logMeet").performScrollTo().performTextReplacement("Autumn Invitational")
         compose.onNodeWithTag("confirmLog").performClick()
-        compose.waitUntil(5_000) { compose.onAllNodesWithTag("nav-History").fetchSemanticsNodes().isNotEmpty() }
-        compose.onNodeWithTag("nav-History").performClick()
+        compose.waitUntil(5_000) { compose.onAllNodesWithTag("nav-My times").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithTag("nav-My times").performClick()
         compose.onNodeWithText("Autumn Invitational · 2026-10-17").assertExists()
         compose.onNodeWithText("58.32 · PB").performClick()
         compose.onNodeWithText("Manually logged performance").assertExists()
@@ -138,10 +169,8 @@ class ConverterTest {
         compose.onNodeWithText("Compare this swim").performScrollTo().performClick()
         compose.onNodeWithTag("timeInput").assertTextContains("57.99")
         compose.onNodeWithTag("unavailableConversion").assertExists()
-        compose.onNodeWithTag("nav-Saved").performClick()
-        compose.onNodeWithText("No saved swim").assertExists()
         compose.activityRule.scenario.recreate()
-        compose.onNodeWithTag("nav-History").performClick()
+        compose.onNodeWithTag("nav-My times").performClick()
         compose.onNodeWithText("57.99 · PB").assertExists()
         capture("android-history")
         compose.onNodeWithText("57.99 · PB").performClick()
@@ -170,7 +199,7 @@ class ConverterTest {
         }
         instrumentation.addMonitor(monitor)
         try {
-            compose.onNodeWithTag("nav-History").performClick()
+            compose.onNodeWithTag("nav-My times").performClick()
             compose.onNodeWithText("No logged swims").assertExists()
             compose.onNodeWithText("Import").performClick()
             compose.onNodeWithText("5 new swims · 0 duplicates · 0 rejected").assertExists()
@@ -212,7 +241,7 @@ class ConverterTest {
     }
 
     // Opt-in full-device screenshots for local visual review; ordinary CI needs
-    // no external storage permissions and still checks all three screens.
+    // no external storage permissions and still checks the relevant workflows.
     private fun capture(name: String) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         if (InstrumentationRegistry.getArguments().getString("turnmarkScreenshots") != "true") return
@@ -235,11 +264,11 @@ class ConverterTest {
         compose.onNodeWithTag("resultContext").assertTextEquals("500 yd Freestyle · SCY · Men")
         compose.onNodeWithTag("targetCourse-LCM").performScrollTo().performClick()
         compose.onNodeWithTag("resultContext").assertTextEquals("400 m Freestyle · LCM · Men")
-        compose.onNodeWithText("Entered swim").assertExists()
+        compose.onNodeWithText("Original time").assertExists()
     }
 
     @Test fun invalidTimeHasNoResult() {
-        compose.onNodeWithTag("timeInput").performTextReplacement("0")
+        compose.onNodeWithTag("timeInput").performScrollTo().performTextReplacement("0")
         compose.onNodeWithTag("invalidTime").assertExists()
         compose.onNodeWithTag("resultTime").assertDoesNotExist()
     }

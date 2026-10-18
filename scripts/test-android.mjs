@@ -5,6 +5,15 @@ import { fileURLToPath } from "node:url";
 process.chdir(fileURLToPath(new URL("../", import.meta.url)));
 const mode = process.argv[2] ?? "sdk";
 if (!["sdk", "app"].includes(mode)) throw new Error("Use sdk or app");
+if (mode === "app") {
+  const tokens = spawnSync(
+    process.execPath,
+    ["design/generate.mjs", "--check"],
+    { stdio: "inherit" },
+  );
+  if (tokens.error) throw tokens.error;
+  if (tokens.status !== 0) process.exit(tokens.status ?? 1);
+}
 const moduleName = mode === "app" ? "app-android" : "sdk-android";
 const directory = mode === "app" ? "apps/android" : "packages/android";
 function run(command, args) {

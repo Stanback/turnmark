@@ -29,6 +29,9 @@ instructions here.
 
 ## Product conventions
 
+- Native navigation is Convert and My times; Record time confirms an actual
+  performance. See [native product notes](docs/NATIVE_PRODUCT_NOTES.md) for
+  workflow intent and the distinction between entry preparation and eligibility.
 - Preserve the entered swim separately from converted estimates. Estimates
   must not become recorded performances or personal bests. Qualifying targets
   are benchmarks, not confirmation of entry eligibility.
@@ -47,8 +50,8 @@ instructions here.
   and [NATIVE_DESIGN_REVIEW.md](docs/NATIVE_DESIGN_REVIEW.md).
 - Follow [the shared design contract](docs/DESIGN_CONTRACT.md) for semantic
   colors, spacing, result hierarchy and platform adaptations. Change canonical
-  values in `design/turnmark.tokens.json`; regenerate the committed web output
-  with `node design/generate.mjs`. Native and widget adoption is tracked there;
+  values in `design/turnmark.tokens.json`; regenerate the committed CSS, Swift and Kotlin outputs
+  with `node design/generate.mjs`. Consumer adoption is tracked there;
   do not claim parity from the web adapter alone. Native system controls,
   accessibility behavior and logical text styles remain platform-owned.
 - Preserve native text scaling, accessible labels/order, keyboard dismissal,

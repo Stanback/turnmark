@@ -59,11 +59,19 @@ log, not a claim of official verification or a complete lifetime record.
   a transaction; database/document I/O runs on `Dispatchers.IO`. Failures are
   surfaced without deleting/recreating the store.
 - Existing current-input and saved-conversion preferences are untouched. There
-  is no automatic migration into performances. The user may explicitly choose
-  **Log entered swim** from the saved conversion.
+  is no automatic migration into performances. Restore a previous saved
+  comparison into Convert, then explicitly choose **Record time** to confirm
+  the original performance.
 
 A logging session remembers the last chosen meet/date for the next swim, keeps
 them visible in the form, and resets defaults when the calendar day changes or
 the app restarts. Logging does not erase the current input. Meets are optional
 labels, not a separate cloud or identity resource. Device backup behavior is
 controlled by the operating system; Turnmark adds no account or sync service.
+
+## Future standard adapters
+
+Keep this JSON archive for lossless transfer of Turnmark records. SDIF and LENEX
+are candidates for swimming meet-file interchange, with explicit mapping and
+import review at the boundary. See the [interchange notes](../../docs/MEET_HISTORY.md#standard-interchange-follow-up)
+for primary specifications and requirements. Neither adapter is implemented yet.

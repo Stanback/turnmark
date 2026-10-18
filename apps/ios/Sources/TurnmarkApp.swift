@@ -1,8 +1,6 @@
 import SwiftUI
 import TurnmarkCore
 
-private let ink = Color(red: 3 / 255, green: 44 / 255, blue: 67 / 255)
-private let lime = Color(red: 221 / 255, green: 245 / 255, blue: 140 / 255)
 let courseNames = ["SCY", "SCM", "LCM"]
 let courses: [Course] = [.scy, .scm, .lcm]
 let strokeNames = ["Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual medley"]
@@ -67,7 +65,6 @@ struct TurnmarkApp: App {
 
 private struct TurnmarkView: View {
     @Environment(\.dynamicTypeSize) private var typeSize
-    @Environment(\.verticalSizeClass) private var heightClass
     @State private var draft: Draft
     @State private var tab = 0
     @State private var history = HistoryController()
@@ -76,10 +73,10 @@ private struct TurnmarkView: View {
     @State private var logNotice: String?
     @State private var lastLogDay = SwimRecord.day(Date())
     @State private var lastDate = SwimRecord.day(Date())
+    @State private var showingMethod = false
     @AppStorage("savedSwim") private var savedJSON = ""
     @FocusState private var editingTime: Bool
-    private var isSaved: Bool { Draft.decode(savedJSON) == draft }
-    private var pinResult: Bool { !typeSize.isAccessibilitySize && heightClass != .compact }
+    @ScaledMetric(relativeTo: .largeTitle) private var entrySize = 42
 
     init() {
         #if DEBUG
@@ -88,86 +85,75 @@ private struct TurnmarkView: View {
             UserDefaults.standard.removeObject(forKey: "savedSwim")
             if let store = try? SwimHistoryStore() { for swim in store.swims { try? store.remove(swim.id) } }
         }
+        if ProcessInfo.processInfo.arguments.contains("-uitesting-legacy") {
+            UserDefaults.standard.set(Draft().encoded, forKey: "savedSwim")
+        }
         #endif
         _draft = State(initialValue: Draft.decode(UserDefaults.standard.string(forKey: "draft")) ?? Draft())
     }
+
     var body: some View {
         TabView(selection: $tab) {
             NavigationStack {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        if !pinResult { ConversionResult(input: draft, compact: true) }
-                        inputCard
-                        Button { editingTime = false; logging = draft } label: { Label("Log swim", systemImage: "plus.circle.fill") }
-                            .buttonStyle(.borderedProminent).controlSize(.large).disabled(!draft.canLog || history.store == nil)
-                            .accessibilityIdentifier("logSwim")
-                        if let logNotice { Text(logNotice).font(.footnote).accessibilityIdentifier("logNotice") }
-                        if history.error != nil { Text("History is unavailable. Open History to try again.").font(.footnote) }
-                        swimActions.modifier(SwimActionsStyle()).disabled(!draft.available)
-                        Text("Calculated on your device. Works offline.")
-                            .font(.footnote).foregroundStyle(.secondary)
-                    }.padding()
+                GeometryReader { geometry in
+                    let restoreFocus = editingTime
+                    Group {
+                        if #available(iOS 27.1, *) {
+                            let regions = geometry.reservedRegions(kind: .division)
+                            let tabletop = regions.contains { $0.frame.width > $0.frame.height }
+                            let expanded = (geometry.size.width >= 620 && geometry.size.height >= 400) || !regions.isEmpty
+                            if regions.isEmpty && expanded && !typeSize.isAccessibilitySize {
+                                HStack(alignment: .top, spacing: 0) { inputPane; resultPane }
+                                    .accessibilityIdentifier("expandedConverter")
+                            } else if !regions.isEmpty {
+                                ArrangementView {
+                                    if tabletop { comparisonPane(compact: true) } else { inputPane }
+                                } secondary: {
+                                    if tabletop { inputPane } else { resultPane }
+                                }.arrangementViewStyle(.split)
+                                    .accessibilityIdentifier("expandedConverter")
+                            } else { compactConverter }
+                        } else if geometry.size.width >= 700 && geometry.size.height >= 400 && !typeSize.isAccessibilitySize {
+                            HStack(alignment: .top, spacing: 0) { inputPane; resultPane }
+                                .accessibilityIdentifier("expandedConverter")
+                        } else { compactConverter }
+                    }.task(id: converterLayoutKey(geometry)) {
+                        // Reattaching the field to another pane ends its old focus
+                        // location. Restore only an entry that was already active.
+                        if restoreFocus {
+                            await Task.yield()
+                            if !Task.isCancelled { editingTime = true }
+                        }
+                    }
                 }
-                .modifier(ConversionResultBar(summary: ConversionResult(input: draft, compact: true), pinned: pinResult))
-                .background(Color(uiColor: .systemGroupedBackground))
-                .safeAreaInset(edge: .top, spacing: 0) {
-                    // Keep scrolling text clear of the system status text.
-                    Color.clear.frame(height: 0).background(.regularMaterial)
-                        .accessibilityHidden(true).allowsHitTesting(false)
-                }
+                .background(TurnmarkPalette.canvas)
                 .toolbar(.hidden, for: .navigationBar)
                 .toolbar {
-                    if editingTime { ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("Done") { editingTime = false } } }
+                    if editingTime {
+                        ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("Done") { editingTime = false } }
+                    }
                 }
             }.tabItem { Label("Convert", systemImage: "arrow.left.arrow.right") }.tag(0)
-            NavigationStack {
-                HistoryScreen(controller: history) { record in draft = Draft(record: record, target: draft.targetIndex); tab = 0 }
-            }.tabItem { Label("History", systemImage: "list.bullet.rectangle") }.tag(1)
-            NavigationStack {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        if let saved = Draft.decode(savedJSON) {
-                            Text(saved.label).font(.headline)
-                            Text("Saved conversion · not a logged performance").font(.footnote).foregroundStyle(.secondary)
-                            Text("Entered time: \(saved.time)").foregroundStyle(.secondary)
-                            ConversionResult(input: saved)
-                            Button("Log entered swim") { logging = saved }.disabled(!saved.canLog || history.store == nil)
-                            Button("Use this swim") { draft = saved; tab = 0 }.buttonStyle(.borderedProminent)
-                            ShareLink(item: saved.shareURL) { Label("Share saved swim", systemImage: "square.and.arrow.up") }
-                            Button("Remove saved swim", role: .destructive) { savedJSON = "" }
-                        } else {
-                            ContentUnavailableView("No saved swim", systemImage: "bookmark", description: Text("Save a conversion to return to it here."))
-                        }
-                    }.padding()
-                }.navigationTitle("Saved swim").background(Color(uiColor: .systemGroupedBackground))
-            }.tabItem { Label("Saved", systemImage: "bookmark") }.tag(2)
-            NavigationStack {
-                List {
-                    Section("How comparisons work") {
-                        Text("Published NCAA factors estimate a yards time from a metric swim. Reverse and cross-metric conversions are derived estimates. An entered swim remains labeled as entered.")
-                        Text("A converted time is not an official swim or confirmation of meet-entry eligibility.")
-                    }
-                    Section("Sources") {
-                        if case let .available(_, source) = draft.outcome, let url = URL(string: source.url) {
-                            Link(source.title, destination: url)
-                            Text("Edition: \(source.id)").font(.footnote)
-                        }
-                        Link("Methodology and coverage", destination: URL(string: "https://turnmark.app/#method")!)
-                    }
-                    Section("Your data") {
-                        Text("Your inputs, saved conversion and logged swims stay on this device. History export/import moves a copy of your records; there is no account or cloud sync. Sharing uses a link containing the entered swim. Source links need an internet connection.")
-                    }
-                }.navigationTitle("The method")
-            }.tabItem { Label("Method", systemImage: "info.circle") }.tag(3)
+            HistoryScreen(controller: history, legacy: Draft.decode(savedJSON), recordNew: {
+                var input = draft; input.time = ""; logging = input
+            },
+                restoreLegacy: { value in draft = value; tab = 0 }, removeLegacy: { savedJSON = "" }) {
+                    draft = Draft(record: $0, target: draft.targetIndex); tab = 0
+                }
+                .tabItem { Label("My times", systemImage: "list.bullet.rectangle") }.tag(1)
         }
+        .tint(TurnmarkPalette.accent)
         .task { if history.store == nil { history.open() } }
+        .sheet(isPresented: $showingMethod) { MethodScreen() }
         .sheet(isPresented: Binding(get: { logging != nil }, set: { if !$0 { logging = nil } })) {
             if let logging {
                 SwimEditor(draft: logging, date: lastLogDay == SwimRecord.day(Date()) ? lastDate : SwimRecord.day(Date()),
                     meet: lastLogDay == SwimRecord.day(Date()) ? lastMeet : "") { record in
                     guard let store = history.store else { throw HistoryError.message("History is unavailable.") }
-                    try store.save(record); logNotice = "Logged \(record.time) · \(record.date ?? "Unknown date") · \(record.meet ?? "No meet")"; lastDate = record.date ?? ""; lastMeet = record.meet ?? ""; lastLogDay = SwimRecord.day(Date())
-                    UIAccessibility.post(notification: .announcement, argument: "Swim logged on this device")
+                    try store.save(record)
+                    logNotice = "Recorded \(record.time) · \(record.date ?? "Unknown date") · \(record.meet ?? "No meet")"
+                    lastDate = record.date ?? ""; lastMeet = record.meet ?? ""; lastLogDay = SwimRecord.day(Date())
+                    UIAccessibility.post(notification: .announcement, argument: "Time recorded in My times on this device")
                 }
             }
         }
@@ -176,73 +162,110 @@ private struct TurnmarkView: View {
         .onChange(of: draft.strokeIndex) { _, _ in draft.reconcile() }
     }
 
-    @ViewBuilder private var swimActions: some View {
-        if typeSize.isAccessibilitySize {
-            VStack(alignment: .leading, spacing: 12) { saveButton; shareButton }
-        } else {
-            HStack { saveButton; Spacer(); shareButton }
+    private func converterLayoutKey(_ geometry: GeometryProxy) -> String {
+        var key = "\(geometry.size.width):\(geometry.size.height):\(typeSize)"
+        if #available(iOS 27.1, *) {
+            key += geometry.reservedRegions(kind: .division).map { String(describing: $0.frame) }.joined(separator: ";")
+        }
+        return key
+    }
+
+    private var compactConverter: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                ConversionResult(input: draft, compact: true) { draft.targetIndex = $0 }
+                inputContent
+            }.padding(16).frame(maxWidth: 600).frame(maxWidth: .infinity)
+        }.scrollDismissesKeyboard(.interactively)
+    }
+    private var inputPane: some View {
+        ScrollView { inputContent.padding(20).frame(maxWidth: 600).frame(maxWidth: .infinity) }
+            .scrollDismissesKeyboard(.interactively)
+    }
+    private var resultPane: some View {
+        comparisonPane()
+    }
+    private func comparisonPane(compact: Bool = false) -> some View {
+        ScrollView {
+            ConversionResult(input: draft, compact: compact) { draft.targetIndex = $0 }
+                .padding(20).frame(maxWidth: 620).frame(maxWidth: .infinity)
         }
     }
-
-    private var saveButton: some View {
-        Button {
-            savedJSON = draft.encoded
-            UIAccessibility.post(notification: .announcement, argument: "Swim saved on this device")
-        } label: { Label(isSaved ? "Saved" : "Save swim", systemImage: isSaved ? "checkmark" : "bookmark") }
-            .accessibilityIdentifier("saveSwim")
-            .accessibilityValue(isSaved ? "Saved on this device" : "")
-    }
-
-    private var shareButton: some View {
-        ShareLink(item: draft.shareURL) { Label("Share", systemImage: "square.and.arrow.up") }
-            .accessibilityIdentifier("shareSwim")
-    }
-
-    private var inputCard: some View {
+    private var inputContent: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Your time").font(.headline)
-            TextField("58.32", text: $draft.time)
-                .font(.system(size: 42, weight: .semibold, design: .rounded)).monospacedDigit()
-                .keyboardType(.numbersAndPunctuation).focused($editingTime)
-                .accessibilityLabel("Your time").accessibilityIdentifier("timeInput")
-            Text("Minutes : seconds . hundredths").font(.caption).foregroundStyle(.secondary)
-            if typeSize.isAccessibilitySize {
-                strokePicker
-                distancePicker
-            } else {
-                HStack {
-                    strokePicker.layoutPriority(1)
-                    Spacer()
-                    distancePicker
-                }
+            inputCard
+            if let logNotice { Text(logNotice).font(.footnote).foregroundStyle(TurnmarkPalette.textMuted).accessibilityIdentifier("logNotice") }
+            if history.error != nil { Text("History is unavailable. Open History to try again.").font(.footnote) }
+            HStack {
+                Text("On this device. Works offline.").font(.footnote).foregroundStyle(TurnmarkPalette.textMuted)
+                Spacer()
+                Button { showingMethod = true } label: { Label("About", systemImage: "info.circle") }
+                    .font(.footnote).accessibilityIdentifier("methodology")
             }
-            Text("Swum in").font(.subheadline.bold())
-            Picker("Swum in", selection: $draft.courseIndex) {
-                ForEach(courseNames.indices, id: \.self) { Text(courseNames[$0]).tag($0) }
-            }.pickerStyle(.segmented).accessibilityIdentifier("inputCourse")
-            Text("Published category").font(.subheadline.bold())
-            Picker("Published category", selection: $draft.categoryIndex) {
-                Text("Women").tag(0); Text("Men").tag(1)
-            }.pickerStyle(.segmented).accessibilityIdentifier("category")
-            Text("Compare with").font(.subheadline.bold())
-            Picker("Compare with", selection: $draft.targetIndex) {
-                ForEach(courseNames.indices, id: \.self) { Text(courseNames[$0]).tag($0) }
-            }.pickerStyle(.segmented).accessibilityIdentifier("targetCourse")
-        }.padding(20).background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 24))
+        }.foregroundStyle(TurnmarkPalette.text)
     }
-
+    private var inputCard: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            Text("Your swim").font(.headline)
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Your time").font(.subheadline.weight(.semibold))
+                TextField("58.32", text: $draft.time)
+                    .font(.system(size: entrySize, weight: .semibold)).monospacedDigit()
+                    .keyboardType(.numbersAndPunctuation).focused($editingTime)
+                    .submitLabel(.done).onSubmit { editingTime = false }
+                    .padding(12).background(TurnmarkPalette.surfaceInput, in: RoundedRectangle(cornerRadius: 10))
+                    .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(TurnmarkPalette.borderControl))
+                    .accessibilityLabel("Your time").accessibilityIdentifier("timeInput")
+                Text("For example, 58.32 or 1:02.45").font(.footnote).foregroundStyle(TurnmarkPalette.textMuted)
+            }
+            if typeSize.isAccessibilitySize { strokePicker; distancePicker }
+            else { HStack { strokePicker; Spacer(); distancePicker } }
+            coursePicker("Swum in", selection: $draft.courseIndex, id: "inputCourse")
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Published category").font(.subheadline.weight(.semibold))
+                Picker("Published category", selection: $draft.categoryIndex) {
+                    Text("Women").tag(0); Text("Men").tag(1)
+                }.pickerStyle(.segmented).accessibilityIdentifier("category")
+            }
+            coursePicker("Compare with", selection: $draft.targetIndex, id: "targetCourse")
+            Divider()
+            Button { editingTime = false; logging = draft } label: {
+                Label("Record time", systemImage: "plus").fontWeight(.semibold)
+                    .foregroundStyle(TurnmarkPalette.onAction).frame(maxWidth: .infinity)
+            }.buttonStyle(.borderedProminent).tint(TurnmarkPalette.actionFill).controlSize(.large)
+                .disabled(!draft.canLog || history.store == nil).accessibilityIdentifier("logSwim")
+            Text("Record the time you swam, with a date and optional meet.")
+                .font(.footnote).foregroundStyle(TurnmarkPalette.textMuted)
+        }.padding(20).background(TurnmarkPalette.surface, in: RoundedRectangle(cornerRadius: TurnmarkPalette.radiusCard))
+            .overlay(RoundedRectangle(cornerRadius: TurnmarkPalette.radiusCard).strokeBorder(TurnmarkPalette.borderSubtle))
+    }
+    private func coursePicker(_ title: String, selection: Binding<Int>, id: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title).font(.subheadline.weight(.semibold))
+            Picker(title, selection: selection) {
+                ForEach(courseNames.indices, id: \.self) { Text(courseNames[$0]).tag($0) }
+            }.pickerStyle(.segmented).accessibilityIdentifier(id)
+        }
+    }
     private var strokePicker: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Stroke").font(.subheadline.bold())
-            Picker("Stroke", selection: $draft.strokeIndex) {
-                ForEach(strokeNames.indices, id: \.self) { Text(strokeNames[$0]).tag($0) }
-            }.accessibilityIdentifier("strokePicker")
+            Text("Stroke").font(.subheadline.weight(.semibold))
+            Menu {
+                Picker("Stroke", selection: $draft.strokeIndex) {
+                    ForEach(strokeNames.indices, id: \.self) { Text(strokeNames[$0]).tag($0) }
+                }
+            } label: {
+                HStack(spacing: 5) {
+                    Text(draft.strokeIndex == 4 ? "IM" : strokeNames[draft.strokeIndex])
+                    Image(systemName: "chevron.up.chevron.down").font(.caption).accessibilityHidden(true)
+                }
+            }.accessibilityLabel("Stroke").accessibilityValue(strokeNames[draft.strokeIndex])
+                .accessibilityIdentifier("strokePicker")
         }
     }
-
     private var distancePicker: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Distance").font(.subheadline.bold())
+            Text("Distance").font(.subheadline.weight(.semibold))
             Picker("Distance", selection: $draft.distance) {
                 ForEach(draft.options, id: \.event.distance) { Text("\($0.event.distance) \(draft.unit)").tag($0.event.distance) }
             }.accessibilityIdentifier("distancePicker")
@@ -250,58 +273,137 @@ private struct TurnmarkView: View {
     }
 }
 
-private struct ConversionResult: View {
+struct ConversionResult: View {
     let input: Draft
     var compact = false
+    var selectCourse: ((Int) -> Void)? = nil
     @State private var showingDetails = false
-    @Environment(\.dynamicTypeSize) private var typeSize
-    @ScaledMetric(relativeTo: .largeTitle) private var compactTimeSize = 34
-    @ScaledMetric(relativeTo: .largeTitle) private var fullTimeSize = 48
+    @State private var showingCourses = false
+    @ScaledMetric(relativeTo: .largeTitle) private var compactTimeSize = 44
+    @ScaledMetric(relativeTo: .largeTitle) private var fullTimeSize = 64
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 14) {
+            Text("Your comparison").font(.caption.weight(.semibold)).textCase(.uppercase).tracking(1.5)
+                .foregroundStyle(TurnmarkResultPalette.textMuted)
             switch input.outcome {
             case let .available(value, _):
-                Text(input.resultLabel(value.event)).font(.subheadline.bold())
-                    .accessibilityIdentifier("resultContext")
-                if typeSize.isAccessibilitySize {
-                    timeLabel(value.time)
-                    detailsButton
-                } else {
-                    HStack {
-                        timeLabel(value.time)
-                        Spacer()
-                        detailsButton
-                    }
-                }
-                Text(value.kind == .swum ? "Entered swim" : value.kind == .published ? "Published factor" : "Derived estimate")
-                    .font(.caption.bold()).foregroundStyle(lime)
+                Text(input.resultLabel(value.event)).font(.subheadline)
+                    .foregroundStyle(TurnmarkResultPalette.textMuted).accessibilityIdentifier("resultContext")
+                timeLabel(value.time)
+                Text(kindLabel(value.kind)).font(.footnote.weight(.semibold)).foregroundStyle(TurnmarkResultPalette.textMuted)
                 if value.kind != .swum {
                     Text("From \(input.time) · \(input.distance) \(input.unit) \(courseNames[input.courseIndex])")
-                        .font(.caption).foregroundStyle(.white.opacity(0.8))
+                        .font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted)
                 }
+                if compact {
+                    DisclosureGroup("All course equivalents", isExpanded: $showingCourses) { courseRows }
+                        .font(.subheadline).tint(TurnmarkResultPalette.accent)
+                        .environment(\.colorScheme, .dark).accessibilityIdentifier("courseEquivalents")
+                } else { Divider(); courseRows }
+                ViewThatFits(in: .horizontal) {
+                    HStack { detailsButton; Spacer(); shareButton }
+                    VStack(alignment: .leading, spacing: 8) { detailsButton; shareButton }
+                }.modifier(SwimActionsStyle()).tint(TurnmarkResultPalette.accent).environment(\.colorScheme, .dark)
             case .invalid:
                 Text("Check your time").font(.headline).accessibilityIdentifier("invalidTime")
-                Text("Try 58.32 or 1:02.45, up to 60 minutes.").font(.caption)
+                Text("Try 58.32 or 1:02.45, up to 60 minutes.").font(.subheadline).foregroundStyle(TurnmarkResultPalette.textMuted)
             case .unavailable:
                 Text("No published conversion").font(.headline).accessibilityIdentifier("unavailableConversion")
-                Text("Choose another event or course comparison.").font(.caption)
+                Text("Choose another event or course comparison.").font(.subheadline).foregroundStyle(TurnmarkResultPalette.textMuted)
             }
-        }.frame(maxWidth: .infinity, alignment: .leading).padding(compact ? 16 : 24)
-            .foregroundStyle(.white).background(ink, in: RoundedRectangle(cornerRadius: compact ? 20 : 24))
+        }.frame(maxWidth: .infinity, alignment: .leading).padding(compact ? 20 : 24)
+            .foregroundStyle(TurnmarkResultPalette.text)
+            .background(TurnmarkResultPalette.surfaceRaised, in: RoundedRectangle(cornerRadius: TurnmarkPalette.radiusCard))
+            .overlay(RoundedRectangle(cornerRadius: TurnmarkPalette.radiusCard).strokeBorder(TurnmarkResultPalette.borderSubtle))
             .sheet(isPresented: $showingDetails) { ConversionDetails(input: input) }
     }
-
     private func timeLabel(_ time: String) -> some View {
-        Text(time).font(.system(size: compact ? compactTimeSize : fullTimeSize, weight: .bold, design: .rounded)).monospacedDigit()
-            .minimumScaleFactor(0.6).lineLimit(1).accessibilityIdentifier("resultTime")
+        let parts = time.split(separator: ".", maxSplits: 1)
+        return (Text(String(parts[0])) + Text(parts.count > 1 ? "." + parts[1] : "").foregroundColor(TurnmarkResultPalette.resultHighlight))
+            .font(.system(size: compact ? compactTimeSize : fullTimeSize, weight: .bold)).monospacedDigit()
+            .minimumScaleFactor(0.6).lineLimit(1).accessibilityLabel(time).accessibilityIdentifier("resultTime")
     }
-
+    private var courseRows: some View {
+        VStack(spacing: 0) {
+            ForEach(courses.indices, id: \.self) { index in
+                let outcome = destination(index)
+                Button { selectCourse?(index) } label: {
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text(courseNames[index]).font(.subheadline.weight(.semibold))
+                            if index == input.targetIndex { Image(systemName: "checkmark").accessibilityHidden(true) }
+                            Spacer()
+                            Text(outcome.time).font(.headline).monospacedDigit()
+                        }
+                        Text(outcome.context).font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted)
+                    }.padding(.vertical, 12).contentShape(Rectangle())
+                }.buttonStyle(.plain).disabled(selectCourse == nil)
+                    .foregroundStyle(index == input.targetIndex ? TurnmarkResultPalette.resultHighlight : TurnmarkResultPalette.text)
+                    .accessibilityIdentifier("equivalent-\(courseNames[index])")
+                    .accessibilityValue(index == input.targetIndex ? "Selected" : "")
+                if index < 2 { Divider() }
+            }
+        }
+    }
+    private func destination(_ index: Int) -> (time: String, context: String) {
+        var value = input; value.targetIndex = index
+        switch value.outcome {
+        case let .available(result, _): return (result.time, "\(value.resultLabel(result.event)) · \(kindLabel(result.kind))")
+        case .unavailable: return ("Unavailable", "No published conversion")
+        case .invalid: return ("—", "Check your time")
+        }
+    }
     private var detailsButton: some View {
         Button { showingDetails = true } label: { Label("Details", systemImage: "info.circle") }
-            .font(.subheadline).foregroundStyle(lime).buttonStyle(.plain)
-            .fixedSize(horizontal: true, vertical: false)
-            .frame(minWidth: 44, minHeight: 44).accessibilityIdentifier("conversionDetails")
+            .accessibilityIdentifier("conversionDetails")
+    }
+    private var shareButton: some View {
+        ShareLink(item: input.shareURL) { Label("Share", systemImage: "square.and.arrow.up") }
+            .accessibilityIdentifier("shareSwim")
+    }
+}
+
+private func kindLabel(_ kind: ConversionKind) -> String {
+    kind == .swum ? "Original time" : kind == .published ? "Published factor" : "Derived estimate"
+}
+
+struct LegacyComparison: View {
+    let input: Draft
+    let restore: () -> Void
+    let remove: () -> Void
+    @Environment(\.dismiss) private var dismiss
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text("A comparison saved in an earlier version. It is separate from recorded swims.").font(.subheadline)
+                    ConversionResult(input: input)
+                    Button("Use these inputs") { restore(); dismiss() }.buttonStyle(.borderedProminent)
+                    Button("Remove previous comparison", role: .destructive) { remove(); dismiss() }
+                }.padding()
+            }.background(TurnmarkPalette.canvas).navigationTitle("Previous comparison").navigationBarTitleDisplayMode(.inline)
+                .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
+        }
+    }
+}
+
+struct MethodScreen: View {
+    @Environment(\.dismiss) private var dismiss
+    var body: some View {
+        NavigationStack {
+            List {
+                Section("How comparisons work") {
+                    Text("Published NCAA factors estimate a yards time from a metric swim. Reverse and cross-metric conversions are derived estimates. The original time stays separate.")
+                    Text("A converted time is not an official swim or confirmation of meet-entry eligibility.")
+                    Link("Methodology and coverage", destination: URL(string: "https://turnmark.app/#method")!)
+                }
+                Section("Your data") {
+                    Text("Inputs and swim history stay on this device. Export/import moves a copy of recorded swims; there is no account or cloud sync. Sharing includes the original swim in a link. Source links need an internet connection.")
+                }
+            }.navigationTitle("About Turnmark").navigationBarTitleDisplayMode(.inline)
+                .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
+        }
     }
 }
 
@@ -340,9 +442,10 @@ private struct ConversionDetails: View {
                     }
                     Section {
                         Text("A converted time is not a recorded performance or confirmation of meet-entry eligibility.")
+                        Button("Done") { dismiss() }.accessibilityIdentifier("closeDetailsFooter")
                     }
                 }
-            }.navigationTitle("Conversion details").navigationBarTitleDisplayMode(.inline)
+            }.navigationTitle("Conversion details").navigationBarTitleDisplayMode(.inline).toolbar(.visible, for: .navigationBar)
                 .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
         }
     }
@@ -358,25 +461,6 @@ private struct SwimActionsStyle: ViewModifier {
             }
         } else {
             content.buttonStyle(.bordered).controlSize(.large)
-        }
-    }
-}
-
-private struct ConversionResultBar<Summary: View>: ViewModifier {
-    let summary: Summary
-    var pinned = true
-
-    @ViewBuilder func body(content: Content) -> some View {
-        if !pinned {
-            content
-        } else if #available(iOS 26.0, *) {
-            content.safeAreaBar(edge: .bottom, spacing: 0) {
-                summary.padding(.horizontal).padding(.vertical, 8)
-            }
-        } else {
-            content.safeAreaInset(edge: .bottom, spacing: 0) {
-                summary.padding(.horizontal).padding(.vertical, 8).background(.regularMaterial)
-            }
         }
     }
 }

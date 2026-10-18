@@ -30,11 +30,13 @@ dependencies {
     implementation(composeBom)
     androidTestImplementation(composeBom)
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material3.adaptive:adaptive:1.3.0")
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("androidx.test:runner:1.7.0")
+    androidTestImplementation("androidx.window:window-testing:1.5.1")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
 }

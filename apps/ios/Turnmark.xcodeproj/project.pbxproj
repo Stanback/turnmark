@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0A7945AEF04A892E43ACE1DE /* TurnmarkUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D16C21D7F1C9E54F75FE74B /* TurnmarkUITests.swift */; };
 		25BDD3DCDCDC02D649F37AD0 /* import-cases.json in Resources */ = {isa = PBXBuildFile; fileRef = CB0DF0E31571F26A4B0E2671 /* import-cases.json */; };
+		4CDD2D179685C31920B99F4F /* TurnmarkPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4330F1AAB25C28325F81C32B /* TurnmarkPalette.swift */; };
 		63E8CB2D3A1891F1C44EAFA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649B64D9001836B5F659593C /* Assets.xcassets */; };
 		7021B17D569A7726FF765633 /* contract-v1.json in Resources */ = {isa = PBXBuildFile; fileRef = B83CCAF94B8A0F40C92CD669 /* contract-v1.json */; };
 		8EABCD3053B0E6F3B623BCAA /* HistoryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39394660EEDE87180EF55D8A /* HistoryViews.swift */; };
@@ -38,6 +39,7 @@
 /* Begin PBXFileReference section */
 		0038E97C8B1BEAAE94D8DCBA /* SwimHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwimHistory.swift; sourceTree = "<group>"; };
 		39394660EEDE87180EF55D8A /* HistoryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViews.swift; sourceTree = "<group>"; };
+		4330F1AAB25C28325F81C32B /* TurnmarkPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnmarkPalette.swift; sourceTree = "<group>"; };
 		649B64D9001836B5F659593C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6A0409D9F50C35CC7B2C84C6 /* Turnmark.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Turnmark.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		77652A273CB3E0E5519B5E11 /* TurnmarkUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TurnmarkUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,6 +127,7 @@
 				39394660EEDE87180EF55D8A /* HistoryViews.swift */,
 				0038E97C8B1BEAAE94D8DCBA /* SwimHistory.swift */,
 				89C2633BB30C9B5BFAEAFF94 /* TurnmarkApp.swift */,
+				4330F1AAB25C28325F81C32B /* TurnmarkPalette.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -263,6 +266,7 @@
 				8EABCD3053B0E6F3B623BCAA /* HistoryViews.swift in Sources */,
 				F7BC59FAA031291CB5C7A3FE /* SwimHistory.swift in Sources */,
 				95DC7EBE8CEEAC85CA154B94 /* TurnmarkApp.swift in Sources */,
+				4CDD2D179685C31920B99F4F /* TurnmarkPalette.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
