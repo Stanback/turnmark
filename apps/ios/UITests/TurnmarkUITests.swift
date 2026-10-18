@@ -148,28 +148,37 @@ final class TurnmarkUITests: XCTestCase {
         app.swipeUp()
         app.buttons["saveSwim"].tap()
         app.buttons["shareSwim"].tap()
-        let dismiss = app.descendants(matching: .any)["PopoverDismissRegion"].firstMatch
-        XCTAssertTrue(dismiss.waitForExistence(timeout: 5))
-        capture(app, "Native share sheet")
-        dismiss.tap()
-        // The system sheet can finish its dismissal after XCTest's idle wait.
+        dismissShareSheet(app)
         assertHittable(app.buttons["shareSwim"])
         app.tabBars.buttons["Saved"].tap()
         app.buttons["Share saved swim"].tap()
-        XCTAssertTrue(dismiss.waitForExistence(timeout: 5))
-        dismiss.tap()
+        dismissShareSheet(app)
         assertHittable(app.buttons["Use this swim"])
         app.buttons["Use this swim"].tap()
         XCTAssertEqual(app.textFields["timeInput"].value as? String, "58.32")
     }
 
+    @MainActor private func dismissShareSheet(_ app: XCUIApplication) {
+        // The backdrop enters the accessibility tree before the share sheet is
+        // visible on slower simulators. Wait for an actual action before tapping
+        // outside, then verify dismissal before interacting with the app again.
+        let copy = app.descendants(matching: .any).matching(NSPredicate(format: "label == %@", "Copy")).firstMatch
+        assertHittable(copy, timeout: 30)
+        let dismiss = app.descendants(matching: .any)["PopoverDismissRegion"].firstMatch
+        assertHittable(dismiss)
+        capture(app, "Native share sheet")
+        dismiss.tap()
+        let closed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: copy)
+        XCTAssertEqual(XCTWaiter.wait(for: [closed], timeout: 10), .completed)
+    }
+
     @MainActor private func assertHittable(
-        _ element: XCUIElement, file: StaticString = #filePath, line: UInt = #line
+        _ element: XCUIElement, timeout: TimeInterval = 10, file: StaticString = #filePath, line: UInt = #line
     ) {
         let ready = XCTNSPredicateExpectation(
             predicate: NSPredicate(format: "exists == true AND hittable == true"), object: element
         )
-        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 10), .completed, file: file, line: line)
+        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: timeout), .completed, file: file, line: line)
     }
 
     @MainActor func testResultContextUsesDestinationDistanceAndCategory() {
