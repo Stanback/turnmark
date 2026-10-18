@@ -3,7 +3,7 @@
 Status: implemented on iOS and Android, pending physical-device release checks.
 The paired apps now log actual swims with optional meet/date context, edit/delete
 records, show personal bests, and import/export a portable JSON archive. The
-single saved conversion remains separate. See the
+previous saved comparison remains accessible separately in My times. See the
 [shared record contract](../apps/history/README.md) for format, validation,
 duplicate handling and platform storage details.
 
@@ -11,7 +11,7 @@ duplicate handling and platform storage details.
 
 Make recording a real swim quick enough to do between races:
 
-1. Enter the time, event and course, then choose **Log swim**. This records the
+1. Enter the time, event and course, then choose **Record time**. This records the
    entered performance, independently of whether a conversion is available.
 2. Show a small confirmation form with the actual time/event, date and an
    optional meet name. Default to today initially; offer the most recently used
@@ -19,13 +19,13 @@ Make recording a real swim quick enough to do between races:
    Do not silently attach a future swim to an old meet.
 3. After saving, return to entry with the meet and course ready for the next
    event. Allow a practice swim or time trial without requiring a meet.
-4. History groups compact rows by meet/date. Each row leads with the actual time
+4. My times groups compact rows by meet/date. Each row leads with the actual time
    and event, then course and useful context. Opening it allows correction,
    deletion and **Compare this swim** without modifying the original record.
 
-Keep saving a calculation separate from logging a performance. The current
-single saved conversion can remain accessible during migration, with an
-explicit action to log its entered swim. Existing web conversion history is
+My times also offers Record time directly, with an empty clock field, and
+Recent / Best times views. The previous saved comparison has explicit restore
+and remove actions; restoring its inputs does not record a performance. Existing web conversion history is
 also calculation history, not evidence that those swims actually happened.
 
 ## Information hierarchy
@@ -71,6 +71,23 @@ for logging races.
 - Everything above works without an account or network connection. Export/import
   provides a portable copy; encourage users to keep a backup. A device-only log
   is not a synchronization or backup service.
+
+## Standard interchange follow-up
+
+Keep the versioned Turnmark JSON archive as the lossless backup/transfer contract
+for actual records and their IDs/timestamps. Established swimming exchange
+formats can be adapters at the boundary rather than replacements for storage:
+[SDIF version 3](https://www.usms.org/admin/sdifv3f.txt) defines fixed-width
+swimming records, while the maintained [LENEX documentation](https://wiki.swimrankings.net/index.php/swimrankings:Lenex)
+covers meet entries/results, records and time standards using XML.
+
+Evaluate SDIF for US meet-file import and LENEX for broader interoperability,
+using real sample exports before promising compatibility. Future adapters need
+swimmer selection, course/event/category mapping, explicit handling of unknown
+or non-time results, a preview and duplicate policy. Do not fabricate identity
+or silently turn relay/split/converted values into individual performances.
+Standard imports/exports are planned; current native import/export accepts only
+the documented Turnmark JSON archive.
 
 ## Agent access later
 

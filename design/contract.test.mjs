@@ -21,7 +21,7 @@ const contrast = (first, second) => {
   return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 };
 
-test("committed CSS matches the validated design contract", () => {
+test("committed web, Swift and Kotlin match the validated design contract", () => {
   const result = spawnSync(
     process.execPath,
     ["design/generate.mjs", "--check"],

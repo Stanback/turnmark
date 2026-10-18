@@ -12,8 +12,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
@@ -78,21 +80,22 @@ fun Draft.record(date: String?, meet: String?, replacing: SwimRecord? = null): S
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable fun SwimEditor(initial: Draft, original: SwimRecord? = null, initialDate: String, initialMeet: String,
     history: HistoryState, dismiss: () -> Unit, saved: (SwimRecord) -> Unit = {}) {
-    var draft by remember { mutableStateOf(initial) }
-    var date by remember { mutableStateOf(initialDate) }
-    var meet by remember { mutableStateOf(initialMeet) }
+    val draftSaver = androidx.compose.runtime.saveable.Saver<Draft, String>(save = { it.encode() }, restore = { Draft.decode(it) })
+    var draft by rememberSaveable(stateSaver = draftSaver) { mutableStateOf(initial) }
+    var date by rememberSaveable { mutableStateOf(initialDate) }
+    var meet by rememberSaveable { mutableStateOf(initialMeet) }
     var error by remember { mutableStateOf<String?>(null) }
     val focus = LocalFocusManager.current
     Dialog(onDismissRequest = { if (!history.busy) dismiss() }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Scaffold(modifier = Modifier.imePadding(), topBar = {
-            TopAppBar(title = { Text(if (original == null) "Log swim" else "Edit swim") }, navigationIcon = {
+            RecordTopAppBar(title = if (original == null) "Record time" else "Edit swim", navigationIcon = {
                 TextButton(onClick = dismiss, enabled = !history.busy) { Text("Cancel") }
             }, actions = {
                 TextButton(enabled = draft.canLog && !history.busy, modifier = Modifier.testTag("confirmLog"), onClick = {
                     runCatching { draft.record(date.ifEmpty { null }, meet, original) }.fold(onSuccess = { record ->
                         focus.clearFocus(); history.save(record) { saved(record); dismiss() }
                     }, onFailure = { error = it.message ?: "Check the swim and date." })
-                }) { Text("Save") }
+                }) { Text(if (original == null) "Add swim" else "Save changes") }
             })
         }) { insets ->
             Column(Modifier.padding(insets).fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp),
@@ -118,9 +121,14 @@ fun Draft.record(date: String?, meet: String?, replacing: SwimRecord? = null): S
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable fun HistoryScreen(history: HistoryState, modifier: Modifier = Modifier, compare: (SwimRecord) -> Unit) {
-    var selected by remember { mutableStateOf<SwimRecord?>(null) }
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable fun HistoryScreen(history: HistoryState, modifier: Modifier = Modifier, legacy: Draft? = null,
+    openLegacy: () -> Unit = {}, recordNew: () -> Unit = {}, compare: (SwimRecord) -> Unit) {
+    var selectedID by rememberSaveable { mutableStateOf<String?>(null) }
+    var editingID by rememberSaveable { mutableStateOf<String?>(null) }
+    var deletingID by rememberSaveable { mutableStateOf<String?>(null) }
+    val selected = history.swims.firstOrNull { it.id == selectedID }
+    var bestOnly by rememberSaveable { mutableStateOf(false) }
     var preview by remember { mutableStateOf<HistoryImport?>(null) }
     var export by remember { mutableStateOf<ByteArray?>(null) }
     val context = LocalContext.current
@@ -152,62 +160,79 @@ fun Draft.record(date: String?, meet: String?, replacing: SwimRecord? = null): S
             context.contentResolver.openOutputStream(uri, "wt")?.use { it.write(bytes) } ?: error("The export file could not be opened.")
         }
     }
-    LazyColumn(modifier.fillMaxSize(), contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        item {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedButton(enabled = history.ready && !history.busy && history.swims.isNotEmpty(), onClick = {
-                    runCatching { HistoryArchive.encode(history.swims) }.fold(onSuccess = { export = it; exporter.launch("turnmark-history.json") }, onFailure = { history.message = it.message })
-                }) { Text("Export") }
-                OutlinedButton(enabled = history.ready && !history.busy, onClick = { importer.launch(arrayOf("application/json", "text/plain")) }) { Text("Import") }
+    val list: @Composable () -> Unit = {
+        LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            item {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FilterChip(!bestOnly, { bestOnly = false }, { Text("Recent") }, modifier = Modifier.testTag("times-Recent"))
+                    FilterChip(bestOnly, { bestOnly = true }, { Text("Best times") }, modifier = Modifier.testTag("times-Best"))
+                }
             }
-        }
-        if (!history.ready) item {
-            Text(if (history.busy) "Opening history…" else "History is unavailable. Your stored data has not been replaced.")
-            if (!history.busy) Button(onClick = { history.load() }) { Text("Try again") }
-        } else if (history.swims.isEmpty()) item {
-            Text("No logged swims", style = MaterialTheme.typography.headlineSmall)
-            Text("Enter an actual time in Convert, then choose Log swim. Saved conversions stay separate.")
-        }
-        val groups = history.swims.groupBy { it.date to it.meet }
-        groups.forEach { (key, swims) ->
-            item { Text(listOfNotNull(key.second, key.first ?: "Unknown date").joinToString(" · "), fontWeight = FontWeight.Bold) }
-            items(swims, key = { it.id }) { swim ->
-                Card(Modifier.fillMaxWidth().clickable { selected = swim }.testTag("history-${swim.id}")) {
-                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text(swim.time + if (history.isBest(swim)) " · PB" else "", style = MaterialTheme.typography.headlineSmall)
-                        Text(swim.eventLabel)
+            item {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(enabled = history.ready && !history.busy && history.swims.isNotEmpty(), onClick = {
+                        runCatching { HistoryArchive.encode(history.swims) }.fold(onSuccess = { export = it; exporter.launch("turnmark-history.json") }, onFailure = { history.message = it.message })
+                    }) { Text("Export") }
+                    OutlinedButton(enabled = history.ready && !history.busy, onClick = { importer.launch(arrayOf("application/json", "text/plain")) }) { Text("Import") }
+                }
+            }
+            if (!history.ready) item {
+                Text(if (history.busy) "Opening history…" else "History is unavailable. Your stored data has not been replaced.")
+                if (!history.busy) Button(onClick = { history.load() }) { Text("Try again") }
+            } else if (history.swims.isEmpty()) item {
+                Text("No logged swims", style = MaterialTheme.typography.headlineSmall)
+                Text("Record a race or practice time to start your personal record.")
+                Button(onClick = recordNew) { Text("Record time") }
+            }
+            val visible = if (bestOnly) history.swims.filter { history.isBest(it) }.distinctBy { it.comparisonKey } else history.swims
+            val groups = visible.groupBy { it.date to it.meet }
+            groups.forEach { (key, swims) ->
+                item { Text(listOfNotNull(key.second, key.first ?: "Unknown date").joinToString(" · "), fontWeight = FontWeight.Bold) }
+                items(swims, key = { it.id }) { swim ->
+                    Card(Modifier.fillMaxWidth().clickable { selectedID = swim.id }.testTag("history-${swim.id}")) {
+                        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Text(swim.time + if (history.isBest(swim)) " · PB" else "", style = MaterialTheme.typography.headlineSmall)
+                            Text(swim.eventLabel)
+                        }
                     }
                 }
             }
-        }
-        item {
-            Text("Actual swims only. Personal bests compare the same distance, stroke, course and category.", style = MaterialTheme.typography.bodySmall)
-            Text("Stored on this device. Export a copy to keep a backup or move to another phone.", style = MaterialTheme.typography.bodySmall)
-        }
-    }
-    selected?.let { record ->
-        val current = history.swims.firstOrNull { it.id == record.id } ?: record
-        var editing by remember(record.id) { mutableStateOf(false) }
-        var deleting by remember(record.id) { mutableStateOf(false) }
-        Dialog(onDismissRequest = { selected = null }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-            Scaffold(topBar = { TopAppBar(title = { Text("Logged swim") }, actions = { TextButton(onClick = { selected = null }) { Text("Done") } }) }) { insets ->
-                Column(Modifier.padding(insets).fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Text("Actual swim", style = MaterialTheme.typography.titleMedium)
-                    Text(current.time, style = MaterialTheme.typography.displaySmall)
-                    Text(current.eventLabel)
-                    if (history.isBest(current)) Text("Personal best", fontWeight = FontWeight.Bold)
-                    Text(current.date ?: "Unknown date"); Text(current.meet ?: "No meet")
-                    Text("Manually logged performance", style = MaterialTheme.typography.bodySmall)
-                    Button(onClick = { compare(current); selected = null }) { Text("Compare this swim") }
-                    OutlinedButton(onClick = { editing = true }, enabled = !history.busy) { Text("Edit swim") }
-                    TextButton(onClick = { deleting = true }, enabled = !history.busy) { Text("Delete swim") }
+            if (legacy != null) item {
+                Text("Previous saved comparison", style = MaterialTheme.typography.titleMedium)
+                Text("Your earlier bookmark is separate from recorded swims.", style = MaterialTheme.typography.bodySmall)
+                TextButton(onClick = openLegacy) { Text("Open previous comparison") }
+            }
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("Actual swims only. Personal bests compare the same distance, stroke, course and category.",
+                        style = MaterialTheme.typography.bodySmall, color = LocalTurnmarkColors.current.textMuted)
+                    Text("Stored on this device. Export a copy to keep a backup or move to another phone.",
+                        style = MaterialTheme.typography.bodySmall, color = LocalTurnmarkColors.current.textMuted)
                 }
             }
         }
-        if (editing) SwimEditor(current.draft(), current, current.date ?: "", current.meet ?: "", history, { editing = false })
-        if (deleting) AlertDialog(onDismissRequest = { deleting = false }, title = { Text("Delete this logged swim?") },
-            confirmButton = { TextButton(enabled = !history.busy, onClick = { history.remove(current.id) { deleting = false; selected = null } }) { Text("Delete swim") } },
-            dismissButton = { TextButton(onClick = { deleting = false }) { Text("Cancel") } })
+    }
+    AdaptiveWorkspace(modifier, name = "history", primary = list, supporting = {
+        if (selected != null) RecordedSwimDetail(selected, history, edit = { editingID = it.id }, delete = { deletingID = it.id }, compare = { compare(it); selectedID = null }, close = { selectedID = null })
+        else Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text("Select a swim", style = MaterialTheme.typography.headlineSmall)
+            Text("View an actual performance and compare courses.")
+        }
+    }, compact = {
+        list()
+        if (selected != null && editingID == null && deletingID == null) Dialog(onDismissRequest = { selectedID = null }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+            RecordedSwimDetail(selected, history, edit = { editingID = it.id }, delete = { deletingID = it.id }, compare = { compare(it); selectedID = null }, close = { selectedID = null })
+        }
+    })
+    history.swims.firstOrNull { it.id == editingID }?.let { current ->
+        SwimEditor(current.draft(), current, current.date ?: "", current.meet ?: "", history, { editingID = null })
+    }
+    history.swims.firstOrNull { it.id == deletingID }?.let { current ->
+        AlertDialog(onDismissRequest = { deletingID = null }, title = { Text("Delete this logged swim?") },
+            confirmButton = { TextButton(enabled = !history.busy, onClick = {
+                history.remove(current.id) { deletingID = null; selectedID = null }
+            }) { Text("Delete swim") } },
+            dismissButton = { TextButton(onClick = { deletingID = null }) { Text("Cancel") } })
     }
     preview?.let { review ->
         Dialog(onDismissRequest = { if (!history.busy) preview = null }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
@@ -224,4 +249,34 @@ fun Draft.record(date: String?, meet: String?, replacing: SwimRecord? = null): S
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable private fun RecordedSwimDetail(record: SwimRecord, history: HistoryState,
+    edit: (SwimRecord) -> Unit, delete: (SwimRecord) -> Unit, compare: (SwimRecord) -> Unit, close: () -> Unit) {
+    val current = history.swims.firstOrNull { it.id == record.id } ?: record
+    Scaffold(topBar = { RecordTopAppBar(title = "Recorded swim", actions = { TextButton(onClick = close) { Text("Done") } }) }) { insets ->
+        Column(Modifier.padding(insets).fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Text("Actual swim", style = MaterialTheme.typography.titleMedium)
+            Text(current.time, style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.Bold)
+            Text(current.eventLabel)
+            if (history.isBest(current)) Text("Personal best", fontWeight = FontWeight.Bold)
+            Text(current.date ?: "Unknown date"); Text(current.meet ?: "No meet")
+            Text("Manually logged performance", style = MaterialTheme.typography.bodySmall)
+            Button(onClick = { compare(current) }) { Text("Compare this swim") }
+            OutlinedButton(onClick = { edit(current) }, enabled = !history.busy) { Text("Edit swim") }
+            TextButton(onClick = { delete(current) }, enabled = !history.busy) { Text("Delete swim") }
+        }
+    }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable private fun RecordTopAppBar(title: String, navigationIcon: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {}) {
+    // The native two-row bar gives a large title its own width rather than
+    // squeezing it between Cancel and Add swim at accessibility font sizes.
+    if (LocalDensity.current.fontScale >= 1.5f) {
+        MediumTopAppBar(title = { Text(title) }, navigationIcon = navigationIcon, actions = actions)
+    } else TopAppBar(title = { Text(title) }, navigationIcon = navigationIcon, actions = actions)
 }

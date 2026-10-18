@@ -5,6 +5,15 @@ process.chdir(fileURLToPath(new URL("../", import.meta.url)));
 const mode = process.argv[2] ?? "core";
 if (!["core", "app"].includes(mode)) throw new Error("Use core or app");
 const application = mode === "app";
+if (application) {
+  const tokens = spawnSync(
+    process.execPath,
+    ["design/generate.mjs", "--check"],
+    { stdio: "inherit" },
+  );
+  if (tokens.error) throw tokens.error;
+  if (tokens.status !== 0) process.exit(tokens.status ?? 1);
+}
 const output = application ? "ios-app-tests" : "ios-tests";
 const inventory = spawnSync(
   "xcrun",

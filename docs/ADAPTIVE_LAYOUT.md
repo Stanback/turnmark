@@ -1,7 +1,7 @@
 # Adaptive native layouts and iPhone Duo
 
-Design research checked October 18, 2026. This is an implementation brief for the
-paired native design adoption, not a shipped Duo layout or simulator sign-off.
+Design research checked October 18, 2026. This records the paired native implementation and its validation limits.
+Simulator evidence is distinct from physical-device release sign-off.
 
 ## What is confirmed
 
@@ -25,23 +25,24 @@ are intended for interactions rather than rebuilding layout rules.
 [Adaptive layouts walkthrough](https://developer.apple.com/videos/play/tech-talks/111463/),
 [hinge and scene guidance](https://developer.apple.com/videos/play/tech-talks/111464/).
 
-## Turnmark proposal
+## Implemented workspace
 
 Extra room should expose the existing comparison workflow and event context.
 It is not a reason to add a coach dashboard, graphs without a clear question,
 or extra promotional content.
 
-| Available environment                       | Converter                                                                                      | History                                                                  |
+| Available environment                       | Converter                                                                                      | My times                                                                 |
 | ------------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | Compact / outer display                     | Direct time entry and inputs, with a compact result nearby; controls stay scrollable           | List followed by native detail navigation                                |
 | Regular / open inner display                | Input pane beside the selected result and three course equivalents                             | Swim/meet list beside the selected recorded swim and optional comparison |
 | Book fold                                   | Keep each content pane within a usable region; the complete time and its context stay together | List and detail follow the system's pane/fold adaptation                 |
-| Tabletop                                    | Explore result above, entry controls below; preserve the same features and meaning             | Preserve selected swim and reachable edit/navigation actions             |
+| Tabletop                                    | Compact result above, entry controls below; preserve the same features and meaning             | Preserve selected swim and reachable edit/navigation actions             |
 | Half-window multitasking / short PiP window | Re-evaluate the actual available space; return to the compact workflow when needed             | Collapse list/detail through native navigation                           |
 | Accessibility text / keyboard               | Stack or scroll before clipping; avoid a pinned result that consumes the working area          | Preserve reading order and visible edit/share controls                   |
 
-The tabletop treatment is a proposed refinement, not a new function available
-only in that posture. Reachable inputs and a visible answer matter more than an
+The tabletop treatment keeps the complete clock and source context prominent,
+with course equivalents behind a disclosure to reduce vertical pressure. The
+input and result panes scroll independently; the same features remain available. Reachable inputs and a visible answer matter more than an
 animation between layouts. Keep controls stable while someone types or folds.
 
 For the expanded converter, favor a readable input pane and a slightly more
@@ -66,8 +67,8 @@ bests when changing the layout.
 
 ## Implementation boundaries
 
-- Use Convert and History as the two native destinations, with contextual
-  methodology. Add to History confirms an actual entered swim; comparisons and
+- Use Convert and My times as the two native destinations, with contextual
+  methodology. Record time confirms an actual entered swim; comparisons and
   sharing remain available without a separate comparison-save action. Follow the
   [agreed persistence contract](DESIGN_CONTRACT.md#result-and-terminology-contract)
   when transitioning existing saved comparisons.
@@ -119,11 +120,30 @@ both actual presentation behavior and phone-specific test assumptions during
 native adoption. Do not call this a passing Duo suite or suppress these failures
 to claim support. Fold transitions and other poses still need dedicated tests.
 
-## Acceptance evidence still required
+## Current validation and remaining release checks
 
-Current CI phone tests do not prove Duo behavior. iPad/resizable previews can
-exercise wide layouts but are not substitutes for fold regions. The upgraded
-toolchain enables native implementation and validation of the proposed layout.
+The native branch generates Swift and Kotlin palettes from the canonical token
+source. The converter uses compact inline content or independent expanded panes;
+iOS 27.1 uses active division regions and ArrangementView, while Android uses
+WindowManager folding features relative to the actual content origin. My times
+uses native list/detail navigation on iOS and an adaptive list/detail workspace
+on Android. Drafts and actual records retain their original meaning. Manual Device Hub review
+covered the redesigned open, book, tabletop and closed outer layouts, including
+dark tabletop. Typing through open/book/tabletop preserves the draft and restores
+the active converter field after reattachment. These checks used the simulator
+hardware keyboard; soft-keyboard and physical-device transitions remain release work.
+
+The 16-case model/UI suite passed on both iPhone 18 Pro/iOS 27.0 and Duo/iOS
+27.1, including the rotation/focus regression. Android API 36
+passed all 17 tests on both the phone emulator and the expanded Pixel 10 Pro Fold
+profile.
+The folding test injects book/tabletop WindowManager regions, checks complete
+clock/input bounds against the hinge, and preserves text plus editing focus.
+Injected folds are test geometry, not a claim of physical posture testing.
+
+The [native visual review](NATIVE_VISUAL_REVIEW.md) contains actual application
+captures, appearances, typography observations and outstanding checks. The
+baseline above remains historical evidence, not screenshots of the redesign.
 
 Capture and inspect native screens in both appearances, with these checks:
 

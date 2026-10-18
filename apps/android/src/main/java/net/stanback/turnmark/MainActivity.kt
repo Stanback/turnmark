@@ -20,8 +20,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalContext
@@ -30,6 +37,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -40,8 +48,6 @@ import androidx.compose.ui.unit.sp
 import org.json.JSONObject
 import uniffi.turnmark_core.*
 
-private val Ink = Color(0xFF032C43)
-private val Lime = Color(0xFFDDF58C)
 val courses = Course.entries
 val strokes = Stroke.entries
 val strokeNames = listOf("Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual medley")
@@ -109,165 +115,185 @@ private fun share(context: Context, draft: Draft) {
 @Composable private fun Turnmark(preferences: SharedPreferences) {
     var draft by remember { mutableStateOf(Draft.decode(preferences.getString("draft", null)) ?: Draft()) }
     var saved by remember { mutableStateOf(Draft.decode(preferences.getString("saved", null))) }
-    var tab by remember { mutableIntStateOf(0) }
+    var tab by rememberSaveable { mutableIntStateOf(0) }
+    var loggingJSON by rememberSaveable { mutableStateOf<String?>(null) }
+    var showingMethod by rememberSaveable { mutableStateOf(false) }
+    var showingLegacy by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    val appContext = LocalContext.current.applicationContext
-    val historyDb = remember { SwimHistoryStore(appContext) }
+    val context = LocalContext.current
+    val historyDb = remember { SwimHistoryStore(context.applicationContext) }
     val history = remember { HistoryState(historyDb, scope) }
     LaunchedEffect(history) { history.load() }
     DisposableEffect(historyDb) { onDispose { historyDb.close() } }
-    var logging by remember { mutableStateOf<Draft?>(null) }
-    var lastDate by remember { mutableStateOf(java.time.LocalDate.now().toString()) }
-    var lastMeet by remember { mutableStateOf("") }
-    var lastLogDay by remember { mutableStateOf(java.time.LocalDate.now().toString()) }
-    val scrollStates = listOf(rememberScrollState(), rememberScrollState(), rememberScrollState(), rememberScrollState())
-    val context = LocalContext.current
+    var lastDate by rememberSaveable { mutableStateOf(java.time.LocalDate.now().toString()) }
+    var lastMeet by rememberSaveable { mutableStateOf("") }
+    var lastLogDay by rememberSaveable { mutableStateOf(java.time.LocalDate.now().toString()) }
     val focus = LocalFocusManager.current
     val keyboard = LocalSoftwareKeyboardController.current
-    val largeText = LocalDensity.current.fontScale >= 1.5f
     val keyboardVisible = WindowInsets.isImeVisible
-    val pinResult = !largeText && LocalConfiguration.current.screenHeightDp >= 480 && !keyboardVisible
     val snackbar = remember { SnackbarHostState() }
     LaunchedEffect(history.notice) { history.notice?.let { snackbar.showSnackbar(it); history.notice = null } }
-    val dark = isSystemInDarkTheme()
     fun update(value: Draft) {
         draft = value.reconcile()
         preferences.edit().putString("draft", draft.encode()).apply()
     }
-    MaterialTheme(colorScheme = if (dark) darkColorScheme(primary = Lime, secondaryContainer = Ink, onSecondaryContainer = Lime,
-        surface = Color(0xFF122C3C), background = Color(0xFF091F2D))
-        else lightColorScheme(primary = Ink, secondaryContainer = Lime, onSecondaryContainer = Ink,
-            background = Color(0xFFF0F5F8), surface = Color.White)) {
-        Scaffold(modifier = Modifier.imePadding(), snackbarHost = { SnackbarHost(snackbar) }, topBar = {
-            if (tab != 0) TopAppBar(title = {
-                Text(when (tab) { 1 -> "History"; 2 -> "Saved swim"; else -> "The method" }, fontWeight = FontWeight.Bold)
-            })
-        },
-            bottomBar = {
-              Column {
-                if (tab == 0 && pinResult) ResultSummary(draft)
-                if (!keyboardVisible) NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
-                    listOf("Convert", "History", "Saved", "Method").forEachIndexed { index, label ->
-                        NavigationBarItem(selected = tab == index, onClick = { tab = index },
-                            modifier = Modifier.testTag("nav-$label"), label = { Text(label) },
-                            icon = {
-                                if (index == 3) Icon(Icons.Default.Info, contentDescription = null)
-                                else if (index == 1) Icon(Icons.Default.List, contentDescription = null)
-                                else Icon(painterResource(if (index == 0) R.drawable.ic_convert else R.drawable.ic_bookmark), contentDescription = null)
-                            })
+    TurnmarkTheme {
+        val c = LocalTurnmarkColors.current
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            val rail = maxWidth >= 700.dp && maxHeight >= 400.dp
+            @Composable fun NavIcon(index: Int) {
+                if (index == 0) Icon(painterResource(R.drawable.ic_convert), contentDescription = null)
+                else Icon(Icons.Default.List, contentDescription = null)
+            }
+            Row(Modifier.fillMaxSize()) {
+                if (rail) NavigationRail(containerColor = c.canvas) {
+                    listOf("Convert", "My times").forEachIndexed { index, label ->
+                        NavigationRailItem(selected = tab == index, onClick = { tab = index }, icon = { NavIcon(index) },
+                            label = { Text(label) }, modifier = Modifier.testTag("nav-$label"))
                     }
                 }
-              }
-            }) { insets ->
-            if (tab == 1) HistoryScreen(history, Modifier.padding(insets)) { update(it.draft(draft.targetIndex)); tab = 0 }
-            else Column(Modifier.padding(insets).fillMaxSize().verticalScroll(scrollStates[tab]).padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                when (tab) {
-                    0 -> {
-                        if (!pinResult) ResultCard(draft, compact = true)
-                        Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
-                            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                                Text("Your time", fontWeight = FontWeight.Bold)
-                                OutlinedTextField(draft.time, { update(draft.copy(time = it)) },
-                                    modifier = Modifier.fillMaxWidth().testTag("timeInput"),
-                                    label = { Text("Minutes : seconds . hundredths") }, singleLine = true,
-                                    textStyle = MaterialTheme.typography.headlineLarge,
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii, imeAction = ImeAction.Done),
-                                    keyboardActions = KeyboardActions(onDone = { focus.clearFocus(); keyboard?.hide() }))
-                                FlowRow(maxItemsInEachRow = if (largeText) 1 else 2,
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    Choice("Stroke", strokeNames[draft.strokeIndex], strokeNames, Modifier.weight(1f)) {
-                                        update(draft.copy(strokeIndex = it))
-                                    }
-                                    Choice("Distance", "${draft.distance} ${draft.unit}", draft.options.map { "${it.event.distance} ${draft.unit}" }, Modifier.weight(1f)) {
-                                        update(draft.copy(distance = draft.options[it].event.distance))
-                                    }
-                                }
-                                CourseControl("Swum in", "inputCourse", draft.courseIndex) { update(draft.copy(courseIndex = it)) }
-                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    Text("Published category", fontWeight = FontWeight.Bold)
-                                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                        listOf("Women", "Men").forEachIndexed { i, text ->
-                                            FilterChip(draft.categoryIndex == i, { update(draft.copy(categoryIndex = i)) }, { Text(text) })
-                                        }
-                                    }
-                                }
-                                CourseControl("Compare with", "targetCourse", draft.targetIndex) { update(draft.copy(targetIndex = it)) }
+                Scaffold(modifier = Modifier.weight(1f).imePadding(), containerColor = c.canvas,
+                    snackbarHost = { SnackbarHost(snackbar) }, topBar = {
+                        if (tab == 1) TopAppBar(title = { Text("My times", fontWeight = FontWeight.Bold) }, actions = {
+                            IconButton(enabled = history.ready && !history.busy, onClick = { loggingJSON = draft.copy(time = "").encode() }, modifier = Modifier.testTag("recordTime")) {
+                                Icon(Icons.Default.Add, contentDescription = "Record time")
+                            }
+                        })
+                    }, bottomBar = {
+                        if (!rail && !keyboardVisible) NavigationBar {
+                            listOf("Convert", "My times").forEachIndexed { index, label ->
+                                NavigationBarItem(selected = tab == index, onClick = { tab = index }, icon = { NavIcon(index) },
+                                    label = { Text(label) }, modifier = Modifier.testTag("nav-$label"))
                             }
                         }
-                        Button(onClick = { focus.clearFocus(); keyboard?.hide(); logging = draft },
-                            enabled = draft.canLog && history.ready && !history.busy, modifier = Modifier.testTag("logSwim")) { Text("Log swim") }
-                        if (!history.ready && !history.busy) Text("History is unavailable. Open History to try again.")
-                        FlowRow(Modifier.fillMaxWidth(), maxItemsInEachRow = if (largeText) 1 else 2,
-                            horizontalArrangement = Arrangement.SpaceBetween, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            OutlinedButton(onClick = { saved = draft; preferences.edit().putString("saved", draft.encode()).apply() },
-                                enabled = draft.available, modifier = Modifier.testTag("saveSwim").semantics { liveRegion = LiveRegionMode.Polite }) {
-                                if (saved == draft) {
-                                    Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(18.dp))
-                                    Spacer(Modifier.width(6.dp))
-                                }
-                                Text(if (saved == draft) "Saved" else "Save swim")
-                            }
-                            OutlinedButton(onClick = { share(context, draft) }, enabled = draft.available) { Text("Share") }
-                        }
-                        Text("Calculated on your device. Works offline.", style = MaterialTheme.typography.bodySmall)
-                    }
-                    2 -> {
-                        val swim = saved
-                        if (swim == null) {
-                            Text("No saved swim", style = MaterialTheme.typography.headlineSmall)
-                            Text("Save a conversion to return to it here.")
-                        } else {
-                            Text(swim.label, style = MaterialTheme.typography.titleMedium)
-                            Text("Saved conversion · not a logged performance", style = MaterialTheme.typography.bodySmall)
-                            Text("Entered time: ${swim.time}")
-                            ResultCard(swim)
-                            Button(onClick = { logging = swim }, enabled = swim.canLog && history.ready && !history.busy) { Text("Log entered swim") }
-                            Button(onClick = { update(swim); tab = 0 }) { Text("Use this swim") }
-                            OutlinedButton(onClick = { share(context, swim) }) { Text("Share saved swim") }
-                            TextButton(onClick = { saved = null; preferences.edit().remove("saved").apply() },
-                                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)) { Text("Remove saved swim") }
-                        }
-                    }
-                    else -> {
-                        Text("How comparisons work", style = MaterialTheme.typography.headlineSmall)
-                        Text("Published NCAA factors estimate a yards time from a metric swim. Reverse and cross-metric conversions are derived estimates. An entered swim remains labeled as entered.")
-                        Text("A converted time is not an official swim or confirmation of meet-entry eligibility.")
-                        val result = draft.outcome
-                        if (result is ConversionOutcome.Available) {
-                            Text(result.provenance.title, fontWeight = FontWeight.Bold)
-                            Text("Edition: ${result.provenance.id}")
-                            TextButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(result.provenance.url))) }) { Text("Published source") }
-                        }
-                        Text("Your data", style = MaterialTheme.typography.headlineSmall)
-                        Text("Your inputs, saved conversion and logged swims stay on this device. History export/import moves a copy of your records; there is no account or cloud sync. Sharing uses a link containing the entered swim. Source links need an internet connection.")
-                    }
+                    }) { insets ->
+                    if (tab == 1) HistoryScreen(history, Modifier.padding(insets), legacy = saved,
+                        openLegacy = { showingLegacy = true }, recordNew = { loggingJSON = draft.copy(time = "").encode() }) { update(it.draft(draft.targetIndex)); tab = 0 }
+                    else ConverterWorkspace(draft, Modifier.padding(insets), history.ready && !history.busy,
+                        update = ::update, add = { focus.clearFocus(); keyboard?.hide(); loggingJSON = draft.encode() },
+                        about = { showingMethod = true })
                 }
             }
         }
-        logging?.let { input ->
+        Draft.decode(loggingJSON)?.let { input ->
             val today = java.time.LocalDate.now().toString()
             SwimEditor(input, initialDate = if (lastLogDay == today) lastDate else today,
-                initialMeet = if (lastLogDay == today) lastMeet else "", history = history, dismiss = { logging = null }) {
+                initialMeet = if (lastLogDay == today) lastMeet else "", history = history, dismiss = { loggingJSON = null }) {
                 lastDate = it.date ?: ""; lastMeet = it.meet ?: ""; lastLogDay = today
-                history.notice = "Swim logged on this device."
+                history.notice = "Time recorded"
+            }
+        }
+        if (showingMethod) ModalBottomSheet(onDismissRequest = { showingMethod = false },
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
+            Column(Modifier.verticalScroll(rememberScrollState()).padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                Text("About Turnmark", style = MaterialTheme.typography.headlineSmall)
+                Text("How comparisons work", style = MaterialTheme.typography.titleMedium)
+                Text("Published NCAA factors estimate a yards time from a metric swim. Reverse and cross-metric conversions are derived estimates. The original time stays separate.")
+                Text("A converted time is not an official swim or confirmation of meet-entry eligibility.")
+                TextButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://turnmark.app/#method"))) }) { Text("Methodology and coverage") }
+                Text("Your data", style = MaterialTheme.typography.titleMedium)
+                Text("Inputs and swim history stay on this device. Export/import moves a copy of recorded swims; there is no account or cloud sync. Sharing includes the original swim in a link. Source links need an internet connection.")
+                TextButton(onClick = { showingMethod = false }) { Text("Done") }
+            }
+        }
+        if (showingLegacy && saved != null) ModalBottomSheet(onDismissRequest = { showingLegacy = false },
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
+            val value = saved!!
+            Column(Modifier.verticalScroll(rememberScrollState()).padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                Text("Previous comparison", style = MaterialTheme.typography.headlineSmall)
+                Text("A comparison saved in an earlier version. It is separate from recorded swims.")
+                ResultCard(value)
+                Button(onClick = { update(value); tab = 0; showingLegacy = false }) { Text("Use these inputs") }
+                TextButton(onClick = { saved = null; preferences.edit().remove("saved").apply(); showingLegacy = false }) { Text("Remove previous comparison") }
+                TextButton(onClick = { showingLegacy = false }) { Text("Done") }
             }
         }
         history.message?.let { message ->
-            AlertDialog(onDismissRequest = { history.message = null }, title = { Text("History") }, text = { Text(message) },
+            AlertDialog(onDismissRequest = { history.message = null }, title = { Text("My times") }, text = { Text(message) },
                 confirmButton = { TextButton(onClick = { history.message = null }) { Text("OK") } })
         }
     }
 }
 
-@Composable private fun ResultSummary(draft: Draft) {
-    Box(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) { ResultCard(draft, compact = true) }
+@OptIn(ExperimentalLayoutApi::class)
+@Composable private fun ConverterWorkspace(draft: Draft, modifier: Modifier, historyReady: Boolean,
+    update: (Draft) -> Unit, add: () -> Unit, about: () -> Unit) {
+    val timeFocus = remember { FocusRequester() }
+    var editingTime by remember { mutableStateOf(false) }
+    val restoreTimeFocus = editingTime
+    val inputs = remember { movableContentOf<Draft, Boolean> { current, ready ->
+        Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            ConverterInputs(current, ready, update, add, timeFocus) { editingTime = it }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("On this device. Works offline.", style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
+                TextButton(onClick = about, modifier = Modifier.testTag("methodology")) { Text("About") }
+            }
+        }
+    } }
+    AdaptiveWorkspace(modifier, name = "converter", primary = {
+        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp)) { inputs(draft, historyReady) }
+    }, supporting = { tabletop ->
+        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp)) {
+            ResultCard(draft, compact = tabletop, selectCourse = { update(draft.copy(targetIndex = it)) })
+        }
+    }, compact = {
+        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            ResultCard(draft, compact = true, selectCourse = { update(draft.copy(targetIndex = it)) })
+            inputs(draft, historyReady)
+        }
+    }, onPaneChange = { if (restoreTimeFocus) timeFocus.requestFocus() })
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable private fun ConverterInputs(draft: Draft, historyReady: Boolean, update: (Draft) -> Unit, add: () -> Unit,
+    timeFocus: FocusRequester, editing: (Boolean) -> Unit) {
+    val largeText = LocalDensity.current.fontScale >= 1.5f
+    val c = LocalTurnmarkColors.current
+    val focus = LocalFocusManager.current
+    val keyboard = LocalSoftwareKeyboardController.current
+    Card(shape = RoundedCornerShape(TurnmarkTokens.radiusCard), colors = CardDefaults.cardColors(containerColor = c.surface)) {
+        Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Text("Your swim", style = MaterialTheme.typography.titleMedium)
+            Text("Your time", style = MaterialTheme.typography.labelLarge)
+            OutlinedTextField(draft.time, { update(draft.copy(time = it)) },
+                modifier = Modifier.fillMaxWidth().focusRequester(timeFocus).onFocusChanged { editing(it.isFocused) }.testTag("timeInput"), singleLine = true,
+                textStyle = MaterialTheme.typography.headlineLarge.copy(fontFeatureSettings = "tnum"),
+                supportingText = { Text("For example, 58.32 or 1:02.45") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii, imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = {
+                    focus.clearFocus(); keyboard?.hide()
+                }))
+            FlowRow(maxItemsInEachRow = if (largeText) 1 else 2,
+                horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Choice("Stroke", if (draft.strokeIndex == 4) "IM" else strokeNames[draft.strokeIndex], strokeNames,
+                    Modifier.semantics { stateDescription = strokeNames[draft.strokeIndex] }) { update(draft.copy(strokeIndex = it)) }
+                Choice("Distance", "${draft.distance} ${draft.unit}", draft.options.map { "${it.event.distance} ${draft.unit}" }, Modifier) {
+                    update(draft.copy(distance = draft.options[it].event.distance))
+                }
+            }
+            CourseControl("Swum in", "inputCourse", draft.courseIndex) { update(draft.copy(courseIndex = it)) }
+            Text("Published category", style = MaterialTheme.typography.labelLarge)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                listOf("Women", "Men").forEachIndexed { index, label ->
+                    FilterChip(draft.categoryIndex == index, { update(draft.copy(categoryIndex = index)) }, { Text(label) })
+                }
+            }
+            CourseControl("Compare with", "targetCourse", draft.targetIndex) { update(draft.copy(targetIndex = it)) }
+            HorizontalDivider()
+            Button(onClick = add, enabled = draft.canLog && historyReady,
+                colors = ButtonDefaults.buttonColors(containerColor = c.actionFill, contentColor = c.onAction),
+                modifier = Modifier.fillMaxWidth().testTag("logSwim")) {
+                Icon(Icons.Default.Add, contentDescription = null); Spacer(Modifier.width(8.dp)); Text("Record time")
+            }
+            Text("Record the time you swam, with a date and optional meet.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
+        }
+    }
 }
 
 @Composable fun CourseControl(label: String, tag: String, selected: Int, onSelect: (Int) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(label, fontWeight = FontWeight.Bold)
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             courses.forEachIndexed { index, course ->
                 FilterChip(selected == index, { onSelect(index) }, { Text(course.name) }, modifier = Modifier.testTag("$tag-${course.name}"))
             }
@@ -286,61 +312,90 @@ private fun share(context: Context, draft: Draft) {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable private fun ResultCard(draft: Draft, compact: Boolean = false) {
+@Composable fun ResultCard(draft: Draft, compact: Boolean = false, selectCourse: ((Int) -> Unit)? = null) {
     var showingDetails by remember { mutableStateOf(false) }
+    var showingCourses by rememberSaveable { mutableStateOf(false) }
     val result = draft.outcome
-    val largeText = LocalDensity.current.fontScale >= 1.5f
-    Column(Modifier.fillMaxWidth().background(Ink, RoundedCornerShape(if (compact) 20.dp else 24.dp))
-        .padding(if (compact) 16.dp else 24.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        when (result) {
-            is ConversionOutcome.Available -> {
-                Text(draft.resultLabel(result.value.event), color = Color.White, style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.testTag("resultContext"))
-                if (largeText) {
+    val c = TurnmarkTokens.dark
+    val context = LocalContext.current
+    TurnmarkTheme(dark = true) {
+        Column(Modifier.fillMaxWidth().background(c.surfaceRaised, RoundedCornerShape(TurnmarkTokens.radiusCard))
+            .padding(if (compact) 20.dp else 24.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            Text("YOUR COMPARISON", color = c.textMuted, style = MaterialTheme.typography.labelSmall)
+            when (result) {
+                is ConversionOutcome.Available -> {
+                    Text(draft.resultLabel(result.value.event), color = c.textMuted, style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.testTag("resultContext"))
                     ResultTime(result.value.time, compact)
-                    DetailsButton { showingDetails = true }
-                } else {
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                        ResultTime(result.value.time, compact, Modifier.weight(1f))
-                        DetailsButton { showingDetails = true }
+                    Text(kindLabel(result.value.kind), color = c.textMuted, style = MaterialTheme.typography.labelMedium)
+                    if (result.value.kind != ConversionKind.SWUM) Text("From ${draft.time} · ${draft.distance} ${draft.unit} ${courses[draft.courseIndex]}",
+                        color = c.textMuted, style = MaterialTheme.typography.bodySmall)
+                    if (compact) TextButton(onClick = { showingCourses = !showingCourses }, modifier = Modifier.testTag("courseEquivalents")) {
+                        Text(if (showingCourses) "Hide course equivalents" else "All course equivalents")
+                    }
+                    if (!compact || showingCourses) {
+                        HorizontalDivider()
+                        courses.forEachIndexed { index, course ->
+                            val row = convertSwim(ConversionRequest(Swim(draft.time, SwimEvent(draft.distance, strokes[draft.strokeIndex], courses[draft.courseIndex])),
+                                course, if (draft.categoryIndex == 0) Category.WOMEN else Category.MEN))
+                            TextButton(onClick = { selectCourse?.invoke(index) }, modifier = Modifier.fillMaxWidth().testTag("equivalent-$course"),
+                                colors = ButtonDefaults.textButtonColors(contentColor = if (index == draft.targetIndex) c.resultHighlight else c.text)) {
+                                Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                        Row { Text(course.name); if (index == draft.targetIndex) { Spacer(Modifier.width(6.dp)); Icon(Icons.Default.Check, "Selected", Modifier.size(18.dp)) } }
+                                        Text(if (row is ConversionOutcome.Available) row.value.time else "Unavailable", fontWeight = FontWeight.Bold)
+                                    }
+                                    Text(if (row is ConversionOutcome.Available) "${draft.resultLabel(row.value.event)} · ${kindLabel(row.value.kind)}" else "No published conversion",
+                                        style = MaterialTheme.typography.bodySmall, color = c.textMuted)
+                                }
+                            }
+                            if (index < 2) HorizontalDivider()
+                        }
+                    }
+                    FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        TextButton(onClick = { showingDetails = true }, modifier = Modifier.testTag("conversionDetails")) {
+                            Icon(Icons.Default.Info, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text("Details")
+                        }
+                        OutlinedButton(onClick = { share(context, draft) }, modifier = Modifier.testTag("shareSwim")) { Text("Share") }
                     }
                 }
-                Text(when (result.value.kind) { ConversionKind.SWUM -> "Entered swim"; ConversionKind.PUBLISHED -> "Published factor"; ConversionKind.DERIVED -> "Derived estimate" },
-                    color = Lime, style = MaterialTheme.typography.labelMedium)
-                if (result.value.kind != ConversionKind.SWUM) {
-                    Text("From ${draft.time} · ${draft.distance} ${draft.unit} ${courses[draft.courseIndex]}",
-                        color = Color.White.copy(alpha = 0.8f), style = MaterialTheme.typography.bodySmall)
+                is ConversionOutcome.Invalid -> {
+                    Text("Check your time", color = c.text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.testTag("invalidTime"))
+                    Text("Try 58.32 or 1:02.45, up to 60 minutes.", color = c.textMuted, style = MaterialTheme.typography.bodyMedium)
+                }
+                is ConversionOutcome.Unavailable -> {
+                    Text("No published conversion", color = c.text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.testTag("unavailableConversion"))
+                    Text("Choose another event or course comparison.", color = c.textMuted, style = MaterialTheme.typography.bodyMedium)
                 }
             }
-            is ConversionOutcome.Invalid -> {
-                Text("Check your time", color = Color.White, fontWeight = FontWeight.Bold, modifier = Modifier.testTag("invalidTime"))
-                Text("Try 58.32 or 1:02.45, up to 60 minutes.", color = Color.White, style = MaterialTheme.typography.bodySmall)
-            }
-            is ConversionOutcome.Unavailable -> {
-                Text("No published conversion", color = Color.White, fontWeight = FontWeight.Bold, modifier = Modifier.testTag("unavailableConversion"))
-                Text("Choose another event or course comparison.", color = Color.White, style = MaterialTheme.typography.bodySmall)
-            }
         }
     }
-    if (showingDetails && result is ConversionOutcome.Available) {
-        ModalBottomSheet(onDismissRequest = { showingDetails = false }, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
-            ConversionDetails(draft, result) { showingDetails = false }
-        }
+    if (showingDetails && result is ConversionOutcome.Available) ModalBottomSheet(onDismissRequest = { showingDetails = false },
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
+        ConversionDetails(draft, result) { showingDetails = false }
     }
 }
 
-@Composable private fun ResultTime(time: String, compact: Boolean, modifier: Modifier = Modifier) {
-    Text(time, fontSize = if (compact) 34.sp else 48.sp, fontWeight = FontWeight.Bold,
-        color = Color.White, modifier = modifier.testTag("resultTime"))
+private fun kindLabel(kind: ConversionKind) = when (kind) {
+    ConversionKind.SWUM -> "Original time"
+    ConversionKind.PUBLISHED -> "Published factor"
+    ConversionKind.DERIVED -> "Derived estimate"
 }
 
-@Composable private fun DetailsButton(onClick: () -> Unit) {
-    TextButton(onClick = onClick, modifier = Modifier.testTag("conversionDetails"),
-        colors = ButtonDefaults.textButtonColors(contentColor = Lime)) {
-        Icon(Icons.Default.Info, contentDescription = null, modifier = Modifier.size(18.dp))
-        Spacer(Modifier.width(6.dp))
-        Text("Details")
+@Composable private fun ResultTime(time: String, compact: Boolean) {
+    val c = LocalTurnmarkColors.current
+    val scale = LocalDensity.current.fontScale
+    BoxWithConstraints(Modifier.fillMaxWidth()) {
+        // Fit the complete clock while body/context retain normal font scaling.
+        val size = minOf(if (compact) 44f else 64f, maxWidth.value / (time.length * .64f * scale)).sp
+        val split = time.indexOf('.')
+        val text = buildAnnotatedString {
+            append(if (split >= 0) time.substring(0, split) else time)
+            if (split >= 0) withStyle(SpanStyle(color = c.resultHighlight)) { append(time.substring(split)) }
+        }
+        Text(text, fontSize = size, fontWeight = FontWeight.Bold, color = c.text,
+            fontFamily = androidx.compose.ui.text.font.FontFamily.Default, style = MaterialTheme.typography.displayLarge.copy(fontFeatureSettings = "tnum"),
+            modifier = Modifier.testTag("resultTime"), maxLines = 1)
     }
 }
 

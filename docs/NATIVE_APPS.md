@@ -14,29 +14,30 @@ offline on first launch, and use the same source editions and outcomes.
   destination event, units, course and category alongside the original swim.
   Details open a native sheet with entered/result context, multiplier and
   source edition; the multiplier comes directly from the SDK.
-- One saved swim, restore/remove actions, current-input persistence and native
-  sharing. Saving shows a checkmarked Saved state; editing the conversion
-  returns the action to Save swim. Share links open `https://turnmark.app/`;
-  [HOSTING.md](HOSTING.md) describes website deployment and credential isolation.
-- Offline actual-swim history: **Log swim** confirms the entered time, date and
-  optional meet; records can be edited/deleted and compared without changing
-  the original performance. Personal bests compare actual matching events only.
+- **Convert · My times** navigation and **Record time** confirmation. From Convert,
+  the editor prefills the entered performance; My times opens a blank-time editor.
+  Recent and Best times views show actual records, not converted estimates.
+  Records can be edited/deleted and compared without changing the original time.
+- Current-input persistence, native sharing and an explicit transition for the
+  previous saved comparison. Old bookmarks retain their meaning and can be
+  restored/removed from My times. Sharing uses `https://turnmark.app/`.
+- Offline actual-swim storage with personal bests for matching actual events.
   JSON export/import uses one [portable format](../apps/history/README.md), with
-  a preview, rejected-row reporting, duplicate-ID skipping and atomic inserts.
+  preview, rejected-row reporting, duplicate-ID skipping and atomic inserts.
   iOS uses versioned SwiftData; Android uses SQLiteOpenHelper with database and
-  document I/O off the main thread. Saved conversions remain separate.
-- Convert, History, Saved and Method screens, system appearance, scalable native text
-  and native accessibility semantics. The converter opens directly into inputs,
-  without an app-name banner or page heading. Shared wave launcher icons and
-  platform launch behavior are described in [brand asset generation](BRANDING.md).
-- iOS uses system Liquid Glass navigation, pickers and glass Save/Share buttons
-  on iOS 26+. Input and result cards retain opaque, readable surfaces. Older
-  supported versions use standard bordered buttons.
-- At accessibility text sizes, controls stack and the result scrolls with the
-  form so it cannot obscure the inputs. Short landscape windows also use the
-  scrolling result. Android keeps independent scroll positions for each tab,
-  provides an explicit keyboard Done action and makes room for the keyboard
-  by temporarily moving the result into the form and hiding bottom navigation.
+  document I/O off the main thread.
+- Generated semantic palettes from the [shared design contract](DESIGN_CONTRACT.md).
+  A navy result card, tabular clock, cyan actions and lime result emphasis give
+  both apps the same identity. Native forms, pickers, sheets and navigation retain
+  platform behavior and appearance. iOS uses Liquid Glass actions on iOS 26+;
+  older systems use standard bordered controls. Android maps complete Material 3
+  foreground/background roles.
+- Compact inline results, expanded input/result panes and independent scrolling.
+  iOS 27.1 uses reserved division regions and ArrangementView for active folds;
+  Android uses Material adaptive folding features and window bounds. Tabletop
+  puts results above and inputs below the fold. My times has adaptive list/detail
+  navigation. Native keyboard Done, scalable text and system sharing remain.
+  [Adaptive layout notes](ADAPTIVE_LAYOUT.md) track verification and limits.
 
 This is the first converter workflow, not full web feature parity. Native youth
 and Masters benchmarks, points, altitude entry,
@@ -49,7 +50,8 @@ minimum are provisional until release configuration is finalized.
 The [offline meet and swim history](MEET_HISTORY.md) workflow is implemented
 with portable export/import. Existing saved conversions do not become race
 records unless explicitly logged. Charts, splits and synchronization are later
-work. The next release stage is physical-device testing and beta preparation.
+work. See the [native visual review](NATIVE_VISUAL_REVIEW.md) for current screenshots
+and outstanding checks before physical-device testing and beta preparation.
 
 ## iOS
 
@@ -128,29 +130,24 @@ credentials, so the IaC repo now skips fork/Dependabot previews.
 
 ## Checks
 
-Both UI suites exercise a women’s 100 free swim of `1:00` LCM converted to
-`52.44` SCY, source-detail access, saved-swim restoration, zero-time rejection,
-and an unavailable 100 IM to LCM comparison. A fourth test checks destination
-context for 400 m to 500 yd, category changes and same-course entered swims.
-The saved-swim flow checks visible save confirmation and removal across restart.
-A fifth test exercises native sharing and cancellation for current and saved
-swims. Android additionally intercepts the chooser intents to check that the
-shared links contain the entered times and preserve saved values after editing.
-The iOS saved-swim test terminates/relaunches the app;
-Android recreates the activity and reads persisted state. The history suites share 25 import validation cases and a five-swim portable
-fixture, and check persistence, editing, deletion, duplicate handling, malformed
-files and unavailable conversions. The UI suites log an unsupported-comparison
-swim, edit it, compare it, relaunch and delete it. The portable SDK
-fixtures continue to test the numerical core independently of UI controls.
+Both UI suites exercise a women's 100 free `1:00` LCM conversion to `52.44`
+SCY, source details, draft persistence, original/derived context, invalid input,
+unsupported comparisons and original-value sharing. They also cover recording
+from My times, Recent/Best times filtering, actual-swim editing/comparing/deletion,
+and old comparison bookmarks remaining separate across restart. The shared
+history suites validate portable imports, atomic rejection and matching bests.
+SDK conformance fixtures test numerical behavior independently of the UI.
 
-The iOS result bundle retains screenshots of Convert, Saved and Method in light
-and dark appearance. For a local Android visual review, pass instrumentation
-argument `turnmarkScreenshots=true` to the conversion/restoration test. It writes
-`android-converter.png`, `android-saved.png`, `android-method.png` and
-`android-details.png` in the debug
-app's private files directory, readable with `adb exec-out run-as
-net.stanback.turnmark cat files/<name>.png`. The app requests no screenshot or
-storage permission; capture code exists only in the test APK.
+For iOS, the result bundle retains screenshot attachments. Select a runtime with
+`TURNMARK_IOS_RUNTIME=27.1 node scripts/test-ios.mjs app`. For Android opt-in captures, install the built app and test APKs, then run
+`adb shell am instrument -w -e turnmarkScreenshots true net.stanback.turnmark.test/androidx.test.runner.AndroidJUnitRunner`.
+PNG files are written to the debug app's private directory and can be read with
+`adb exec-out run-as net.stanback.turnmark cat files/<name>.png`. Capture code
+exists only in the test APK and requires no app permission. Gradle can uninstall
+test apps after a connected run, so use direct instrumentation for this manual
+capture workflow. The Android adaptive
+test injects WindowManager book/tabletop regions and checks that complete input
+and result bounds avoid the fold while entry and focus survive the transition.
 
 ## Usability review
 

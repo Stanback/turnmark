@@ -20,8 +20,10 @@ native apps; editing canonical calculations or data tests every consumer.
 The shared palette `design/turnmark.tokens.json`, wave geometry
 `design/wave.svg`, brand export manifest, and brand exporter select web, iOS and
 Android because all three consume launcher/favicon assets. They do not select
-core/calculation checks. The CSS generator and contract checks under `design/`
-currently select web; native screen adapters will be added during adoption.
+core/calculation checks. The palette generator `design/generate.mjs` also selects all three UI consumers.
+Other design contract checks select web. Both native app test wrappers verify
+committed generated palettes before testing, so a platform-only edit cannot
+silently drift from the source contract.
 Web-only layout changes still skip native builds. Editing CI selection rules
 themselves selects all checks.
 

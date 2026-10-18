@@ -66,6 +66,7 @@ export function affectedChecks(paths) {
       [
         "scripts/generate-brand-assets.mjs",
         "design/turnmark.tokens.json",
+        "design/generate.mjs",
         "design/wave.svg",
         "design/brand-manifest.json",
       ].includes(path)
