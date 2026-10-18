@@ -38,9 +38,9 @@ text, the clock fits one line and surrounding copy wraps normally:
   font request, direct fetch, local storage, history access or nested iframe.
   Installed third-party license notices are derived from the bundle graph and
   included in both the HTML resource and npm archive.
-- Worker dry run: approximately 2,264 KiB total / 462 KiB gzip. This fits the
+- Worker dry run: approximately 2,283 KiB total / 468 KiB gzip. This fits the
   [Workers Free compressed-script allowance](https://developers.cloudflare.com/workers/platform/limits/).
-  Local workerd startup profiling measured a 40.4 ms window / 22.7 ms active
+  Local workerd startup profiling measured a 42.2 ms window / 22.5 ms active
   sample time; that is module startup, not an edge request CPU measurement.
   Existing body limits, approximate per-IP/aggregate rate limits, Free plan,
   Origin policy and protected deployment credentials remain unchanged.
