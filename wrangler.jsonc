@@ -11,6 +11,5 @@
   },
   "routes": [
     { "pattern": "turnmark.app", "custom_domain": true },
-    { "pattern": "www.turnmark.app", "custom_domain": true },
   ],
 }

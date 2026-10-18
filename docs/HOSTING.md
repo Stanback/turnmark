@@ -3,8 +3,7 @@
 The production website is `https://turnmark.app/`, hosted as static assets by
 `turnmark-web` in the Brianna Stanback Cloudflare account. `wrangler.jsonc` owns
 the configuration: no server-side code, storage bindings or runtime secrets.
-Worker Custom Domains manage DNS/certificates for the apex and `www`; `www`
-redirects to the apex. Do not add competing DNS records in the IaC repo.
+The Worker Custom Domain manages DNS and certificates for `turnmark.app`. Do not add competing DNS records in the IaC repo.
 
 Metadata, Vite's base, the PWA manifest, generated service worker and native
 share links use the new root URL. Browser storage starts fresh on this origin;
@@ -55,7 +54,7 @@ npm run build
 node deployment/node_modules/wrangler/bin/wrangler.js deploy --config wrangler.jsonc
 ```
 
-This creates the Worker and binds the two custom domains. Keep provisioning
+This creates the Worker and binds the custom domain. Keep provisioning
 privileges local; CI uses `versions upload` and `versions deploy`, which leave
 domain/route configuration alone.
 
