@@ -47,19 +47,6 @@ domain below the UI layer.
 [Apple's overview](https://developer.apple.com/documentation/technologyoverviews/swiftui),
 [Android's overview](https://developer.android.com/compose).
 
-### The useful ArtCraft lesson is the engine boundary
-
-ArtCraft's PhotoCraft repository describes a Rust editor with an egui UI; its
-product page offers desktop builds and a WebAssembly build. Separately,
-ArtCraft's native desktop client describes sharing Rust API crates with its
-Tauri application. These are different projects and neither establishes native
-SwiftUI/Compose mobile readiness. The relevant architectural idea for Turnmark
-is a reusable engine with separate presentation layers. Rendering a custom Rust
-UI is outside Turnmark's native UI direction.
-[PhotoCraft source](https://github.com/storytold/photocraft),
-[PhotoCraft platforms](https://getartcraft.com/apps/photocraft),
-[ArtCraft native client](https://github.com/storytold/artcraft/blob/main/artcraft-native/README.md).
-
 ### There is an existing publisher use case
 
 The current [SwimSwam converter](https://swimswam.com/swimming-times-conversion-tool/)
