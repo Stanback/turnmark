@@ -2,8 +2,9 @@
 
 Status: the local stdio server and stateless Cloudflare Worker adapter are now
 implemented in `packages/mcp` and `packages/mcp-worker`. See [MCP setup, checks
-and deployment status](MCP.md). Package publication and production bootstrap
-remain pending. WebMCP remains a separate planned adapter.
+and deployment status](MCP.md). The dedicated Worker and protected credential
+are configured; first deployment awaits passing main CI. npm publication
+remains pending. WebMCP remains a separate planned adapter.
 
 ## One engine, two access paths
 
@@ -14,7 +15,7 @@ mappings across adapters; keep semantic validation, formulas, datasets and
 provenance in Rust. Generate schemas from the core contract where practical,
 and verify any protocol-specific mapping against the portable fixtures.
 
-| Planned tool          | SDK responsibility                                                |
+| MCP tool              | SDK responsibility                                                |
 | --------------------- | ----------------------------------------------------------------- |
 | `convert_swim`        | Convert an entered swim to an explicit target course.             |
 | `adjust_altitude`     | Adjust an entered swim at an explicit elevation/unit.             |
@@ -46,20 +47,18 @@ It must explicitly select a local store/import file and distinguish reads from
 reviewable writes. The planned public calculation service does not expose a
 person's device history.
 
-A provisional `packages/mcp` owns the server and launch/configuration examples.
-Add it when implementation starts, without another engine or dataset copy.
+`packages/mcp` owns the server and launch/configuration examples, without
+another engine or dataset copy.
 
 ### Hosting sequence
 
-1. **Local first:** stdio server with packaged Wasm, no hosted service required.
-2. **Optional later:** add Streamable HTTP using the same tool handlers. Prefer
-   a stateless Cloudflare Worker, eventually exposed on an owner-controlled
-   custom domain, for example `https://mcp.example.com/mcp`. Turnmark uses `mcp.turnmark.app`; deployment status is tracked in [MCP.md](MCP.md).
-3. Verify the SDK's Worker initialization path with a bundled precompiled Wasm
-   module. Workers' Wasm loading differs from Node's file-byte initialization;
-   this runtime integration is not yet tested. Keep it in the loader/adapter,
-   without changing the engine or numerical contract. Test real remote clients
-   and decide access policy and request limits before enabling a public endpoint.
+1. The offline stdio server loads packaged Wasm; no hosted service is required.
+2. `packages/mcp-worker` uses the same tools over stateless Streamable HTTP at
+   `mcp.turnmark.app`. Deployment status is tracked in [MCP.md](MCP.md).
+3. The SDK accepts a bundled precompiled Wasm module for Workers. Actual clients
+   exercise both transports and protocol modes against the same portable
+   fixtures. The public service has explicit request limits and no user storage;
+   verify live discovery and calculations after deployment.
 
 Cloudflare documents stateless MCP handlers and Streamable HTTP, Worker Custom
 Domains, and precompiled Wasm modules.
@@ -70,8 +69,8 @@ Domains, and precompiled Wasm modules.
 Static hosting serves HTML/JavaScript/Wasm, so it can serve the website and
 its browser-executed WebMCP integration on supporting browsers. It cannot run
 the remote MCP HTTP endpoint. Local MCP distribution can still use the GitHub
-repository and release assets; adding the future Worker does not require moving
-the website off Pages.
+repository and release assets. Turnmark's website now uses its own static-assets
+Worker; the MCP Worker is a separate service and deployment boundary.
 [GitHub Pages hosting model](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages).
 
 ## WebMCP integration

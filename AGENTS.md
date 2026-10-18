@@ -86,6 +86,10 @@ instructions here.
   Worker. Build application code without credentials; deploy the tested static
   artifact from an isolated runner. Never copy IaC or account-wide credentials
   into this repository, job logs or chat.
+- The MCP Worker has its own main-only environment and token scoped only to
+  `turnmark-mcp`; follow [MCP.md](docs/MCP.md). Keep both Workers on Free unless
+  the owner explicitly approves a plan change. Public MCP tools remain
+  read-only and accept explicit calculation inputs, without personal history.
 - Report what changed, meaningful validation, and remaining limitations. Do not
   claim planned integrations, full native feature parity or store readiness
   from a successful build alone.

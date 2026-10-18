@@ -1,8 +1,10 @@
 # Turnmark MCP
 
-Status: local stdio and a Cloudflare Worker adapter are implemented on this
-branch. Neither npm package nor the public endpoint has been released yet.
-The intended remote URL is `https://mcp.turnmark.app/mcp`.
+Status: local stdio and a Cloudflare Worker adapter are implemented. The
+dedicated Worker, Custom Domain and protected deployment credential are
+configured; the first application deployment follows merge and passing CI.
+The remote URL is `https://mcp.turnmark.app/mcp`. npm publication is separate
+and has not happened yet.
 
 ## One calculation engine
 
@@ -88,11 +90,21 @@ Before the first production deployment:
 4. Verify root health and real MCP discovery/calls against the live hostname.
    Keep rollout status accurate here and in the package README.
 
-The workflow already contains this deployment path, but the account bootstrap
-and protected secret are prerequisites. Ordinary web-only edits skip MCP jobs;
+The account bootstrap and protected secret are configured. The deployment
+token expires January 16, 2027; rotate it before expiration using the same
+individual-Worker scope. Ordinary web-only edits skip MCP jobs;
 SDK/core edits test their MCP consumer. There is no automatic npm publication
 of `@turnmark/mcp`; it depends on a released SDK and separate package release
 setup. WebMCP and publisher embeds have independent adapters and scopes.
+
+The private IaC repository manages the zone's Free-plan edge rules: a
+path-only `/mcp` limit of 30 requests per 10 seconds per IP/location, with a
+10-second block, and hostname-specific route filtering. A disabled emergency
+stop can block the MCP hostname without changing the website. Unsupported MCP
+methods reach the Worker and return `405`; there are no interactive browser
+challenges. Edge limits and the Worker's bindings reduce abuse but cannot
+guarantee availability against distributed traffic or enforce a global daily
+budget. Do not broaden the deployment token to manage these rules.
 
 Sources: [official TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk),
 [Cloudflare stateless MCP handler](https://developers.cloudflare.com/agents/model-context-protocol/apis/handler-api/),

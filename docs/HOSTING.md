@@ -41,6 +41,13 @@ preserves shared query strings and URL fragments.
 Repository/account owners can still change their security settings. A deployment
 token can modify this website and must still be treated as a secret.
 
+The separate `turnmark-mcp` Worker uses its own individual-Worker token in
+the main-only `cloudflare-mcp-production` environment. It follows the same
+credential-free build and isolated artifact deployment boundary; neither token
+can deploy the other Worker. See [MCP.md](MCP.md) for its bootstrap, abuse limits
+and rotation date. Keep both services on Workers Free unless the owner approves
+a plan change.
+
 ## Initial setup
 
 Worker creation needs broader access than routine publication. After reviewing
