@@ -16,6 +16,13 @@ targets:
     type: application
     platform: iOS
     sources: [Sources]
+    info:
+      path: Info.plist
+      properties:
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen:
+          UIColorName: LaunchBackground
     dependencies:
       - package: TurnmarkCore
     settings:
@@ -23,7 +30,6 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         PRODUCT_BUNDLE_IDENTIFIER: net.stanback.turnmark
         GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
         INFOPLIST_KEY_CFBundleDisplayName: Turnmark
         TARGETED_DEVICE_FAMILY: '1,2'

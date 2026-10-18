@@ -79,7 +79,6 @@ private struct TurnmarkView: View {
             NavigationStack {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
-                        Text("Convert a swim").font(.title2.bold()).accessibilityAddTraits(.isHeader)
                         inputCard
                         HStack {
                             Button { savedJSON = draft.encoded } label: { Label("Save swim", systemImage: "bookmark") }
@@ -94,10 +93,8 @@ private struct TurnmarkView: View {
                 }
                 .modifier(ConversionResultBar(summary: resultSummary))
                 .background(Color(uiColor: .systemGroupedBackground))
-                .navigationTitle("turnmark.")
-                .navigationBarTitleDisplayMode(.inline)
+                .toolbar(.hidden, for: .navigationBar)
                 .toolbar {
-                    ToolbarItem(placement: .principal) { BrandHeader() }
                     if editingTime { ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("Done") { editingTime = false } } }
                 }
             }.tabItem { Label("Convert", systemImage: "arrow.left.arrow.right") }.tag(0)
@@ -201,7 +198,6 @@ private struct TurnmarkView: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
                 Text("\(courseNames[input.courseIndex]) → \(courseNames[input.targetIndex])").font(.subheadline.weight(.semibold))
-                Spacer(); Image("BrandMark").resizable().frame(width: 32, height: 32).clipShape(.rect(cornerRadius: 9)).accessibilityHidden(true)
             }.foregroundStyle(lime)
             switch input.outcome {
             case let .available(value, source):
@@ -235,17 +231,6 @@ private struct SwimActionsStyle: ViewModifier {
         } else {
             content.buttonStyle(.bordered).controlSize(.large)
         }
-    }
-}
-
-private struct BrandHeader: View {
-    var body: some View {
-        HStack(spacing: 8) {
-            Image("BrandMark").resizable().frame(width: 32, height: 32)
-                .clipShape(.rect(cornerRadius: 10)).accessibilityHidden(true)
-            // A wordmark stays at a fixed optical size inside the system bar.
-            Text("turnmark.").font(.system(size: 20, weight: .bold))
-        }.accessibilityElement(children: .combine).accessibilityLabel("Turnmark")
     }
 }
 

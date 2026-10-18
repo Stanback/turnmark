@@ -19,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -108,13 +107,11 @@ private fun share(context: Context, draft: Draft) {
         surface = Color(0xFF122C3C), background = Color(0xFF091F2D))
         else lightColorScheme(primary = Ink, secondaryContainer = Lime, onSecondaryContainer = Ink,
             background = Color(0xFFF0F5F8), surface = Color.White)) {
-        Scaffold(topBar = { TopAppBar(title = {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                if (tab == 0) Icon(painterResource(R.drawable.brand_mark), contentDescription = null,
-                    tint = Color.Unspecified, modifier = Modifier.size(34.dp))
-                Text(if (tab == 0) "turnmark." else if (tab == 1) "Saved swim" else "The method", fontWeight = FontWeight.Bold)
-            }
-        }) },
+        Scaffold(topBar = {
+            if (tab != 0) TopAppBar(title = {
+                Text(if (tab == 1) "Saved swim" else "The method", fontWeight = FontWeight.Bold)
+            })
+        },
             bottomBar = {
               Column {
                 if (tab == 0) ResultSummary(draft)
@@ -134,7 +131,6 @@ private fun share(context: Context, draft: Draft) {
                 verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 when (tab) {
                     0 -> {
-                        Text("Convert a swim", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                         Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
                             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                                 Text("Your time", fontWeight = FontWeight.Bold)

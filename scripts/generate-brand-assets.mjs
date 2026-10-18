@@ -19,15 +19,6 @@ async function output(file, content) {
 }
 const info = { author: "xcode", version: 1 };
 await output(`${assets}/Contents.json`, json({ info }));
-await output(`${assets}/BrandMark.imageset/BrandMark.svg`, svg);
-await output(
-  `${assets}/BrandMark.imageset/Contents.json`,
-  json({
-    images: [{ filename: "BrandMark.svg", idiom: "universal" }],
-    info,
-    properties: { "preserves-vector-representation": true },
-  }),
-);
 await output(
   `${assets}/AppIcon.appiconset/Contents.json`,
   json({
@@ -59,13 +50,6 @@ const declaration = '<?xml version="1.0" encoding="utf-8"?>\n';
 const vector = (size, body) =>
   `${declaration}<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="${size}dp" android:height="${size}dp" android:viewportWidth="512" android:viewportHeight="512">\n${body}\n</vector>\n`;
 const wavePath = `    <path android:pathData="${wave}" android:strokeColor="${stroke}" android:strokeWidth="${width}" android:strokeLineCap="round" android:fillColor="@android:color/transparent" />`;
-await output(
-  `${res}/drawable/brand_mark.xml`,
-  vector(
-    40,
-    `    <path android:fillColor="${background}" android:pathData="M128,0 H384 Q512,0 512,128 V384 Q512,512 384,512 H128 Q0,512 0,384 V128 Q0,0 128,0 Z" />\n${wavePath}`,
-  ),
-);
 // The waves occupy the adaptive icon safe zone; the OS supplies the mask/effects.
 await output(
   `${res}/drawable/ic_launcher_foreground.xml`,

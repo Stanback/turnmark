@@ -15,8 +15,9 @@ offline on first launch, and use the same source editions and outcomes.
   sharing. Share links still open the existing GitHub Pages app. The
   `turnmark.app` website migration is a separate PR.
 - Convert, Saved and Method screens, system appearance, scalable native text
-  and native accessibility semantics. The shared wave mark appears in app headers
-  and launcher icons; see [brand asset generation](BRANDING.md).
+  and native accessibility semantics. The converter opens directly into inputs,
+  without an app-name banner or page heading. Shared wave launcher icons and
+  platform launch behavior are described in [brand asset generation](BRANDING.md).
 - iOS uses system Liquid Glass navigation, pickers and glass Save/Share buttons
   on iOS 26+. Input and result cards retain opaque, readable surfaces. Older
   supported versions use standard bordered buttons.
@@ -85,7 +86,9 @@ Cloudflare, Apple signing or store-upload credentials. The iOS job uses the
 `xcode-27` runner, pins Xcode 27.1 and verifies SDK 27.1 before building. Simulator
 selection prefers the latest installed iOS runtime; CI requires iOS 27. Local
 visual checks can also run on older supported runtimes. Test artifacts expire
-after seven days. The existing website deployment remains a main-branch-only
+after seven days. Jobs are capped at 15 minutes for core/web, 30 minutes for iOS
+and 20 minutes for Android, so a stalled toolchain cannot occupy a runner for the
+default six hours. The existing website deployment remains a main-branch-only
 job with its own permissions; do not use `pull_request_target` to execute PR code.
 
 When releases are added, put signed builds and TestFlight/Play uploads in a
