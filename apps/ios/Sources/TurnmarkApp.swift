@@ -67,10 +67,14 @@ struct TurnmarkApp: App {
 }
 
 private struct TurnmarkView: View {
+    @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.verticalSizeClass) private var heightClass
     @State private var draft: Draft
     @State private var tab = 0
     @AppStorage("savedSwim") private var savedJSON = ""
     @FocusState private var editingTime: Bool
+    private var isSaved: Bool { Draft.decode(savedJSON) == draft }
+    private var pinResult: Bool { !typeSize.isAccessibilitySize && heightClass != .compact }
 
     init() {
         #if DEBUG
@@ -86,20 +90,20 @@ private struct TurnmarkView: View {
             NavigationStack {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
+                        if !pinResult { ConversionResult(input: draft, compact: true) }
                         inputCard
-                        HStack {
-                            Button { savedJSON = draft.encoded } label: { Label("Save swim", systemImage: "bookmark") }
-                                .accessibilityIdentifier("saveSwim")
-                            Spacer()
-                            ShareLink(item: draft.shareURL) { Label("Share", systemImage: "square.and.arrow.up") }
-                                .accessibilityIdentifier("shareSwim")
-                        }.modifier(SwimActionsStyle()).disabled(!draft.available)
+                        swimActions.modifier(SwimActionsStyle()).disabled(!draft.available)
                         Text("Calculated on your device. Works offline.")
                             .font(.footnote).foregroundStyle(.secondary)
                     }.padding()
                 }
-                .modifier(ConversionResultBar(summary: ConversionResult(input: draft, compact: true)))
+                .modifier(ConversionResultBar(summary: ConversionResult(input: draft, compact: true), pinned: pinResult))
                 .background(Color(uiColor: .systemGroupedBackground))
+                .safeAreaInset(edge: .top, spacing: 0) {
+                    // Keep scrolling text clear of the system status text.
+                    Color.clear.frame(height: 0).background(.regularMaterial)
+                        .accessibilityHidden(true).allowsHitTesting(false)
+                }
                 .toolbar(.hidden, for: .navigationBar)
                 .toolbar {
                     if editingTime { ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("Done") { editingTime = false } } }
@@ -145,6 +149,28 @@ private struct TurnmarkView: View {
         .onChange(of: draft.strokeIndex) { _, _ in draft.reconcile() }
     }
 
+    @ViewBuilder private var swimActions: some View {
+        if typeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 12) { saveButton; shareButton }
+        } else {
+            HStack { saveButton; Spacer(); shareButton }
+        }
+    }
+
+    private var saveButton: some View {
+        Button {
+            savedJSON = draft.encoded
+            UIAccessibility.post(notification: .announcement, argument: "Swim saved on this device")
+        } label: { Label(isSaved ? "Saved" : "Save swim", systemImage: isSaved ? "checkmark" : "bookmark") }
+            .accessibilityIdentifier("saveSwim")
+            .accessibilityValue(isSaved ? "Saved on this device" : "")
+    }
+
+    private var shareButton: some View {
+        ShareLink(item: draft.shareURL) { Label("Share", systemImage: "square.and.arrow.up") }
+            .accessibilityIdentifier("shareSwim")
+    }
+
     private var inputCard: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Your time").font(.headline)
@@ -153,19 +179,14 @@ private struct TurnmarkView: View {
                 .keyboardType(.numbersAndPunctuation).focused($editingTime)
                 .accessibilityLabel("Your time").accessibilityIdentifier("timeInput")
             Text("Minutes : seconds . hundredths").font(.caption).foregroundStyle(.secondary)
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Stroke").font(.subheadline.bold())
-                    Picker("Stroke", selection: $draft.strokeIndex) {
-                        ForEach(strokeNames.indices, id: \.self) { Text(strokeNames[$0]).tag($0) }
-                    }.accessibilityIdentifier("strokePicker")
-                }.layoutPriority(1)
-                Spacer()
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Distance").font(.subheadline.bold())
-                    Picker("Distance", selection: $draft.distance) {
-                        ForEach(draft.options, id: \.event.distance) { Text("\($0.event.distance) \(draft.unit)").tag($0.event.distance) }
-                    }.accessibilityIdentifier("distancePicker").fixedSize(horizontal: true, vertical: false)
+            if typeSize.isAccessibilitySize {
+                strokePicker
+                distancePicker
+            } else {
+                HStack {
+                    strokePicker.layoutPriority(1)
+                    Spacer()
+                    distancePicker
                 }
             }
             Text("Swum in").font(.subheadline.bold())
@@ -182,12 +203,33 @@ private struct TurnmarkView: View {
             }.pickerStyle(.segmented).accessibilityIdentifier("targetCourse")
         }.padding(20).background(Color(uiColor: .secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 24))
     }
+
+    private var strokePicker: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Stroke").font(.subheadline.bold())
+            Picker("Stroke", selection: $draft.strokeIndex) {
+                ForEach(strokeNames.indices, id: \.self) { Text(strokeNames[$0]).tag($0) }
+            }.accessibilityIdentifier("strokePicker")
+        }
+    }
+
+    private var distancePicker: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Distance").font(.subheadline.bold())
+            Picker("Distance", selection: $draft.distance) {
+                ForEach(draft.options, id: \.event.distance) { Text("\($0.event.distance) \(draft.unit)").tag($0.event.distance) }
+            }.accessibilityIdentifier("distancePicker")
+        }
+    }
 }
 
 private struct ConversionResult: View {
     let input: Draft
     var compact = false
     @State private var showingDetails = false
+    @Environment(\.dynamicTypeSize) private var typeSize
+    @ScaledMetric(relativeTo: .largeTitle) private var compactTimeSize = 34
+    @ScaledMetric(relativeTo: .largeTitle) private var fullTimeSize = 48
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -195,13 +237,15 @@ private struct ConversionResult: View {
             case let .available(value, _):
                 Text(input.resultLabel(value.event)).font(.subheadline.bold())
                     .accessibilityIdentifier("resultContext")
-                HStack {
-                    Text(value.time).font(.system(size: compact ? 34 : 48, weight: .bold, design: .rounded)).monospacedDigit()
-                        .minimumScaleFactor(0.6).lineLimit(1).accessibilityIdentifier("resultTime")
-                    Spacer()
-                    Button { showingDetails = true } label: { Label("Details", systemImage: "info.circle") }
-                        .font(.subheadline).foregroundStyle(lime).buttonStyle(.plain)
-                        .frame(minWidth: 44, minHeight: 44).accessibilityIdentifier("conversionDetails")
+                if typeSize.isAccessibilitySize {
+                    timeLabel(value.time)
+                    detailsButton
+                } else {
+                    HStack {
+                        timeLabel(value.time)
+                        Spacer()
+                        detailsButton
+                    }
                 }
                 Text(value.kind == .swum ? "Entered swim" : value.kind == .published ? "Published factor" : "Derived estimate")
                     .font(.caption.bold()).foregroundStyle(lime)
@@ -219,6 +263,18 @@ private struct ConversionResult: View {
         }.frame(maxWidth: .infinity, alignment: .leading).padding(compact ? 16 : 24)
             .foregroundStyle(.white).background(ink, in: RoundedRectangle(cornerRadius: compact ? 20 : 24))
             .sheet(isPresented: $showingDetails) { ConversionDetails(input: input) }
+    }
+
+    private func timeLabel(_ time: String) -> some View {
+        Text(time).font(.system(size: compact ? compactTimeSize : fullTimeSize, weight: .bold, design: .rounded)).monospacedDigit()
+            .minimumScaleFactor(0.6).lineLimit(1).accessibilityIdentifier("resultTime")
+    }
+
+    private var detailsButton: some View {
+        Button { showingDetails = true } label: { Label("Details", systemImage: "info.circle") }
+            .font(.subheadline).foregroundStyle(lime).buttonStyle(.plain)
+            .fixedSize(horizontal: true, vertical: false)
+            .frame(minWidth: 44, minHeight: 44).accessibilityIdentifier("conversionDetails")
     }
 }
 
@@ -281,9 +337,12 @@ private struct SwimActionsStyle: ViewModifier {
 
 private struct ConversionResultBar<Summary: View>: ViewModifier {
     let summary: Summary
+    var pinned = true
 
     @ViewBuilder func body(content: Content) -> some View {
-        if #available(iOS 26.0, *) {
+        if !pinned {
+            content
+        } else if #available(iOS 26.0, *) {
             content.safeAreaBar(edge: .bottom, spacing: 0) {
                 summary.padding(.horizontal).padding(.vertical, 8)
             }

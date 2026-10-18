@@ -19,13 +19,18 @@ final class TurnmarkUITests: XCTestCase {
         app.buttons["conversionDetails"].tap()
         XCTAssertTrue(app.navigationBars["Conversion details"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["100 m Freestyle · LCM · Women"].exists)
-        app.swipeUp()
-        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Edition:")).firstMatch.exists)
+        let edition = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Edition:")).firstMatch
+        for _ in 0..<6 {
+            if edition.exists && edition.isHittable { break }
+            app.swipeUp()
+        }
+        XCTAssertTrue(edition.exists && edition.isHittable)
         capture(app, "Conversion details")
         app.buttons["Done"].tap()
         capture(app, "Native converter")
         app.swipeUp()
         app.buttons["saveSwim"].tap()
+        XCTAssertEqual(app.buttons["saveSwim"].label, "Saved")
         app.terminate()
         app.launchArguments = []
         app.launch()
@@ -46,6 +51,16 @@ final class TurnmarkUITests: XCTestCase {
         app.buttons["Use this swim"].tap()
         XCTAssertEqual(app.textFields["timeInput"].value as? String, "1:00")
         capture(app, "Native converter dark")
+        app.tabBars.buttons["Saved"].tap()
+        app.buttons["Remove saved swim"].tap()
+        XCTAssertTrue(app.staticTexts["No saved swim"].exists)
+        app.terminate()
+        app.launch()
+        app.tabBars.buttons["Saved"].tap()
+        XCTAssertTrue(app.staticTexts["No saved swim"].waitForExistence(timeout: 5))
+        app.tabBars.buttons["Convert"].tap()
+        app.swipeUp()
+        XCTAssertEqual(app.buttons["saveSwim"].label, "Save swim")
     }
 
     @MainActor private func capture(_ app: XCUIApplication, _ name: String) {
@@ -53,6 +68,28 @@ final class TurnmarkUITests: XCTestCase {
         screenshot.name = name
         screenshot.lifetime = .keepAlways
         add(screenshot)
+    }
+
+    @MainActor func testSharingCanBeCancelledWithoutChangingTheSwim() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uitesting-reset"]
+        app.launch()
+        XCTAssertTrue(app.textFields["timeInput"].waitForExistence(timeout: 10))
+        app.swipeUp()
+        app.buttons["saveSwim"].tap()
+        app.buttons["shareSwim"].tap()
+        let dismiss = app.descendants(matching: .any)["PopoverDismissRegion"].firstMatch
+        XCTAssertTrue(dismiss.waitForExistence(timeout: 5))
+        capture(app, "Native share sheet")
+        dismiss.tap()
+        XCTAssertTrue(app.buttons["shareSwim"].isHittable)
+        app.tabBars.buttons["Saved"].tap()
+        app.buttons["Share saved swim"].tap()
+        XCTAssertTrue(dismiss.waitForExistence(timeout: 5))
+        dismiss.tap()
+        XCTAssertTrue(app.buttons["Use this swim"].isHittable)
+        app.buttons["Use this swim"].tap()
+        XCTAssertEqual(app.textFields["timeInput"].value as? String, "58.32")
     }
 
     @MainActor func testResultContextUsesDestinationDistanceAndCategory() {

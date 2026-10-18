@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -21,11 +22,19 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.json.JSONObject
@@ -96,12 +105,18 @@ private fun share(context: Context, draft: Draft) {
     }, "Share your swim"))
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable private fun Turnmark(preferences: SharedPreferences) {
     var draft by remember { mutableStateOf(Draft.decode(preferences.getString("draft", null)) ?: Draft()) }
     var saved by remember { mutableStateOf(Draft.decode(preferences.getString("saved", null))) }
     var tab by remember { mutableIntStateOf(0) }
+    val scrollStates = listOf(rememberScrollState(), rememberScrollState(), rememberScrollState())
     val context = LocalContext.current
+    val focus = LocalFocusManager.current
+    val keyboard = LocalSoftwareKeyboardController.current
+    val largeText = LocalDensity.current.fontScale >= 1.5f
+    val keyboardVisible = WindowInsets.isImeVisible
+    val pinResult = !largeText && LocalConfiguration.current.screenHeightDp >= 480 && !keyboardVisible
     val dark = isSystemInDarkTheme()
     fun update(value: Draft) {
         draft = value.reconcile()
@@ -111,15 +126,15 @@ private fun share(context: Context, draft: Draft) {
         surface = Color(0xFF122C3C), background = Color(0xFF091F2D))
         else lightColorScheme(primary = Ink, secondaryContainer = Lime, onSecondaryContainer = Ink,
             background = Color(0xFFF0F5F8), surface = Color.White)) {
-        Scaffold(topBar = {
+        Scaffold(modifier = Modifier.imePadding(), topBar = {
             if (tab != 0) TopAppBar(title = {
                 Text(if (tab == 1) "Saved swim" else "The method", fontWeight = FontWeight.Bold)
             })
         },
             bottomBar = {
               Column {
-                if (tab == 0) ResultSummary(draft)
-                NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
+                if (tab == 0 && pinResult) ResultSummary(draft)
+                if (!keyboardVisible) NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
                     listOf("Convert", "Saved", "Method").forEachIndexed { index, label ->
                         NavigationBarItem(selected = tab == index, onClick = { tab = index },
                             modifier = Modifier.testTag("nav-$label"), label = { Text(label) },
@@ -131,10 +146,11 @@ private fun share(context: Context, draft: Draft) {
                 }
               }
             }) { insets ->
-            Column(Modifier.padding(insets).fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp),
+            Column(Modifier.padding(insets).fillMaxSize().verticalScroll(scrollStates[tab]).padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 when (tab) {
                     0 -> {
+                        if (!pinResult) ResultCard(draft, compact = true)
                         Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
                             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                                 Text("Your time", fontWeight = FontWeight.Bold)
@@ -142,8 +158,10 @@ private fun share(context: Context, draft: Draft) {
                                     modifier = Modifier.fillMaxWidth().testTag("timeInput"),
                                     label = { Text("Minutes : seconds . hundredths") }, singleLine = true,
                                     textStyle = MaterialTheme.typography.headlineLarge,
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii))
-                                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii, imeAction = ImeAction.Done),
+                                    keyboardActions = KeyboardActions(onDone = { focus.clearFocus(); keyboard?.hide() }))
+                                FlowRow(maxItemsInEachRow = if (largeText) 1 else 2,
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                     Choice("Stroke", strokeNames[draft.strokeIndex], strokeNames, Modifier.weight(1f)) {
                                         update(draft.copy(strokeIndex = it))
                                     }
@@ -163,8 +181,16 @@ private fun share(context: Context, draft: Draft) {
                                 CourseControl("Compare with", "targetCourse", draft.targetIndex) { update(draft.copy(targetIndex = it)) }
                             }
                         }
-                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            OutlinedButton(onClick = { saved = draft; preferences.edit().putString("saved", draft.encode()).apply() }, enabled = draft.available) { Text("Save swim") }
+                        FlowRow(Modifier.fillMaxWidth(), maxItemsInEachRow = if (largeText) 1 else 2,
+                            horizontalArrangement = Arrangement.SpaceBetween, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            OutlinedButton(onClick = { saved = draft; preferences.edit().putString("saved", draft.encode()).apply() },
+                                enabled = draft.available, modifier = Modifier.testTag("saveSwim").semantics { liveRegion = LiveRegionMode.Polite }) {
+                                if (saved == draft) {
+                                    Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(18.dp))
+                                    Spacer(Modifier.width(6.dp))
+                                }
+                                Text(if (saved == draft) "Saved" else "Save swim")
+                            }
                             OutlinedButton(onClick = { share(context, draft) }, enabled = draft.available) { Text("Share") }
                         }
                         Text("Calculated on your device. Works offline.", style = MaterialTheme.typography.bodySmall)
@@ -232,21 +258,21 @@ private fun share(context: Context, draft: Draft) {
 @Composable private fun ResultCard(draft: Draft, compact: Boolean = false) {
     var showingDetails by remember { mutableStateOf(false) }
     val result = draft.outcome
+    val largeText = LocalDensity.current.fontScale >= 1.5f
     Column(Modifier.fillMaxWidth().background(Ink, RoundedCornerShape(if (compact) 20.dp else 24.dp))
         .padding(if (compact) 16.dp else 24.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         when (result) {
             is ConversionOutcome.Available -> {
                 Text(draft.resultLabel(result.value.event), color = Color.White, style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.testTag("resultContext"))
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                    Text(result.value.time, fontSize = if (compact) 34.sp else 48.sp, fontWeight = FontWeight.Bold,
-                        color = Color.White, modifier = Modifier.weight(1f).testTag("resultTime"))
-                    TextButton(onClick = { showingDetails = true }, modifier = Modifier.testTag("conversionDetails"),
-                        colors = ButtonDefaults.textButtonColors(contentColor = Lime)) {
-                        Icon(Icons.Default.Info, contentDescription = null, modifier = Modifier.size(18.dp))
-                        Spacer(Modifier.width(6.dp))
-                        Text("Details")
+                if (largeText) {
+                    ResultTime(result.value.time, compact)
+                    DetailsButton { showingDetails = true }
+                } else {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                        ResultTime(result.value.time, compact, Modifier.weight(1f))
+                        DetailsButton { showingDetails = true }
                     }
                 }
                 Text(when (result.value.kind) { ConversionKind.SWUM -> "Entered swim"; ConversionKind.PUBLISHED -> "Published factor"; ConversionKind.DERIVED -> "Derived estimate" },
@@ -270,6 +296,20 @@ private fun share(context: Context, draft: Draft) {
         ModalBottomSheet(onDismissRequest = { showingDetails = false }, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
             ConversionDetails(draft, result) { showingDetails = false }
         }
+    }
+}
+
+@Composable private fun ResultTime(time: String, compact: Boolean, modifier: Modifier = Modifier) {
+    Text(time, fontSize = if (compact) 34.sp else 48.sp, fontWeight = FontWeight.Bold,
+        color = Color.White, modifier = modifier.testTag("resultTime"))
+}
+
+@Composable private fun DetailsButton(onClick: () -> Unit) {
+    TextButton(onClick = onClick, modifier = Modifier.testTag("conversionDetails"),
+        colors = ButtonDefaults.textButtonColors(contentColor = Lime)) {
+        Icon(Icons.Default.Info, contentDescription = null, modifier = Modifier.size(18.dp))
+        Spacer(Modifier.width(6.dp))
+        Text("Details")
     }
 }
 

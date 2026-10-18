@@ -15,7 +15,8 @@ offline on first launch, and use the same source editions and outcomes.
   Details open a native sheet with entered/result context, multiplier and
   source edition; the multiplier comes directly from the SDK.
 - One saved swim, restore/remove actions, current-input persistence and native
-  sharing. Share links still open the existing GitHub Pages app. The
+  sharing. Saving shows a checkmarked Saved state; editing the conversion
+  returns the action to Save swim. Share links still open the existing GitHub Pages app. The
   `turnmark.app` website migration is a separate PR.
 - Convert, Saved and Method screens, system appearance, scalable native text
   and native accessibility semantics. The converter opens directly into inputs,
@@ -24,6 +25,11 @@ offline on first launch, and use the same source editions and outcomes.
 - iOS uses system Liquid Glass navigation, pickers and glass Save/Share buttons
   on iOS 26+. Input and result cards retain opaque, readable surfaces. Older
   supported versions use standard bordered buttons.
+- At accessibility text sizes, controls stack and the result scrolls with the
+  form so it cannot obscure the inputs. Short landscape windows also use the
+  scrolling result. Android keeps independent scroll positions for each tab,
+  provides an explicit keyboard Done action and makes room for the keyboard
+  by temporarily moving the result into the form and hiding bottom navigation.
 
 This is the first converter workflow, not full web feature parity. Native youth
 and Masters benchmarks, points, altitude entry, full history/export,
@@ -110,6 +116,10 @@ Both UI suites exercise a women’s 100 free swim of `1:00` LCM converted to
 `52.44` SCY, source-detail access, saved-swim restoration, zero-time rejection,
 and an unavailable 100 IM to LCM comparison. A fourth test checks destination
 context for 400 m to 500 yd, category changes and same-course entered swims.
+The saved-swim flow checks visible save confirmation and removal across restart.
+A fifth test exercises native sharing and cancellation for current and saved
+swims. Android additionally intercepts the chooser intents to check that the
+shared links contain the entered times and preserve saved values after editing.
 The iOS saved-swim test terminates/relaunches the app;
 Android recreates the activity and reads persisted state. The portable SDK
 fixtures continue to test the numerical core independently of UI controls.
@@ -122,3 +132,14 @@ argument `turnmarkScreenshots=true` to the conversion/restoration test. It write
 app's private files directory, readable with `adb exec-out run-as
 net.stanback.turnmark cat files/<name>.png`. The app requests no screenshot or
 storage permission; capture code exists only in the test APK.
+
+## Usability review
+
+The October 17 pass includes iPhone 18 Pro/iOS 27 and iPhone SE (3rd generation)/
+iOS 26 at standard and accessibility text sizes, plus Android API 36 at the
+default phone size and a 360 × 640 dp phone with 200% text. Review covers readable
+result context, scrolling to input/actions, keyboard entry/dismissal, save
+feedback, persistent removal and opening/cancelling platform share UI. iOS keeps
+native system appearance; Android's chooser payload is checked independently of
+its preview. These are simulator/emulator checks, not physical-device or full
+VoiceOver/TalkBack sign-off.
