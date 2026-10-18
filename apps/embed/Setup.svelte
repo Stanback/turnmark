@@ -112,10 +112,9 @@
     </p>
     <h2>What readers get</h2>
     <p>
-      Convert between SCY, SCM and LCM with the same Rust-backed SDK as
-      Turnmark. Results retain their destination distance, source and
-      published-factor or derived-estimate label. Missing factors stay
-      unavailable.
+      Convert between SCY, SCM and LCM. Results retain their destination
+      distance, source and published-factor or derived-estimate label. Missing
+      factors stay unavailable.
     </p>
     <p>
       Calculations continue offline after the widget loads. It does not read
