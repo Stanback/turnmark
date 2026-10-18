@@ -5,6 +5,14 @@ remote URL is `https://mcp.turnmark.app/mcp`; protected main CI owns deployment
 to the dedicated Worker and Custom Domain. npm publication is separate and
 has not happened yet.
 
+The public [MCP quick start](https://turnmark.app/mcp/) covers hosted connection
+settings and links to the [Markdown reference](https://turnmark.app/mcp/index.md).
+The website footer and [llms.txt](https://turnmark.app/llms.txt) make it discoverable.
+The build publishes the canonical package README as that Markdown reference;
+update `packages/mcp/README.md` rather than maintaining a second copy. The
+`llms.txt` index follows the [llms.txt proposal](https://llmstxt.org/); it documents
+available integrations and does not implement WebMCP or expose personal data.
+
 ## One calculation engine
 
 `packages/mcp` registers six read-only tools around `@turnmark/sdk`.
