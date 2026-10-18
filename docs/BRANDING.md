@@ -6,6 +6,14 @@ sizes; the platforms supply their own icon masks. The native converter opens
 straight into its inputs, without a logo, app-name header or promotional title.
 Saved and Method retain functional page titles.
 
+The website declares the square 192px PNG at the stable
+`/icons/icon-192.png` URL as a favicon, alongside the scalable SVG for browsers.
+Keep a raster `rel="icon"` declaration in the homepage HTML: Google's current
+Search favicon guidelines list raster formats, including PNG, and recommend
+more than 48px. Both the homepage and icon must remain crawlable. Search display
+still depends on Google's processing and is not guaranteed.
+[Google's favicon guidelines](https://developers.google.com/search/docs/appearance/favicon-in-search).
+
 On Android 12+, the system splash shows the launcher mark against a background
 that matches the app's appearance. iOS uses a matching light/dark launch background
 and opens directly into the form. Neither platform adds a timed splash or spinner.
