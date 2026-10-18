@@ -25,6 +25,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -319,7 +320,7 @@ private fun share(context: Context, draft: Draft) {
     val c = TurnmarkTokens.dark
     val context = LocalContext.current
     TurnmarkTheme(dark = true) {
-        Column(Modifier.fillMaxWidth().background(c.surfaceRaised, RoundedCornerShape(TurnmarkTokens.radiusCard))
+        Column(Modifier.fillMaxWidth().background(Brush.linearGradient(listOf(c.surfaceRaised, c.surface)), RoundedCornerShape(TurnmarkTokens.radiusCard))
             .padding(if (compact) 20.dp else 24.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
             Text("YOUR COMPARISON", color = c.textMuted, style = MaterialTheme.typography.labelSmall)
             when (result) {

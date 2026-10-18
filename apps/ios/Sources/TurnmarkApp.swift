@@ -314,7 +314,9 @@ struct ConversionResult: View {
             }
         }.frame(maxWidth: .infinity, alignment: .leading).padding(compact ? 20 : 24)
             .foregroundStyle(TurnmarkResultPalette.text)
-            .background(TurnmarkResultPalette.surfaceRaised, in: RoundedRectangle(cornerRadius: TurnmarkPalette.radiusCard))
+            .background(LinearGradient(colors: [TurnmarkResultPalette.surfaceRaised, TurnmarkResultPalette.surface],
+                startPoint: .topLeading, endPoint: .bottomTrailing),
+                in: RoundedRectangle(cornerRadius: TurnmarkPalette.radiusCard))
             .overlay(RoundedRectangle(cornerRadius: TurnmarkPalette.radiusCard).strokeBorder(TurnmarkResultPalette.borderSubtle))
             .sheet(isPresented: $showingDetails) { ConversionDetails(input: input) }
     }

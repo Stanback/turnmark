@@ -134,7 +134,10 @@ event and supported whole pool lengths, not the entered distance for every cours
 
 - **iOS:** retain SwiftUI navigation, pickers, sheets, sharing, keyboard Done and
   system Liquid Glass controls. The signature numerical card uses the shared dark palette in both appearances,
-  including contrasting action colors. Surrounding content uses the current
+  including contrasting action colors. Its subtle static gradient runs from dark
+  `surfaceRaised` at the top leading corner to dark `surface` at the bottom
+  trailing corner on both native platforms; both stops are opaque generated
+  palette roles. Surrounding content uses the current
   appearance. This gives the result a stable identity without repainting native
   forms and navigation.
   System materials respond to accessibility preferences; do not replace the tab

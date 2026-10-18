@@ -16,7 +16,9 @@ main README showcase follows native Standards & points work.
 Validation: 119 unit tests; 51 CI-selection tests; 33 browser tests (one existing
 mobile-only skip); 17 production tests, including no-script rendering, offline
 navigation and light/dark accessibility audits. Svelte/TypeScript checks pass
-without warnings. Native UI and engine behavior are unchanged by this cleanup.
+without warnings. The paired native result-gradient follow-up has its own
+[visual review](NATIVE_VISUAL_REVIEW.md#result-gradient-follow-up) and passes all
+16 iOS and 17 Android tests. The numerical engine is unchanged.
 
 ![Desktop history and standards row](screenshots/web-cleanup-grid-dark.png)
 
