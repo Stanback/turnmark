@@ -27,7 +27,7 @@
     "data:points": "python3 scripts/import-points.py",
     "data:masters": "python3 scripts/import-masters.py",
     "format": "prettier --write . --plugin=prettier-plugin-svelte",
-    "test:mcp": "npm run build:sdk && npm run build --workspace @turnmark/mcp && npm run check --workspace @turnmark/mcp-worker && node scripts/test-mcp.mjs"
+    "test:mcp": "npm run build:sdk && npm run build --workspace @turnmark/mcp && npm run check --workspace @turnmark/mcp-worker && node scripts/test-mcp.mjs && node scripts/test-mcp-ui.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
@@ -41,7 +41,8 @@
     "svelte-check": "^4.7.6",
     "typescript": "~6.0.2",
     "vite": "^8.3.0",
-    "vitest": "^5.0.5"
+    "vitest": "^5.0.5",
+    "esbuild": "0.28.1"
   },
   "description": "Your swim. Any course. A browser-only swim time converter and standards explorer.",
   "license": "GPL-3.0-or-later",

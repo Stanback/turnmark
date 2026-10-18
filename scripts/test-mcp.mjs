@@ -44,10 +44,21 @@ function command(args) {
   assert.equal(r.status, 0, `${r.error ?? ""}\n${r.stdout}\n${r.stderr}`);
   return r.stdout;
 }
-async function verify(transport, mode, label) {
+async function verify(transport, mode, label, ui = false) {
   const client = new Client(
     { name: "turnmark-test", version: "0.1.0" },
-    { versionNegotiation: { mode } },
+    {
+      versionNegotiation: { mode },
+      capabilities: ui
+        ? {
+            extensions: {
+              "io.modelcontextprotocol/ui": {
+                mimeTypes: ["text/html;profile=mcp-app"],
+              },
+            },
+          }
+        : {},
+    },
   );
   const errors = [];
   client.onerror = (e) => errors.push(e);
@@ -57,6 +68,26 @@ async function verify(transport, mode, label) {
     assert.deepEqual(
       listed.map((t) => t.name).sort(),
       [...Object.values(tools), "get_sources"].sort(),
+    );
+    const uri = "ui://turnmark/conversion/0.2.0.html";
+    assert.equal(
+      listed.find((t) => t.name === "convert_swim")._meta.ui.resourceUri,
+      uri,
+    );
+    const resources = (await client.listResources()).resources;
+    assert.equal(resources.length, 1);
+    assert.equal(resources[0].uri, uri);
+    const resource = (await client.readResource({ uri })).contents[0];
+    assert.equal(resource.mimeType, "text/html;profile=mcp-app");
+    assert.match(resource.text, /Update comparison/);
+    assert.ok(Buffer.byteLength(resource.text) <= 750000);
+    assert.deepEqual(resource._meta.ui.csp, {
+      connectDomains: [],
+      resourceDomains: [],
+      frameDomains: [],
+    });
+    await assert.rejects(
+      client.readResource({ uri: "ui://turnmark/unknown.html" }),
     );
     const schemas = new Map(
       listed.map((t) => [t.name, validator.getValidator(t.inputSchema)]),
@@ -188,16 +219,18 @@ try {
   );
   const cli = join(temporary, "node_modules/@turnmark/mcp/dist/cli.js");
   for (const mode of ["legacy", { pin: "2026-07-28" }])
-    await verify(
-      new StdioClientTransport({
-        command: process.execPath,
-        args: ["--import", guard, cli],
-        cwd: temporary,
-        stderr: "pipe",
-      }),
-      mode,
-      `Packed offline stdio ${JSON.stringify(mode)}`,
-    );
+    for (const ui of [false, true])
+      await verify(
+        new StdioClientTransport({
+          command: process.execPath,
+          args: ["--import", guard, cli],
+          cwd: temporary,
+          stderr: "pipe",
+        }),
+        mode,
+        `Packed offline stdio ${JSON.stringify(mode)} Apps=${ui}`,
+        ui,
+      );
   // Missing bundled Wasm fails before accepting protocol messages, with no stdout.
   const wasm = join(
     temporary,
@@ -227,11 +260,19 @@ try {
   });
   const base = `http://${worker.address}:${worker.port}`;
   for (const mode of ["legacy", { pin: "2026-07-28" }])
-    await verify(
-      new StreamableHTTPClientTransport(new URL(`${base}/mcp`)),
-      mode,
-      `Workers HTTP ${JSON.stringify(mode)}`,
-    );
+    for (const ui of [false, true])
+      await verify(
+        new StreamableHTTPClientTransport(new URL(`${base}/mcp`), {
+          requestInit: {
+            headers: {
+              "CF-Connecting-IP": `test-${JSON.stringify(mode)}-${ui}`,
+            },
+          },
+        }),
+        mode,
+        `Workers HTTP ${JSON.stringify(mode)} Apps=${ui}`,
+        ui,
+      );
   assert.equal((await fetch(`${base}/`)).status, 200);
   assert.equal((await fetch(`${base}/missing`)).status, 404);
   assert.equal((await fetch(`${base}/mcp`)).status, 405);

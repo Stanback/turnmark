@@ -69,3 +69,10 @@ deployment policies remain separate from test selection. Website checks run
 without Cloudflare credentials, including local Workers hosting validation.
 Automatic production publishing uses the main-only environment and isolated
 deployment runner described in [HOSTING.md](HOSTING.md).
+
+MCP Apps views/build/browser harness live under `packages/mcp/` and
+`scripts/{build,test}-mcp-ui.mjs`; edits select the core/MCP checks, without native
+builds. The MCP job installs Chromium and runs the official bridge/sandbox tests.
+Generated shared CSS tokens also select MCP checks because the card inlines them.
+Changes to workflows or the selection rules themselves retain the fail-safe full
+matrix. Shared numerical core changes still exercise all consumers.

@@ -1,6 +1,6 @@
 {
   "name": "@turnmark/mcp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": false,
   "description": "Read-only, offline swimming tools over MCP, powered by the Turnmark Rust SDK.",
   "license": "GPL-3.0-or-later",
@@ -20,7 +20,8 @@
   "files": [
     "dist",
     "src/**/*.ts",
-    "LICENSE"
+    "LICENSE",
+    "ui"
   ],
   "repository": {
     "type": "git",
@@ -28,12 +29,13 @@
     "directory": "packages/mcp"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "node ../../scripts/build-mcp-ui.mjs && tsc -p tsconfig.json && tsc -p tsconfig.ui.json",
     "prepack": "npm run build && node -e \"require('node:fs').copyFileSync('../../LICENSE', 'LICENSE')\""
   },
   "dependencies": {
-    "@turnmark/sdk": "0.1.0",
+    "@modelcontextprotocol/ext-apps": "2.0.3",
     "@modelcontextprotocol/server": "2.3.1",
+    "@turnmark/sdk": "0.1.0",
     "zod": "4.6.7"
   },
   "publishConfig": {

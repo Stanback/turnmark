@@ -139,7 +139,15 @@ jobs:
           cache: npm
       - run: cargo install wasm-bindgen-cli --version 0.2.129 --locked
       - run: npm ci
+      - run: npx playwright install --with-deps chromium
       - run: npm run test:mcp
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: mcp-apps-browser-review
+          path: target/mcp-ui-review/
+          if-no-files-found: ignore
+          retention-days: 7
       - run: npm run build --workspace @turnmark/mcp-worker
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
@@ -196,7 +204,7 @@ jobs:
           WRANGLER_SEND_METRICS: "false"
           VERSION_ID: ${{ steps.upload.outputs.version }}
         run: node deployment/node_modules/wrangler/bin/wrangler.js versions deploy "$VERSION_ID@100" --yes --config packages/mcp-worker/wrangler.jsonc --message "$GITHUB_SHA"
-      - name: Verify service and tool discovery
+      - name: Verify service, conversion and Apps resource
         run: |
           curl --fail --silent --show-error --retry 5 --retry-delay 5 https://mcp.turnmark.app/ -o /dev/null
           curl --fail --silent --show-error https://mcp.turnmark.app/mcp -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' --data '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' > "$RUNNER_TEMP/mcp-tools.json"
@@ -206,6 +214,28 @@ jobs:
           const raw = readFileSync(process.env.RUNNER_TEMP + '/mcp-tools.json', 'utf8').trim();
           const body = JSON.parse(raw.startsWith('{') ? raw : raw.split(/\r?\n/).filter(line => line.startsWith('data: ')).map(line => line.slice(6)).join('\n'));
           assert.deepEqual(body.result.tools.map(t => t.name).sort(), ['adjust_altitude','convert_swim','get_masters_target','get_sources','get_world_points','get_youth_standards']);
+          const uri = 'ui://turnmark/conversion/0.2.0.html';
+          assert.equal(body.result.tools.find(t => t.name === 'convert_swim')._meta.ui.resourceUri, uri);
+          async function rpc(method, params) {
+            const response = await fetch('https://mcp.turnmark.app/mcp', {
+              method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' },
+              body: JSON.stringify({ jsonrpc: '2.0', id: 2, method, params }),
+            });
+            assert.equal(response.status, 200);
+            const raw = (await response.text()).trim();
+            const body = JSON.parse(raw.startsWith('{') ? raw : raw.split(/\r?\n/).filter(line => line.startsWith('data: ')).map(line => line.slice(6)).join('\n'));
+            assert.ok(!body.error); return body.result;
+          }
+          const resource = (await rpc('resources/read', { uri })).contents[0];
+          assert.equal(resource.mimeType, 'text/html;profile=mcp-app');
+          assert.match(resource.text, /Update comparison/);
+          assert.ok(Buffer.byteLength(resource.text) <= 750000);
+          assert.deepEqual(resource._meta.ui.csp, { connectDomains: [], resourceDomains: [], frameDomains: [] });
+          const calculation = await rpc('tools/call', { name: 'convert_swim', arguments: {
+            swim: { time: '58.32', event: { distance: 100, stroke: 'freestyle', course: 'SCY' } }, to: 'LCM', table: 'women',
+          } });
+          assert.equal(calculation.structuredContent.value.time, '1:06.72');
+          console.log('Public MCP conversion and Apps resource verified.');
           JS
   engine-ci:
     if: always()

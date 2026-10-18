@@ -102,6 +102,9 @@ instructions here.
   `turnmark-mcp`; follow [MCP.md](docs/MCP.md). Keep both Workers on Free unless
   the owner explicitly approves a plan change. Public MCP tools remain
   read-only and accept explicit calculation inputs, without personal history.
+  MCP Apps use the official bridge and versioned self-contained resources; keep
+  the text/structured fallback, empty network CSP and existing rate limits.
+  Follow [the Apps review](docs/MCP_APPS_REVIEW.md) for build, tests and host limits.
 - Report what changed, meaningful validation, and remaining limitations. Do not
   claim planned integrations, full native feature parity or store readiness
   from a successful build alone.

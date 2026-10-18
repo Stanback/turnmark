@@ -1,7 +1,9 @@
 # Turnmark MCP
 
 Read-only swimming calculations over local stdio, using `@turnmark/sdk` and its
-bundled Rust/Wasm engine. The package is `@turnmark/mcp@0.1.0`. Node 22.12+ is
+bundled Rust/Wasm engine. The current published package is `@turnmark/mcp@0.1.0`.
+The next `0.2.0` release adds the MCP Apps conversion card; its source/build
+version does not mean it is already published. Node 22.12+ is
 required; calculations run offline after installation, without Rust or a browser.
 
 ## Hosted connection
@@ -115,3 +117,32 @@ The website publishes this reference at <https://turnmark.app/mcp/index.md>,
 with a [quick start](https://turnmark.app/mcp/) and
 [documentation index for agents](https://turnmark.app/llms.txt).
 GPL-3.0-or-later applies; preserve the SDK's source attribution.
+
+## Interactive conversion card (MCP Apps)
+
+The hosted server advertises an official MCP Apps conversion card on
+`convert_swim`. In a compatible host, the result shows its destination event,
+original swim, published/derived kind and source edition. Edit the time or
+comparison course, then choose **Update comparison**. Each update calls the
+same read-only server tool; no conversion math runs in the card. This makes one
+explicit request per update rather than sending a request for every keystroke.
+
+The card uses the host's light/dark appearance, reports its size, and needs no
+outbound network, nested frame, local storage or special device permissions.
+Source links go through the host's link permission. User edits update the
+conversation context when the host permits it; otherwise the card explains
+that the change needs to be mentioned in your next message. It never sends a
+new chat message automatically or accesses personal swim history.
+
+Clients without MCP Apps continue to receive the same text and structured
+results. There is no separate UI endpoint to configure: use the same stdio
+server or Streamable HTTP URL. The immutable resource is
+`ui://turnmark/conversion/0.2.0.html`, served as
+`text/html;profile=mcp-app`. Published local package `0.1.0` has text tools;
+local Apps require the forthcoming `0.2.0` package (or a source build).
+
+Verified with the official AppBridge in an opaque browser sandbox and real
+stdio tool calls, plus resource/protocol checks through local Workers HTTP.
+Specific versions of ChatGPT, Claude and VS Code have **not** been visually
+verified in this release; rendering depends on the client and surface. See the
+[implementation review](https://github.com/Stanback/turnmark/blob/main/docs/MCP_APPS_REVIEW.md).

@@ -111,3 +111,18 @@ Registry versions are immutable: fixes get a new version instead of replacing
 an existing package. During 0.x, breaking public API changes increment the minor
 version and compatible fixes increment the patch version. Dataset editions
 remain explicit in responses and release notes.
+
+## Prepared MCP 0.2.0
+
+MCP Apps is implemented in the adapter's 0.2.0 source and Worker artifact. The
+registry remains at MCP 0.1.0 until a separately authenticated publication.
+`npm run test:mcp` verifies packed offline consumers, both HTTP protocol modes,
+resource metadata and the official browser bridge. A fresh MCP tarball was also
+installed against published SDK 0.1.0, with conversion/resource reads verified
+without runtime network access. The adapter does not require a new SDK release.
+See [MCP Apps review](MCP_APPS_REVIEW.md) for screenshots and host limits.
+
+From the reviewed release commit, build and pack `@turnmark/mcp`, review its
+contents and integrity, then use the protected trusted-publisher workflow once
+configured. Do not silently bypass the documented release boundary or introduce
+an npm publishing token to make an unattended release possible.

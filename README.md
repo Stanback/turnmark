@@ -88,6 +88,13 @@ The [MCP adapter](docs/MCP.md) supports offline stdio and stateless Streamable
 HTTP at `https://mcp.turnmark.app/mcp`, using the same SDK.
 See the [public MCP quick start](https://turnmark.app/mcp/) for connection
 settings and [llms.txt](https://turnmark.app/llms.txt) for the agent documentation index.
+MCP Apps compatible hosts can show an inline conversion card with editable time
+and comparison course; text-only clients retain the same results. The published
+local package 0.1.0 is text-only; Apps is prepared for adapter 0.2.0. See the
+[implementation and host verification notes](docs/MCP_APPS_REVIEW.md).
+
+<img src="docs/screenshots/mcp-card-light.png" width="480" alt="Turnmark interactive MCP conversion card with source context and time/course controls">
+
 The [agent interface plan](docs/AGENT_INTERFACES.md) covers future WebMCP work.
 The public npm packages [@turnmark/sdk](https://www.npmjs.com/package/@turnmark/sdk)
 and [@turnmark/mcp](https://www.npmjs.com/package/@turnmark/mcp) are available at `0.1.0`.

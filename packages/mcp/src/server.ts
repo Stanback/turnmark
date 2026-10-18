@@ -1,4 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/server";
+import {
+  registerAppResource,
+  RESOURCE_MIME_TYPE,
+} from "@modelcontextprotocol/ext-apps/server";
+import { conversionHtml } from "./generated/ui.js";
+
 import { z } from "zod";
 import type { Engine } from "@turnmark/sdk";
 import {
@@ -17,6 +23,14 @@ import {
   pointsSource,
   pointsValidity,
 } from "@turnmark/sdk/points";
+
+export const conversionResourceUri = "ui://turnmark/conversion/0.2.0.html";
+const uiMeta = {
+  ui: {
+    csp: { connectDomains: [], resourceDomains: [], frameDomains: [] },
+    prefersBorder: true,
+  },
+};
 
 // Transport shape only. Rust remains responsible for time parsing, supported
 // event combinations, age coverage, editions, ranges and numerical validation.
@@ -85,11 +99,27 @@ function result(value: Record<string, unknown>) {
 /** Fresh protocol server per connection/request; one immutable engine can be reused. */
 export function createServer(engine: Engine) {
   const server = new McpServer(
-    { name: "turnmark", version: "0.1.0" },
+    { name: "turnmark", version: "0.2.0" },
     {
       instructions:
         "Swimming calculations from published sources. Preserve available/unavailable/invalid, event/course context, published/derived kinds and source editions. Missing targets remain missing. Qualifying targets are benchmarks, not confirmation of entry eligibility. No personal history access or storage.",
     },
+  );
+  registerAppResource(
+    server,
+    "Turnmark conversion",
+    conversionResourceUri,
+    { mimeType: RESOURCE_MIME_TYPE, _meta: uiMeta },
+    () => ({
+      contents: [
+        {
+          uri: conversionResourceUri,
+          mimeType: RESOURCE_MIME_TYPE,
+          text: conversionHtml,
+          _meta: uiMeta,
+        },
+      ],
+    }),
   );
   server.registerTool(
     "convert_swim",
@@ -102,6 +132,12 @@ export function createServer(engine: Engine) {
         table,
         method: z.string().optional(),
       }),
+      _meta: {
+        ui: {
+          resourceUri: conversionResourceUri,
+          visibility: ["model", "app"],
+        },
+      },
       outputSchema: outcome,
       annotations,
     },
