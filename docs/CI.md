@@ -15,6 +15,9 @@ native apps; editing canonical calculations or data tests every consumer.
 | Documentation, root Markdown instructions, issue/PR templates                                                         | Selection checks only |
 | Workflows, selection rules, or unfamiliar paths                                                                       | All                   |
 
+Website hosting configuration (`wrangler.jsonc`) and isolated deployment tooling
+under `deployment/` select web checks only. Workflow changes still select all.
+
 The web app and JS SDK still compile their Wasm dependency when selected.
 Native jobs generate and package their Rust SDK dependency on a clean runner;
 this policy skips unrelated jobs, rather than reusing unchecked binaries.
@@ -47,4 +50,7 @@ build on `main`; docs-only and native-only pushes do not redeploy it.
 
 PR execution retains read-only repository permissions, no persisted checkout
 credentials, and no signing, store or infrastructure secrets. Release and
-deployment approval policies remain separate from test selection.
+deployment policies remain separate from test selection. Website checks run
+without Cloudflare credentials, including local Workers hosting validation.
+Automatic production publishing uses the main-only environment and isolated
+deployment runner described in [HOSTING.md](HOSTING.md).

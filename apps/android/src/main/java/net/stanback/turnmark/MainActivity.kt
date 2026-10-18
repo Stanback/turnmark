@@ -73,7 +73,7 @@ private data class Draft(
             .appendQueryParameter("c", courses[courseIndex].name)
             .appendQueryParameter("g", if (categoryIndex == 0) "women" else "men")
             .appendQueryParameter("h", "0").build().encodedQuery
-        return Uri.parse("https://stanback.github.io/turnmark/").buildUpon().encodedFragment(query).build().toString()
+        return Uri.parse("https://turnmark.app/").buildUpon().encodedFragment(query).build().toString()
     }
     companion object {
         fun decode(text: String?): Draft? = runCatching {

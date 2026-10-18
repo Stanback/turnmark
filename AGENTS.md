@@ -80,6 +80,11 @@ instructions here.
 - PR checks use unsigned/debug builds and read-only repository permissions.
   Keep signing, infrastructure and store credentials out of PR jobs. Website
   deployment and signed store releases have separate workflows and scope.
+- Read [HOSTING.md](docs/HOSTING.md) before changing deployment. Keep the
+  Cloudflare token in the main-only production environment, scoped to the website
+  Worker. Build application code without credentials; deploy the tested static
+  artifact from an isolated runner. Never copy IaC or account-wide credentials
+  into this repository, job logs or chat.
 - Report what changed, meaningful validation, and remaining limitations. Do not
   claim planned integrations, full native feature parity or store readiness
   from a successful build alone.

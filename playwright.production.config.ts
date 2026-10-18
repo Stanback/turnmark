@@ -5,12 +5,12 @@ export default defineConfig({
   workers: 1,
   use: {
     ...devices["Desktop Chrome"],
-    baseURL: "http://127.0.0.1:4175/turnmark/",
+    baseURL: "http://127.0.0.1:4175/",
     trace: "retain-on-failure",
   },
   webServer: {
-    command: "npm run build && npm run preview -- --host 127.0.0.1 --port 4175",
-    url: "http://127.0.0.1:4175/turnmark/",
+    command: "npm run build && node deployment/node_modules/wrangler/bin/wrangler.js dev --local --ip 127.0.0.1 --port 4175 --config wrangler.jsonc",
+    url: "http://127.0.0.1:4175/",
     reuseExistingServer: false,
   },
 });

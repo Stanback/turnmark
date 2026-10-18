@@ -2,7 +2,7 @@
 
 **Your swim. Any course.**
 
-[Try Turnmark →](https://stanback.github.io/turnmark/)
+[Try Turnmark →](https://turnmark.app/)
 
 Swim time conversion, published standards, and World Aquatics points, built around a shared Rust calculation engine. The web app is available today; native iOS and Android apps are in development. Built for swimmers, coaches, and parents who want to understand a swim across pool courses and find a useful next target.
 
@@ -41,7 +41,7 @@ npm ci
 npm run dev
 ```
 
-The app is served at `http://localhost:5173/turnmark/`. Production hosting is configured for GitHub Pages at `/turnmark/`; change `base` in `vite.config.ts` for another host.
+The app is served at `http://localhost:5173/`. Production uses Cloudflare Workers Static Assets at `https://turnmark.app/`, rooted at `/`.
 
 ```sh
 npm run check
@@ -49,12 +49,13 @@ npm test
 npx playwright install chromium
 npm run test:browser
 npm run test:sdk:package
+npm ci --prefix deployment --ignore-scripts
 npm run test:production
 npm run build
 npm run preview
 ```
 
-The production app is static files in `dist/`. The GitHub Actions workflow checks types, unit tests, desktop/mobile browser interactions and accessibility before deploying to GitHub Pages.
+The production app is static files in `dist/`. CI checks types, unit tests, desktop/mobile interactions, accessibility and offline behavior through the local Cloudflare runtime. Trusted `main` builds deploy automatically from an isolated job using a token scoped to the website Worker. PRs have no Cloudflare credentials. See [hosting and deployment](docs/HOSTING.md) for setup and token rotation.
 
 The web app consumes the private [Turnmark SDK](packages/sdk/README.md). Its
 calculations, clock helpers, and numerical lookups execute in the same Rust core
@@ -94,7 +95,7 @@ or suggest an improvement. Report vulnerabilities privately as described in the
 
 Your age groups, standards selection, category, swum-in course, elevation, and ft/m choice are remembered in this browser. Restored elevations stay visible in the expanded elevation panel. A shared conversion link overrides remembered swim settings, including altitude. Race time, stroke, and distance start fresh; conversion history keeps past swims. Reset restores the app defaults and updates remembered preferences. Preferences stay on this device and work without an account.
 
-Chrome and Edge can install Turnmark from the address bar/browser menu; the app’s Install button invokes the native prompt when available and otherwise shows instructions. Safari on iPhone/iPad supports Share → Add to Home Screen. Icons include 192px/512px PNGs, a maskable icon, and an Apple touch icon. The manifest and service worker are scoped to `/turnmark/`.
+Chrome and Edge can install Turnmark from the address bar/browser menu; the app’s Install button invokes the native prompt when available and otherwise shows instructions. Safari on iPhone/iPad supports Share → Add to Home Screen. Icons include 192px/512px PNGs, a maskable icon, and an Apple touch icon. The manifest and service worker are scoped to `/` on `turnmark.app`.
 
 Once an online visit completes caching, calculations, standards, history, and saved swims work without a connection. Source links still need the internet. Browser-managed storage may be cleared or evicted; this is not cloud backup. New static builds are cached separately; a waiting service worker activates after existing app tabs close. The network is preferred for document navigation, so online visits receive the current release. Offline navigation retains the complete active build until a new worker activates, keeping its HTML and asset revisions together.
 

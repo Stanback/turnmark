@@ -14,7 +14,7 @@ test("built HTML contains useful content, metadata and valid structured data wit
   expect(html.match(/<title>/g)).toHaveLength(1);
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
-  await page.goto("http://127.0.0.1:4175/turnmark/");
+  await page.goto("http://127.0.0.1:4175/");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await page
     .getByText("What do SCY, SCM, and LCM mean?", { exact: true })
@@ -28,7 +28,7 @@ test("built HTML contains useful content, metadata and valid structured data wit
   );
   expect(structured["@type"]).toBe("WebApplication");
   expect(await page.locator('link[rel="canonical"]').getAttribute("href")).toBe(
-    "https://stanback.github.io/turnmark/",
+    "https://turnmark.app/",
   );
   await context.close();
 });
@@ -101,8 +101,9 @@ test("manifest and icons support standalone installation, and native prompt is i
 }) => {
   await page.goto("./");
   const manifest = await (await request.get("manifest.webmanifest")).json();
-  expect(manifest.start_url).toBe("/turnmark/");
-  expect(manifest.scope).toBe("/turnmark/");
+  expect(manifest.id).toBe("/");
+  expect(manifest.start_url).toBe("/");
+  expect(manifest.scope).toBe("/");
   expect(manifest.display).toBe("standalone");
   expect(manifest.icons.map((icon: { sizes: string }) => icon.sizes)).toEqual(
     expect.arrayContaining(["192x192", "512x512"]),
@@ -124,6 +125,26 @@ test("manifest and icons support standalone installation, and native prompt is i
   await expect(page.getByRole("dialog")).not.toBeVisible();
 });
 
+test("Cloudflare serves root assets, refreshable PWA files and legacy-path redirects", async ({
+  request,
+}) => {
+  const response = await request.get("./");
+  expect(response.headers()["x-content-type-options"]).toBe("nosniff");
+  expect(response.headers()["referrer-policy"]).toBe(
+    "strict-origin-when-cross-origin",
+  );
+  for (const path of ["sw.js", "manifest.webmanifest"]) {
+    const asset = await request.get(path);
+    expect(asset.ok()).toBe(true);
+    expect(asset.headers()["cache-control"]).toBe("no-cache");
+  }
+  const redirect = await request.get("turnmark/", { maxRedirects: 0 });
+  expect(redirect.status()).toBe(301);
+  expect(new URL(redirect.headers().location, response.url()).pathname).toBe(
+    "/",
+  );
+});
+
 test("online navigation preserves a consistent offline build until a new worker activates", async ({
   page,
   context,
@@ -143,13 +164,13 @@ test("online navigation preserves a consistent offline build until a new worker 
       name.startsWith("turnmark-"),
     )!;
     const cache = await caches.open(name),
-      response = (await cache.match("/turnmark/"))!;
+      response = (await cache.match("/"))!;
     const html = (await response.text()).replace(
       "<html",
       '<html data-cached-build="previous"',
     );
     await cache.put(
-      "/turnmark/",
+      "/",
       new Response(html, { headers: { "Content-Type": "text/html" } }),
     );
   });
