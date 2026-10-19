@@ -90,3 +90,13 @@ The CI recording is retained as evidence; application code was unchanged for
 this test correction. The Duo’s system keyboard can occupy its other display
 outside the application’s primary AX frame; its own geometry/key content must
 be checked without intersecting that primary frame.
+
+
+A subsequent hosted run passed dismissal/rotation but timed out resolving
+`app.keyboards.firstMatch.exists` while preparing to tap Delete on recorded-swim
+detail. The retained screen recording shows the complete detail and visible
+Delete action with no keyboard. Scroll helpers now request system keyboard
+geometry only when an app-owned entry-dismissal toolbar is visible, and reuse
+that geometry within each scroll attempt. The dedicated dismissal assertions
+still inspect actual keyboard geometry/key content; no workflow assertions are
+removed. This correction changes test observation only.

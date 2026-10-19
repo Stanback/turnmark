@@ -116,7 +116,7 @@ Cloudflare, Apple signing or store-upload credentials. The iOS job uses the
 `xcode-27` runner, pins Xcode 27.1 and verifies SDK 27.1 before building. Simulator
 selection prefers the latest installed iOS runtime; CI requires iOS 27. Local
 visual checks can also run on older supported runtimes. Test artifacts expire
-after seven days. Jobs are capped at 15 minutes for core/web, 30 minutes for iOS
+after seven days. Jobs are capped at 15 minutes for core/web, 45 minutes for iOS
 and 20 minutes for Android, so a stalled toolchain cannot occupy a runner for the
 default six hours. The existing website deployment remains a main-branch-only
 job with its own permissions; do not use `pull_request_target` to execute PR code.

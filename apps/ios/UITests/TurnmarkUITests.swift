@@ -34,12 +34,23 @@ final class TurnmarkUITests: XCTestCase {
         }
         XCTAssertEqual(result, .completed, file: file, line: line)
     }
+    @MainActor private func entryKeyboard(in app: XCUIApplication) -> XCUIElement? {
+        // Query system keyboard geometry only while an app-owned entry toolbar
+        // is visible. Hosted XCTest can stall resolving a stale keyboard AX
+        // snapshot after entry has ended (for example on recorded-swim detail).
+        let converterDone = app.buttons["dismissConverterKeyboard"]
+        let recordDone = app.buttons["dismissSwimKeyboard"]
+        guard (converterDone.exists && converterDone.isHittable) ||
+              (recordDone.exists && recordDone.isHittable) else { return nil }
+        return visibleKeyboard(in: app)
+    }
     @MainActor private func reach(_ element: XCUIElement, in app: XCUIApplication) {
         for _ in 0..<10 {
+            let keyboard = entryKeyboard(in: app)
             if element.exists && element.isHittable {
                 // XCTest may call a one-pixel sliver hittable. A tap must land
                 // inside the visible form, above the keyboard and home area.
-                let keyboardTop = visibleKeyboard(in: app)?.frame.minY ?? app.frame.maxY - 40
+                let keyboardTop = keyboard?.frame.minY ?? app.frame.maxY - 40
                 if element.frame.midY > app.frame.minY + 80 && element.frame.midY < keyboardTop - 16 { return }
             }
             let container = !element.exists || element.identifier.isEmpty ? app.scrollViews.element(boundBy: max(app.scrollViews.count - 1, 0)) :
@@ -48,7 +59,7 @@ final class TurnmarkUITests: XCTestCase {
             let editor = app.descendants(matching: .any)["swimEditorForm"].firstMatch
             let scroll = editor.exists ? editor : (container.exists ? container : (nativeList.exists ? nativeList : app))
             let downward = element.exists && element.frame.minY < app.frame.minY + 80
-            if let keyboard = visibleKeyboard(in: app) {
+            if let keyboard {
                 // The form extends behind the keyboard. XCTest's default swipe
                 // can start in its assistant bar, which never scrolls the form.
                 let visible = scroll.frame.intersection(app.frame)
