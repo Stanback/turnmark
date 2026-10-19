@@ -54,7 +54,7 @@ if (mode === "HTTP") {
     }),
   );
 }
-const uri = "ui://turnmark/conversion/0.2.1.html";
+const uri = "ui://turnmark/conversion/0.3.0.html";
 const card = (await client.readResource({ uri })).contents[0].text;
 const host = await build({
   absWorkingDir: process.cwd(),
@@ -250,7 +250,7 @@ try {
   await other
     .getByRole("heading", { name: "No conversion for this selection" })
     .waitFor();
-  await other.locator("summary").click();
+  await other.locator("#result summary").click();
   await other.getByText(/<img src=x onerror=alert/).waitFor();
   assert.equal(await other.locator("img").count(), 0);
   assert.equal(
@@ -261,7 +261,7 @@ try {
   );
   // 200% text at narrow width, including expanded provenance.
   await frame.locator("html").evaluate((el) => (el.style.fontSize = "200%"));
-  await frame.locator("summary").click();
+  await frame.locator("#result summary").click();
   await frame.getByRole("button", { name: "Open published source ↗" }).click();
   await frame
     .locator("#status")
@@ -289,6 +289,19 @@ try {
   await frame
     .locator("body")
     .screenshot({ path: `${shots}/mcp-card-large-text.png` });
+  // An alternative method stays in a collapsed control and is sent explicitly
+  // through the official bridge; the SDK owns both multiplier and offset.
+  await page.evaluate(() => (window.denyContext = false));
+  await frame.locator("html").evaluate((el) => (el.style.fontSize = "100%"));
+  await frame.locator(".method-options summary").click();
+  await frame.locator("#method").selectOption("colorado-teamunify-2026");
+  await frame.locator("#course").selectOption("LCM");
+  await frame.locator("#update").click();
+  await frame.locator(".clock").getByText("1:06.33", { exact: true }).waitFor();
+  assert.equal(
+    await page.evaluate(() => window.calls.at(-1).arguments.method),
+    "colorado-teamunify-2026",
+  );
   console.log(
     `MCP Apps: official AppBridge + real ${mode} tools; opaque sandbox/CSP, keyboard, theme, narrow/large text, cancellation, denied calls/context, invalid/unavailable, destination context and card isolation passed.`,
   );

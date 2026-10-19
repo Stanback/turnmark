@@ -19,6 +19,7 @@ await writeFile(
     conversions: {
       conversionSource: conversions.conversionSource,
       altitudeSource: conversions.altitudeSource,
+      coloradoSource: (await read("colorado")).source,
     },
     sources: await read("sources"),
   }) + "\n",

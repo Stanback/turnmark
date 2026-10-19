@@ -8,7 +8,13 @@ import {
 
 export type SwimPreferences = Pick<
   SwimState,
-  "age" | "mastersAge" | "standardSystem" | "category" | "course" | "altitude"
+  | "age"
+  | "mastersAge"
+  | "standardSystem"
+  | "category"
+  | "course"
+  | "altitude"
+  | "method"
 > & {
   elevationUnit: "ft" | "m";
   standardMode: "targets" | "points";
@@ -23,12 +29,15 @@ export function readPreferences(value: unknown): SwimPreferences {
     category: defaultState.category,
     course: defaultState.course,
     altitude: defaultState.altitude,
+    method: defaultState.method,
     elevationUnit: "ft",
     standardMode: "targets",
   };
   if (!value || typeof value !== "object" || Array.isArray(value))
     return preferences;
   const raw = value as Record<string, unknown>;
+  if (raw.method === "ncaa-2025-27" || raw.method === "colorado-teamunify-2026")
+    preferences.method = raw.method;
   if (ages.some((age) => age.id === raw.age))
     preferences.age = raw.age as SwimState["age"];
   if (

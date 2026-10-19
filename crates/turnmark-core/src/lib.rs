@@ -55,6 +55,16 @@ pub fn get_event_options(course: Course, stroke: Stroke) -> Vec<EventOption> {
 pub fn convert_swim(request: ConversionRequest) -> ConversionOutcome {
     engine::convert(&json!(request)).into()
 }
+/// Explicit alternative method. The original typed entry point remains NCAA.
+#[cfg_attr(feature = "native", uniffi::export)]
+pub fn convert_swim_with_method(
+    request: ConversionRequest,
+    method: ConversionMethod,
+) -> ConversionOutcome {
+    let mut input = json!(request);
+    input["method"] = json!(method);
+    engine::convert(&input).into()
+}
 #[cfg_attr(feature = "native", uniffi::export)]
 pub fn adjust_altitude(request: AltitudeRequest) -> AltitudeOutcome {
     engine::altitude(&json!(request)).into()

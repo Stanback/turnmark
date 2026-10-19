@@ -74,13 +74,13 @@ async function verify(transport, mode, label, ui = false) {
   client.onerror = (e) => errors.push(e);
   try {
     await client.connect(transport);
-    assert.equal(client.getServerVersion().version, "0.2.1");
+    assert.equal(client.getServerVersion().version, "0.3.0");
     const listed = (await client.listTools()).tools;
     assert.deepEqual(
       listed.map((t) => t.name).sort(),
       [...Object.values(tools), "get_sources"].sort(),
     );
-    const uri = "ui://turnmark/conversion/0.2.1.html";
+    const uri = "ui://turnmark/conversion/0.3.0.html";
     assert.equal(
       listed.find((t) => t.name === "convert_swim")._meta.ui.resourceUri,
       uri,
@@ -248,40 +248,67 @@ try {
         `Packed offline stdio ${JSON.stringify(mode)} Apps=${ui}`,
         ui,
       );
-  // Verify the adapter against its actual published SDK dependency as well as
-  // the workspace tarball. Adapter and engine versions are independent.
-  const registry = join(temporary, "registry");
-  await mkdir(registry);
-  await writeFile(
-    join(registry, "package.json"),
-    JSON.stringify({
-      name: "registry-sdk-mcp-check",
-      private: true,
-      type: "module",
-    }),
-  );
-  const registryInstall = spawnSync(
+  // A new SDK may be developed in the monorepo before it is published. Packed
+  // workspace conformance remains mandatory; release verification additionally
+  // requires the exact registry dependency, so MCP cannot ship ahead of its SDK.
+  const sdkVersion = JSON.parse(
+    await readFile(join(root, "packages/mcp/package.json"), "utf8"),
+  ).dependencies["@turnmark/sdk"];
+  const registryVersion = spawnSync(
     "npm",
-    ["install", "--ignore-scripts", "--no-audit", "--no-fund", packed[1]],
-    { cwd: registry, encoding: "utf8" },
+    ["view", `@turnmark/sdk@${sdkVersion}`, "version", "--json"],
+    { encoding: "utf8" },
   );
-  assert.equal(registryInstall.status, 0, registryInstall.stderr);
-  for (const mode of ["legacy", { pin: "2026-07-28" }])
-    await verify(
-      new StdioClientTransport({
-        command: process.execPath,
-        args: [
-          "--import",
-          guard,
-          join(registry, "node_modules/@turnmark/mcp/dist/cli.js"),
-        ],
-        cwd: registry,
-        stderr: "pipe",
-      }),
-      mode,
-      `Registry SDK stdio ${JSON.stringify(mode)}`,
-      true,
+  if (registryVersion.status !== 0) {
+    const failure = JSON.parse(registryVersion.stdout);
+    assert.equal(failure.error?.code, "E404", registryVersion.stderr);
+    assert.equal(
+      failure.error?.summary,
+      `No match found for version ${sdkVersion}`,
+      registryVersion.stderr,
     );
+    assert.notEqual(
+      process.argv[2],
+      "release",
+      `Publish and verify @turnmark/sdk@${sdkVersion} before releasing MCP`,
+    );
+    console.log(
+      `Registry dependency check pending: @turnmark/sdk@${sdkVersion} is unpublished; packed workspace checks passed. Release mode requires registry verification.`,
+    );
+  } else {
+    const registry = join(temporary, "registry");
+    await mkdir(registry);
+    await writeFile(
+      join(registry, "package.json"),
+      JSON.stringify({
+        name: "registry-sdk-mcp-check",
+        private: true,
+        type: "module",
+      }),
+    );
+    const registryInstall = spawnSync(
+      "npm",
+      ["install", "--ignore-scripts", "--no-audit", "--no-fund", packed[1]],
+      { cwd: registry, encoding: "utf8" },
+    );
+    assert.equal(registryInstall.status, 0, registryInstall.stderr);
+    for (const mode of ["legacy", { pin: "2026-07-28" }])
+      await verify(
+        new StdioClientTransport({
+          command: process.execPath,
+          args: [
+            "--import",
+            guard,
+            join(registry, "node_modules/@turnmark/mcp/dist/cli.js"),
+          ],
+          cwd: registry,
+          stderr: "pipe",
+        }),
+        mode,
+        `Registry SDK stdio ${JSON.stringify(mode)}`,
+        true,
+      );
+  }
   // Missing bundled Wasm fails before accepting protocol messages, with no stdout.
   const wasm = join(
     temporary,

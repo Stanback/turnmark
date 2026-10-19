@@ -125,3 +125,18 @@ XCTest’s generic screenshot attachment is black on that simulator.
 - Physical-device ergonomics, VoiceOver/TalkBack, real fold transitions and store
   signing/review remain release checks. No numerical snapshot, formula, cloud
   sync or npm publication is part of this visual pass.
+
+## Conversion-method follow-up — October 19
+
+The overflow menus now offer NCAA (default) and documented Colorado Timing.
+A changed method persists with the draft, appears in the comparison label and
+share link, and exposes its source and additive offset in Details. The original
+swim behind standards/points and logged performances stays unchanged.
+
+Both app suites pass after this addition: 20 iOS cases (6 storage/unit, 14 UI)
+and 23 Android instrumentation cases. The shared native SDK checks also pass.
+The new method test switches to Colorado, restarts/recreates the app, checks
+Details, and returns to NCAA. [iOS](screenshots/conversion-method-ios.png) and
+[Android](screenshots/conversion-method-android.png) captures use the same sample
+58.32 SCY 100 freestyle → 1:06.33 LCM. The preceding visual review’s counts and
+scope describe its earlier pass; this follow-up changes numerical support.

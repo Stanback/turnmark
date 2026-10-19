@@ -1503,6 +1503,336 @@
       },
       "source": "docs/SDK_DESIGN.md",
       "rationale": "Original-swim benchmark assessment uses the bundled published table and preserves missing-data outcomes. No course or altitude conversion is applied."
+    },
+    {
+      "id": "colorado-free-100-forward",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "58.32",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "women",
+        "method": "colorado-teamunify-2026"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "1:06.33",
+          "hundredths": 6633,
+          "kind": "derived",
+          "factor": 1.11,
+          "offsetSeconds": 1.6
+        },
+        "provenance": {
+          "id": "colorado-teamunify-2026"
+        }
+      },
+      "source": "data/colorado.json; SportsEngine Motion USA Swimming teams formulas, 2026-08-06",
+      "rationale": "Direction-specific documented affine formula; truncate only the final converted result."
+    },
+    {
+      "id": "colorado-free-100-reverse",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "1:06.33",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "LCM"
+          }
+        },
+        "to": "SCY",
+        "table": "women",
+        "method": "colorado-teamunify-2026"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "58.31",
+          "hundredths": 5831,
+          "kind": "derived",
+          "factor": 0.9009009009009008,
+          "offsetSeconds": -1.4414414414414414
+        },
+        "provenance": {
+          "id": "colorado-teamunify-2026"
+        }
+      },
+      "source": "data/colorado.json; SportsEngine Motion USA Swimming teams formulas, 2026-08-06",
+      "rationale": "Direction-specific documented affine formula; truncate only the final converted result."
+    },
+    {
+      "id": "colorado-fly-200-documented",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "2:00",
+          "event": {
+            "distance": 200,
+            "stroke": "butterfly",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "women",
+        "method": "colorado-teamunify-2026"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "2:16.00",
+          "hundredths": 13600,
+          "kind": "derived",
+          "factor": 1.11,
+          "offsetSeconds": 2.8
+        },
+        "provenance": {
+          "id": "colorado-teamunify-2026"
+        }
+      },
+      "source": "data/colorado.json; SportsEngine Motion USA Swimming teams formulas, 2026-08-06",
+      "rationale": "Direction-specific documented affine formula; truncate only the final converted result."
+    },
+    {
+      "id": "colorado-distance-yards-long",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "5:00",
+          "event": {
+            "distance": 500,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "women",
+        "method": "colorado-teamunify-2026"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "4:27.75",
+          "hundredths": 26775,
+          "kind": "derived",
+          "factor": 0.8925
+        },
+        "provenance": {
+          "id": "colorado-teamunify-2026"
+        }
+      },
+      "source": "data/colorado.json; SportsEngine Motion USA Swimming teams formulas, 2026-08-06",
+      "rationale": "Direction-specific documented affine formula; truncate only the final converted result."
+    },
+    {
+      "id": "colorado-distance-yards-short",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "5:00",
+          "event": {
+            "distance": 500,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "SCM",
+        "table": "women",
+        "method": "colorado-teamunify-2026"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "5:33.00",
+          "hundredths": 33300,
+          "kind": "derived",
+          "factor": 1.11
+        },
+        "provenance": {
+          "id": "colorado-teamunify-2026"
+        }
+      },
+      "source": "data/colorado.json; SportsEngine Motion USA Swimming teams formulas, 2026-08-06",
+      "rationale": "Direction-specific documented affine formula; truncate only the final converted result."
+    },
+    {
+      "id": "colorado-distance-metric",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "5:00",
+          "event": {
+            "distance": 400,
+            "stroke": "freestyle",
+            "course": "SCM"
+          }
+        },
+        "to": "LCM",
+        "table": "women",
+        "method": "colorado-teamunify-2026"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "5:06.40",
+          "hundredths": 30640,
+          "kind": "derived",
+          "factor": 1,
+          "offsetSeconds": 6.4
+        },
+        "provenance": {
+          "id": "colorado-teamunify-2026"
+        }
+      },
+      "source": "data/colorado.json; SportsEngine Motion USA Swimming teams formulas, 2026-08-06",
+      "rationale": "Direction-specific documented affine formula; truncate only the final converted result."
+    },
+    {
+      "id": "colorado-back-50",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "25.00",
+          "event": {
+            "distance": 50,
+            "stroke": "backstroke",
+            "course": "SCM"
+          }
+        },
+        "to": "LCM",
+        "table": "women",
+        "method": "colorado-teamunify-2026"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "25.60",
+          "hundredths": 2560,
+          "kind": "derived",
+          "factor": 1,
+          "offsetSeconds": 0.6
+        },
+        "provenance": {
+          "id": "colorado-teamunify-2026"
+        }
+      },
+      "source": "data/colorado.json; SportsEngine Motion USA Swimming teams formulas, 2026-08-06",
+      "rationale": "Direction-specific documented affine formula; truncate only the final converted result."
+    },
+    {
+      "id": "colorado-im-100-unlisted",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "1:00",
+          "event": {
+            "distance": 100,
+            "stroke": "individual-medley",
+            "course": "SCY"
+          }
+        },
+        "to": "SCM",
+        "table": "women",
+        "method": "colorado-teamunify-2026"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "factor-not-published",
+        "provenance": {
+          "id": "colorado-teamunify-2026"
+        }
+      },
+      "source": "data/colorado.json; SportsEngine Motion USA Swimming teams formulas, 2026-08-06",
+      "rationale": "Direction-specific documented affine formula; truncate only the final converted result."
+    },
+    {
+      "id": "colorado-negative-result",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "0.01",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "LCM"
+          }
+        },
+        "to": "SCM",
+        "table": "women",
+        "method": "colorado-teamunify-2026"
+      },
+      "expected": {
+        "status": "invalid",
+        "field": "swim.time",
+        "reason": "unsafe-result"
+      },
+      "source": "data/colorado.json; SportsEngine Motion USA Swimming teams formulas, 2026-08-06",
+      "rationale": "Direction-specific documented affine formula; truncate only the final converted result."
+    },
+    {
+      "id": "colorado-same-course",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "58.32",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "SCY",
+        "table": "women",
+        "method": "colorado-teamunify-2026"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "58.32",
+          "hundredths": 5832,
+          "kind": "swum"
+        },
+        "provenance": {
+          "id": "colorado-teamunify-2026"
+        }
+      },
+      "source": "data/colorado.json; SportsEngine Motion USA Swimming teams formulas, 2026-08-06",
+      "rationale": "Direction-specific documented affine formula; truncate only the final converted result."
+    },
+    {
+      "id": "ncaa-default-stays-same",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "58.32",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "women"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "1:06.72",
+          "hundredths": 6672
+        },
+        "provenance": {
+          "id": "ncaa-2025-27"
+        }
+      },
+      "source": "data/colorado.json; SportsEngine Motion USA Swimming teams formulas, 2026-08-06",
+      "rationale": "Direction-specific documented affine formula; truncate only the final converted result."
     }
   ]
 }

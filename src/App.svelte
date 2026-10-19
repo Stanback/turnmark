@@ -6,6 +6,8 @@
   import Install from "./lib/Install.svelte";
   import Theme from "./lib/Theme.svelte";
   import { site, faqs } from "./data/site";
+  import { resources } from "./data/resources";
+  import { conversionMethods, coloradoMethod } from "@turnmark/sdk/conversion";
   import { readPreferences, type SwimPreferences } from "./lib/preferences";
   import {
     worldPoints,
@@ -50,6 +52,7 @@
   let mounted = $state(false);
   let elevationUnit = $state<"ft" | "m">("ft");
   let elevationOpen = $state(false);
+  let resourcesOpen = $state(false);
   type HistoryEntry = {
     id: string;
     form: SwimState;
@@ -72,6 +75,7 @@
       category: form.category,
       course: form.course,
       altitude: form.altitude,
+      method: form.method,
       elevationUnit,
       standardMode,
     };
@@ -150,10 +154,14 @@
         form.course,
         course,
         form.category,
+        form.method,
       ),
     })),
   );
   const focused = $derived(results.find((x) => x.course === focus)!);
+  const selectedMethod = $derived(
+    conversionMethods.find((method) => method.id === form.method)!,
+  );
   const thresholds = $derived(
     getStandards(
       form.age,
@@ -205,6 +213,7 @@
   );
 
   onMount(() => {
+    resourcesOpen = window.location.hash === "#resources";
     let preferences = readPreferences(null);
     try {
       preferences = readPreferences(
@@ -370,6 +379,7 @@
       entry.form.course,
       entry.target,
       entry.form.category,
+      entry.form.method,
     ).time;
   }
   function dateLabel(timestamp: number) {
@@ -468,6 +478,7 @@
       ["Entered time", form.time],
       ["Source course", form.course],
       ["Factor table", form.category],
+      ["Conversion method", selectedMethod.label],
       ["Standards system", form.standardSystem],
       [
         "Standards age group",
@@ -488,11 +499,11 @@
           : x.kind === "published"
             ? "Published NCAA metric-to-yards factor"
             : x.kind === "derived"
-              ? "Derived from NCAA factors"
+              ? `Derived estimate · ${selectedMethod.label}`
               : (x.reason ?? "Unavailable"),
       ]),
       [],
-      ["Conversion source", conversionSource.url],
+      ["Conversion source", selectedMethod.source.url],
       ["Standards source", standardsSource.url],
       [
         "Note",
@@ -704,6 +715,28 @@
           </p>
         </div>
       </details>
+      <details class="altitude-options conversion-options">
+        <summary
+          ><span><Icon name="settings" size={17} />Conversion method</span><span
+            class="summary-elevation"
+            >{form.method === coloradoMethod ? "Colorado" : "NCAA"}</span
+          ></summary
+        >
+        <div class="altitude-body">
+          <label for="conversion-method">Method</label>
+          <div class="select-wrap">
+            <select id="conversion-method" bind:value={form.method}>
+              {#each conversionMethods as method}<option value={method.id}
+                  >{method.label}</option
+                >{/each}
+            </select><Icon name="chevron" size={13} />
+          </div>
+          <p>
+            Changes course estimates only. Standards and points use your
+            original swim.
+          </p>
+        </div>
+      </details>
       <div class="input-footnote">
         <Icon name="info" size={14} /><span
           >Estimates for perspective. Meet rules decide entry eligibility.</span
@@ -855,10 +888,13 @@
           {#if error}Results will appear when your input is valid.{:else if focused.kind === "unavailable"}{focused.reason}{:else if focused.kind === "swum"}{adjustment
               ? `Your sea-level estimate in ${form.course}.`
               : "Your entered swim, exactly as timed."}{:else}{form.course} → {focus}:
-            <strong>× {focused.factor?.toFixed(5)}</strong>. {focused.kind ===
-            "published"
-              ? "Published NCAA factor."
-              : "Derived from NCAA metric-to-yards factors."} Truncated to hundredths.{/if}
+            <strong
+              >{`× ${focused.factor?.toFixed(5)}${focused.offsetSeconds ? ` ${focused.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(focused.offsetSeconds).toFixed(2)}s` : ""}`}</strong
+            >. {form.method === coloradoMethod
+              ? "Colorado Timing formula."
+              : focused.kind === "published"
+                ? "Published NCAA factor."
+                : "Derived from NCAA metric-to-yards factors."} Truncated to hundredths.{/if}
         </p>
       </div>
       <button class="text-button method-link" onclick={() => go("method")}
@@ -1327,10 +1363,11 @@
         <div>
           <h3>Course conversion</h3>
           <p>
-            NCAA metric-to-yards tables power course conversions. Reverse
-            conversions and meter-to-meter comparisons use ratios of those
-            factors and are labeled as derived estimates. Unsupported events
-            stay unavailable.
+            NCAA metric-to-yards tables power course conversions by default.
+            Reverse conversions and meter-to-meter comparisons use ratios of
+            those factors and are labeled as derived estimates. Unsupported
+            events stay unavailable. Colorado Timing formulas are available
+            under Conversion method in the converter.
           </p>
           <a href={conversionSource.url} target="_blank" rel="noreferrer"
             >2025–27 NCAA rules · updated Oct 2026<Icon
@@ -1408,6 +1445,34 @@
         </details>{/each}
     </div>
   </section>
+  <section
+    class="resources-section page-width"
+    id="resources"
+    aria-labelledby="resources-title"
+  >
+    <details bind:open={resourcesOpen}>
+      <summary
+        ><h2 id="resources-title">Swimming resources</h2>
+        <Icon name="chevron" size={16} /></summary
+      >
+      <p>
+        Find meet results, swimmer profiles and published sources elsewhere in
+        the swimming community.
+      </p>
+      <div class="resource-grid">
+        {#each resources as resource}
+          <article>
+            <h3>
+              <a href={resource.url} target="_blank" rel="noreferrer"
+                >{resource.name}<Icon name="external" size={12} /></a
+              >
+            </h3>
+            <p>{resource.description}</p>
+          </article>
+        {/each}
+      </div>
+    </details>
+  </section>
 </main>
 <div class="appearance-row page-width" role="region" aria-label="Appearance">
   <Theme />
@@ -1427,9 +1492,10 @@
   </div>
   <div class="footer-bottom">
     <nav class="footer-docs" aria-label="Documentation">
-      <a href="#method">Methodology</a><a href="/embed/">Widget setup</a><a
-        href="/mcp/">MCP setup</a
-      >
+      <a href="#method">Methodology</a><a
+        href="#resources"
+        onclick={() => (resourcesOpen = true)}>Resources</a
+      ><a href="/embed/">Widget setup</a><a href="/mcp/">MCP setup</a>
     </nav>
     <div class="footer-meta">
       <span>No account. No uploads.</span><span

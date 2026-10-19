@@ -20,6 +20,13 @@ The generated `data/standards.json` records the source URL, revision, retrieval 
 3. Update `data/conversions.json` and the source fingerprint in `data/sources.json`.
 4. Add a published numerical example to the tests if the calculation changes. Never infer a missing event factor from a nearby event.
 
+## Colorado Timing formulas
+
+1. Review the **USA Swimming teams** section of [SportsEngine Motion / TeamUnify’s course-conversion documentation](https://motion-help.sportsengine.com/en/articles/8538107-how-to-perform-course-conversion-factoring-of-times). The pinned edition is August 6, 2026, checked October 19, 2026.
+2. Save the source HTML outside the repository and calculate its SHA-256. Update `data/colorado.json` with the URL, edition, retrieval date, fingerprint and coefficients. The current HTML fingerprint is `933f228ae997a727a26798188a3497fd21955323a72d531881596da129aa76d6`; a changed page needs review, not an automatic coefficient update.
+3. Check every direction separately, particularly the long freestyle exceptions. Do not mix in the non-USA-team formulas, route via an intermediate course or infer an absent 100 IM formula. See [methodology](METHODOLOGY.md) for the complete implemented rules.
+4. Update independent fixtures in `fixtures/sdk-conformance.json`, regenerate SDK/native artifacts, and check native/Wasm parity. Preserve the omitted-method NCAA default and its existing results. Source metadata is generated for SDK consumers from this snapshot.
+
 ## World Aquatics points
 
 1. Check [World Aquatics’ official points page](https://www.worldaquatics.com/swimming/points) for the current base-times PDF and its separate SCM/LCM validity dates.

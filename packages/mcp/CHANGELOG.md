@@ -1,6 +1,15 @@
 # Changelog
 
-## 0.2.1 — unreleased
+## 0.3.0 — unreleased
+
+- Uses SDK 0.2.0, preserving the NCAA default and adding documented Colorado
+  Timing formulas through the optional method input and a collapsed card setting.
+- Source discovery lists both conversion methods; the card shows additive
+  offsets when applicable. New immutable resource URI ends in `0.3.0.html`.
+- Includes the source-only 0.2.1 glyph/wordmark work below. Publish SDK 0.2.0
+  before MCP 0.3.0; release checks require that exact registry dependency.
+
+## 0.2.1 — source-only, folded into 0.3.0
 
 - Shared vector stroke glyphs and an accent-colored wordmark period in the interactive comparison card.
 - New versioned UI resource; tool schemas, calculations and SDK dependency are unchanged.

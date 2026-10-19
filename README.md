@@ -125,9 +125,22 @@ and follow the [code of conduct](CODE_OF_CONDUCT.md). Use the
 or suggest an improvement. Report vulnerabilities privately as described in the
 [security policy](SECURITY.md). The full application license is in [LICENSE](LICENSE).
 
+## Conversion methods and resources
+
+NCAA remains the default. Choose documented Colorado Timing formulas in the
+collapsed Conversion method setting; native apps put it in the overflow menu.
+The choice changes course estimates, while standards and points use the original
+swim. Shared comparisons retain the selected method. See [methodology](docs/METHODOLOGY.md)
+for source editions, supported events and direction-specific formulas.
+
+The footer’s Resources section links to the SwimSwam converter, Swim Standards,
+USA Swimming, Swimcloud, USMS and World Aquatics. Turnmark stays focused on
+conversion and benchmarks; [the roadmap](docs/PLATFORM_PLAN.md#product-scope-and-anti-goals--october-19-2026)
+records the current scope and separate model-research follow-up.
+
 ## Install and offline use
 
-Your age groups, standards selection, category, swum-in course, elevation, and ft/m choice are remembered in this browser. Restored elevations stay visible in the expanded elevation panel. A shared conversion link overrides remembered swim settings, including altitude. Race time, stroke, and distance start fresh; conversion history keeps past swims. Reset restores the app defaults and updates remembered preferences. Preferences stay on this device and work without an account.
+Your conversion method, age groups, standards selection, category, swum-in course, elevation, and ft/m choice are remembered in this browser. Restored elevations stay visible in the expanded elevation panel. A shared conversion link overrides remembered swim settings, including altitude. Race time, stroke, and distance start fresh; conversion history keeps past swims. Reset restores the app defaults and updates remembered preferences. Preferences stay on this device and work without an account.
 
 Chrome and Edge can install Turnmark from the address bar/browser menu; the app’s Install button invokes the native prompt when available and otherwise shows instructions. Safari on iPhone/iPad supports Share → Add to Home Screen. Icons include 192px/512px PNGs, a maskable icon, and an Apple touch icon. The manifest and service worker are scoped to `/` on `turnmark.app`.
 

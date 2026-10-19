@@ -900,6 +900,54 @@
 .method-intro h2 {
   font-size: 30px;
 }
+.conversion-options {
+  border-top: 0;
+}
+.conversion-options .select-wrap {
+  margin-block: 8px;
+}
+.resources-section {
+  margin-block: 40px;
+  border-block: 1px solid var(--line);
+  padding-block: 20px;
+}
+.resources-section summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+}
+.resources-section h2 {
+  font-size: 18px;
+  margin: 0;
+}
+.resources-section details[open] > summary svg {
+  transform: rotate(90deg);
+}
+.resources-section p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+.resource-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 16px 32px;
+  padding-block: 12px;
+}
+.resource-grid h3 {
+  font-size: 15px;
+  margin: 0;
+}
+.resource-grid a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.resource-grid p {
+  margin-block: 6px 0;
+  font-size: 14px;
+}
 /* Keep appearance, install and the detailed views available without competing with results. */
 @media (max-width: 1199px) {
   .header-inner {

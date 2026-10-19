@@ -7,6 +7,8 @@ const YOUTH_AGES: [&str; 5] = ["10u", "11-12", "13-14", "15-16", "17-18"];
 
 static CONVERSIONS: LazyLock<Value> =
     LazyLock::new(|| snapshot(include_str!("../../../data/conversions.json")));
+static COLORADO: LazyLock<Value> =
+    LazyLock::new(|| snapshot(include_str!("../../../data/colorado.json")));
 static SOURCES: LazyLock<Value> =
     LazyLock::new(|| snapshot(include_str!("../../../data/sources.json")));
 static YOUTH: LazyLock<Value> =
@@ -233,23 +235,43 @@ pub(crate) fn factor(event: &SwimEvent, distance: u32, table: Category) -> Optio
 }
 pub(crate) fn convert(input: &Value) -> Calculation<ConversionValue> {
     object(input, "request")?;
-    if input.get("method").is_some_and(|v| v != "ncaa-2025-27") {
-        return Err(invalid("method", ValidationReason::UnsupportedMethod));
-    }
+    let method = conversion_method(input.get("method"))?;
     let to = course(&input["to"], "to")?;
     let table = category(&input["table"])?;
     let (event, distance, seconds) = swim(&input["swim"])?;
-    convert_seconds(event, distance, seconds, to, table)
+    convert_seconds_with_method(event, distance, seconds, to, table, method)
 }
 
-pub(crate) fn convert_seconds(
+pub(crate) fn conversion_method(input: Option<&Value>) -> Result<ConversionMethod, Failure> {
+    match input {
+        None => Ok(ConversionMethod::Ncaa),
+        Some(value) => serde_json::from_value(value.clone())
+            .map_err(|_| invalid("method", ValidationReason::UnsupportedMethod)),
+    }
+}
+
+pub(crate) fn convert_seconds_with_method(
     event: SwimEvent,
     distance: u32,
     seconds: f64,
     to: Course,
     table: Category,
+    method: ConversionMethod,
 ) -> Calculation<ConversionValue> {
-    let provenance = conversion_provenance();
+    let provenance = match method {
+        ConversionMethod::Ncaa => conversion_provenance(),
+        ConversionMethod::Colorado => {
+            let source = &COLORADO["source"];
+            Provenance {
+                id: "colorado-teamunify-2026".into(),
+                title: text(&source["title"]),
+                url: text(&source["url"]),
+                revision: text(&source["revision"]),
+                sha256: Some(text(&source["sha256"])),
+                verified: Some(text(&source["verified"])),
+            }
+        }
+    };
     let target = SwimEvent {
         course: to,
         distance: actual_distance(distance, to, event.stroke),
@@ -261,8 +283,17 @@ pub(crate) fn convert_seconds(
     if !seconds.is_finite() || seconds <= 0.0 {
         return Err(invalid("swim.time", ValidationReason::InvalidTime));
     }
-    let (seconds, factor, kind) = if event.course == to {
-        (seconds, 1.0, ConversionKind::Swum)
+    let (seconds, factor, offset_seconds, kind) = if event.course == to {
+        (seconds, 1.0, 0.0, ConversionKind::Swum)
+    } else if method == ConversionMethod::Colorado {
+        let Some((factor, offset)) = colorado_formula(&event, distance, to) else {
+            return Err(unavailable(CoverageReason::FactorNotPublished, provenance));
+        };
+        let converted = truncate(seconds * factor + offset);
+        if !converted.is_finite() || converted <= 0.0 {
+            return Err(invalid("swim.time", ValidationReason::UnsafeResult));
+        }
+        (converted, factor, offset, ConversionKind::Derived)
     } else {
         let source = factor(&event, distance, table);
         let target_factor = factor(&target, distance, table);
@@ -273,6 +304,7 @@ pub(crate) fn convert_seconds(
         (
             truncate(seconds * factor),
             factor,
+            0.0,
             if to == Course::SCY {
                 ConversionKind::Published
             } else {
@@ -286,11 +318,42 @@ pub(crate) fn convert_seconds(
             seconds,
             hundredths: (seconds * 100.0).round() as u64,
             factor,
+            offset_seconds,
             kind,
             event: target,
         },
         provenance,
     ))
+}
+
+/// Direction-specific documented formulas; do not route distance events
+/// through an intermediate course or infer an unlisted 100 IM conversion.
+fn colorado_formula(event: &SwimEvent, distance: u32, to: Course) -> Option<(f64, f64)> {
+    if event.stroke == Stroke::IndividualMedley && distance == 100 {
+        return None;
+    }
+    let short = COLORADO["shortCourseMultiplier"].as_f64()?;
+    let long_free = event.stroke == Stroke::Freestyle && distance >= 400;
+    let long_factor = if long_free {
+        COLORADO["longFreestyleMultipliers"][distance.to_string()].as_f64()?
+    } else {
+        short
+    };
+    let increment = if long_free {
+        COLORADO["longFreestyleMetricOffsets"][distance.to_string()].as_f64()?
+    } else {
+        COLORADO["per50Seconds"][stroke_key(event.stroke)].as_f64()? * f64::from(distance) / 50.0
+    };
+    let yards_increment = if long_free { 0.0 } else { increment };
+    match (event.course, to) {
+        (Course::SCY, Course::SCM) => Some((short, 0.0)),
+        (Course::SCM, Course::SCY) => Some((1.0 / short, 0.0)),
+        (Course::SCY, Course::LCM) => Some((long_factor, yards_increment)),
+        (Course::LCM, Course::SCY) => Some((1.0 / long_factor, -yards_increment / long_factor)),
+        (Course::SCM, Course::LCM) => Some((1.0, increment)),
+        (Course::LCM, Course::SCM) => Some((1.0, -increment)),
+        _ => None,
+    }
 }
 pub(crate) fn altitude(input: &Value) -> Calculation<AltitudeValue> {
     object(input, "request")?;

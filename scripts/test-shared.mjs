@@ -58,8 +58,15 @@ for (const course of ["SCY", "SCM", "LCM"])
       for (const table of ["women", "men"])
         for (const time of ["0.01", "1:02.45", "2:16.71", "60:00"]) {
           const swim = { time, event: { course, stroke, distance } };
-          for (const to of ["SCY", "SCM", "LCM"])
+          for (const to of ["SCY", "SCM", "LCM"]) {
             add("convert", { swim, to, table });
+            add("convert", {
+              swim,
+              to,
+              table,
+              method: "colorado-teamunify-2026",
+            });
+          }
           for (const value of [2999, 3000, 4250, 4251, 6500, 6501, 20000])
             add("altitude", { swim, elevation: { value, unit: "feet" } });
         }

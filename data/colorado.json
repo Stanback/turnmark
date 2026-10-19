@@ -1,0 +1,28 @@
+{
+  "source": {
+    "title": "Colorado Swimming / TeamUnify conversion formulas",
+    "url": "https://motion-help.sportsengine.com/en/articles/8538107-how-to-perform-course-conversion-factoring-of-times",
+    "revision": "2026-08-06",
+    "verified": "2026-10-19",
+    "sha256": "933f228ae997a727a26798188a3497fd21955323a72d531881596da129aa76d6"
+  },
+  "scope": "USA Swimming teams; individual events in the documented legacy event set; no 100 IM cross-course formula inferred",
+  "shortCourseMultiplier": 1.11,
+  "longFreestyleMultipliers": {
+    "400": 0.8925,
+    "800": 0.8925,
+    "1500": 1.02
+  },
+  "per50Seconds": {
+    "FR": 0.8,
+    "BK": 0.6,
+    "BR": 1.0,
+    "FL": 0.7,
+    "IM": 0.8
+  },
+  "longFreestyleMetricOffsets": {
+    "400": 6.4,
+    "800": 12.8,
+    "1500": 24.0
+  }
+}

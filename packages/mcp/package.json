@@ -1,6 +1,6 @@
 {
   "name": "@turnmark/mcp",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "private": false,
   "description": "Read-only, offline swimming tools over MCP, powered by the Turnmark Rust SDK.",
   "license": "GPL-3.0-or-later",
@@ -36,7 +36,7 @@
   "dependencies": {
     "@modelcontextprotocol/ext-apps": "2.0.3",
     "@modelcontextprotocol/server": "2.3.1",
-    "@turnmark/sdk": "0.1.0",
+    "@turnmark/sdk": "0.2.0",
     "zod": "4.6.7"
   },
   "publishConfig": {

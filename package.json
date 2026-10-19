@@ -48,7 +48,7 @@
   "description": "Your swim. Any course. A browser-only swim time converter and standards explorer.",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@turnmark/sdk": "0.1.0",
+    "@turnmark/sdk": "0.2.0",
     "@fontsource-variable/dm-sans": "^5.3.0",
     "@fontsource-variable/manrope": "^5.3.0",
     "@fontsource/dm-mono": "^5.3.0"
