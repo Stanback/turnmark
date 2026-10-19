@@ -19,6 +19,10 @@ returned event. Other tools retain text/structured results.
 | <img src="screenshots/mcp-card-light.png" width="460" alt="Light MCP conversion card with original swim and editable comparison"> | <img src="screenshots/mcp-card-dark-narrow.png" width="260" alt="Dark narrow MCP conversion card"> |
 
 The shared generated colors and canonical wave give it Turnmark's identity.
+All palette roles come from `design/turnmark.tokens.json` through the generated
+CSS bundled into the resource. Keep future UI states on that contract; the host
+can change layout, typography and accessibility behavior without introducing an
+independent color palette. The deeper navy controls match web/widget/native.
 Controls use the host/browser's native behavior and system typography. Host
 appearance changes apply live; automatic sizing reports content height. At 200%
 text, the clock fits one line and surrounding copy wraps normally:
