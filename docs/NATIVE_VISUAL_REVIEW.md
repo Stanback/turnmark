@@ -6,6 +6,39 @@ baseline remain historical references. Physical-device ergonomics, VoiceOver
 and TalkBack are still release checks. Subsequent Standards & points work and
 its current verification are recorded in [the standards review](NATIVE_STANDARDS_REVIEW.md).
 
+## Current native controls and shared result surfaces
+
+The latest pass brings Convert, Standards and Points into one visual family
+without sharing a UI implementation between platforms. All numerical summary
+cards use the same opaque generated navy gradient and restrained accent ribbon;
+supporting surfaces follow the current light/dark appearance.
+
+- iOS uses a grouped SwiftUI Form, native pickers and the existing TabView.
+  Details and Share use system glass icon buttons, alongside a labeled
+  Standards & points action. Actions reflow at accessibility text sizes.
+  Increased contrast and Reduce Transparency hide the decorative ribbon.
+- Android uses stable Material 3 controls: exposed dropdown text fields,
+  single-choice segmented course/category rows, native navigation and sheets.
+  Event fields share a row at ordinary text size and stack for large text.
+  The compact result places the labeled benchmark action beside Details and
+  Share; supporting benchmark content uses grouped Material cards.
+- Both retain the original swim separately from estimates. Record time,
+  published factors, missing targets and unscored SCY points keep their existing
+  meaning. No calculation, source snapshot or dependency version changed.
+
+The current home and benchmark captures below replace the earlier presentation.
+The remaining historical captures document adaptive, history and entry behavior;
+their control styling predates this pass.
+
+Validation for this pass: 19 iPhone app tests (6 unit/storage and 13 UI),
+22 Android instrumentation cases, and focused iPhone/Duo checks after the final
+action/menu corrections. The Duo checks cover remembered benchmark settings,
+points, rotation, continued typing and keyboard dismissal. Screenshot review
+caught and corrected a glass button stretching its grouped Form row; a default-
+size geometry assertion now guards that regression. The large-text scroll
+helper searches both directions because Form virtualizes offscreen rows.
+Physical devices and VoiceOver/TalkBack remain release checks.
+
 ## What changed
 
 - Generated CSS, Swift and Kotlin share one palette/spacing/radius source. Native
@@ -56,11 +89,12 @@ Corrections from reviewing the rendered screens:
 
 ## Default phone screens
 
-The README uses fresh-install converter captures from main's native Standards &
-points build, with the generated navy palette. Both show the default 58.32 SCY
+The README uses default converter captures from the native controls/cohesion
+build, with the generated navy palette. Both show the default 58.32 SCY
 100 freestyle swim for women and its 1:06.72 LCM comparison, in light appearance
-with ordinary text size. Only system status indicators are normalized for the
-screenshots. Existing simulator/emulator records were not reset. Feature sheets
+with ordinary text size. Android's capture uses the emulator's native gesture
+navigation with normalized system indicators; its prior navigation/demo settings
+are restored afterward. UI-test reset is confined to the test apps' sample data. Feature sheets
 and expanded layouts remain in the detailed reviews.
 
 [iOS home](screenshots/ios-home-light.png) · [Android home](screenshots/android-home-light.png)

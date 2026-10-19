@@ -137,11 +137,14 @@ event and supported whole pool lengths, not the entered distance for every cours
 ## Platform experience remains authoritative
 
 - **iOS:** retain SwiftUI navigation, pickers, sheets, sharing, keyboard Done and
-  system Liquid Glass controls. The signature numerical card uses the shared dark palette in both appearances,
+  system Liquid Glass controls. Convert uses a grouped Form and the existing
+  native TabView. The signature numerical card uses the shared dark palette in both appearances,
   including contrasting action colors. Its subtle static gradient runs from dark
   `surfaceRaised` at the top leading corner to dark `surface` at the bottom
   trailing corner on both native platforms; both stops are opaque generated
-  palette roles. Surrounding content uses the current
+  palette roles. Convert, standards and points share the same numerical surface,
+  including a quiet static wave ribbon derived from the accent role. iOS hides
+  that decoration with increased contrast or reduced transparency. Surrounding content uses the current
   appearance. This gives the result a stable identity without repainting native
   forms and navigation.
   System materials respond to accessibility preferences; do not replace the tab
@@ -152,7 +155,10 @@ event and supported whole pool lengths, not the entered distance for every cours
 - **Android:** retain Compose/Material navigation, menus, sheets, back behavior,
   IME insets and touch semantics. Map brand colors into complete, contrasting
   Material roles; use separate custom result roles where necessary. Preserve
-  default touch-target behavior and font scaling. See [Material 3 theming](https://developer.android.com/develop/ui/compose/designsystems/material3)
+  default touch-target behavior and font scaling. Course/category selectors use
+  native single-choice segmented rows; event and benchmark settings use exposed
+  dropdown text fields. Summary cards share Convert's numerical surface, while
+  supporting content uses grouped appearance-dependent Material cards. See [Material 3 theming](https://developer.android.com/develop/ui/compose/designsystems/material3)
   and [Compose accessibility defaults](https://developer.android.com/develop/ui/compose/accessibility/api-defaults).
   Wallpaper-derived dynamic color is an optional future preference, not a
   requirement to replace Turnmark's brand colors.
@@ -165,8 +171,7 @@ event and supported whole pool lengths, not the entered distance for every cours
 
 ## Adoption and assets
 
-The paired native adoption is separate from the web foundation; widget palette
-adoption remains follow-up work. Show light/dark and large-text screenshots using the
+The paired native adoption is separate from the web and widget adapters. Show light/dark and large-text screenshots using the
 same sample swims. Review invalid, unavailable, original and derived results,
 yard/metric mappings, focus, contrast, keyboard space and native sharing.
 Update [CI selection](CI.md) as each generated adapter becomes a real consumer;

@@ -45,7 +45,7 @@ final class TurnmarkUITests: XCTestCase {
         return visibleKeyboard(in: app)
     }
     @MainActor private func reach(_ element: XCUIElement, in app: XCUIApplication) {
-        for _ in 0..<10 {
+        for attempt in 0..<16 {
             let keyboard = entryKeyboard(in: app)
             if element.exists && element.isHittable {
                 // XCTest may call a one-pixel sliver hittable. A tap must land
@@ -58,7 +58,10 @@ final class TurnmarkUITests: XCTestCase {
             let nativeList = app.collectionViews.element(boundBy: max(app.collectionViews.count - 1, 0))
             let editor = app.descendants(matching: .any)["swimEditorForm"].firstMatch
             let scroll = editor.exists ? editor : (container.exists ? container : (nativeList.exists ? nativeList : app))
-            let downward = element.exists && element.frame.minY < app.frame.minY + 80
+            // A grouped Form virtualizes rows that have scrolled away. When
+            // the target is absent, search both directions before failing;
+            // once its row is loaded, its actual geometry chooses direction.
+            let downward = element.exists ? element.frame.minY < app.frame.minY + 80 : attempt >= 6
             if let keyboard {
                 // The form extends behind the keyboard. XCTest's default swipe
                 // can start in its assistant bar, which never scrolls the form.
@@ -95,6 +98,11 @@ final class TurnmarkUITests: XCTestCase {
 
     @MainActor func testBenchmarksUseOriginalSwimAndRememberAgeSettings() {
         let app = launch()
+        let benchmarkAction = app.buttons["openBenchmarks"]
+        XCTAssertTrue(benchmarkAction.waitForExistence(timeout: 5))
+        XCTAssertLessThan(benchmarkAction.frame.height, 80,
+            "The ordinary-text benchmark action must not stretch its grouped Form row")
+        capture(app, "Converter default")
         reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
         XCTAssertEqual(app.staticTexts["benchmarkOriginalTime"].label, "58.32")
         XCTAssertEqual(app.staticTexts["benchmarkSummary"].label, "A standard")
