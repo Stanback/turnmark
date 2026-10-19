@@ -643,11 +643,19 @@
   display: none;
 }
 .result-card:focus-visible {
-  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  border-color: var(--tm-color-border-control);
+}
+.result-card.selected:focus-visible {
+  border-color: color-mix(in srgb, var(--highlight) 80%, var(--line));
 }
 @media (hover: hover) and (pointer: fine) {
   .result-card:hover {
     background: color-mix(in srgb, var(--accent) 7%, transparent);
+    border-color: var(--tm-color-border-control);
+  }
+  .result-card.selected:hover {
+    background: color-mix(in srgb, var(--selected) 74%, transparent);
+    border-color: color-mix(in srgb, var(--highlight) 80%, var(--line));
   }
 }
 .result-card.selected .result-card-top svg {
@@ -744,15 +752,32 @@
   flex-shrink: 0;
   font-size: 14px;
 }
-.result-explanation {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  color: var(--muted);
-  margin-top: 22px;
+.result-method {
+  margin-top: var(--tm-space-16);
 }
-.result-explanation > svg {
-  margin-top: 3px;
+.result-method > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tm-space-12);
+  min-height: 44px;
+  color: var(--accent);
+  font-size: 14px;
+}
+.result-method > summary > span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tm-space-8);
+}
+.result-method > summary > svg {
+  transition: transform 180ms ease;
+}
+.result-method[open] > summary > svg {
+  transform: rotate(90deg);
+}
+.result-explanation {
+  color: var(--muted);
+  padding-top: var(--tm-space-8);
 }
 .result-explanation p {
   font-size: 13px;
@@ -1164,17 +1189,22 @@
     font-size: 16px;
   }
   .focused-result {
-    margin-top: 26px;
-    margin-bottom: var(--tm-space-24);
+    margin-top: var(--tm-space-16);
+    margin-bottom: var(--tm-space-20);
   }
   .focused-context {
     font-size: 14px;
+    margin-bottom: var(--tm-space-8);
   }
   .focused-time {
     font-size: clamp(30px, 20cqw, 90px);
   }
   .focused-provenance {
     font-size: 13px;
+    margin-top: var(--tm-space-12);
+  }
+  .equivalents-title {
+    padding-top: var(--tm-space-16);
   }
   .equivalents-title > span {
     display: none;
@@ -1183,7 +1213,7 @@
     font-size: clamp(19px, 6cqw, 26px);
   }
   .result-card {
-    padding-block: 18px;
+    padding-block: var(--tm-space-12);
   }
   .result-card-top {
     font-size: 14px;
@@ -1195,8 +1225,14 @@
     font-size: 12px;
   }
   .result-actions {
-    gap: 7px;
-    margin-top: var(--tm-space-16);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 44px;
+    gap: var(--tm-space-8);
+    margin-top: var(--tm-space-12);
+    padding-top: var(--tm-space-16);
+  }
+  .result-actions .primary-button {
+    grid-column: 1 / -1;
   }
   .result-actions .primary-button,
   .result-actions .secondary-button {

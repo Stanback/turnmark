@@ -1,6 +1,6 @@
 # Converter layout exploration
 
-The first web layout pass is implemented in draft PR26, separate from
+The web layout and polish passes are implemented in draft PR26, separate from
 conversion-model research. It is ready for visual review; it has not been
 merged or adopted by the native apps.
 
@@ -24,7 +24,7 @@ web/native layout or a native redesign.
 
 ## Implemented web flow
 
-The next exploration should make the starting point clearer: **enter a swim →
+The implemented flow makes the starting point clearer: **enter a swim →
 compare course equivalents → explore targets or methods**. On a narrow screen,
 editable inputs come before the result. Preserve the desktop side-by-side
 comparison; do not shrink that entire composition into a phone.
@@ -99,11 +99,27 @@ not evidence that native apps have adopted blank or input-first arrival.
 [Colorado method and unchanged original-course next standard](screenshots/web-converter-method-dark.png) ·
 [320px long-time and enlarged-root-text content review](screenshots/web-converter-large-text.png)
 
+[Full desktop composition with the water artwork](screenshots/web-converter-desktop-layout-dark.png) ·
+[Phone calculation disclosure and actions](screenshots/web-converter-method-mobile.png)
+
+The polish pass keeps the multiplier/source explanation in a native HTML
+disclosure, closed initially, with a route to the full methodology inside it.
+Original/published/derived labels stay visible on the course rows. The disclosure
+supports keyboard activation and continues to follow the selected course.
+Selected row hover retains its selection fill and adds a restrained border
+highlight; the surrounding numerical panel remains static.
+
+Phone rows and vertical gaps are tighter. Save comparison takes a full row,
+followed by Copy link and the download action. At the reviewed 390×844 viewport,
+the default three-course comparison and all actions fit above bottom navigation
+after See your results. Shorter screens, expanded details and larger text scroll
+normally; this is not a fixed-height panel or a requirement to shrink text.
+
 The desktop capture uses Chromium at 1120×1450, device scale 1, reduced motion,
 and a crop of `#converter`. It excludes the hero deliberately so controls and
 results remain legible in the README. Light/dark use the same 100 freestyle,
 women/girls, age 15–16, SCY, 58.32 sample and NCAA default. The method supplement
-opens Conversion method and selects documented Colorado Timing, yielding
+opens Conversion method and the calculation disclosure, then selects documented Colorado Timing, yielding
 1:06.33 LCM; the AA gap remains 1.83s because it uses the original SCY swim.
 
 Mobile captures use 390×844 and ordinary viewport screenshots, with the input or
@@ -123,11 +139,13 @@ the full standards view rather than inventing a compact target.
 
 ## Completion checks
 
-This first pass passes Svelte/TypeScript checks, 138 unit tests, 41 browser cases
+This pass passes Svelte/TypeScript checks, 138 unit tests, 43 browser cases
 (one desktop-inapplicable case skipped), and 20 production/offline cases.
 Light/dark screenshots, 320px controls, enlarged root text, invalid/unavailable
-results, method sharing/persistence and keyboard focus were reviewed. CI and
-owner review remain pending. No native layout or widget/MCP presentation changed.
+results, method sharing/persistence, keyboard focus/disclosure and phone action
+visibility were reviewed. The preceding layout commit passed hosted CI; the new
+polish commit and owner review remain pending. No native layout or widget/MCP
+presentation changed.
 
 - Confirm which layout to keep through actual desktop/mobile browser previews.
 - Keep calculations, unsupported/invalid states, offline behavior, shared links,

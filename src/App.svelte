@@ -910,24 +910,33 @@
             </button>
           {/each}
         </div>
-        <div class="result-explanation">
-          <Icon name="info" size={15} />
-          <p>
-            {#if error}Results will appear when your input is valid.{:else if focused.kind === "unavailable"}{focused.reason}{:else if focused.kind === "swum"}{adjustment
-                ? `Your sea-level estimate in ${form.course}.`
-                : "Your entered swim, exactly as timed."}{:else}{form.course} → {focus}:
-              <strong
-                >{`× ${focused.factor?.toFixed(5)}${focused.offsetSeconds ? ` ${focused.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(focused.offsetSeconds).toFixed(2)}s` : ""}`}</strong
-              >. {form.method === coloradoMethod
-                ? "Colorado Timing formula."
-                : focused.kind === "published"
-                  ? "Published NCAA factor."
-                  : "Derived from NCAA metric-to-yards factors."} Truncated to hundredths.{/if}
-          </p>
-        </div>
-        <button class="text-button method-link" onclick={() => go("method")}
-          >How this is calculated <Icon name="arrow" size={14} /></button
-        >
+        <details class="result-method">
+          <summary>
+            <span><Icon name="info" size={15} />How this is calculated</span>
+            <Icon name="chevron" size={15} />
+          </summary>
+          <div class="result-explanation">
+            <p>
+              {#if error}Results will appear when your input is valid.{:else if focused.kind === "unavailable"}{focused.reason}{:else if focused.kind === "swum"}{adjustment
+                  ? `Your sea-level estimate in ${form.course}.`
+                  : "Your entered swim, exactly as timed."}{:else}{form.course} →
+                {focus}:
+                <strong
+                  >{`× ${focused.factor?.toFixed(5)}${focused.offsetSeconds ? ` ${focused.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(focused.offsetSeconds).toFixed(2)}s` : ""}`}</strong
+                >. {form.method === coloradoMethod
+                  ? "Colorado Timing formula."
+                  : focused.kind === "published"
+                    ? "Published NCAA factor."
+                    : "Derived from NCAA metric-to-yards factors."} Truncated to hundredths.{/if}
+            </p>
+          </div>
+          <button class="text-button method-link" onclick={() => go("method")}
+            >View methodology &amp; sources <Icon
+              name="arrow"
+              size={14}
+            /></button
+          >
+        </details>
         <div class="result-actions">
           <button class="primary-button" onclick={save} disabled={!!error}
             ><Icon name="bookmark" size={16} />Save comparison</button

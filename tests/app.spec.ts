@@ -88,6 +88,45 @@ test("conversion method is optional, persists and round-trips through comparison
   ).toBeVisible();
 });
 
+test("calculation details stay optional and keyboard accessible", async ({
+  page,
+}, testInfo) => {
+  await openExample(page, "/");
+  const details = page.locator(".result-method");
+  const summary = details.locator("summary");
+  await expect(details).not.toHaveAttribute("open");
+  await expect(page.locator(".result-explanation")).not.toBeVisible();
+  await summary.focus();
+  await page.keyboard.press("Enter");
+  await expect(details).toHaveAttribute("open");
+  await expect(page.locator(".result-explanation")).toContainText("NCAA");
+  await page.getByTestId("result-SCY").click();
+  await expect(page.locator(".result-explanation")).toHaveText(
+    "Your entered swim, exactly as timed.",
+  );
+  await summary.focus();
+  await page.keyboard.press("Enter");
+  await expect(details).not.toHaveAttribute("open");
+  if (testInfo.project.name === "mobile") {
+    // At the reviewed phone viewport the complete comparison and actions fit.
+    // Smaller browser viewports still scroll normally, as the navigation case checks.
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.getByTestId("result-LCM").click();
+    await page
+      .getByRole("button", { name: "See your results", exact: true })
+      .click();
+    expect(
+      await page.evaluate(
+        () =>
+          document.querySelector(".result-actions")!.getBoundingClientRect()
+            .bottom <=
+          document.querySelector(".mobile-nav")!.getBoundingClientRect().top,
+      ),
+    ).toBe(true);
+  }
+});
+
 test("mobile age selectors leave space for their complete selected label", async ({
   page,
 }) => {
@@ -575,7 +614,10 @@ test("mobile navigation reaches history and standards without covering content",
   await expect(
     nav.getByRole("button", { name: "Standards", exact: true }),
   ).toHaveAttribute("aria-current", "location");
-  await page.getByRole("button", { name: "How this is calculated" }).click();
+  await page.locator(".result-method summary").click();
+  await page
+    .getByRole("button", { name: "View methodology & sources" })
+    .click();
   await expect(page.locator("#method")).toBeInViewport();
   expect(
     await page.evaluate(
