@@ -4,7 +4,7 @@
 
 [Try Turnmark →](https://turnmark.app/)
 
-Swim time conversion, published standards, and World Aquatics points, built around a shared Rust calculation engine. The web app is available today; native iOS and Android apps are in development. Built for swimmers, coaches, and parents who want to understand a swim across pool courses and find a useful next target.
+Your offline swim companion: convert across pool courses, compare your times with published standards and World Aquatics points, and understand your next target. Built for swimmers, coaches, and parents, with private device-local comparisons. The web app is available today; native iOS and Android apps are in development, including a local record of actual meet and practice swims. See the [product positioning](docs/PRODUCT_POSITIONING.md) for the workflow and platform distinctions.
 
 Available in the web app:
 
@@ -28,7 +28,14 @@ No backend, account, analytics, third-party runtime requests, or uploaded swim d
 
 The web app is live. The native screens below are development previews, not store releases.
 
-![Turnmark web converter, recent conversions and published standards](docs/screenshots/web-liquid-surfaces-dark.png)
+The web converter starts with a blank time. This example shows 58.32 in SCY,
+its NCAA course equivalents, and the next published standard for the entered swim.
+
+![Turnmark web converter with editable inputs, SCY SCM LCM comparisons and an original-course next standard](docs/screenshots/web-converter-comparison-dark.png)
+
+[Light appearance](docs/screenshots/web-converter-comparison-light.png) ·
+[Colorado Timing example](docs/screenshots/web-converter-method-dark.png) ·
+[Layout review and mobile flow](docs/CONVERTER_LAYOUT_EXPLORATION.md)
 
 | iOS · Converter                                                                                                                      | Android · Converter                                                                                                                                     |
 | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -140,7 +147,7 @@ records the current scope and separate model-research follow-up.
 
 ## Install and offline use
 
-Your conversion method, age groups, standards selection, category, swum-in course, elevation, and ft/m choice are remembered in this browser. Restored elevations stay visible in the expanded elevation panel. A shared conversion link overrides remembered swim settings, including altitude. Race time, stroke, and distance start fresh; conversion history keeps past swims. Reset restores the app defaults and updates remembered preferences. Preferences stay on this device and work without an account.
+Your conversion method, age groups, standards selection, category, swum-in course, elevation, and ft/m choice are remembered in this browser. Restored elevations stay visible in the expanded elevation panel. A shared conversion link overrides remembered swim settings, including altitude. Race time starts blank, and stroke/distance start fresh; conversion history keeps past comparisons. Try an example explicitly loads the sample swim and default settings without adding a history entry. Reset clears the time, restores the app defaults, and updates remembered preferences. Preferences stay on this device and work without an account.
 
 Chrome and Edge can install Turnmark from the address bar/browser menu; the app’s Install button invokes the native prompt when available and otherwise shows instructions. Safari on iPhone/iPad supports Share → Add to Home Screen. Icons include 192px/512px PNGs, a maskable icon, and an Apple touch icon. The manifest and service worker are scoped to `/` on `turnmark.app`.
 

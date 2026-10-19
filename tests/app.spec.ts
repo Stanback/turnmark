@@ -1,12 +1,61 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+
+// Most feature cases use the explicit demonstration; first-launch behavior is
+// tested separately below without manufacturing a shared URL or storage state.
+async function openExample(page: Page, url: string) {
+  await page.goto(url);
+  if (!(await page.locator("#swim-time").inputValue()))
+    await page
+      .getByRole("button", { name: "Try an example", exact: true })
+      .click();
+}
+
+test("arrival is blank, example is explicit, typing keeps focus and reset clears results", async ({
+  page,
+}) => {
+  await page.clock.install();
+  await page.goto("./");
+  const input = page.locator("#swim-time");
+  await expect(input).toHaveValue("");
+  await expect(input).toHaveAttribute("aria-invalid", "false");
+  await expect(page.getByRole("alert")).toHaveCount(0);
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  await expect(page.getByTestId("focused-time")).toHaveText("—");
+  await expect(
+    page.getByRole("button", { name: "Copy link", exact: true }),
+  ).toBeDisabled();
+  await page
+    .getByRole("button", { name: "Try an example", exact: true })
+    .click();
+  await expect(input).toHaveValue("58.32");
+  await expect(page.getByTestId("result-LCM")).toHaveText("1:06.72");
+  await page.clock.runFor(1600);
+  await expect(page.locator(".history-row")).toHaveCount(0);
+  await input.focus();
+  const scroll = await page.evaluate(() => scrollY);
+  await input.fill("59.32");
+  await expect(input).toBeFocused();
+  expect(await page.evaluate(() => scrollY)).toBe(scroll);
+  await expect(page.locator(".next-target-preview")).toContainText(
+    "Your entered swim",
+  );
+  await page.getByRole("button", { name: "Reset", exact: true }).click();
+  await expect(input).toHaveValue("");
+  await expect(page.getByTestId("result-LCM")).toHaveText("—");
+  await expect(page.locator(".next-target-preview")).not.toContainText(
+    "Next standard",
+  );
+  await page.reload();
+  await expect(input).toHaveValue("");
+});
 
 test("conversion method is optional, persists and round-trips through comparison links", async ({
   page,
   context,
 }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-  await page.goto("/");
+  await openExample(page, "/");
   await expect(page.getByTestId("result-LCM")).toHaveText("1:06.72");
   const options = page.locator(".conversion-options");
   await expect(options).not.toHaveAttribute("open");
@@ -21,10 +70,10 @@ test("conversion method is optional, persists and round-trips through comparison
   expect(link).toContain("m=colorado-teamunify-2026");
   await page.reload();
   await expect(page.getByTestId("result-LCM")).toHaveText("1:06.33");
-  await page.goto("/#t=58.32&s=FR&d=100&c=SCY&g=women");
+  await openExample(page, "/#t=58.32&s=FR&d=100&c=SCY&g=women");
   await page.reload();
   await expect(page.getByTestId("result-LCM")).toHaveText("1:06.72");
-  await page.goto(link);
+  await openExample(page, link);
   await page.reload();
   await expect(page.getByTestId("result-LCM")).toHaveText("1:06.33");
   await page.getByRole("link", { name: "Resources", exact: true }).click();
@@ -39,11 +88,50 @@ test("conversion method is optional, persists and round-trips through comparison
   ).toBeVisible();
 });
 
+test("calculation details stay optional and keyboard accessible", async ({
+  page,
+}, testInfo) => {
+  await openExample(page, "/");
+  const details = page.locator(".result-method");
+  const summary = details.locator("summary");
+  await expect(details).not.toHaveAttribute("open");
+  await expect(page.locator(".result-explanation")).not.toBeVisible();
+  await summary.focus();
+  await page.keyboard.press("Enter");
+  await expect(details).toHaveAttribute("open");
+  await expect(page.locator(".result-explanation")).toContainText("NCAA");
+  await page.getByTestId("result-SCY").click();
+  await expect(page.locator(".result-explanation")).toHaveText(
+    "Your entered swim, exactly as timed.",
+  );
+  await summary.focus();
+  await page.keyboard.press("Enter");
+  await expect(details).not.toHaveAttribute("open");
+  if (testInfo.project.name === "mobile") {
+    // At the reviewed phone viewport the complete comparison and actions fit.
+    // Smaller browser viewports still scroll normally, as the navigation case checks.
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.getByTestId("result-LCM").click();
+    await page
+      .getByRole("button", { name: "See your results", exact: true })
+      .click();
+    expect(
+      await page.evaluate(
+        () =>
+          document.querySelector(".result-actions")!.getBoundingClientRect()
+            .bottom <=
+          document.querySelector(".mobile-nav")!.getBoundingClientRect().top,
+      ),
+    ).toBe(true);
+  }
+});
+
 test("mobile age selectors leave space for their complete selected label", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto("/");
+  await openExample(page, "/");
   for (const [system, id, age] of [
     ["youth", "age-group", "10u"],
     ["masters", "masters-age", "40-44"],
@@ -72,10 +160,38 @@ test("mobile age selectors leave space for their complete selected label", async
   }
 });
 
+test("small screens retain complete category and age labels with enlarged root text", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await openExample(page, "./");
+  await page.addStyleTag({ content: "html { font-size: 200%; }" });
+  for (const id of ["category", "age-group"]) {
+    const fits = await page.locator(`#${id}`).evaluate((element) => {
+      const select = element as HTMLSelectElement;
+      const style = getComputedStyle(select);
+      const context = document.createElement("canvas").getContext("2d")!;
+      context.font = style.font;
+      return (
+        context.measureText(select.selectedOptions[0].text).width <=
+        select.clientWidth -
+          parseFloat(style.paddingLeft) -
+          parseFloat(style.paddingRight)
+      );
+    });
+    expect(fits).toBe(true);
+  }
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+});
+
 test("remembers swimmer preferences without reusing race inputs, and shared swims override them", async ({
   page,
 }) => {
-  await page.goto("./");
+  await openExample(page, "./");
   await page.locator("#category").selectOption("men");
   await page.locator("#age-group").selectOption("17-18");
   await page
@@ -116,7 +232,7 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
       level: 2,
     }),
   ).toBeVisible();
-  await expect(page.locator("#swim-time")).toHaveValue("58.32");
+  await expect(page.locator("#swim-time")).toHaveValue("");
   await expect(page.locator("#event")).toHaveValue("FR:100");
   await expect(page.locator("#category")).toHaveValue("men");
   await expect(
@@ -139,7 +255,7 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
   await expect(page.locator("#masters-age")).toHaveValue("40-44");
   await page.locator("#standards-system").selectOption("youth");
   await expect(page.locator("#age-group")).toHaveValue("17-18");
-  await page.goto("./#t=1%3A05&s=FR&d=100&c=SCM&g=women&a=13-14&h=0");
+  await openExample(page, "./#t=1%3A05&s=FR&d=100&c=SCM&g=women&a=13-14&h=0");
   await expect(page.locator("#category")).toHaveValue("women");
   await expect(page.locator("#age-group")).toHaveValue("13-14");
   await expect(
@@ -167,7 +283,7 @@ test("dark standards keep long badges inside their circles and the swim marker v
   page,
 }) => {
   await page.emulateMedia({ colorScheme: "dark" });
-  await page.goto("./#t=58&s=FR&d=100&c=SCM&g=women&a=15-16&h=0");
+  await openExample(page, "./#t=58&s=FR&d=100&c=SCM&g=women&a=15-16&h=0");
   await page.evaluate(() => document.fonts.ready);
   for (const [time, label] of [
     ["58", "AAA"],
@@ -221,7 +337,7 @@ test("live conversion, invalid input and course-specific unavailable events", as
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  await page.goto("./");
+  await openExample(page, "./");
   await expect(page.getByTestId("result-SCY")).toHaveText("58.32");
   await page.locator("#category").selectOption("men");
   await page.locator("#event").selectOption("BR:200");
@@ -250,7 +366,7 @@ test("live conversion, invalid input and course-specific unavailable events", as
 test("focused results follow the selected course, mapped event and invalid input", async ({
   page,
 }) => {
-  await page.goto("./");
+  await openExample(page, "./");
   await page.getByLabel("Event", { exact: false }).selectOption("FR:400");
   await page.locator("#swim-time").fill("5:00");
   // The engine's canonical 400 free maps to 500 yards and 400 meters.
@@ -289,7 +405,7 @@ test("focused results follow the selected course, mapped event and invalid input
 test("standards, altitude, local saves, restore and remove", async ({
   page,
 }) => {
-  await page.goto("./");
+  await openExample(page, "./");
   await expect(
     page.getByRole("heading", { name: "A time, nicely done." }),
   ).toBeVisible();
@@ -312,7 +428,7 @@ test("standards, altitude, local saves, restore and remove", async ({
   await expect(page.getByTestId("result-SCY")).toHaveText("1:58.80");
 });
 test("share link restores inputs and CSV downloads", async ({ page }) => {
-  await page.goto("./#t=2%3A16.71&s=BR&d=200&c=LCM&g=men&a=17-18&h=0");
+  await openExample(page, "./#t=2%3A16.71&s=BR&d=200&c=LCM&g=men&a=17-18&h=0");
   await expect(page.locator("#swim-time")).toHaveValue("2:16.71");
   await expect(page.getByTestId("result-SCY")).toHaveText("1:57.29");
   const download = page.waitForEvent("download");
@@ -328,7 +444,7 @@ test("share link restores inputs and CSV downloads", async ({ page }) => {
 test("responsive layout and accessible controls", async ({
   page,
 }, testInfo) => {
-  await page.goto("./");
+  await openExample(page, "./");
   await page.evaluate(() => document.fonts.ready);
   expect(
     await page.evaluate(
@@ -355,7 +471,7 @@ test("long times and expanded elevation fit narrow layouts", async ({
 }) => {
   for (const width of [320, 681]) {
     await page.setViewportSize({ width, height: 1000 });
-    await page.goto("./");
+    await openExample(page, "./");
     await page.locator("#swim-time").fill("60:00.00");
     if (!(await page.locator("#altitude").isVisible()))
       await page.getByText("Swam at altitude?", { exact: true }).click();
@@ -380,7 +496,7 @@ test("long times and expanded elevation fit narrow layouts", async ({
 test("conversion history records settled edits, persists, filters, restores and clears", async ({
   page,
 }) => {
-  await page.goto("./");
+  await openExample(page, "./");
   await expect(page.locator(".history-row")).toHaveCount(0);
   await page.locator("#swim-time").fill("59.10");
   await expect(page.locator(".history-row")).toHaveCount(1);
@@ -427,7 +543,7 @@ test("conversion history records settled edits, persists, filters, restores and 
 test("World Aquatics points score entered metric swims and leave yards unscored", async ({
   page,
 }) => {
-  await page.goto("./");
+  await openExample(page, "./");
   await page
     .getByRole("button", { name: "World Aquatics points", exact: true })
     .click();
@@ -458,7 +574,7 @@ test("mobile navigation reaches history and standards without covering content",
   page,
 }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "Mobile navigation only");
-  await page.goto("./");
+  await openExample(page, "./");
   const resultsJump = page.getByRole("button", {
     name: "See your results",
     exact: true,
@@ -498,7 +614,10 @@ test("mobile navigation reaches history and standards without covering content",
   await expect(
     nav.getByRole("button", { name: "Standards", exact: true }),
   ).toHaveAttribute("aria-current", "location");
-  await page.getByRole("button", { name: "How this is calculated" }).click();
+  await page.locator(".result-method summary").click();
+  await page
+    .getByRole("button", { name: "View methodology & sources" })
+    .click();
   await expect(page.locator("#method")).toBeInViewport();
   expect(
     await page.evaluate(
@@ -510,7 +629,7 @@ test("mobile navigation reaches history and standards without covering content",
 test("history remembers target-course changes and explicit saves without duplicates", async ({
   page,
 }) => {
-  await page.goto("./");
+  await openExample(page, "./");
   await page
     .getByRole("button", { name: "Save comparison", exact: true })
     .click();
@@ -529,7 +648,10 @@ test("history remembers target-course changes and explicit saves without duplica
 test("elevation units preserve altitude and show the sea-level transformation", async ({
   page,
 }) => {
-  await page.goto("./#t=21%3A00.20&s=FR&d=1500&c=SCY&g=women&a=17-18&h=7200");
+  await openExample(
+    page,
+    "./#t=21%3A00.20&s=FR&d=1500&c=SCY&g=women&a=17-18&h=7200",
+  );
   await expect(page.locator("#altitude")).toBeVisible();
   await expect(page.getByTestId("altitude-original")).toHaveText("21:00.20");
   await expect(page.getByTestId("altitude-corrected")).toHaveText("20:27.70");
@@ -574,7 +696,7 @@ test("elevation units preserve altitude and show the sea-level transformation", 
 test("USMS adult targets handle categories, courses, missing data and share context", async ({
   page,
 }) => {
-  await page.goto("./");
+  await openExample(page, "./");
   await page.locator("#standards-system").selectOption("masters");
   await expect(page.getByTestId("masters-target")).toHaveText("1:04.07");
   await expect(page.locator(".masters-status")).toContainText("5.75s faster");
@@ -597,7 +719,8 @@ test("USMS adult targets handle categories, courses, missing data and share cont
   await expect(
     page.getByRole("heading", { name: "No NQT for ages 85+" }),
   ).toBeVisible();
-  await page.goto(
+  await openExample(
+    page,
     "./#t=58.32&s=FR&d=100&c=SCY&g=women&a=15-16&h=0&b=masters&ma=40-44",
   );
   await expect(page.locator("#standards-system")).toHaveValue("masters");
@@ -617,7 +740,7 @@ test("theme follows system changes, respects a saved override and keeps dark con
   page,
 }) => {
   await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
-  await page.goto("./");
+  await openExample(page, "./");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   const themes = page.getByRole("group", { name: "Appearance", exact: true });
   await themes.getByRole("button", { name: "Light", exact: true }).click();
@@ -644,7 +767,7 @@ test("theme follows system changes, respects a saved override and keeps dark con
 test("method retains the NCAA source and install instructions are usable", async ({
   page,
 }) => {
-  await page.goto("./");
+  await openExample(page, "./");
   await expect(
     page.locator("#method").getByRole("link", { name: /2025–27 NCAA rules/ }),
   ).toHaveAttribute("href", /PRXSW_RulesBook/);
@@ -665,7 +788,7 @@ test("method retains the NCAA source and install instructions are usable", async
 test("points explain the reference and next milestone; swimboard remove buttons stay circular", async ({
   page,
 }) => {
-  await page.goto("./#t=1%3A05&s=FR&d=100&c=SCM&g=women&a=15-16&h=0");
+  await openExample(page, "./#t=1%3A05&s=FR&d=100&c=SCM&g=women&a=15-16&h=0");
   await page
     .getByRole("button", { name: "World Aquatics points", exact: true })
     .click();
