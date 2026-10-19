@@ -6,6 +6,11 @@ merged or adopted by the native apps.
 
 ## Direction
 
+Position this as [an offline swim companion](PRODUCT_POSITIONING.md): compare
+courses, understand published benchmarks and keep a small private scratchpad.
+Native development builds can log actual practice/meet swims; web saves
+comparisons. Keep those capabilities and record types distinct in product copy.
+
 Bring the editable swim and its three course equivalents into one visual group.
 Make the original time, destination event/course and derived estimate easy to
 scan. Explore a compact next-target summary using the existing published

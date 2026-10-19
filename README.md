@@ -4,7 +4,7 @@
 
 [Try Turnmark →](https://turnmark.app/)
 
-Swim time conversion, published standards, and World Aquatics points, built around a shared Rust calculation engine. The web app is available today; native iOS and Android apps are in development. Built for swimmers, coaches, and parents who want to understand a swim across pool courses and find a useful next target.
+Your offline swim companion: convert across pool courses, compare your times with published standards and World Aquatics points, and understand your next target. Built for swimmers, coaches, and parents, with private device-local comparisons. The web app is available today; native iOS and Android apps are in development, including a local record of actual meet and practice swims. See the [product positioning](docs/PRODUCT_POSITIONING.md) for the workflow and platform distinctions.
 
 Available in the web app:
 
