@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0 — prepared, not yet published
+## 0.2.0
 
 - Official MCP Apps conversion card for compatible hosts, with editable time
   and target course, source context and host light/dark appearance.
