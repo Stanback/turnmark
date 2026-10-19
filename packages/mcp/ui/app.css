@@ -114,8 +114,33 @@ select {
   color: var(--tm-color-text);
   background: var(--tm-color-surface-input);
 }
+.select-wrap {
+  position: relative;
+}
 select {
-  padding-right: 28px;
+  appearance: none;
+  padding-right: 52px;
+}
+.select-wrap svg {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--tm-color-text-muted);
+}
+@media (forced-colors: active) {
+  select {
+    appearance: auto;
+  }
+  .select-wrap svg {
+    display: none;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  button:not(:disabled):hover {
+    border-color: var(--tm-color-accent);
+  }
 }
 button {
   border: 1px solid transparent;
