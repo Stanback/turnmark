@@ -74,6 +74,11 @@ test("actual cross-origin iframe works at narrow width with source and destinati
     await expect(
       frame.getByRole("heading", { name: "Swim time converter", exact: true }),
     ).toBeVisible();
+    expect(
+      await frame
+        .getByRole("combobox", { name: "Distance", exact: true })
+        .evaluate((select) => select.getBoundingClientRect().width),
+    ).toBeGreaterThan(240);
     await frame
       .getByRole("combobox", { name: "Distance", exact: true })
       .selectOption("400");
@@ -170,7 +175,8 @@ test("cross-origin height signals are metadata-only and resizing stays publisher
     });
     // Text reflow changes content size without a new navigation or width change.
     await widget.addStyleTag({
-      content: "html { font-size: 150% } .converter { font-size: 150% }",
+      content:
+        ".converter, .converter :is(label, p, h1, h2, input, select, a, strong) { font-size: 24px !important; line-height: 1.5 !important; }",
     });
     await expect
       .poll(async () => (await heights()).at(-1)!.height)
