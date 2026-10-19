@@ -1,7 +1,9 @@
 # Native apps: implementation scope
 
-Status: PR #2 merged the shared SDK and web migration. The following native-app
-PR implements the paired converter workflow; see [current app setup and scope](NATIVE_APPS.md).
+Historical implementation plan for the initial native workflow. Current behavior,
+setup and remaining scope are maintained in [Native apps](NATIVE_APPS.md), with
+actual current captures in [Native visual review](NATIVE_VISUAL_REVIEW.md).
+The milestones below describe the original rollout, not outstanding work.
 
 PR #1 established the JavaScript/TypeScript SDK and its source-backed contract.
 That package already supports web, embed, and Node consumers. The Rust proof now

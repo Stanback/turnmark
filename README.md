@@ -37,11 +37,15 @@ its NCAA course equivalents, and the next published standard for the entered swi
 [Colorado Timing example](docs/screenshots/web-converter-method-dark.png) ·
 [Layout review and mobile flow](docs/CONVERTER_LAYOUT_EXPLORATION.md)
 
-| iOS · Converter                                                                                                                      | Android · Converter                                                                                                                                     |
-| ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <img src="docs/screenshots/ios-home-light.png" width="280" alt="Default iPhone converter with the original swim and LCM comparison"> | <img src="docs/screenshots/android-home-light.png" width="280" alt="Default Android phone converter showing the same original swim and LCM comparison"> |
+Fresh native installs start with a blank time and an explicit **Try an example**.
+These development captures show that example in the editable inputs; equivalents
+follow below. Logging an actual swim remains an explicit action.
 
-[Embed the widget](https://turnmark.app/embed/) · [Connect MCP](https://turnmark.app/mcp/) · [Native review and more screenshots](docs/NATIVE_STANDARDS_REVIEW.md)
+| iOS · Converter                                                                                                                            | Android · Converter                                                                                                              |
+| ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="docs/screenshots/ios-home-light.png" width="280" alt="iPhone converter with editable swim inputs first and an explicit example"> | <img src="docs/screenshots/android-home-light.png" width="280" alt="Android converter with the same editable swim inputs first"> |
+
+[Embed the widget](https://turnmark.app/embed/) · [Connect MCP](https://turnmark.app/mcp/) · [Native review and more screenshots](docs/NATIVE_VISUAL_REVIEW.md)
 
 ## History
 

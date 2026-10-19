@@ -24,6 +24,7 @@ class AdaptiveLayoutTest {
     @Before fun clearSavedState() {
         ApplicationProvider.getApplicationContext<Context>().getSharedPreferences("turnmark", Context.MODE_PRIVATE).edit().clear().commit()
         compose.activityRule.scenario.recreate()
+        compose.onNodeWithTag("tryExample").performScrollTo().performClick()
     }
 
     @Test fun foldedPanesAvoidTheHingeAndPreserveEntry() {
