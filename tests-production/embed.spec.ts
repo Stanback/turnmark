@@ -200,16 +200,36 @@ test("cross-origin height signals are metadata-only and resizing stays publisher
       expect(message.version).toBe(1);
       expect(Number.isSafeInteger(message.height)).toBe(true);
     }
-    const count = (await heights()).length;
     // A publisher-origin message must not impersonate the widget's signal.
-    await page.evaluate(() =>
-      window.postMessage(
-        { type: "turnmark:resize", version: 1, height: 333 },
-        "*",
-      ),
+    // Acknowledge that exact event after the fixture's earlier listener runs;
+    // legitimate content/font reflows can still arrive independently.
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          const acknowledge = (event: MessageEvent) => {
+            if (
+              event.source === window &&
+              event.data?.publisherProbe === true
+            ) {
+              window.removeEventListener("message", acknowledge);
+              resolve();
+            }
+          };
+          window.addEventListener("message", acknowledge);
+          window.postMessage(
+            {
+              type: "turnmark:resize",
+              version: 1,
+              height: 333,
+              publisherProbe: true,
+            },
+            "*",
+          );
+        }),
     );
-    await page.waitForTimeout(100);
-    expect((await heights()).length).toBe(count);
+    expect(
+      (await heights()).some((message) => "publisherProbe" in message),
+    ).toBe(false);
   } finally {
     await new Promise<void>((resolve, reject) =>
       publisher.close((error) => (error ? reject(error) : resolve())),
