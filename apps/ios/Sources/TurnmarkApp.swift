@@ -133,7 +133,7 @@ private struct TurnmarkView: View {
                     }
                 }
                 .background(TurnmarkPalette.canvas)
-                .navigationTitle("turnmark").navigationBarTitleDisplayMode(.inline)
+                .navigationTitle("turnmark.").navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     converterBrandToolbar
                     // Keep the brand leading, rather than duplicating the inline
@@ -192,7 +192,10 @@ private struct TurnmarkView: View {
         HStack(spacing: 7) {
             toolbarWave
             if !typeSize.isAccessibilitySize {
-                Text("turnmark").font(.headline.weight(.bold)).lineLimit(1)
+                HStack(alignment: .firstTextBaseline, spacing: 1) {
+                    Text("turnmark")
+                    Text(".").foregroundStyle(TurnmarkPalette.accent)
+                }.font(.headline.weight(.bold)).lineLimit(1)
             }
         }.fixedSize(horizontal: true, vertical: false)
             .accessibilityElement(children: .ignore).accessibilityLabel("Turnmark")

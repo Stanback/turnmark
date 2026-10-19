@@ -120,7 +120,11 @@ export function affectedChecks(paths) {
       /^tsconfig(?:\.[^/]+)?\.json$/.test(path) ||
       path.startsWith("deployment/") ||
       path === "wrangler.jsonc" ||
-      ["index.html", "scripts/finish-build.mjs"].includes(path)
+      [
+        "index.html",
+        "scripts/finish-build.mjs",
+        "scripts/generate-social-image.mjs",
+      ].includes(path)
     )
       select("web");
     else return all();

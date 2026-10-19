@@ -4,7 +4,7 @@ The two-wave geometry in `design/wave.svg` is shared by the website and native
 app icons. The shared token source supplies its dark canvas/accent pair: a navy
 field and cyan waves. The platforms supply their own icon masks.
 `public/icons/app-icon.svg` and `public/favicon.svg` are generated outputs.
-The native converter uses a compact turnmark wordmark and wave on the same
+The native converter uses a compact turnmark wordmark, cyan period and wave on the same
 platform toolbar row as its overflow menu. At large text sizes, the wave can
 stand alone with a Turnmark accessibility label. My times and detail screens
 retain functional page titles; there is no extra large brand banner. The [shared design contract](DESIGN_CONTRACT.md)
@@ -33,6 +33,7 @@ After editing the wave geometry or shared palette, regenerate all brand assets:
 ```sh
 # With npm dependencies and Playwright Chromium installed:
 node scripts/generate-brand-assets.mjs
+node scripts/generate-social-image.mjs
 ```
 
 The exporter writes the web SVGs, opaque 180/192/512px PNGs, opaque 1024px iOS
@@ -53,3 +54,11 @@ width and keeps both crests distinct at 16–32px. Launcher and in-app wave geom
 remain unchanged; regenerate the derived browser SVG/PNG with the brand script.
 
 ![Rounded favicon reviewed at actual 16, 20, 24, 32 and 64px sizes on light and dark backgrounds](screenshots/favicon-optical-sizes.png)
+
+The homepage social preview uses `public/images/turnmark-social-v1.png`, a
+1200 × 630 card with the current wave, wordmark/cyan period, navy water artwork
+and “Your swim. Any course.” It replaces the old outdoor-swimmer banner. Open
+Graph and Twitter metadata point to this dedicated image. Regenerate it from
+`design/social-card.html`, the canonical tokens/mark and installed brand fonts
+with `node scripts/generate-social-image.mjs`. Use a new filename for future
+visual revisions so the image URL changes as well.

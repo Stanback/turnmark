@@ -45,7 +45,7 @@ instructions here.
   local by default. Sharing and future agent integrations need explicit inputs
   and clear ownership of any data they access.
 - Favor direct time entry and readable results. Native navigation uses the
-  compact turnmark wordmark and wave on the same native toolbar row as the
+  compact turnmark wordmark with a cyan period and wave on the same native toolbar row as the
   overflow menu; adapt to the wave alone when larger text needs the room. Avoid
   an additional large title or app-name banner. Use the wave identity for app icons and
   platform launch behavior; keep copy concrete. See [BRANDING.md](docs/BRANDING.md)

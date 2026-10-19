@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      __FONTS__
+      :root { __TOKENS__ }
+      * { box-sizing: border-box; }
+      body { margin: 0; width: 1200px; height: 630px; overflow: hidden; background: var(--canvas); color: var(--text); font-family: 'DM Sans', sans-serif; }
+      .water { position: absolute; width: 1160px; height: 750px; right: -180px; top: -60px; object-fit: cover; opacity: .85; }
+      .shade { position: absolute; inset: 0; background: linear-gradient(90deg, var(--canvas) 0%, color-mix(in srgb, var(--canvas) 95%, transparent) 27%, color-mix(in srgb, var(--canvas) 30%, transparent) 70%, transparent); }
+      main { position: relative; padding: 56px 64px; }
+      .brand { display: flex; align-items: center; gap: 13px; font: 750 38px 'Manrope', sans-serif; letter-spacing: -1.5px; }
+      .brand img { width: 44px; height: 44px; }
+      .dot, .accent { color: var(--accent); }
+      h1 { font: 760 92px/1.07 'Manrope', sans-serif; letter-spacing: -5px; margin: 68px 0 28px; }
+      .description { color: var(--textMuted); font-size: 24px; line-height: 1.5; margin: 0; }
+      .domain { position: absolute; left: 64px; bottom: 43px; color: var(--textMuted); font-size: 21px; }
+    </style>
+  </head>
+  <body>
+    <img class="water" src="__WATER__" alt="" />
+    <div class="shade"></div>
+    <main>
+      <div class="brand">
+        <img src="__WAVE__" alt="" /><span
+          >turnmark<span class="dot">.</span></span
+        >
+      </div>
+      <h1>Your swim.<br /><span class="accent">Any course.</span></h1>
+      <p class="description">
+        Swim time conversion. Published standards. Points.
+      </p>
+    </main>
+    <div class="domain">turnmark.app</div>
+  </body>
+</html>

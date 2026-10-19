@@ -423,3 +423,21 @@ and beta/submission are release work. Standalone SwiftPM/Maven registry releases
 and native altitude entry are also follow-ups. Public npm versions and prepared
 changes are distinguished in the release documentation; an implementation plan
 is not evidence of registry publication or store approval.
+
+## Potential future product direction
+
+Recorded October 18, 2026 as an exploratory direction, not committed release
+scope: Turnmark could grow into a general swim logger, with time conversion as
+one tool alongside an athlete’s history and progress. The name and current
+original-swim record model leave room for that broader role.
+
+Possible later steps include optional cloud synchronization across devices and
+coach-centric features built around swimmers sharing their recorded swims and
+progress. The specific workflows, permissions, account/support model and
+priorities still need exploration. No cloud service, coach portal or delivery
+date is approved or implemented by this note.
+
+Keep the current offline log and portable export/import useful independently.
+Actual performances must remain distinct from estimates as the product grows;
+sync or coach features should build on that distinction rather than turning
+saved conversions into recorded results.

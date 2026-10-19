@@ -30,6 +30,19 @@ test("built HTML contains useful content, metadata and valid structured data wit
   expect(await page.locator('link[rel="canonical"]').getAttribute("href")).toBe(
     "https://turnmark.app/",
   );
+  const imageURL = await page
+    .locator('meta[property="og:image"]')
+    .getAttribute("content");
+  expect(imageURL).toBe("https://turnmark.app/images/turnmark-social-v1.png");
+  expect(
+    await page.locator('meta[name="twitter:image"]').getAttribute("content"),
+  ).toBe(imageURL);
+  const image = await request.get(new URL(imageURL!).pathname);
+  expect(image.ok()).toBe(true);
+  expect(image.headers()["content-type"]).toContain("image/png");
+  const bytes = await image.body();
+  expect(bytes.subarray(1, 4).toString()).toBe("PNG");
+  expect([bytes.readUInt32BE(16), bytes.readUInt32BE(20)]).toEqual([1200, 630]);
   await context.close();
 });
 

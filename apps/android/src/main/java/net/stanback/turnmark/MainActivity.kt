@@ -45,7 +45,6 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -170,12 +169,16 @@ private fun share(context: Context, draft: Draft) {
                             else BoxWithConstraints(Modifier.fillMaxWidth().testTag("converterBrand")
                                 .clearAndSetSemantics { contentDescription = "Turnmark"; heading() }) {
                                 val style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                                val wordmarkWidth = rememberTextMeasurer().measure(AnnotatedString("turnmark"), style = style).size.width
+                                val wordmark = buildAnnotatedString {
+                                    append("turnmark")
+                                    withStyle(SpanStyle(color = c.accent)) { append(".") }
+                                }
+                                val wordmarkWidth = rememberTextMeasurer().measure(wordmark, style = style).size.width
                                 val showWordmark = wordmarkWidth <= with(LocalDensity.current) { (maxWidth - 34.dp).toPx() }
                                 Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                                     Icon(painterResource(R.drawable.ic_swim_brand_wave), null, tint = c.accent, modifier = Modifier.size(27.dp))
-                                    if (showWordmark) Text("turnmark", style = style, maxLines = 1)
+                                    if (showWordmark) Text(wordmark, style = style, maxLines = 1)
                                 }
                             }
                         },
