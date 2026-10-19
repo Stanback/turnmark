@@ -32,7 +32,7 @@ const operations = {
 };
 const fixtures = JSON.parse(
   await readFile(join(root, "fixtures/sdk-conformance.json"), "utf8"),
-).cases.filter((c) => c.operation !== "parse");
+).cases.filter((c) => Object.hasOwn(tools, c.operation));
 const validator = new CfWorkerJsonSchemaValidator();
 let worker;
 function command(args) {

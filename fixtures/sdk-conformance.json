@@ -128,7 +128,7 @@
         }
       },
       "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
-      "rationale": "Published Appendix C example: 136.71 × 0.858 = 117.29718; drop units below hundredths."
+      "rationale": "Published Appendix C example: 136.71 \u00d7 0.858 = 117.29718; drop units below hundredths."
     },
     {
       "id": "scm-400-to-500",
@@ -715,7 +715,7 @@
         }
       },
       "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
-      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
+      "rationale": "Published \u00a74.7 200-distance band boundaries; subtract the adjustment from the original time."
     },
     {
       "id": "altitude-3000",
@@ -745,7 +745,7 @@
         }
       },
       "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
-      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
+      "rationale": "Published \u00a74.7 200-distance band boundaries; subtract the adjustment from the original time."
     },
     {
       "id": "altitude-4250",
@@ -775,7 +775,7 @@
         }
       },
       "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
-      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
+      "rationale": "Published \u00a74.7 200-distance band boundaries; subtract the adjustment from the original time."
     },
     {
       "id": "altitude-4251",
@@ -805,7 +805,7 @@
         }
       },
       "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
-      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
+      "rationale": "Published \u00a74.7 200-distance band boundaries; subtract the adjustment from the original time."
     },
     {
       "id": "altitude-6500",
@@ -835,7 +835,7 @@
         }
       },
       "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
-      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
+      "rationale": "Published \u00a74.7 200-distance band boundaries; subtract the adjustment from the original time."
     },
     {
       "id": "altitude-6501",
@@ -865,7 +865,7 @@
         }
       },
       "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
-      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
+      "rationale": "Published \u00a74.7 200-distance band boundaries; subtract the adjustment from the original time."
     },
     {
       "id": "meters-exact-boundary",
@@ -1070,7 +1070,7 @@
         }
       },
       "source": "https://www.usms.org/events/national-championships/pool-national-championships/national-qualifying-times",
-      "rationale": "2026 Spring SCY women, 18–24, 100 freestyle table cell."
+      "rationale": "2026 Spring SCY women, 18\u201324, 100 freestyle table cell."
     },
     {
       "id": "masters-distance-map",
@@ -1092,7 +1092,7 @@
         }
       },
       "source": "https://www.usms.org/events/national-championships/pool-national-championships/national-qualifying-times",
-      "rationale": "2026 Spring SCY women, 25–29, 500 freestyle table cell; SDK uses actual yards distance."
+      "rationale": "2026 Spring SCY women, 25\u201329, 500 freestyle table cell; SDK uses actual yards distance."
     },
     {
       "id": "masters-no-time",
@@ -1190,7 +1190,7 @@
         }
       },
       "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/time-standards/2025/2028-motivational-standards-age-group.pdf",
-      "rationale": "2024–2028 revised October 10, 2025; independently inspected SCY 15–16 girls 100 FR row, B through AAAA."
+      "rationale": "2024\u20132028 revised October 10, 2025; independently inspected SCY 15\u201316 girls 100 FR row, B through AAAA."
     },
     {
       "id": "youth-missing-event",
@@ -1257,7 +1257,7 @@
         }
       },
       "source": "https://www.worldaquatics.com/swimming/points",
-      "rationale": "The 46.40-second base gives 1000 × (46.40/60)^3 = 462.487703…; truncate to 462."
+      "rationale": "The 46.40-second base gives 1000 \u00d7 (46.40/60)^3 = 462.487703\u2026; truncate to 462."
     },
     {
       "id": "points-no-yards",
@@ -1322,6 +1322,187 @@
       },
       "source": "docs/SDK_DESIGN.md",
       "rationale": "Reject a score that cannot be represented as a safe JavaScript integer, rather than silently losing integer precision."
+    },
+    {
+      "id": "benchmark-youth-a",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "58.32",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "table": "women",
+        "age": "15-16",
+        "system": "youth"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "achievedLevel": "A",
+          "enteredTime": "58.32",
+          "nextTarget": {
+            "label": "AA",
+            "time": "56.49",
+            "gapSeconds": 1.83,
+            "met": false
+          }
+        }
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Original-swim benchmark assessment uses the bundled published table and preserves missing-data outcomes. No course or altitude conversion is applied."
+    },
+    {
+      "id": "benchmark-youth-aaaa",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "50.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "table": "women",
+        "age": "15-16",
+        "system": "youth"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "achievedLevel": "AAAA",
+          "nextTarget": null
+        }
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Original-swim benchmark assessment uses the bundled published table and preserves missing-data outcomes. No course or altitude conversion is applied."
+    },
+    {
+      "id": "benchmark-youth-below-b",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "70.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "table": "women",
+        "age": "15-16",
+        "system": "youth"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "achievedLevel": null,
+          "nextTarget": {
+            "label": "B",
+            "time": "1:08.79",
+            "gapSeconds": 1.21
+          }
+        }
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Original-swim benchmark assessment uses the bundled published table and preserves missing-data outcomes. No course or altitude conversion is applied."
+    },
+    {
+      "id": "benchmark-invalid-time",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "1:60",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "table": "women",
+        "age": "15-16",
+        "system": "youth"
+      },
+      "expected": {
+        "status": "invalid",
+        "field": "swim.time",
+        "reason": "invalid-time"
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Original-swim benchmark assessment uses the bundled published table and preserves missing-data outcomes. No course or altitude conversion is applied."
+    },
+    {
+      "id": "benchmark-masters-scm",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "58.32",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCM"
+          }
+        },
+        "table": "women",
+        "age": "18-24",
+        "system": "masters"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "course-not-supported"
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Original-swim benchmark assessment uses the bundled published table and preserves missing-data outcomes. No course or altitude conversion is applied."
+    },
+    {
+      "id": "benchmark-masters-missing-target",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "58.32",
+          "event": {
+            "distance": 200,
+            "stroke": "butterfly",
+            "course": "LCM"
+          }
+        },
+        "table": "women",
+        "age": "18-24",
+        "system": "masters"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "no-time-published"
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Original-swim benchmark assessment uses the bundled published table and preserves missing-data outcomes. No course or altitude conversion is applied."
+    },
+    {
+      "id": "benchmark-masters-85",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "58.32",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "table": "women",
+        "age": "85+",
+        "system": "masters"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "age-group-not-published"
+      },
+      "source": "docs/SDK_DESIGN.md",
+      "rationale": "Original-swim benchmark assessment uses the bundled published table and preserves missing-data outcomes. No course or altitude conversion is applied."
     }
   ]
 }

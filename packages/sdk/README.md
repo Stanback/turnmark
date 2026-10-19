@@ -156,3 +156,30 @@ GPL-3.0-or-later remains in effect. Preserve source attribution, metadata, and t
 notices. [Methodology](https://github.com/Stanback/turnmark/blob/main/docs/METHODOLOGY.md)
 and [data maintenance](https://github.com/Stanback/turnmark/blob/main/docs/DATA.md)
 document sources and calculation limitations.
+
+## Original-swim benchmarks (unreleased)
+
+The next SDK release adds `assessSwimBenchmark` at the root entry and
+`engine.benchmark`. The published `0.1.0` package does not contain this addition.
+It compares the original achieved course with one bundled youth or USMS table;
+no course conversion or altitude estimate enters the assessment.
+
+```ts
+const outcome = engine.benchmark({
+  swim: {
+    time: "58.32",
+    event: { distance: 100, stroke: "freestyle", course: "SCY" },
+  },
+  table: "women",
+  system: "youth",
+  age: "15-16",
+});
+// Available: A standard; next AA target 56.49, 1.83 seconds away.
+```
+
+An available result includes formatted targets, `met` states, the achieved level,
+next target and gaps rounded to hundredths by Rust. Source provenance remains
+attached. Invalid inputs and missing published targets retain their distinct
+outcomes. Meeting a target does not confirm entry eligibility. Native bindings
+also expose `getStandardAgeGroups` from the same core; selecting 85+ for the
+bundled USMS table produces explicit missing-age-group coverage.

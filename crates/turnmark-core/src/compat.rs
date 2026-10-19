@@ -129,12 +129,8 @@ pub(crate) fn evaluate(input: &Value) -> Result<Value, EngineError> {
         "standardStatus" => {
             let time = arg::<Option<f64>>(args, 0)?.unwrap_or(f64::NAN);
             let times: Vec<f64> = arg(args, 1)?;
-            let achieved = times
-                .iter()
-                .enumerate()
-                .filter(|(_, cut)| time <= **cut + 1e-8)
-                .map(|(i, _)| i as i32)
-                .next_back()
+            let achieved = engine::achieved_standard(time, &times)
+                .map(|index| index as i32)
                 .unwrap_or(-1);
             json!({"achieved": achieved, "next": if achieved < 5 { Some(achieved + 1) } else { None }})
         }

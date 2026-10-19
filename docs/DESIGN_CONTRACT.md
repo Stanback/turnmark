@@ -57,6 +57,10 @@ It is not a general DTCG translator. A future adapter must read the same source.
 | `selectedSurface`                                    | Selected course fill, alongside a checkmark and accessible state |
 | `error`                                              | Invalid input, accompanied by a specific message                 |
 
+Dark raised controls use a deeper blue navy, with matching input, selected and
+divider roles. These shared roles keep web history, benchmark help and native
+controls in one tonal family; the water artwork can remain teal.
+
 Cyan identifies actions and the brand. Lime emphasizes the selected comparison;
 it does not mean a qualifying time, success or permission to enter a meet. Keep
 published benchmark status separate. Never rely on color alone for selection,

@@ -1,11 +1,12 @@
 {
-  "sourceHash": "d5d7e1fa5a0c5d1b2578f2ddfd527629bce3cb898a9753ddbd7e4c407e92c97f",
+  "sourceHash": "4b08ecbd2d7cab9786c4a4c1c44d77f06b83c5efb59a113249c944fefb82837c",
   "files": {
     "apps/ios/Sources/Assets.xcassets/Contents.json": "f5fb0e1f3a8142892ed092efb5955c1c2cc537003a89ad7bbdb9dade7fe8985f",
     "apps/ios/Sources/Assets.xcassets/AppIcon.appiconset/Contents.json": "852920cb36e95beb53771138a4b8195a16fcce1cc31250632f246081cc638f9a",
     "public/icons/app-icon.svg": "67206100394c399e468f832c5ae2406639cd6700dd03350cc38053cbbe938f89",
-    "public/favicon.svg": "67206100394c399e468f832c5ae2406639cd6700dd03350cc38053cbbe938f89",
+    "public/favicon.svg": "a40f17ee0afc889b06e3667613d994ee8407c0ff070b48bc3943720cf2a4daeb",
     "public/manifest.webmanifest": "44ff33c3a57e05f683a0685e024ea8e7f313390aca63248ea985559e6c6b9294",
+    "public/icons/favicon-192.png": "82dd166adaf97be29f8bb225eee1c350c729f13806f4e690b81f50a3c3e26aa9",
     "apps/ios/Sources/Assets.xcassets/AppIcon.appiconset/AppIcon.png": "b34767bc71a3b1ef65c1f9d230ad094a6e3c912d169f6e3df11ec06f1a4eff3d",
     "public/icons/icon-512.png": "47cb5b02feed61c8a8d71667db7c63540fba5b85ad82beaa9709a0ac8fe4222f",
     "public/icons/icon-192.png": "d9935a8b64ac7cac711f24f6e48519b85b958df45ca080a65969ab22d546e0e7",

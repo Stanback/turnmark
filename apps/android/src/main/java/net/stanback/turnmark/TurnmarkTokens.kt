@@ -41,17 +41,17 @@ object TurnmarkTokens {
     val dark = TurnmarkColors(
         canvas = Color(0xFF081E29),
         surface = Color(0xFF122D3B),
-        surfaceRaised = Color(0xFF193A49),
-        surfaceInput = Color(0xFF0D2836),
+        surfaceRaised = Color(0xFF1D344C),
+        surfaceInput = Color(0xFF102536),
         text = Color(0xFFEFF7FA),
         textMuted = Color(0xFFABC2CD),
-        borderSubtle = Color(0xFF2D4E5E),
+        borderSubtle = Color(0xFF304B61),
         borderControl = Color(0xFF7194A3),
         accent = Color(0xFF69D5E3),
         actionFill = Color(0xFF61D3E1),
         onAction = Color(0xFF062B38),
         resultHighlight = Color(0xFFC9EE7B),
-        selectedSurface = Color(0xFF294752),
+        selectedSurface = Color(0xFF2A435B),
         error = Color(0xFFFFB5AA)
     )
     val space4 = 4.dp

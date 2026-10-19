@@ -57,6 +57,19 @@ class AdaptiveLayoutTest {
         compose.onNodeWithTag("timeInput").assertTextContains("1:00.25")
     }
 
+    @Test fun benchmarkSheetKeepsItsOriginalSwimAcrossPaneChanges() {
+        compose.onNodeWithTag("openBenchmarks").performScrollTo().performClick()
+        compose.onNodeWithTag("benchmarkOriginalTime").assertTextEquals("58.32")
+        val book = TestFold(compose.activity, size = 20, state = FoldingFeature.State.HALF_OPENED, orientation = FoldingFeature.Orientation.VERTICAL)
+        windows.overrideWindowLayoutInfo(TestWindowLayoutInfo(listOf(book)))
+        compose.onNodeWithTag("benchmarkSummary").assertTextEquals("A standard")
+        val tabletop = TestFold(compose.activity, size = 20, state = FoldingFeature.State.HALF_OPENED, orientation = FoldingFeature.Orientation.HORIZONTAL)
+        windows.overrideWindowLayoutInfo(TestWindowLayoutInfo(listOf(tabletop)))
+        compose.onNodeWithTag("benchmarkOriginalTime").assertTextEquals("58.32")
+        compose.onNodeWithTag("closeBenchmarks").performScrollTo().performClick()
+        compose.onNodeWithTag("timeInput").assertTextContains("58.32")
+    }
+
     private fun capture(name: String) {
         if (InstrumentationRegistry.getArguments().getString("turnmarkScreenshots") != "true") return
         val instrumentation = InstrumentationRegistry.getInstrumentation()

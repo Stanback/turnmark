@@ -7,21 +7,64 @@ final class TurnmarkUITests: XCTestCase {
         app.launch()
         return app
     }
+    @MainActor private func visibleKeyboard(in app: XCUIApplication) -> XCUIElement? {
+        let keyboard = app.keyboards.firstMatch
+        guard keyboard.exists else { return nil }
+        // The system keyboard may occupy the Duo's other display, outside
+        // the app's primary AX frame. Check its own geometry and key content.
+        let frame = keyboard.frame
+        guard frame.width > 0, frame.height > 0,
+              frame.minX.isFinite, frame.minY.isFinite,
+              keyboard.keys.firstMatch.exists else { return nil }
+        return keyboard
+    }
+    @MainActor private func assertConverterKeyboardDismissed(in app: XCUIApplication,
+        file: StaticString = #filePath, line: UInt = #line) {
+        // iOS may retain a hidden keyboard AX node after a successful dismissal.
+        // Assert onscreen keyboard geometry/keys and the entry toolbar are gone.
+        // Keyboard key hit-testing itself is not exposed reliably by XCTest.
+        let dismissed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            let done = app.buttons["dismissConverterKeyboard"]
+            return self.visibleKeyboard(in: app) == nil && !(done.exists && done.isHittable)
+        }, object: nil)
+        let result = XCTWaiter.wait(for: [dismissed], timeout: 5)
+        if result != .completed {
+            let keyboard = app.keyboards.firstMatch
+            print("Dismissal observation: exists=\(keyboard.exists), frame=\(keyboard.exists ? keyboard.frame : .zero), keys=\(keyboard.keys.count)")
+        }
+        XCTAssertEqual(result, .completed, file: file, line: line)
+    }
+    @MainActor private func entryKeyboard(in app: XCUIApplication) -> XCUIElement? {
+        // Query system keyboard geometry only while an app-owned entry toolbar
+        // is visible. Hosted XCTest can stall resolving a stale keyboard AX
+        // snapshot after entry has ended (for example on recorded-swim detail).
+        let converterDone = app.buttons["dismissConverterKeyboard"]
+        let recordDone = app.buttons["dismissSwimKeyboard"]
+        guard (converterDone.exists && converterDone.isHittable) ||
+              (recordDone.exists && recordDone.isHittable) else { return nil }
+        return visibleKeyboard(in: app)
+    }
     @MainActor private func reach(_ element: XCUIElement, in app: XCUIApplication) {
         for _ in 0..<10 {
-            if element.exists && element.isHittable { return }
+            let keyboard = entryKeyboard(in: app)
+            if element.exists && element.isHittable {
+                // XCTest may call a one-pixel sliver hittable. A tap must land
+                // inside the visible form, above the keyboard and home area.
+                let keyboardTop = keyboard?.frame.minY ?? app.frame.maxY - 40
+                if element.frame.midY > app.frame.minY + 80 && element.frame.midY < keyboardTop - 16 { return }
+            }
             let container = !element.exists || element.identifier.isEmpty ? app.scrollViews.element(boundBy: max(app.scrollViews.count - 1, 0)) :
                 app.scrollViews.containing(.any, identifier: element.identifier).firstMatch
             let nativeList = app.collectionViews.element(boundBy: max(app.collectionViews.count - 1, 0))
             let editor = app.descendants(matching: .any)["swimEditorForm"].firstMatch
             let scroll = editor.exists ? editor : (container.exists ? container : (nativeList.exists ? nativeList : app))
             let downward = element.exists && element.frame.minY < app.frame.minY + 80
-            if app.keyboards.firstMatch.exists {
+            if let keyboard {
                 // The form extends behind the keyboard. XCTest's default swipe
                 // can start in its assistant bar, which never scrolls the form.
                 let visible = scroll.frame.intersection(app.frame)
                 let done = app.buttons["dismissSwimKeyboard"]
-                let bottom = min(visible.maxY, app.keyboards.firstMatch.frame.minY,
+                let bottom = min(visible.maxY, keyboard.frame.minY,
                     done.exists ? done.frame.minY : visible.maxY) - 12
                 let top = max(visible.minY, app.frame.minY + 140)
                 let upper = top + (bottom - top) * 0.2
@@ -48,6 +91,92 @@ final class TurnmarkUITests: XCTestCase {
     @MainActor private func capture(_ app: XCUIApplication, _ name: String) {
         let screenshot = XCTAttachment(screenshot: app.screenshot())
         screenshot.name = name; screenshot.lifetime = .keepAlways; add(screenshot)
+    }
+
+    @MainActor func testBenchmarksUseOriginalSwimAndRememberAgeSettings() {
+        let app = launch()
+        reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
+        XCTAssertEqual(app.staticTexts["benchmarkOriginalTime"].label, "58.32")
+        XCTAssertEqual(app.staticTexts["benchmarkSummary"].label, "A standard")
+        capture(app, "Youth standards summary")
+        XCUIDevice.shared.orientation = .landscapeLeft
+        XCTAssertEqual(app.staticTexts["benchmarkOriginalTime"].label, "58.32")
+        XCUIDevice.shared.orientation = .portrait
+        XCTAssertEqual(app.staticTexts["benchmarkSummary"].label, "A standard")
+        let aaaa = app.descendants(matching: .any)["benchmark-level-AAAA"].firstMatch
+        reach(aaaa, in: app); capture(app, "Youth standards targets")
+        let system = app.descendants(matching: .any)["benchmarkSystem"].firstMatch
+        reach(system, in: app); system.tap(); app.buttons["USMS · Masters"].tap()
+        let age = app.descendants(matching: .any)["benchmarkAge"].firstMatch
+        reach(age, in: app); age.tap(); app.buttons["40–44"].tap()
+        reach(app.staticTexts["benchmarkSummary"], in: app)
+        XCTAssertEqual(app.staticTexts["benchmarkSummary"].label, "NQT target met")
+        capture(app, "Masters benchmark")
+        app.buttons["closeBenchmarks"].tap()
+        app.terminate(); app.launchArguments = []; app.launch()
+        reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
+        XCTAssertTrue(app.staticTexts["40–44 · Women · SCY"].waitForExistence(timeout: 5))
+        app.segmentedControls["benchmarkMode"].buttons["Points"].tap()
+        XCTAssertTrue(app.staticTexts["benchmarkUnavailable"].exists)
+        XCTAssertFalse(app.staticTexts["benchmarkPoints"].exists)
+        capture(app, "Points unavailable for yards")
+        app.buttons["closeBenchmarks"].tap()
+        let course = app.segmentedControls["inputCourse"].buttons["LCM"]
+        reach(course, in: app); course.tap()
+        reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
+        XCTAssertEqual(app.staticTexts["benchmarkPoints"].label, "697")
+        capture(app, "World Aquatics points")
+    }
+
+    @MainActor func testRecordedBenchmarkKeepsActualCategoryAndTime() {
+        let app = launch()
+        replace(app.textFields["timeInput"], with: "1:00.25", in: app)
+        let done = app.buttons["dismissConverterKeyboard"]
+        if done.waitForExistence(timeout: 3) && done.isHittable {
+            XCTAssertNotNil(visibleKeyboard(in: app)); done.tap()
+        }
+        else { app.textFields["timeInput"].typeText("\n") }
+        assertConverterKeyboardDismissed(in: app)
+        capture(app, "Converter keyboard dismissed before recording")
+        let category = app.segmentedControls["category"]
+        reach(category, in: app); category.buttons["Men"].tap()
+        reach(app.buttons["logSwim"], in: app); app.buttons["logSwim"].tap()
+        XCTAssertTrue(app.buttons["confirmLog"].waitForExistence(timeout: 5)); app.buttons["confirmLog"].tap()
+        tab("My times", in: app); app.staticTexts["1:00.25"].tap()
+        reach(app.buttons["recordBenchmarks"], in: app); app.buttons["recordBenchmarks"].tap()
+        XCTAssertEqual(app.staticTexts["benchmarkOriginalTime"].label, "1:00.25")
+        XCTAssertEqual(app.staticTexts["benchmarkContext"].label, "100 yd Freestyle · SCY · Men")
+        XCTAssertEqual(app.staticTexts["benchmarkOriginLabel"].label, "Recorded swim")
+        capture(app, "Recorded swim standards")
+        app.buttons["closeBenchmarks"].tap()
+        XCTAssertTrue(app.staticTexts["Manually logged performance"].exists)
+    }
+
+    @MainActor func testBenchmarkMissingTargetAtAccessibilityTextSize() {
+        let app = launch(["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
+        let course = app.segmentedControls["inputCourse"].buttons["LCM"]
+        reach(course, in: app); course.tap()
+        let stroke = app.buttons["strokePicker"]
+        reach(stroke, in: app); stroke.tap(); app.buttons["Butterfly"].tap()
+        let distance = app.buttons["distancePicker"]
+        reach(distance, in: app); distance.tap(); app.buttons["200 m"].tap()
+        reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
+        XCTAssertTrue(app.staticTexts["benchmarkContext"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.staticTexts["benchmarkContext"].label, "200 m Butterfly · LCM · Women")
+        let system = app.descendants(matching: .any)["benchmarkSystem"].firstMatch
+        reach(system, in: app); system.tap(); app.buttons["USMS · Masters"].tap()
+        let missing = app.descendants(matching: .any)["benchmarkUnavailable"].firstMatch
+        // Changing systems can preserve the settings row's scroll position.
+        // SwiftUI's lazy Form may not expose the preceding state until scrolled.
+        let form = app.descendants(matching: .any)["benchmarkForm"].firstMatch
+        for _ in 0..<6 {
+            if missing.exists && missing.isHittable { break }
+            form.swipeDown()
+        }
+        reach(missing, in: app); XCTAssertTrue(missing.exists)
+        XCTAssertTrue(missing.label.contains("No published target"))
+        capture(app, "Missing Masters target large text")
+        app.buttons["closeBenchmarks"].tap()
     }
 
     @MainActor func testConversionDetailsAndDraftSurviveRestart() {
@@ -187,6 +316,17 @@ final class TurnmarkUITests: XCTestCase {
         XCUIDevice.shared.orientation = .portrait
         app.typeText(XCUIKeyboardKey.delete.rawValue)
         XCTAssertEqual(field.value as? String, "1:00.2")
+        let done = app.buttons["dismissConverterKeyboard"]
+        XCTAssertTrue(done.waitForExistence(timeout: 5)); XCTAssertNotNil(visibleKeyboard(in: app)); done.tap()
+        assertConverterKeyboardDismissed(in: app)
+        // Starting entry in an already-wide workspace must not collapse its
+        // field when the keyboard reduces the available height.
+        XCUIDevice.shared.orientation = .landscapeLeft
+        replace(field, with: "58.32", in: app)
+        XCTAssertEqual(field.value as? String, "58.32")
+        XCTAssertTrue(app.descendants(matching: .any)["expandedConverter"].firstMatch.exists)
+        XCTAssertTrue(done.waitForExistence(timeout: 5)); XCTAssertNotNil(visibleKeyboard(in: app)); done.tap()
+        assertConverterKeyboardDismissed(in: app)
     }
 
     @MainActor func testSharingCanBeCancelledWithoutRecordingATime() {

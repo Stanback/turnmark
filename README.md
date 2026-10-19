@@ -24,6 +24,18 @@ Available in the web app:
 
 No backend, account, analytics, third-party runtime requests, or uploaded swim data. Conversion history and saved swims stay in this browser’s local storage. Sharing a link shares the event, time, category, age group, and elevation contained in its URL fragment.
 
+## In use
+
+The web app is live. The native screens below are development previews, not store releases.
+
+![Turnmark web converter, recent conversions and published standards](docs/screenshots/web-liquid-surfaces-dark.png)
+
+| iOS · Standards & points | Android · Expanded layout |
+| --- | --- |
+| <img src="docs/screenshots/ios-standards-light.png" width="280" alt="iOS youth benchmark, next AA target and original swim context"> | <img src="docs/screenshots/android-youth-standards-summary.png" width="420" alt="Android standards sheet over an expanded two-pane converter"> |
+
+[Embed the widget](https://turnmark.app/embed/) · [Connect MCP](https://turnmark.app/mcp/) · [Native review and more screenshots](docs/NATIVE_STANDARDS_REVIEW.md)
+
 ## History
 
 Turnmark started long before it had that name. Bri Stanback swam competitively from roughly 1993 to 2005 and built an early swim time converter in the late 1990s, giving swimmers a simple way to compare times across pool courses.
@@ -82,7 +94,8 @@ and [@turnmark/mcp](https://www.npmjs.com/package/@turnmark/mcp) are available a
 See [SDK releases](docs/SDK_RELEASES.md) for installation and release status.
 
 The native apps in `apps/ios` and `apps/android` include the shared converter
-and offline meet history: record actual swims, correct records, compare personal
+and Standards & points (B–AAAA, USMS targets and World Aquatics points),
+plus offline meet history: record actual swims, correct records, compare personal
 bests in My times, and transfer records with a common JSON export/import format. Saved
 conversions remain separate from performances. They are development builds,
 not yet store releases, and do not yet have all web features. See

@@ -7,6 +7,10 @@ import android.net.Uri
 import android.accessibilityservice.AccessibilityService
 import android.content.Context
 import android.graphics.Bitmap
+import androidx.activity.compose.setContent
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.platform.app.InstrumentationRegistry
@@ -28,6 +32,83 @@ class ConverterTest {
         ApplicationProvider.getApplicationContext<Context>().getSharedPreferences("turnmark", Context.MODE_PRIVATE).edit().clear().commit()
         SwimHistoryStore(ApplicationProvider.getApplicationContext()).use { store -> store.load().forEach { store.remove(it.id) } }
         compose.activityRule.scenario.recreate()
+    }
+
+    @Test fun benchmarksUseOriginalSwimAndRememberAgeSettings() {
+        compose.onNodeWithTag("openBenchmarks").performScrollTo().performClick()
+        compose.onNodeWithTag("benchmarkOriginalTime").assertTextEquals("58.32")
+        compose.onNodeWithTag("benchmarkSummary").assertTextEquals("A standard")
+        capture("android-youth-standards-summary")
+        compose.onNodeWithTag("benchmark-level-AAAA").performScrollTo().assertExists()
+        capture("android-youth-standards")
+        compose.onNodeWithText("Standard system: USA Swimming · Youth").performScrollTo().performClick()
+        compose.onNodeWithText("USMS · Masters").performClick()
+        compose.onNodeWithText("Age group: 18–24").performScrollTo().performClick()
+        compose.onNodeWithText("40–44").performClick()
+        compose.onNodeWithTag("benchmarkSummary").performScrollTo().assertTextEquals("NQT target met")
+        capture("android-masters-benchmark")
+        compose.onNodeWithTag("closeBenchmarks").performScrollTo().performClick()
+        compose.activityRule.scenario.recreate()
+        compose.onNodeWithTag("openBenchmarks").performScrollTo().performClick()
+        compose.onNodeWithText("40–44 · Women · SCY").assertExists()
+        compose.onNodeWithTag("benchmarkMode-points").performScrollTo().performClick()
+        compose.onNodeWithTag("benchmarkUnavailable").assertExists()
+        compose.onNodeWithTag("benchmarkPoints").assertDoesNotExist()
+        capture("android-points-yards-unavailable")
+        compose.onNodeWithTag("closeBenchmarks").performScrollTo().performClick()
+        compose.onNodeWithTag("inputCourse-LCM").performScrollTo().performClick()
+        compose.onNodeWithTag("openBenchmarks").performScrollTo().performClick()
+        compose.onNodeWithTag("benchmarkPoints").assertTextEquals("697 points")
+        capture("android-world-points")
+    }
+
+    @Test fun recordedBenchmarkKeepsActualCategoryAndTime() {
+        compose.onNodeWithTag("timeInput").performScrollTo().performTextReplacement("1:00.25")
+        compose.onNodeWithTag("timeInput").performImeAction()
+        compose.onNodeWithText("Men").performScrollTo().performClick()
+        compose.onNodeWithText("Men").assertIsSelected()
+        compose.onNodeWithTag("logSwim").performScrollTo().performClick()
+        compose.onNodeWithTag("confirmLog").performClick()
+        compose.onNodeWithTag("nav-My times").performClick()
+        compose.onNodeWithText("1:00.25 · PB").performClick()
+        compose.onNodeWithTag("recordBenchmarks").performScrollTo().performClick()
+        compose.onNodeWithTag("benchmarkOriginalTime").assertTextEquals("1:00.25")
+        compose.onNodeWithTag("benchmarkContext").assertTextEquals("100 yd Freestyle · SCY · Men")
+        compose.onNodeWithTag("benchmarkOriginLabel").assertTextEquals("Recorded swim")
+        capture("android-recorded-standards")
+        compose.onNodeWithTag("closeBenchmarks").performScrollTo().performClick()
+        compose.onNodeWithText("Manually logged performance").assertExists()
+    }
+
+    @Test fun benchmarkMissingTargetKeepsMissingDataVisible() {
+        compose.onNodeWithTag("inputCourse-LCM").performScrollTo().performClick()
+        compose.onNodeWithText("Stroke: Freestyle").performScrollTo().performClick()
+        compose.onNodeWithText("Butterfly").performClick()
+        compose.onNodeWithText("Distance: 100 m").performScrollTo().performClick()
+        compose.onNodeWithText("200 m").performClick()
+        compose.onNodeWithTag("openBenchmarks").performScrollTo().performClick()
+        compose.onNodeWithText("Standard system: USA Swimming · Youth").performScrollTo().performClick()
+        compose.onNodeWithText("USMS · Masters").performClick()
+        compose.onNodeWithTag("benchmarkUnavailable").performScrollTo().assertExists()
+        compose.onNodeWithText("This event has no NQT in the published table for this age group. Check the meet’s entry guidance.").assertExists()
+        capture("android-missing-masters-target")
+    }
+
+    @Test fun benchmarkControlsRemainReachableAtLargeText() {
+        compose.activityRule.scenario.onActivity { activity -> activity.setContent {
+            val density = LocalDensity.current
+            CompositionLocalProvider(LocalDensity provides Density(density.density, 2f)) {
+                TurnmarkTheme(dark = true) { BenchmarkSheet(Draft(time = "2:12.34", strokeIndex = 3, distance = 200u, courseIndex = 2)) {} }
+            }
+        } }
+        compose.onNodeWithText("Standard system: USA Swimming · Youth").performScrollTo().performClick()
+        compose.onNodeWithText("USMS · Masters").performClick()
+        compose.onNodeWithTag("benchmarkUnavailable").performScrollTo().assertIsDisplayed()
+        capture("android-benchmarks-large-text-dark")
+        compose.onNodeWithText("Age group: 18–24").performScrollTo().performClick()
+        compose.onNodeWithText("85+").performScrollTo().performClick()
+        compose.onNodeWithText("No NQT is published for this age group in the bundled 2026 table. Meet-specific rules and exceptions apply.").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithTag("closeBenchmarks").performScrollTo().assertIsDisplayed()
     }
 
     @Test fun conversionKeepsOriginalAndSupportsContextualDetails() {
@@ -259,7 +340,7 @@ class ConverterTest {
         compose.onNodeWithTag("inputCourse-LCM").performScrollTo().performClick()
         compose.onNodeWithText("Distance: 100 m").performScrollTo().performClick()
         compose.onNodeWithText("400 m").performClick()
-        compose.onNodeWithText("Men", useUnmergedTree = true).performScrollTo().performClick()
+        compose.onNodeWithText("Men").performScrollTo().performClick()
         compose.onNodeWithTag("targetCourse-SCY").performScrollTo().performClick()
         compose.onNodeWithTag("resultContext").assertTextEquals("500 yd Freestyle · SCY · Men")
         compose.onNodeWithTag("targetCourse-LCM").performScrollTo().performClick()
