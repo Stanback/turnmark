@@ -1,0 +1,57 @@
+{
+  "capturedAt": "2026-10-19T19:11:03.210Z",
+  "branch": "design/converter-layout-exploration",
+  "sourceBase": "5dd2c54",
+  "sourceHashes": {
+    "src/App.svelte": "71965da61d5ca84585051685d1f452675460d3185baf6b2431eed53e9999d139",
+    "src/converter.css": "749cbe827a35bf96311c8fa6ff3c13240bce731702e956e22610fe7f328aa198",
+    "src/app.css": "76f7065b58be4f721825dbf92434b1a9eb21e3d923ef57648502c6cbf3e79bf1",
+    "design/turnmark.tokens.json": "aeaddebc1caadbbd96ba58e1d26bd0073b02ee78f4537f41c554a60c5b0d7634",
+    "public/images/water-ribbons.webp": "00c268a88616c4bf1402ef8153547966821e95ebc5bedf83a7f80e6a4ebbb447"
+  },
+  "captures": [
+    {
+      "file": "web-converter-comparison-dark.png",
+      "sha256": "66ffa89f3580faf9f3d2c8f1153a12c53674f0b8ab0d29488a4ff19e2627bca3"
+    },
+    {
+      "file": "web-converter-comparison-light.png",
+      "sha256": "062cf312ee566f3fc88029360105128f624a9d6e0490ea0c8215ce136fcb0126"
+    },
+    {
+      "file": "web-converter-comparison-mobile.png",
+      "sha256": "1c367cfb65804bb90fdbfeff9300936e6f25dcdbcf2b1a87defd0a284655f3c8"
+    },
+    {
+      "file": "web-converter-empty-mobile.png",
+      "sha256": "9bc111442210f57846d672c2da873698096f05a5351ecad744c996696f3fe94d"
+    },
+    {
+      "file": "web-converter-large-text.png",
+      "sha256": "d3a0347ebbbc70953395a79ca1ef0071ad40794db349913f7cd65e7673e92623"
+    },
+    {
+      "file": "web-converter-method-dark.png",
+      "sha256": "11703a748d5158705a8e21c2eb5649e020e8ecd85d84a1f28d5215ef5cc42ae9"
+    },
+    {
+      "file": "web-converter-results-mobile.png",
+      "sha256": "b4d9035829fea6c1fffb7e7534587959a497c02e631db473efbdb1fb3fb658fb"
+    }
+  ],
+  "sample": {
+    "time": "58.32",
+    "event": "100 freestyle",
+    "source": "SCY",
+    "category": "women",
+    "age": "15-16",
+    "defaultMethod": "NCAA",
+    "supplementMethod": "Colorado Timing"
+  },
+  "notes": [
+    "Actual local Vite build; sample data only.",
+    "Desktop: 1120x1450 converter crop. Mobile: 390x844 viewport.",
+    "Long-time content crop: 320x900, root font 200%; fixed navigation omitted only in this long crop.",
+    "Native images unchanged; separate native layout adoption remains a follow-up."
+  ]
+}

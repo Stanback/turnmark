@@ -19,6 +19,9 @@ test("desktop history fits the standards panel and keeps long lists reachable", 
     );
   });
   await page.goto("./");
+  await page
+    .getByRole("button", { name: "Try an example", exact: true })
+    .click();
   await expect(page.locator(".history-row")).toHaveCount(50);
   const history = page.locator(".history-panel");
   const standards = page.locator(".standards-section");
@@ -94,6 +97,9 @@ test("setup pages share branded content bounds in both appearances", async ({
     }
   }
   await page.goto("./");
+  await page
+    .getByRole("button", { name: "Try an example", exact: true })
+    .click();
   await page.setViewportSize({ width: 1440, height: 1000 });
   const method = (await page.locator(".method-items").boundingBox())!;
   const faq = (await page.locator(".faq-list").boundingBox())!;
@@ -113,6 +119,9 @@ test("mobile comparison modes stay compact and navigation paints the bottom inse
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
   await page.goto("./");
+  await page
+    .getByRole("button", { name: "Try an example", exact: true })
+    .click();
   // Browser emulation does not supply a hardware home-indicator inset. Exercise
   // the layout with an explicit 34px inset as well as the default browser value.
   await page.evaluate(() =>

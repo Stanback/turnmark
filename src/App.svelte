@@ -44,7 +44,8 @@
     type SwimState,
   } from "./lib/swim";
 
-  let form = $state<SwimState>({ ...defaultState });
+  // The web workspace starts with the user's time, not an implicit sample race.
+  let form = $state<SwimState>({ ...defaultState, time: "" });
   let focus = $state<Course>("LCM");
   let toast = $state("");
   let saved = $state<{ id: string; form: SwimState }[]>([]);
@@ -100,6 +101,7 @@
     return () => clearTimeout(timer);
   });
   const time = $derived(parseTime(form.time));
+  const emptyTime = $derived(form.time.trim() === "");
   const points = $derived(
     worldPoints(time, form.course, form.distance, form.stroke, form.category),
   );
@@ -232,7 +234,7 @@
     // A shared conversion is complete: never mix in a remembered altitude/category.
     form = window.location.hash.startsWith("#t=")
       ? readState(window.location.hash)
-      : { ...defaultState, ...defaults };
+      : { ...defaultState, ...defaults, time: "" };
     try {
       const raw: unknown = JSON.parse(
         localStorage.getItem("turnmark-swimboard") ?? "[]",
@@ -423,13 +425,23 @@
       form.course = "SCY";
   }
   function reset() {
-    form = { ...defaultState };
+    form = { ...defaultState, time: "" };
     focus = "LCM";
     elevationOpen = false;
     elevationUnit = "ft";
     standardMode = "targets";
     history.replaceState(null, "", location.pathname + location.search);
     notify("Inputs reset.");
+  }
+  function useExample() {
+    form = { ...defaultState };
+    focus = "LCM";
+    elevationOpen = false;
+    elevationUnit = "ft";
+    standardMode = "targets";
+    // Demonstration alone should not manufacture a recent comparison.
+    lastRecorded = `${stateHash(form)}|${focus}`;
+    history.replaceState(null, "", location.pathname + location.search);
   }
   async function share() {
     if (error) return;
@@ -579,341 +591,392 @@
     class="workspace page-width"
     aria-label="Swim time converter"
   >
-    <div class="input-panel">
-      <button class="text-button reset" onclick={reset}
-        >Reset <Icon name="reset" size={14} /></button
-      >
-      <div class="panel-title">
-        <h2>Convert your swim</h2>
-        <p>Your race, your time, your equivalent.</p>
-      </div>
-      <label class="field-label" for="event"
-        >Event <span>distance &amp; stroke</span></label
-      >
-      <div class="select-wrap event-select">
-        <Icon
-          name={{
-            FR: "freestyle",
-            BK: "backstroke",
-            BR: "breaststroke",
-            FL: "butterfly",
-            IM: "individual-medley",
-          }[form.stroke]}
-          size={22}
-          class="select-leading-icon"
-        />
-        <select
-          id="event"
-          value={selectedEvent}
-          onchange={(event) => selectEvent(event.currentTarget.value)}
+    <div class="converter-frame">
+      <div class="input-panel">
+        <button class="text-button reset" onclick={reset}
+          >Reset <Icon name="reset" size={14} /></button
         >
-          {#each strokes as stroke}
-            <optgroup label={stroke.name}>
-              {#each eventDistances(stroke.id) as distance}
-                <option value={`${stroke.id}:${distance}`}
-                  >{eventDistance(distance, form.course, stroke.id)}
-                  {stroke.name}</option
-                >
-              {/each}
-            </optgroup>
-          {/each}
-        </select><Icon name="chevron" size={16} />
-      </div>
-      <label class="field-label time-label" for="swim-time"
-        >Your time <span>mm:ss.hh</span></label
-      >
-      <div class:invalid={!!error} class="time-entry">
-        <input
-          id="swim-time"
-          aria-invalid={!!error}
-          aria-describedby={error ? "time-error" : "time-help"}
-          inputmode="decimal"
-          autocomplete="off"
-          spellcheck="false"
-          maxlength="9"
-          bind:value={form.time}
-        /><Icon name="clock" size={23} />
-      </div>
-      {#if error}<p class="field-error" id="time-error" role="alert">
-          {error}
-        </p>{:else}<div class="time-help" id="time-help">
-          <span class="status-dot"></span>Results update as you type
-        </div>{/if}
-      <div class="field-label course-label" id="course-label">
-        Swum in <span>course length</span>
-      </div>
-      <div class="course-picker" role="group" aria-labelledby="course-label">
-        {#each courses as course}<button
-            class:active={form.course === course}
-            disabled={!availableEvent(form.distance, course, form.stroke)}
-            aria-pressed={form.course === course}
-            onclick={() => (form.course = course)}
-            ><strong>{course}</strong><span>{courseInfo[course].pool}</span
-            ></button
-          >{/each}
-      </div>
-      <div class="factor-row">
-        <label for="category">Category <span>for published tables</span></label>
-        <div class="select-wrap">
-          <select id="category" bind:value={form.category}
-            ><option value="women">Women / girls</option><option value="men"
-              >Men / boys</option
-            ></select
-          ><Icon name="chevron" size={13} />
+        <div class="panel-title">
+          <h2>Convert your swim</h2>
+          <p>Enter a swim. Compare every course.</p>
         </div>
-      </div>
-      <details class="altitude-options" bind:open={elevationOpen}>
-        <summary
-          ><span><Icon name="mountain" size={17} />Swam at altitude?</span><span
-            class="summary-elevation"
-            >{altitudeValid && form.altitude > 0 ? elevationLabel : "+"}</span
-          ></summary
+        <label class="field-label" for="event"
+          >Event <span>distance &amp; stroke</span></label
         >
-        <div class="altitude-body">
-          <div class="elevation-heading">
-            <label for="altitude">Pool elevation</label>
-            <div
-              class="elevation-units"
-              role="group"
-              aria-label="Elevation units"
-            >
-              <button
-                class:active={elevationUnit === "ft"}
-                aria-pressed={elevationUnit === "ft"}
-                onclick={() => (elevationUnit = "ft")}>ft</button
-              >
-              <button
-                class:active={elevationUnit === "m"}
-                aria-pressed={elevationUnit === "m"}
-                onclick={() => (elevationUnit = "m")}>m</button
-              >
-            </div>
-          </div>
-          <div class="elevation-entry">
-            <input
-              type="number"
-              id="altitude"
-              min="0"
-              max={elevationUnit === "ft" ? 20000 : 6096}
-              step={elevationUnit === "ft" ? 1 : "any"}
-              bind:value={() => elevationInput, setElevation}
-              aria-invalid={!altitudeValid}
-              aria-describedby="elevation-help"
-            /><span>{elevationUnit} above sea level</span>
-          </div>
-          <p id="elevation-help">
-            {#if altitudeValid}{elevationUnit === "ft"
-                ? `${(form.altitude * 0.3048).toLocaleString(undefined, { maximumFractionDigits: 1 })} meters`
-                : `${form.altitude.toLocaleString()} feet (rounded to the nearest foot)`}.{/if}
-            {#if adjustment}Altitude adjustment: −{adjustment.toFixed(2)}s
-              before course conversion.
-            {:else if altitudeValid && form.altitude > 0}{form.altitude < 3000
-                ? "Below the 3,000 ft threshold; no adjustment applies."
-                : "No altitude adjustment is published for this sprint event."}
-            {:else}Adjustments start at 3,000 ft (914.4 m) for events of 200 or
-              longer.{/if}
-          </p>
-        </div>
-      </details>
-      <details class="altitude-options conversion-options">
-        <summary
-          ><span><Icon name="settings" size={17} />Conversion method</span><span
-            class="summary-elevation"
-            >{form.method === coloradoMethod ? "Colorado" : "NCAA"}</span
-          ></summary
-        >
-        <div class="altitude-body">
-          <label for="conversion-method">Method</label>
-          <div class="select-wrap">
-            <select id="conversion-method" bind:value={form.method}>
-              {#each conversionMethods as method}<option value={method.id}
-                  >{method.label}</option
-                >{/each}
-            </select><Icon name="chevron" size={13} />
-          </div>
-          <p>
-            Changes course estimates only. Standards and points use your
-            original swim.
-          </p>
-        </div>
-      </details>
-      <div class="input-footnote">
-        <Icon name="info" size={14} /><span
-          >Estimates for perspective. Meet rules decide entry eligibility.</span
-        >
-      </div>
-      <button
-        class="primary-button mobile-results-jump"
-        disabled={!!error}
-        onclick={() => {
-          go("conversion-results");
-          document
-            .getElementById("results-title")
-            ?.focus({ preventScroll: true });
-        }}>See your results <Icon name="down" size={19} /></button
-      >
-    </div>
-
-    <div
-      class="results-panel"
-      id="conversion-results"
-      role="region"
-      aria-labelledby="results-title"
-    >
-      <div class="results-heading">
-        <div>
-          <h2 id="results-title" tabindex="-1">Your conversion</h2>
-        </div>
-        <div class="course-position" aria-hidden="true">
-          {#each courses as course}<span class:active={course === focus}
-            ></span>{/each}
-        </div>
-      </div>
-      <div class="focused-result" aria-live="polite" aria-atomic="true">
-        <p class="focused-context">
-          {eventDistance(form.distance, focus, form.stroke)}
-          {strokes.find((stroke) => stroke.id === form.stroke)!.name} · {focus} ({poolLabel(
-            focus,
-          )} pool)
-        </p>
-        <div class="focused-time" data-testid="focused-time">
-          <span>{focusedClock[0]}</span>{#if focusedClock[1]}<span
-              class="hundredths">.{focusedClock[1]}</span
-            >{/if}
-        </div>
-        <p class="focused-provenance">
-          {#if error}Check your input to see a conversion.
-          {:else if focused.kind === "unavailable"}No conversion published for
-            this event.
-          {:else if focused.kind === "swum"}{adjustment
-              ? "Sea-level estimate"
-              : "Your original time"} · {form.course}
-          {:else}From {formatTime(time)} in {form.course} · {form.category ===
-            "women"
-              ? "Women / girls"
-              : "Men / boys"}{/if}
-        </p>
-      </div>
-      {#if adjustment > 0 && correctedTime !== null}
-        <section
-          class="altitude-conversion"
-          aria-labelledby="altitude-title"
-          aria-live="polite"
-        >
-          <div class="altitude-conversion-heading">
-            <Icon name="mountain" size={17} />
-            <h3 id="altitude-title">Altitude adjustment</h3>
-            <span>{form.course}</span>
-          </div>
-          <div class="altitude-comparison">
-            <div class="altitude-before">
-              <span>Swum at {elevationLabel}</span><strong
-                data-testid="altitude-original">{formatTime(time)}</strong
-              >
-            </div>
-            <div class="altitude-difference">
-              <span>−{adjustment.toFixed(2)}s</span><Icon
-                name="arrow"
-                size={22}
-              />
-            </div>
-            <div class="altitude-after">
-              <span>Sea-level estimate</span><strong
-                data-testid="altitude-corrected"
-                >{formatTime(correctedTime)}</strong
-              >
-            </div>
-          </div>
-          <p>
-            Adjusted in {form.course} before course conversion.
-            <a href={altitudeSource.url} target="_blank" rel="noreferrer"
-              >USA Swimming §4.7<Icon name="external" size={10} /></a
-            >
-          </p>
-        </section>
-      {/if}
-      <h3 class="equivalents-title">
-        <span class="equivalents-heading"
-          ><Icon name="equivalents" size={20} />All course equivalents</span
-        > <span>Select a course to focus</span>
-      </h3>
-      <div
-        class="result-cards"
-        role="group"
-        aria-label="Course comparison results"
-      >
-        {#each results as result}
-          <button
-            class="result-card"
-            class:selected={focus === result.course}
-            class:unavailable={result.time === null}
-            aria-pressed={focus === result.course}
-            onclick={() => (focus = result.course)}
+        <div class="select-wrap event-select">
+          <Icon
+            name={{
+              FR: "freestyle",
+              BK: "backstroke",
+              BR: "breaststroke",
+              FL: "butterfly",
+              IM: "individual-medley",
+            }[form.stroke]}
+            size={22}
+            class="select-leading-icon"
+          />
+          <select
+            id="event"
+            value={selectedEvent}
+            onchange={(event) => selectEvent(event.currentTarget.value)}
           >
-            <span class="result-description">
-              <span class="result-card-top"
-                ><strong>{result.course}</strong
-                >{#if focus === result.course}<Icon
-                    name="check"
-                    size={13}
-                  />{/if}<span
-                  >{result.course === form.course
-                    ? adjustment
-                      ? "ADJUSTED"
-                      : "ORIGINAL"
-                    : result.kind === "published"
-                      ? "PUBLISHED FACTOR"
-                      : result.kind === "derived"
-                        ? "DERIVED ESTIMATE"
-                        : "UNAVAILABLE"}</span
-                ></span
+            {#each strokes as stroke}
+              <optgroup label={stroke.name}>
+                {#each eventDistances(stroke.id) as distance}
+                  <option value={`${stroke.id}:${distance}`}
+                    >{eventDistance(distance, form.course, stroke.id)}
+                    {stroke.name}</option
+                  >
+                {/each}
+              </optgroup>
+            {/each}
+          </select><Icon name="chevron" size={16} />
+        </div>
+        <label class="field-label time-label" for="swim-time"
+          >Your time <span>mm:ss.hh</span></label
+        >
+        <div class:invalid={!!error && !emptyTime} class="time-entry">
+          <input
+            id="swim-time"
+            aria-invalid={!!error && !emptyTime}
+            aria-describedby={error && !emptyTime ? "time-error" : "time-help"}
+            placeholder="0:00.00"
+            inputmode="decimal"
+            autocomplete="off"
+            spellcheck="false"
+            maxlength="9"
+            bind:value={form.time}
+          /><Icon name="clock" size={23} />
+        </div>
+        {#if error && !emptyTime}<p
+            class="field-error"
+            id="time-error"
+            role="alert"
+          >
+            {error}
+          </p>{:else}<div class="time-help" id="time-help">
+            {#if emptyTime}<span>Seconds or mm:ss.hh</span><button
+                class="text-button example-button"
+                onclick={useExample}>Try an example</button
+              >{:else}Results update as you type{/if}
+          </div>{/if}
+        <div class="field-label course-label" id="course-label">
+          Swum in <span>course length</span>
+        </div>
+        <div class="course-picker" role="group" aria-labelledby="course-label">
+          {#each courses as course}<button
+              class:active={form.course === course}
+              disabled={!availableEvent(form.distance, course, form.stroke)}
+              aria-pressed={form.course === course}
+              onclick={() => (form.course = course)}
+              ><strong>{course}</strong><span>{courseInfo[course].pool}</span
+              ></button
+            >{/each}
+        </div>
+        <div class="factor-row">
+          <label for="category"
+            >Category <span>for published tables</span></label
+          >
+          <div class="select-wrap">
+            <select id="category" bind:value={form.category}
+              ><option value="women">Women / girls</option><option value="men"
+                >Men / boys</option
+              ></select
+            ><Icon name="chevron" size={13} />
+          </div>
+        </div>
+        <details class="altitude-options" bind:open={elevationOpen}>
+          <summary
+            ><span><Icon name="mountain" size={17} />Swam at altitude?</span
+            ><span class="summary-elevation"
+              >{altitudeValid && form.altitude > 0 ? elevationLabel : "+"}</span
+            ></summary
+          >
+          <div class="altitude-body">
+            <div class="elevation-heading">
+              <label for="altitude">Pool elevation</label>
+              <div
+                class="elevation-units"
+                role="group"
+                aria-label="Elevation units"
               >
-              <span class="result-card-bottom"
-                >{eventDistance(form.distance, result.course, form.stroke)}
-                {form.stroke === "IM"
-                  ? "IM"
-                  : strokes.find((stroke) => stroke.id === form.stroke)!.short} ·
-                {poolLabel(result.course)} pool</span
-              >
-            </span>
-            <span class="result-time" data-testid={`result-${result.course}`}
-              >{formatTime(error ? null : result.time)}</span
-            >
-          </button>
-        {/each}
-      </div>
-      <div class="result-explanation">
-        <Icon name="info" size={15} />
-        <p>
-          {#if error}Results will appear when your input is valid.{:else if focused.kind === "unavailable"}{focused.reason}{:else if focused.kind === "swum"}{adjustment
-              ? `Your sea-level estimate in ${form.course}.`
-              : "Your entered swim, exactly as timed."}{:else}{form.course} → {focus}:
-            <strong
-              >{`× ${focused.factor?.toFixed(5)}${focused.offsetSeconds ? ` ${focused.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(focused.offsetSeconds).toFixed(2)}s` : ""}`}</strong
-            >. {form.method === coloradoMethod
-              ? "Colorado Timing formula."
-              : focused.kind === "published"
-                ? "Published NCAA factor."
-                : "Derived from NCAA metric-to-yards factors."} Truncated to hundredths.{/if}
-        </p>
-      </div>
-      <button class="text-button method-link" onclick={() => go("method")}
-        >How this is calculated <Icon name="arrow" size={14} /></button
-      >
-      <div class="result-actions">
-        <button class="primary-button" onclick={save} disabled={!!error}
-          ><Icon name="bookmark" size={16} />Save comparison</button
-        ><button class="secondary-button" onclick={share} disabled={!!error}
-          ><Icon name="link" size={16} />Copy link</button
-        ><button
-          class="icon-button export-button"
-          onclick={download}
+                <button
+                  class:active={elevationUnit === "ft"}
+                  aria-pressed={elevationUnit === "ft"}
+                  onclick={() => (elevationUnit = "ft")}>ft</button
+                >
+                <button
+                  class:active={elevationUnit === "m"}
+                  aria-pressed={elevationUnit === "m"}
+                  onclick={() => (elevationUnit = "m")}>m</button
+                >
+              </div>
+            </div>
+            <div class="elevation-entry">
+              <input
+                type="number"
+                id="altitude"
+                min="0"
+                max={elevationUnit === "ft" ? 20000 : 6096}
+                step={elevationUnit === "ft" ? 1 : "any"}
+                bind:value={() => elevationInput, setElevation}
+                aria-invalid={!altitudeValid}
+                aria-describedby="elevation-help"
+              /><span>{elevationUnit} above sea level</span>
+            </div>
+            <p id="elevation-help">
+              {#if altitudeValid}{elevationUnit === "ft"
+                  ? `${(form.altitude * 0.3048).toLocaleString(undefined, { maximumFractionDigits: 1 })} meters`
+                  : `${form.altitude.toLocaleString()} feet (rounded to the nearest foot)`}.{/if}
+              {#if adjustment}Altitude adjustment: −{adjustment.toFixed(2)}s
+                before course conversion.
+              {:else if altitudeValid && form.altitude > 0}{form.altitude < 3000
+                  ? "Below the 3,000 ft threshold; no adjustment applies."
+                  : "No altitude adjustment is published for this sprint event."}
+              {:else}Adjustments start at 3,000 ft (914.4 m) for events of 200
+                or longer.{/if}
+            </p>
+          </div>
+        </details>
+        <details class="altitude-options conversion-options">
+          <summary
+            ><span><Icon name="settings" size={17} />Conversion method</span
+            ><span class="summary-elevation"
+              >{form.method === coloradoMethod ? "Colorado" : "NCAA"}</span
+            ></summary
+          >
+          <div class="altitude-body">
+            <label for="conversion-method">Method</label>
+            <div class="select-wrap">
+              <select id="conversion-method" bind:value={form.method}>
+                {#each conversionMethods as method}<option value={method.id}
+                    >{method.label}</option
+                  >{/each}
+              </select><Icon name="chevron" size={13} />
+            </div>
+            <p>
+              Changes course estimates only. Standards and points use your
+              original swim.
+            </p>
+          </div>
+        </details>
+        <div class="input-footnote">
+          <Icon name="info" size={14} /><span
+            >Estimates for perspective. Meet rules decide entry eligibility.</span
+          >
+        </div>
+        <button
+          class="primary-button mobile-results-jump"
           disabled={!!error}
-          aria-label="Download course comparison as CSV"
-          title="Download CSV"><Icon name="download" size={18} /></button
+          onclick={() => {
+            go("conversion-results");
+            document
+              .getElementById("results-title")
+              ?.focus({ preventScroll: true });
+          }}>See your results <Icon name="down" size={19} /></button
         >
       </div>
+
+      <div
+        class="results-panel"
+        id="conversion-results"
+        role="region"
+        aria-labelledby="results-title"
+      >
+        <div class="results-heading">
+          <div>
+            <h2 id="results-title" tabindex="-1">Equivalent times</h2>
+          </div>
+          <div class="course-position" aria-hidden="true">
+            {#each courses as course}<span class:active={course === focus}
+              ></span>{/each}
+          </div>
+        </div>
+        <div class="focused-result" aria-live="polite" aria-atomic="true">
+          <p class="focused-context">
+            {eventDistance(form.distance, focus, form.stroke)}
+            {strokes.find((stroke) => stroke.id === form.stroke)!.name} · {focus}
+            ({poolLabel(focus)} pool)
+          </p>
+          <div class="focused-time" data-testid="focused-time">
+            <span>{focusedClock[0]}</span>{#if focusedClock[1]}<span
+                class="hundredths">.{focusedClock[1]}</span
+              >{/if}
+          </div>
+          <p class="focused-provenance">
+            {#if emptyTime}Enter your time to compare all three courses.
+            {:else if error}Check your input to see a conversion.
+            {:else if focused.kind === "unavailable"}No conversion published for
+              this event.
+            {:else if focused.kind === "swum"}{adjustment
+                ? "Sea-level estimate"
+                : "Your original time"} · {form.course}
+            {:else}From {formatTime(time)} in {form.course} · {form.category ===
+              "women"
+                ? "Women / girls"
+                : "Men / boys"}{/if}
+          </p>
+        </div>
+        {#if adjustment > 0 && correctedTime !== null}
+          <section
+            class="altitude-conversion"
+            aria-labelledby="altitude-title"
+            aria-live="polite"
+          >
+            <div class="altitude-conversion-heading">
+              <Icon name="mountain" size={17} />
+              <h3 id="altitude-title">Altitude adjustment</h3>
+              <span>{form.course}</span>
+            </div>
+            <div class="altitude-comparison">
+              <div class="altitude-before">
+                <span>Swum at {elevationLabel}</span><strong
+                  data-testid="altitude-original">{formatTime(time)}</strong
+                >
+              </div>
+              <div class="altitude-difference">
+                <span>−{adjustment.toFixed(2)}s</span><Icon
+                  name="arrow"
+                  size={22}
+                />
+              </div>
+              <div class="altitude-after">
+                <span>Sea-level estimate</span><strong
+                  data-testid="altitude-corrected"
+                  >{formatTime(correctedTime)}</strong
+                >
+              </div>
+            </div>
+            <p>
+              Adjusted in {form.course} before course conversion.
+              <a href={altitudeSource.url} target="_blank" rel="noreferrer"
+                >USA Swimming §4.7<Icon name="external" size={10} /></a
+              >
+            </p>
+          </section>
+        {/if}
+        <h3 class="equivalents-title">
+          <span class="equivalents-heading"
+            ><Icon name="equivalents" size={20} />All course equivalents</span
+          > <span>Select a course to focus</span>
+        </h3>
+        <div
+          class="result-cards"
+          role="group"
+          aria-label="Course comparison results"
+        >
+          {#each results as result}
+            <button
+              class="result-card"
+              class:selected={focus === result.course}
+              class:unavailable={result.time === null}
+              aria-pressed={focus === result.course}
+              onclick={() => (focus = result.course)}
+            >
+              <span class="result-description">
+                <span class="result-card-top"
+                  ><strong>{result.course}</strong
+                  >{#if focus === result.course}<Icon
+                      name="check"
+                      size={13}
+                    />{/if}<span
+                    >{emptyTime
+                      ? result.course === form.course
+                        ? "ENTERED COURSE"
+                        : ""
+                      : result.course === form.course
+                        ? adjustment
+                          ? "ADJUSTED"
+                          : "ORIGINAL"
+                        : result.kind === "published"
+                          ? "PUBLISHED FACTOR"
+                          : result.kind === "derived"
+                            ? "DERIVED ESTIMATE"
+                            : "UNAVAILABLE"}</span
+                  ></span
+                >
+                <span class="result-card-bottom"
+                  >{eventDistance(form.distance, result.course, form.stroke)}
+                  {form.stroke === "IM"
+                    ? "IM"
+                    : strokes.find((stroke) => stroke.id === form.stroke)!
+                        .short} ·
+                  {poolLabel(result.course)} pool</span
+                >
+              </span>
+              <span class="result-time" data-testid={`result-${result.course}`}
+                >{formatTime(error ? null : result.time)}</span
+              >
+            </button>
+          {/each}
+        </div>
+        <div class="result-explanation">
+          <Icon name="info" size={15} />
+          <p>
+            {#if error}Results will appear when your input is valid.{:else if focused.kind === "unavailable"}{focused.reason}{:else if focused.kind === "swum"}{adjustment
+                ? `Your sea-level estimate in ${form.course}.`
+                : "Your entered swim, exactly as timed."}{:else}{form.course} → {focus}:
+              <strong
+                >{`× ${focused.factor?.toFixed(5)}${focused.offsetSeconds ? ` ${focused.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(focused.offsetSeconds).toFixed(2)}s` : ""}`}</strong
+              >. {form.method === coloradoMethod
+                ? "Colorado Timing formula."
+                : focused.kind === "published"
+                  ? "Published NCAA factor."
+                  : "Derived from NCAA metric-to-yards factors."} Truncated to hundredths.{/if}
+          </p>
+        </div>
+        <button class="text-button method-link" onclick={() => go("method")}
+          >How this is calculated <Icon name="arrow" size={14} /></button
+        >
+        <div class="result-actions">
+          <button class="primary-button" onclick={save} disabled={!!error}
+            ><Icon name="bookmark" size={16} />Save comparison</button
+          ><button class="secondary-button" onclick={share} disabled={!!error}
+            ><Icon name="link" size={16} />Copy link</button
+          ><button
+            class="icon-button export-button"
+            onclick={download}
+            disabled={!!error}
+            aria-label="Download course comparison as CSV"
+            title="Download CSV"><Icon name="download" size={18} /></button
+          >
+        </div>
+      </div>
     </div>
+    <button
+      class="next-target-preview"
+      onclick={() => {
+        standardMode = "targets";
+        go("standards");
+      }}
+    >
+      <span class="next-target-icon"><Icon name="standards" size={22} /></span>
+      <span class="next-target-copy">
+        {#if !error && !adjustment && form.standardSystem === "youth" && standing?.next !== null && standing?.next !== undefined && nextGap !== null}
+          <span class="next-target-label"
+            >Next standard · {levels[standing.next]}</span
+          >
+          <strong
+            ><span>{nextGap.toFixed(2)}s</span> to {formatTime(
+              nextTime,
+            )}</strong
+          >
+          <span
+            >{currentLabel} · {form.course} · {form.category === "women"
+              ? "Girls"
+              : "Boys"}
+            {ages.find((a) => a.id === form.age)?.label} · Your entered swim</span
+          >
+        {:else}
+          <span class="next-target-label">Put your swim in perspective</span>
+          <strong>Explore standards &amp; points</strong>
+          <span>Published benchmarks for your entered swim.</span>
+        {/if}
+      </span>
+      <span class="next-target-link"
+        >View standards <Icon name="arrow" size={17} /></span
+      >
+    </button>
   </section>
 
   <div class="insights-grid page-width">

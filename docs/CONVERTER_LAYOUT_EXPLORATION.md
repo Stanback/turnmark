@@ -1,8 +1,8 @@
 # Converter layout exploration
 
-This follow-up explores a calmer web converter layout. It is a draft design
-study, separate from conversion-model research. No redesigned UI has been
-implemented or accepted yet.
+The first web layout pass is implemented in draft PR26, separate from
+conversion-model research. It is ready for visual review; it has not been
+merged or adopted by the native apps.
 
 ## Direction
 
@@ -22,18 +22,19 @@ its selected source and original-swim benchmark distinction remain accessible.
 Native controls remain platform-owned; this web study does not imply a shared
 web/native layout or a native redesign.
 
-## Mobile flow to explore
+## Implemented web flow
 
 The next exploration should make the starting point clearer: **enter a swim →
 compare course equivalents → explore targets or methods**. On a narrow screen,
 editable inputs come before the result. Preserve the desktop side-by-side
 comparison; do not shrink that entire composition into a phone.
 
-Investigate a first-visit blank time with a recognizable placeholder and an
-explicit “Try an example” action, instead of presenting an unexplained sample
-as the user's result. Restore a returning user's own inputs where supported.
-Shared URLs still open their explicit swim. Reset, persistence and empty/invalid
-states need an intentional contract before changing defaults or tests.
+Arrival and Reset now use a blank time and a recognizable placeholder. “Try an
+example” explicitly loads the default 58.32 SCY swim and settings without adding
+a history entry. Remembered swimmer preferences retain their existing contract;
+race time starts fresh. Shared URLs and restored saved/recent comparisons still
+open their explicit swim. Empty input is a neutral state; malformed nonempty
+input shows validation, with no stale result or enabled save/share action.
 
 Keep result updates stable while typing: no automatic scrolling, disappearing
 keyboard, reordered controls or layout jump to a result. Below the inputs, show
@@ -78,10 +79,55 @@ concept art as a screenshot of implemented behavior.
 - Update image paths, alt text and captions together. Record source revision,
   method, sample event/time, viewport/device and capture procedure in the review.
 
-The current README images remain until their replacements exist. Screenshot
-refresh is an acceptance item for this PR, not a later documentation chore.
+The README now leads with an actual converter-region capture containing all
+inputs, three equivalents and the next standard. The same sample's Colorado
+capture is linked separately. Native home images remain the preceding actual
+build captures: both use 58.32 SCY and the 1:06.72 NCAA LCM comparison, and native
+source/presentation is unchanged in this web PR. They are development previews,
+not evidence that native apps have adopted blank or input-first arrival.
+
+## Actual-build review — October 19, 2026
+
+| Desktop, NCAA default                                                                        | Same input, light appearance                                                |
+| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| ![Editable swim and three course equivalents](screenshots/web-converter-comparison-dark.png) | ![Matching light converter](screenshots/web-converter-comparison-light.png) |
+
+| Phone arrival                                                                                                                | Explicit example inputs                                                                                              | Comparison below the inputs                                                                                                              |
+| ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="screenshots/web-converter-empty-mobile.png" width="250" alt="Blank time with Try an example and neutral controls"> | <img src="screenshots/web-converter-comparison-mobile.png" width="250" alt="Example swim inputs before the results"> | <img src="screenshots/web-converter-results-mobile.png" width="250" alt="Course equivalents reached by scrolling below the input panel"> |
+
+[Colorado method and unchanged original-course next standard](screenshots/web-converter-method-dark.png) ·
+[320px long-time and enlarged-root-text content review](screenshots/web-converter-large-text.png)
+
+The desktop capture uses Chromium at 1120×1450, device scale 1, reduced motion,
+and a crop of `#converter`. It excludes the hero deliberately so controls and
+results remain legible in the README. Light/dark use the same 100 freestyle,
+women/girls, age 15–16, SCY, 58.32 sample and NCAA default. The method supplement
+opens Conversion method and selects documented Colorado Timing, yielding
+1:06.33 LCM; the AA gap remains 1.83s because it uses the original SCY swim.
+
+Mobile captures use 390×844 and ordinary viewport screenshots, with the input or
+results panel scrolled to the top. They retain the actual fixed navigation bar.
+The 320×900 content check uses 60:00.00 and a 200% root-font preference; this is
+a narrow reflow check, not proof of complete browser zoom or screen-reader
+coverage. Its long content crop omits fixed navigation to avoid an artificial
+navigation overlay midway through the exported image. Category controls stack at the smallest width, and age controls can
+shrink to their container instead of overflowing. Capture source hashes are in
+the [local review manifest](screenshots/converter-review.json).
+
+The shared semantic tokens, static water artwork, original/derived labels,
+quiet method/altitude settings and explicit result navigation remain intact.
+The new next-standard shortcut uses the existing youth table and unadjusted
+entered swim. Other systems or altitude-adjusted input show a general route to
+the full standards view rather than inventing a compact target.
 
 ## Completion checks
+
+This first pass passes Svelte/TypeScript checks, 138 unit tests, 41 browser cases
+(one desktop-inapplicable case skipped), and 20 production/offline cases.
+Light/dark screenshots, 320px controls, enlarged root text, invalid/unavailable
+results, method sharing/persistence and keyboard focus were reviewed. CI and
+owner review remain pending. No native layout or widget/MCP presentation changed.
 
 - Confirm which layout to keep through actual desktop/mobile browser previews.
 - Keep calculations, unsupported/invalid states, offline behavior, shared links,
