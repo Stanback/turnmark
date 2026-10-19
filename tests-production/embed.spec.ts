@@ -109,6 +109,108 @@ test("actual cross-origin iframe works at narrow width with source and destinati
   }
 });
 
+test("cross-origin height signals are metadata-only and resizing stays publisher-owned", async ({
+  page,
+}) => {
+  const publisher = createServer((_request, response) => {
+    response.setHeader("Content-Type", "text/html");
+    response.end(`<!doctype html><title>Optional sizing fixture</title>
+      <script>
+        window.heights = [];
+        window.resizeEnabled = false;
+        addEventListener("message", event => {
+          const frame = document.querySelector("iframe");
+          if (event.origin !== "http://127.0.0.1:4175" ||
+              event.source !== frame?.contentWindow) return;
+          const data = event.data;
+          if (!data || data.type !== "turnmark:resize" || data.version !== 1 ||
+              !Number.isSafeInteger(data.height) || data.height < 240 || data.height > 4000) return;
+          window.heights.push(data);
+          if (window.resizeEnabled) frame.style.height = data.height + "px";
+        });
+      </script>
+      <iframe title="Swimming calculator" referrerpolicy="no-referrer"
+        src="http://127.0.0.1:4175/embed/v1/" width="640" height="820" style="border:0"></iframe>`);
+  });
+  await new Promise<void>((resolve) =>
+    publisher.listen(0, "127.0.0.1", resolve),
+  );
+  const address = publisher.address();
+  if (!address || typeof address === "string")
+    throw new Error("No fixture port");
+  const heights = () =>
+    page.evaluate(
+      () =>
+        (window as any).heights as {
+          type: string;
+          version: number;
+          height: number;
+        }[],
+    );
+  try {
+    await page.goto(`http://localhost:${address.port}/`);
+    await expect.poll(async () => (await heights()).length).toBeGreaterThan(0);
+    const iframe = page.locator("iframe");
+    await expect(iframe).toHaveCSS("height", "820px");
+    const wideHeight = (await heights()).at(-1)!.height;
+    await iframe.evaluate((frame) => {
+      frame.style.width = "320px";
+    });
+    await expect
+      .poll(async () => (await heights()).at(-1)!.height)
+      .toBeGreaterThan(wideHeight);
+    await expect(iframe).toHaveCSS("height", "820px");
+    const widget = page
+      .frames()
+      .find((frame) => frame.url().includes("/embed/v1/"))!;
+    expect(await widget.evaluate(() => document.referrer)).toBe("");
+    const narrowHeight = (await heights()).at(-1)!.height;
+    await page.evaluate(() => {
+      (window as any).resizeEnabled = true;
+    });
+    // Text reflow changes content size without a new navigation or width change.
+    await widget.addStyleTag({
+      content: "html { font-size: 150% } .converter { font-size: 150% }",
+    });
+    await expect
+      .poll(async () => (await heights()).at(-1)!.height)
+      .not.toBe(narrowHeight);
+    await expect
+      .poll(async () =>
+        Number.parseFloat(await iframe.evaluate((frame) => frame.style.height)),
+      )
+      .toBe((await heights()).at(-1)!.height);
+    await page
+      .frameLocator("iframe")
+      .getByLabel("Entered time")
+      .fill("2:16.71");
+    for (const message of await heights()) {
+      expect(Object.keys(message).sort()).toEqual([
+        "height",
+        "type",
+        "version",
+      ]);
+      expect(message.type).toBe("turnmark:resize");
+      expect(message.version).toBe(1);
+      expect(Number.isSafeInteger(message.height)).toBe(true);
+    }
+    const count = (await heights()).length;
+    // A publisher-origin message must not impersonate the widget's signal.
+    await page.evaluate(() =>
+      window.postMessage(
+        { type: "turnmark:resize", version: 1, height: 333 },
+        "*",
+      ),
+    );
+    await page.waitForTimeout(100);
+    expect((await heights()).length).toBe(count);
+  } finally {
+    await new Promise<void>((resolve, reject) =>
+      publisher.close((error) => (error ? reject(error) : resolve())),
+    );
+  }
+});
+
 test("copy section provides a versioned embed, theme preview and manual copy fallback", async ({
   page,
   context,
