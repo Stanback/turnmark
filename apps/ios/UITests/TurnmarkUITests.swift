@@ -49,9 +49,11 @@ final class TurnmarkUITests: XCTestCase {
             let keyboard = entryKeyboard(in: app)
             let navigation = app.navigationBars.firstMatch
             let tabs = app.tabBars.firstMatch
-            let visibleTop = navigation.exists ? navigation.frame.maxY + 12 : app.frame.minY + 80
+            // The earlier-result search must stay in the content viewport.
+            // Other callers can intentionally target native toolbar buttons.
+            let visibleTop = earlier && navigation.exists ? navigation.frame.maxY + 12 : app.frame.minY + 80
             let visibleBottom = min(keyboard?.frame.minY ?? app.frame.maxY - 40,
-                tabs.exists ? tabs.frame.minY : app.frame.maxY) - 16
+                earlier && tabs.exists ? tabs.frame.minY : app.frame.maxY) - 16
             if element.exists && element.isHittable {
                 // XCTest may call a one-pixel sliver hittable. A tap must land
                 // inside the visible form, above the keyboard and home area.
@@ -87,7 +89,8 @@ final class TurnmarkUITests: XCTestCase {
                 else { scroll.swipeDown() }
             } else { scroll.swipeUp() }
         }
-        XCTFail("Element must remain reachable inside the content viewport: \(element)")
+        if earlier { XCTFail("Element must remain reachable inside the content viewport: \(element)") }
+        else { XCTAssertTrue(element.exists && element.isHittable, "Element must remain reachable: \(element)") }
     }
     @MainActor private func replace(_ field: XCUIElement, with text: String, in app: XCUIApplication) {
         reach(field, in: app); field.tap()
