@@ -35,9 +35,14 @@ Validation for this pass: 19 iPhone app tests (6 unit/storage and 13 UI),
 action/menu corrections. The Duo checks cover remembered benchmark settings,
 points, rotation, continued typing and keyboard dismissal. Screenshot review
 caught and corrected a glass button stretching its grouped Form row; a default-
-size geometry assertion now guards that regression. The large-text scroll
+size geometry assertion now guards that regression. At accessibility sizes the
+benchmark label wraps instead of widening the result card; horizontal clock and
+action bounds are asserted at the largest text category. The large-text scroll
 helper searches both directions because Form virtualizes offscreen rows.
 Physical devices and VoiceOver/TalkBack remain release checks.
+
+[Largest-text converter result](screenshots/ios-native-result-largest-text.png)
+shows the full clock and wrapping context; the longer card remains scrollable.
 
 ## What changed
 

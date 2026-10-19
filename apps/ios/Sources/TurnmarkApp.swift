@@ -316,6 +316,7 @@ private struct TurnmarkView: View {
 }
 
 struct ConversionResult: View {
+    @Environment(\.dynamicTypeSize) private var typeSize
     let input: Draft
     var compact = false
     var benchmarks: ((Draft) -> Void)? = nil
@@ -380,7 +381,7 @@ struct ConversionResult: View {
             Button { benchmarks(input) } label: {
                 Label("Standards & points", systemImage: "chart.bar.xaxis").font(.footnote)
             }
-                .labelStyle(.titleAndIcon).fixedSize()
+                .labelStyle(.titleAndIcon).fixedSize(horizontal: !typeSize.isAccessibilitySize, vertical: true)
                 .disabled(parseTime(input: input.time) == nil).accessibilityIdentifier("openBenchmarks")
         }
     }

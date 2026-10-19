@@ -162,13 +162,21 @@ final class TurnmarkUITests: XCTestCase {
 
     @MainActor func testBenchmarkMissingTargetAtAccessibilityTextSize() {
         let app = launch(["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
+        let clock = app.staticTexts["resultTime"]
+        XCTAssertGreaterThanOrEqual(clock.frame.minX, app.frame.minX)
+        XCTAssertLessThanOrEqual(clock.frame.maxX, app.frame.maxX)
+        capture(app, "Converter result largest text")
         let course = app.segmentedControls["inputCourse"].buttons["LCM"]
         reach(course, in: app); course.tap()
         let stroke = app.buttons["strokePicker"]
         reach(stroke, in: app); stroke.tap(); app.buttons["Butterfly"].tap()
         let distance = app.buttons["distancePicker"]
         reach(distance, in: app); distance.tap(); app.buttons["200 m"].tap()
-        reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
+        let benchmarkAction = app.buttons["openBenchmarks"]
+        reach(benchmarkAction, in: app)
+        XCTAssertGreaterThanOrEqual(benchmarkAction.frame.minX, app.frame.minX)
+        XCTAssertLessThanOrEqual(benchmarkAction.frame.maxX, app.frame.maxX)
+        benchmarkAction.tap()
         XCTAssertTrue(app.staticTexts["benchmarkContext"].waitForExistence(timeout: 5))
         XCTAssertEqual(app.staticTexts["benchmarkContext"].label, "200 m Butterfly · LCM · Women")
         let system = app.descendants(matching: .any)["benchmarkSystem"].firstMatch
