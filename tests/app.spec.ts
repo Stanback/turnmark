@@ -544,16 +544,13 @@ test("theme follows system changes, respects a saved override and keeps dark con
   ).toEqual([]);
 });
 
-test("source chip links to the NCAA source and install instructions are usable", async ({
+test("method retains the NCAA source and install instructions are usable", async ({
   page,
-}, info) => {
+}) => {
   await page.goto("./");
-  if (info.project.name === "desktop")
-    await expect(
-      page.getByRole("link", {
-        name: "NCAA factors — open published conversion source",
-      }),
-    ).toHaveAttribute("href", /PRXSW_RulesBook/);
+  await expect(
+    page.locator("#method").getByRole("link", { name: /2025–27 NCAA rules/ }),
+  ).toHaveAttribute("href", /PRXSW_RulesBook/);
   await page.getByRole("button", { name: "Install app", exact: true }).click();
   await expect(
     page.getByRole("dialog", { name: "Install Turnmark" }),
