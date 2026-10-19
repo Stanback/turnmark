@@ -80,3 +80,11 @@ unchanged. The full 19 iOS and 22 Android checks pass after regeneration. The
 compact iOS and expanded Android standards/points screenshots above were
 refreshed from those actual builds. Older Duo captures establish adaptive layout
 and keyboard behavior; they predate this small palette refinement.
+
+The later hosted recording test exposed a test-observation issue: its video
+shows Done dismissing the software keyboard while XCTest still reports a hidden
+keyboard AX node as existing. Dismissal checks now require both visible/hittable
+keys and the converter's Done control to disappear. Scroll helpers also ignore
+hidden/offscreen keyboard frames, retaining category/time/recording assertions.
+The CI recording is retained as evidence; application code was unchanged for
+this test correction.

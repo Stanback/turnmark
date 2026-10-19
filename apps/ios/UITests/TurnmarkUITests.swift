@@ -7,12 +7,32 @@ final class TurnmarkUITests: XCTestCase {
         app.launch()
         return app
     }
+    @MainActor private func visibleKeyboard(in app: XCUIApplication) -> XCUIElement? {
+        let keyboard = app.keyboards.firstMatch
+        guard keyboard.exists else { return nil }
+        let frame = keyboard.frame
+        guard frame.width > 0, frame.height > 0,
+              frame.minX.isFinite, frame.minY.isFinite,
+              frame.intersects(app.frame), keyboard.keys.firstMatch.exists,
+              keyboard.keys.firstMatch.isHittable else { return nil }
+        return keyboard
+    }
+    @MainActor private func assertConverterKeyboardDismissed(in app: XCUIApplication,
+        file: StaticString = #filePath, line: UInt = #line) {
+        // iOS may retain a hidden keyboard AX node after a successful dismissal.
+        // Assert visible/hittable keys and the entry toolbar are both gone.
+        let dismissed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            let done = app.buttons["dismissConverterKeyboard"]
+            return self.visibleKeyboard(in: app) == nil && !(done.exists && done.isHittable)
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [dismissed], timeout: 5), .completed, file: file, line: line)
+    }
     @MainActor private func reach(_ element: XCUIElement, in app: XCUIApplication) {
         for _ in 0..<10 {
             if element.exists && element.isHittable {
                 // XCTest may call a one-pixel sliver hittable. A tap must land
                 // inside the visible form, above the keyboard and home area.
-                let keyboardTop = app.keyboards.firstMatch.exists ? app.keyboards.firstMatch.frame.minY : app.frame.maxY - 40
+                let keyboardTop = visibleKeyboard(in: app)?.frame.minY ?? app.frame.maxY - 40
                 if element.frame.midY > app.frame.minY + 80 && element.frame.midY < keyboardTop - 16 { return }
             }
             let container = !element.exists || element.identifier.isEmpty ? app.scrollViews.element(boundBy: max(app.scrollViews.count - 1, 0)) :
@@ -21,12 +41,12 @@ final class TurnmarkUITests: XCTestCase {
             let editor = app.descendants(matching: .any)["swimEditorForm"].firstMatch
             let scroll = editor.exists ? editor : (container.exists ? container : (nativeList.exists ? nativeList : app))
             let downward = element.exists && element.frame.minY < app.frame.minY + 80
-            if app.keyboards.firstMatch.exists {
+            if let keyboard = visibleKeyboard(in: app) {
                 // The form extends behind the keyboard. XCTest's default swipe
                 // can start in its assistant bar, which never scrolls the form.
                 let visible = scroll.frame.intersection(app.frame)
                 let done = app.buttons["dismissSwimKeyboard"]
-                let bottom = min(visible.maxY, app.keyboards.firstMatch.frame.minY,
+                let bottom = min(visible.maxY, keyboard.frame.minY,
                     done.exists ? done.frame.minY : visible.maxY) - 12
                 let top = max(visible.minY, app.frame.minY + 140)
                 let upper = top + (bottom - top) * 0.2
@@ -94,10 +114,12 @@ final class TurnmarkUITests: XCTestCase {
         let app = launch()
         replace(app.textFields["timeInput"], with: "1:00.25", in: app)
         let done = app.buttons["dismissConverterKeyboard"]
-        if done.waitForExistence(timeout: 3) && done.isHittable { done.tap() }
+        if done.waitForExistence(timeout: 3) && done.isHittable {
+            XCTAssertNotNil(visibleKeyboard(in: app)); done.tap()
+        }
         else { app.textFields["timeInput"].typeText("\n") }
-        let keyboardClosed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: app.keyboards.firstMatch)
-        XCTAssertEqual(XCTWaiter.wait(for: [keyboardClosed], timeout: 5), .completed)
+        assertConverterKeyboardDismissed(in: app)
+        capture(app, "Converter keyboard dismissed before recording")
         let category = app.segmentedControls["category"]
         reach(category, in: app); category.buttons["Men"].tap()
         reach(app.buttons["logSwim"], in: app); app.buttons["logSwim"].tap()
@@ -277,18 +299,16 @@ final class TurnmarkUITests: XCTestCase {
         app.typeText(XCUIKeyboardKey.delete.rawValue)
         XCTAssertEqual(field.value as? String, "1:00.2")
         let done = app.buttons["dismissConverterKeyboard"]
-        XCTAssertTrue(done.waitForExistence(timeout: 5)); done.tap()
-        let keyboardClosed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: app.keyboards.firstMatch)
-        XCTAssertEqual(XCTWaiter.wait(for: [keyboardClosed], timeout: 5), .completed)
+        XCTAssertTrue(done.waitForExistence(timeout: 5)); XCTAssertNotNil(visibleKeyboard(in: app)); done.tap()
+        assertConverterKeyboardDismissed(in: app)
         // Starting entry in an already-wide workspace must not collapse its
         // field when the keyboard reduces the available height.
         XCUIDevice.shared.orientation = .landscapeLeft
         replace(field, with: "58.32", in: app)
         XCTAssertEqual(field.value as? String, "58.32")
         XCTAssertTrue(app.descendants(matching: .any)["expandedConverter"].firstMatch.exists)
-        XCTAssertTrue(done.waitForExistence(timeout: 5)); done.tap()
-        let wideKeyboardClosed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: app.keyboards.firstMatch)
-        XCTAssertEqual(XCTWaiter.wait(for: [wideKeyboardClosed], timeout: 5), .completed)
+        XCTAssertTrue(done.waitForExistence(timeout: 5)); XCTAssertNotNil(visibleKeyboard(in: app)); done.tap()
+        assertConverterKeyboardDismissed(in: app)
     }
 
     @MainActor func testSharingCanBeCancelledWithoutRecordingATime() {
