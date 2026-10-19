@@ -2,7 +2,14 @@
 
 Rust is the single calculation implementation for the web app and generated
 Swift/Kotlin libraries. PR #2 completes the shared SDK and the web migration.
-The paired SwiftUI/Jetpack Compose app workflows follow in a separate PR.
+The paired SwiftUI/Jetpack Compose workflows were added in subsequent PRs.
+
+Current consumers now include the web app, publisher iframe, MCP service and
+paired native converter/history/Standards & points screens. The current source
+corpus has 69 portable cases and 6,061 cross-runtime cases; published SDK 0.1.0
+retains its original 62-case release contract. See [native scope](NATIVE_APPS.md),
+[MCP Apps review](MCP_APPS_REVIEW.md) and [package release status](SDK_RELEASES.md).
+The migration-specific observations below remain a record of that earlier stage.
 
 ## Ownership
 
@@ -106,8 +113,8 @@ Locally verified October 17, 2026:
 - Before deleting the TypeScript implementation, 6,054 public cases and 1,776
   numeric compatibility cases were compared to saved pre-deletion outputs and
   matched. This was a migration check, not a retained second implementation.
-- Ongoing cross-runtime checks run the 6,054-case corpus through the pure Rust
-  CLI and the generated Node/browser/Swift/Kotlin bindings. The 62 portable cases
+- Ongoing cross-runtime checks run the 6,061-case corpus through the pure Rust
+  CLI and the generated Node/browser/Swift/Kotlin bindings. The 69 portable cases
   retain independently sourced expected values; additional cases check transport,
   platform arithmetic and data coverage against the Rust host reference.
 - Rust additionally checks all 70 points bases yield 1,000 points and verifies

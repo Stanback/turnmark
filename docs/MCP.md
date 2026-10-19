@@ -119,3 +119,31 @@ Sources: [official TypeScript SDK](https://github.com/modelcontextprotocol/types
 [Cloudflare stateless MCP handler](https://developers.cloudflare.com/agents/model-context-protocol/apis/handler-api/),
 [Workers Wasm](https://developers.cloudflare.com/workers/runtime-apis/webassembly/),
 [rate limiting](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/).
+
+## MCP Apps conversion UI
+
+The source adapter/server version is now `0.2.0`, independently of SDK `0.1.0`.
+The official Apps extension adds metadata/resource discovery to `convert_swim`;
+all six tool names, input/output schemas and text/structured outcomes remain.
+Registration is static: a fresh per-request stateless server cannot reliably
+infer initialized UI capabilities during construction. Hosts choose whether to
+render the resource. Both clients with and without Apps are tested in both
+supported protocol modes.
+
+The UI resource is self-contained HTML, generated before TypeScript compilation
+from `packages/mcp/ui`, shared CSS tokens and `design/wave.svg`. No Wasm, numerical
+tables, CDN, nested widget iframe or direct network calls are included. The
+official `App` bridge sends explicit conversions to the host, which retains tool
+approval and link permissions. CSP requests empty network/resource/frame domain
+lists. The card stores no data beyond its own live instance; two cards are
+isolated. A cancellation invalidates pending responses before they can replace
+the committed result or conversation context.
+
+`npm run test:mcp` builds/types the card, exercises fresh packed offline consumers
+and workerd, then runs the official `AppBridge` in a strict opaque-origin sandbox
+with real stdio and Workers HTTP tool calls. Install Chromium first. The isolated deployment still
+uploads only the already-tested Worker artifact; the UI does not change token,
+route, rate-limit, billing or credential boundaries. The HTML has a 750,000-byte
+build budget (including the official bridge SDK); Worker size remains checked by
+Wrangler. See [MCP Apps review](MCP_APPS_REVIEW.md) for measurements, screenshots,
+remaining host acceptance and publication status.

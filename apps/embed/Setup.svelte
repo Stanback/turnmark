@@ -1,8 +1,36 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { site } from "../../src/data/site";
   let theme = $state("auto");
   let copied = $state(false);
   let failed = $state(false);
+  let preview: HTMLIFrameElement | undefined = $state();
+  let previewHeight = $state(820);
+  let previewObserver: ResizeObserver | undefined;
+  // This preview is our own same-origin frame. Public embeds need no parent
+  // script or message bridge; their publisher controls the iframe height.
+  function fitPreview() {
+    previewObserver?.disconnect();
+    try {
+      const content = preview?.contentDocument?.getElementById("widget");
+      if (!content) return;
+      const fit = () => {
+        previewHeight = Math.max(
+          240,
+          Math.ceil(content.getBoundingClientRect().height) + 2,
+        );
+      };
+      previewObserver = new ResizeObserver(fit);
+      previewObserver.observe(content);
+      fit();
+    } catch {
+      // The ordinary iframe height remains usable if same-origin access changes.
+    }
+  }
+  onMount(() => {
+    fitPreview();
+    return () => previewObserver?.disconnect();
+  });
   const url = $derived(
     `${site.url}embed/v1/${theme === "auto" ? "" : `?theme=${theme}`}`,
   );
@@ -95,10 +123,12 @@
   </div>
   <details open>
     <summary>Preview the converter</summary><iframe
+      bind:this={preview}
+      onload={fitPreview}
       src={`/embed/v1/${theme === "auto" ? "" : `?theme=${theme}`}`}
       title="Swim time converter preview"
       width="100%"
-      height="820"
+      height={previewHeight}
       loading="lazy"
     ></iframe>
   </details>

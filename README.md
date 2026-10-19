@@ -30,9 +30,9 @@ The web app is live. The native screens below are development previews, not stor
 
 ![Turnmark web converter, recent conversions and published standards](docs/screenshots/web-liquid-surfaces-dark.png)
 
-| iOS · Standards & points | Android · Expanded layout |
-| --- | --- |
-| <img src="docs/screenshots/ios-standards-light.png" width="280" alt="iOS youth benchmark, next AA target and original swim context"> | <img src="docs/screenshots/android-youth-standards-summary.png" width="420" alt="Android standards sheet over an expanded two-pane converter"> |
+| iOS · Converter                                                                                                                      | Android · Converter                                                                                                                                     |
+| ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="docs/screenshots/ios-home-light.png" width="280" alt="Default iPhone converter with the original swim and LCM comparison"> | <img src="docs/screenshots/android-home-light.png" width="280" alt="Default Android phone converter showing the same original swim and LCM comparison"> |
 
 [Embed the widget](https://turnmark.app/embed/) · [Connect MCP](https://turnmark.app/mcp/) · [Native review and more screenshots](docs/NATIVE_STANDARDS_REVIEW.md)
 
@@ -88,6 +88,13 @@ The [MCP adapter](docs/MCP.md) supports offline stdio and stateless Streamable
 HTTP at `https://mcp.turnmark.app/mcp`, using the same SDK.
 See the [public MCP quick start](https://turnmark.app/mcp/) for connection
 settings and [llms.txt](https://turnmark.app/llms.txt) for the agent documentation index.
+MCP Apps compatible hosts can show an inline conversion card with editable time
+and comparison course; text-only clients retain the same results. The published
+local package 0.1.0 is text-only; Apps is prepared for adapter 0.2.0. See the
+[implementation and host verification notes](docs/MCP_APPS_REVIEW.md).
+
+<img src="docs/screenshots/mcp-card-light.png" width="480" alt="Turnmark interactive MCP conversion card with source context and time/course controls">
+
 The [agent interface plan](docs/AGENT_INTERFACES.md) covers future WebMCP work.
 The public npm packages [@turnmark/sdk](https://www.npmjs.com/package/@turnmark/sdk)
 and [@turnmark/mcp](https://www.npmjs.com/package/@turnmark/mcp) are available at `0.1.0`.

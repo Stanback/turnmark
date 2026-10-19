@@ -96,7 +96,9 @@ configuration expires after two days. npm's [trusted publishing guide](https://d
 documents the setup and CLI requirements. These account/environment settings
 are release prerequisites, not settings created by this PR.
 
-Dispatch **Prepare or publish SDK** on `main` with the committed version.
+Dispatch **Prepare or publish npm package** on `main`, selecting `sdk` or
+`mcp` and that package’s committed version. SDK and adapter versions are
+independent.
 Leaving `publish` false only produces a verified artifact. Enabling it runs the
 same checks and sends that run's immutable artifact to a new publishing runner,
 behind the environment approval. It verifies the checksum and publishes the
@@ -111,3 +113,23 @@ Registry versions are immutable: fixes get a new version instead of replacing
 an existing package. During 0.x, breaking public API changes increment the minor
 version and compatible fixes increment the patch version. Dataset editions
 remain explicit in responses and release notes.
+
+## Prepared MCP 0.2.0
+
+MCP Apps is implemented in the adapter's 0.2.0 source and Worker artifact. The
+registry remains at MCP 0.1.0 until a separately authenticated publication.
+`npm run test:mcp` verifies packed offline consumers, both HTTP protocol modes,
+resource metadata and the official browser bridge over stdio and Workers HTTP. A fresh MCP tarball was also
+installed against published SDK 0.1.0, with conversion/resource reads verified
+without runtime network access. The adapter does not require a new SDK release.
+See [MCP Apps review](MCP_APPS_REVIEW.md) for screenshots and host limits.
+
+From the reviewed release commit, run `npm run pack:mcp` to retain the exact
+verified MCP tarball and `SHA256SUMS` in ignored `release/`. Review its contents
+and integrity, then use the protected trusted-publisher workflow once configured,
+selecting `mcp` and `0.2.0` (leave Publish false for preparation only). Configure
+npm trust separately for each package using the same exact workflow/environment.
+The preparation job tests both the workspace SDK and published registry SDK
+without runtime network access; the publishing runner still has no checkout,
+application dependencies or stored token. Do not silently bypass the documented release boundary or introduce
+an npm publishing token to make an unattended release possible.

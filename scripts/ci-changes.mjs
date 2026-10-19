@@ -64,14 +64,20 @@ export function affectedChecks(paths) {
     else if (path === "scripts/test-native-host.mjs") select("ios", "android");
     else if (
       [
-        "scripts/generate-brand-assets.mjs",
         "design/turnmark.tokens.json",
         "design/generate.mjs",
         "design/wave.svg",
+      ].includes(path)
+    )
+      select("web", "core", "ios", "android");
+    else if (
+      [
+        "scripts/generate-brand-assets.mjs",
         "design/brand-manifest.json",
       ].includes(path)
     )
       select("web", "ios", "android");
+    else if (path === "src/generated/design-tokens.css") select("web", "core");
     else if (
       path.startsWith("crates/turnmark-wasm/") ||
       path.startsWith("packages/sdk/") ||
@@ -87,7 +93,12 @@ export function affectedChecks(paths) {
     else if (
       path.startsWith("packages/mcp/") ||
       path.startsWith("packages/mcp-worker/") ||
-      ["scripts/test-mcp.mjs", "scripts/engine-metrics.mjs"].includes(path)
+      [
+        "scripts/test-mcp.mjs",
+        "scripts/test-mcp-ui.mjs",
+        "scripts/build-mcp-ui.mjs",
+        "scripts/engine-metrics.mjs",
+      ].includes(path)
     )
       select("core");
     else if (

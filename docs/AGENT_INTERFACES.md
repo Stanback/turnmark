@@ -7,6 +7,13 @@ are configured, with deployment through passing main CI. Both `@turnmark/sdk`
 and `@turnmark/mcp` are published on npm at `0.1.0`. WebMCP remains a separate
 planned adapter.
 
+Interactive results inside a conversation are a separate enhancement to the
+existing MCP path. The conversion card is implemented; see [MCP Apps review](MCP_APPS_REVIEW.md)
+and the [research and implementation plan](MCP_APPS.md)
+for host support, the stateless capability probe, UI/security boundaries and
+release gates. Specific host rendering and the npm 0.2.0 publication remain
+acceptance/release steps; the public calculation tools keep their text fallback.
+
 ## One engine, two access paths
 
 Expose Turnmark calculations to assistants through an MCP server and to browser

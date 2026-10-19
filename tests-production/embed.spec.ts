@@ -74,6 +74,11 @@ test("actual cross-origin iframe works at narrow width with source and destinati
     await expect(
       frame.getByRole("heading", { name: "Swim time converter", exact: true }),
     ).toBeVisible();
+    expect(
+      await frame
+        .getByRole("combobox", { name: "Distance", exact: true })
+        .evaluate((select) => select.getBoundingClientRect().width),
+    ).toBeGreaterThan(240);
     await frame
       .getByRole("combobox", { name: "Distance", exact: true })
       .selectOption("400");
@@ -102,6 +107,129 @@ test("actual cross-origin iframe works at narrow width with source and destinati
     await page
       .locator("iframe")
       .screenshot({ path: testInfo.outputPath("widget-dark.png") });
+  } finally {
+    await new Promise<void>((resolve, reject) =>
+      publisher.close((error) => (error ? reject(error) : resolve())),
+    );
+  }
+});
+
+test("cross-origin height signals are metadata-only and resizing stays publisher-owned", async ({
+  page,
+}) => {
+  const publisher = createServer((_request, response) => {
+    response.setHeader("Content-Type", "text/html");
+    response.end(`<!doctype html><title>Optional sizing fixture</title>
+      <script>
+        window.heights = [];
+        window.resizeEnabled = false;
+        addEventListener("message", event => {
+          const frame = document.querySelector("iframe");
+          if (event.origin !== "http://127.0.0.1:4175" ||
+              event.source !== frame?.contentWindow) return;
+          const data = event.data;
+          if (!data || data.type !== "turnmark:resize" || data.version !== 1 ||
+              !Number.isSafeInteger(data.height) || data.height < 240 || data.height > 4000) return;
+          window.heights.push(data);
+          if (window.resizeEnabled) frame.style.height = data.height + "px";
+        });
+      </script>
+      <iframe title="Swimming calculator" referrerpolicy="no-referrer"
+        src="http://127.0.0.1:4175/embed/v1/" width="640" height="820" style="border:0"></iframe>`);
+  });
+  await new Promise<void>((resolve) =>
+    publisher.listen(0, "127.0.0.1", resolve),
+  );
+  const address = publisher.address();
+  if (!address || typeof address === "string")
+    throw new Error("No fixture port");
+  const heights = () =>
+    page.evaluate(
+      () =>
+        (window as any).heights as {
+          type: string;
+          version: number;
+          height: number;
+        }[],
+    );
+  try {
+    await page.goto(`http://localhost:${address.port}/`);
+    await expect.poll(async () => (await heights()).length).toBeGreaterThan(0);
+    const iframe = page.locator("iframe");
+    await expect(iframe).toHaveCSS("height", "820px");
+    const wideHeight = (await heights()).at(-1)!.height;
+    await iframe.evaluate((frame) => {
+      frame.style.width = "320px";
+    });
+    await expect
+      .poll(async () => (await heights()).at(-1)!.height)
+      .toBeGreaterThan(wideHeight);
+    await expect(iframe).toHaveCSS("height", "820px");
+    const widget = page
+      .frames()
+      .find((frame) => frame.url().includes("/embed/v1/"))!;
+    expect(await widget.evaluate(() => document.referrer)).toBe("");
+    const narrowHeight = (await heights()).at(-1)!.height;
+    await page.evaluate(() => {
+      (window as any).resizeEnabled = true;
+    });
+    // Text reflow changes content size without a new navigation or width change.
+    await widget.addStyleTag({
+      content:
+        ".converter, .converter :is(label, p, h1, h2, input, select, a, strong) { font-size: 24px !important; line-height: 1.5 !important; }",
+    });
+    await expect
+      .poll(async () => (await heights()).at(-1)!.height)
+      .not.toBe(narrowHeight);
+    await expect
+      .poll(async () =>
+        Number.parseFloat(await iframe.evaluate((frame) => frame.style.height)),
+      )
+      .toBe((await heights()).at(-1)!.height);
+    await page
+      .frameLocator("iframe")
+      .getByLabel("Entered time")
+      .fill("2:16.71");
+    for (const message of await heights()) {
+      expect(Object.keys(message).sort()).toEqual([
+        "height",
+        "type",
+        "version",
+      ]);
+      expect(message.type).toBe("turnmark:resize");
+      expect(message.version).toBe(1);
+      expect(Number.isSafeInteger(message.height)).toBe(true);
+    }
+    // A publisher-origin message must not impersonate the widget's signal.
+    // Acknowledge that exact event after the fixture's earlier listener runs;
+    // legitimate content/font reflows can still arrive independently.
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          const acknowledge = (event: MessageEvent) => {
+            if (
+              event.source === window &&
+              event.data?.publisherProbe === true
+            ) {
+              window.removeEventListener("message", acknowledge);
+              resolve();
+            }
+          };
+          window.addEventListener("message", acknowledge);
+          window.postMessage(
+            {
+              type: "turnmark:resize",
+              version: 1,
+              height: 333,
+              publisherProbe: true,
+            },
+            "*",
+          );
+        }),
+    );
+    expect(
+      (await heights()).some((message) => "publisherProbe" in message),
+    ).toBe(false);
   } finally {
     await new Promise<void>((resolve, reject) =>
       publisher.close((error) => (error ? reject(error) : resolve())),
@@ -258,6 +386,19 @@ test("widget setup has pre-rendered instructions, its own route and accessible r
         .frameLocator("iframe")
         .getByRole("heading", { name: "Swim time converter", exact: true }),
     ).toBeVisible();
+    await expect
+      .poll(() =>
+        page.locator("iframe").evaluate((frame) => {
+          const content = frame.contentDocument?.getElementById("widget");
+          if (!content) return false;
+          const expected = Math.max(
+            240,
+            Math.ceil(content.getBoundingClientRect().height) + 2,
+          );
+          return Math.abs(frame.getBoundingClientRect().height - expected) <= 2;
+        }),
+      )
+      .toBe(true);
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,

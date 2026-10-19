@@ -38,3 +38,8 @@ WebMCP remains planned work.
 
 - [MCP operations](https://raw.githubusercontent.com/Stanback/turnmark/main/docs/MCP.md): Transport implementation, verification, hosting and abuse limits.
 - [Source repository](https://github.com/Stanback/turnmark): GPL-3.0-or-later source, native app development and contribution guides.
+
+MCP Apps: the hosted conversion tool advertises a self-contained interactive
+card for compatible hosts, with unchanged text/structured fallback. Published
+local MCP 0.1.0 is text-only; Apps is prepared for MCP 0.2.0. See the MCP reference
+for host verification limits and privacy details.

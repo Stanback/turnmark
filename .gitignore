@@ -30,3 +30,7 @@ packages/swift/.build/
 *.xcuserstate
 **/build/
 local.properties
+
+# Bundled MCP card is generated before TypeScript compilation.
+packages/mcp/src/generated/
+packages/mcp/THIRD_PARTY_NOTICES.txt

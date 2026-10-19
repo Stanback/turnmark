@@ -345,6 +345,9 @@
     }
   }
   @media (max-width: 360px) {
+    .fields {
+      grid-template-columns: minmax(0, 1fr);
+    }
     .converter {
       padding: 16px;
     }
