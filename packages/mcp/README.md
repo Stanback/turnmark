@@ -1,10 +1,10 @@
 # Turnmark MCP
 
 Read-only swimming calculations over local stdio, using `@turnmark/sdk` and its
-bundled Rust/Wasm engine. The current published package is `@turnmark/mcp@0.1.0`.
-The next `0.2.0` release adds the MCP Apps conversion card; its source/build
-version does not mean it is already published. Node 22.12+ is
-required; calculations run offline after installation, without Rust or a browser.
+bundled Rust/Wasm engine. Version `0.2.0` includes an interactive MCP Apps
+conversion card for compatible hosts, alongside the existing text and structured
+results. Node 22.12+ is required; calculations run offline after installation,
+without Rust or a browser.
 
 ## Hosted connection
 
@@ -45,7 +45,7 @@ calculation inputs, use the offline stdio connection below.
 
 ## Local connection
 
-Install in a project with `npm install @turnmark/mcp@0.1.0`. Use an absolute
+Install in a project with `npm install @turnmark/mcp@0.2.0`. Use an absolute
 Node executable and installed package path in your MCP client's config:
 
 ```json
@@ -138,8 +138,8 @@ Clients without MCP Apps continue to receive the same text and structured
 results. There is no separate UI endpoint to configure: use the same stdio
 server or Streamable HTTP URL. The immutable resource is
 `ui://turnmark/conversion/0.2.0.html`, served as
-`text/html;profile=mcp-app`. Published local package `0.1.0` has text tools;
-local Apps require the forthcoming `0.2.0` package (or a source build).
+`text/html;profile=mcp-app`. Local Apps require package `0.2.0` or later;
+package `0.1.0` provides text and structured tools.
 
 Verified with the official AppBridge in an opaque browser sandbox and real
 tool calls over both stdio and local Workers Streamable HTTP.
