@@ -1,8 +1,8 @@
 # Converter layout exploration
 
-The web layout and polish passes are implemented in draft PR26, separate from
-conversion-model research. It is ready for visual review; it has not been
-merged or adopted by the native apps.
+The web layout and polish passes are implemented in PR26, separate from
+conversion-model research. The owner approved the visual direction on October
+19, 2026. Native adoption remains separate work.
 
 ## Direction
 
@@ -148,9 +148,10 @@ This pass passes Svelte/TypeScript checks, 138 unit tests, 43 browser cases
 (one desktop-inapplicable case skipped), and 20 production/offline cases.
 Light/dark screenshots, 320px controls, enlarged root text, invalid/unavailable
 results, method sharing/persistence, keyboard focus/disclosure and phone action
-visibility were reviewed. The preceding layout commit passed hosted CI; the new
-polish commit and owner review remain pending. No native layout or widget/MCP
-presentation changed.
+visibility were reviewed. Hosted CI passed the reviewed implementation, including
+the polish pass, and the owner approved the web design on October 19, 2026.
+The branch is synchronized with main; final branch checks remain the merge gate.
+No native layout or widget/MCP presentation changed.
 
 - Confirm which layout to keep through actual desktop/mobile browser previews.
 - Keep calculations, unsupported/invalid states, offline behavior, shared links,
