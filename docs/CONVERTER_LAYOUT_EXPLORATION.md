@@ -22,6 +22,41 @@ its selected source and original-swim benchmark distinction remain accessible.
 Native controls remain platform-owned; this web study does not imply a shared
 web/native layout or a native redesign.
 
+## Mobile flow to explore
+
+The next exploration should make the starting point clearer: **enter a swim →
+compare course equivalents → explore targets or methods**. On a narrow screen,
+editable inputs come before the result. Preserve the desktop side-by-side
+comparison; do not shrink that entire composition into a phone.
+
+Investigate a first-visit blank time with a recognizable placeholder and an
+explicit “Try an example” action, instead of presenting an unexplained sample
+as the user's result. Restore a returning user's own inputs where supported.
+Shared URLs still open their explicit swim. Reset, persistence and empty/invalid
+states need an intentional contract before changing defaults or tests.
+
+Keep result updates stable while typing: no automatic scrolling, disappearing
+keyboard, reordered controls or layout jump to a result. Below the inputs, show
+all three course equivalents clearly, with the original identified. Follow with
+one relevant next target and a route into full standards/points. Methods,
+altitude and other optional details remain quiet. Do not add an experimental
+probability display until the separate research work earns one.
+
+The native reference currently puts a prominent result first. This new
+input-first direction should be evaluated for native apps in a paired follow-up
+as well; it is not implemented by this web study. Preserve native navigation,
+keyboard/focus behavior, Dynamic Type and platform controls in that work.
+
+Polish supports this hierarchy: readable labels, consistent tokens, restrained
+border illumination, generous touch targets and quieter secondary actions.
+Keep water decorative. Save comparison and Log swim have different meanings:
+logging an actual race must remain an explicit action, never an automatic side
+effect of exploring estimates.
+
+Potential additional benchmarks are reviewed in
+[the maintenance shortlist](BENCHMARK_EXPANSION.md); adding their data or a new
+scoring system is not part of this layout PR.
+
 ## README screenshots are part of this PR
 
 Before this draft is ready, update the root README's images from the actual

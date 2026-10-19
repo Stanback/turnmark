@@ -1,0 +1,69 @@
+# Benchmark expansion shortlist
+
+Research checked October 19, 2026. These are candidates, not shipped tables or
+new scoring implementations. The shipped benchmarks remain USA Swimming youth
+motivational standards, USMS Nationals NQTs and World Aquatics points.
+
+## Small additions with a useful payoff
+
+| Candidate                     | Why it is useful                                                                        | Maintenance and recommendation                                                                                                                                                     |
+| ----------------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Custom target time            | A local meet cut, personal goal or coach-supplied target without maintaining every meet | Lowest data maintenance. One explicit time/course/event context; store locally if desired. Label it user-provided, never official by inference                                     |
+| USA Swimming Futures          | A recognizable national-meet benchmark beyond the motivational ladder                   | Prioritize one edition of the official individual-event table, with source/date and missing-event handling                                                                         |
+| USA Swimming Junior Nationals | A further national threshold in the same publisher's standards index                    | Add alongside Futures using the same import framework; keep summer/winter editions and validity distinct                                                                           |
+| NISCA All-America standards   | A useful high-school comparison                                                         | Secondary priority. Annual yards/meters tables and automatic/consideration categories must remain distinct; meeting a time does not itself award All-America status                |
+| USA Swimming Power Points     | Another way to compare performances; possibly the “national points” mentioned           | Investigate next. The official Data Hub lists a calculator, but an authoritative versioned offline table/formula and reproducible examples have not yet been verified for Turnmark |
+| NISCA Power Points            | High-school event-quality scoring, distinct from USA Swimming and World Aquatics points | Later candidate after validating the official table edition, scope and reproducible scoring behavior                                                                               |
+
+Official sources:
+
+- [USA Swimming time-standards index](https://www.usaswimming.org/Times/time-standards)
+  lists 2026 and 2027 editions, including Futures and Junior Nationals. Import
+  a specific reviewed edition, not “the latest” guessed from a URL.
+- [USA Swimming Data Hub](https://www.usaswimming.org/times/popular-resources/)
+  lists its Power Point Calculator. A hosted calculator is not itself an offline
+  implementation contract; do not infer its formula from another website.
+- [NISCA All-America time standards](https://niscaonline.org/index.php/award-programs/all-america-swimming/aa-time-standards)
+  requires a completed application in addition to an appropriate performance.
+  Preserve that distinction in labels and links.
+- [NISCA National Dual Meet rules](https://www.niscaonline.org/images/Documents/AllAmerica/NatlDualMeet/Power_Point_Rules.pdf)
+  describes its Power Point tables and high-school scope. The linked document
+  references a 2014 table edition; confirm the current applicable scoring source
+  before implementing anything.
+- [USA Swimming IMX/IMR](https://www.usaswimming.org/times/imx-imr) combines a
+  program of events. It is not a replacement score for one entered swim and
+  would add unnecessary workflow/storage scope at this stage.
+
+Do not start by maintaining all state, sectional, zone, team and meet cuts.
+A custom target covers those cases without a sprawling source list. Historical
+rank percentiles and age-graded adult ladders would need their own defensible
+dataset/methodology and maintenance; they are not cheap static add-ons.
+
+## Keep the interface small
+
+Show one appropriate next target, not every possible achievement at once.
+Use a standards picker for the full set. Keep the original entered event,
+course, category and relevant age context visible; do not treat a converted
+estimate as an actual qualifying swim. For points, retain an explicit scoring
+system/edition label. Different point systems are not interchangeable scores,
+percentiles or predicted chances of qualifying.
+
+Future method comparison can show NCAA, Colorado and a separately validated
+experimental predictor. Following a meet's required conversion policy and
+exploring a likely performance are different tasks. No model confidence graphic
+or new meet-eligibility claim belongs in the layout exploration.
+
+## Update process before more tables
+
+Reuse the existing checked-in snapshot/importer pattern in [DATA.md](DATA.md):
+official source URL, edition/validity dates, retrieval date, content SHA-256,
+schema version, validated event/course/category keys and explicit nulls.
+Independent sample values, duplicate detection and row/header guards should make
+unexpected PDF changes fail visibly. Keep old editions reproducible.
+
+A later scheduled job can check source indexes and fetch changed documents,
+produce a source/value diff, run import validation and prepare a reviewable PR.
+It should not silently promote a new edition, merge its own changes or deploy
+unreviewed numbers. Source-fingerprint changes sometimes reflect layout only;
+validity and edition changes also need UI metadata updates. No cron or new
+data source has been implemented by this document.
