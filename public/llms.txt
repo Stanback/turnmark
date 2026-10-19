@@ -19,7 +19,7 @@ eligibility. Missing published data stays unavailable.
 The MCP server cannot read or edit saved swims, profiles, files or browser
 history. On HTTP 429, respect Retry-After. The service runs on Cloudflare Free;
 temporary unavailability does not affect offline SDK or stdio calculations.
-JavaScript packages: @turnmark/sdk@0.1.0 and @turnmark/mcp@0.1.0. The MCP
+JavaScript packages: @turnmark/sdk@0.1.0 and @turnmark/mcp@0.2.0. The MCP
 package depends on the SDK and provides the turnmark-mcp stdio executable.
 WebMCP remains planned work.
 
@@ -41,5 +41,5 @@ WebMCP remains planned work.
 
 MCP Apps: the hosted conversion tool advertises a self-contained interactive
 card for compatible hosts, with unchanged text/structured fallback. Published
-local MCP 0.1.0 is text-only; Apps is prepared for MCP 0.2.0. See the MCP reference
+local MCP 0.2.0 includes the same card. See the MCP reference
 for host verification limits and privacy details.

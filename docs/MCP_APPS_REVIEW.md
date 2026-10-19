@@ -88,11 +88,11 @@ every host or directory approval. Local profiling does not establish edge CPU
 usage; verify production responses after deployment and monitor actual Free
 limits without enabling a paid plan.
 
-The source/server/UI version is MCP **0.2.0**. Public npm MCP **0.1.0** remains the
-published text-only version until a separately authenticated release. A tested
-0.2.0 tarball can be retained with `npm run pack:mcp` under ignored `release/`,
-with a SHA-256 checksum. The main-only manual release workflow accepts a package
-choice and keeps SDK/MCP versions independent. The SDK stays at
-published 0.1.0 for this adapter release. Follow [SDK releases](SDK_RELEASES.md)
-for the protected trusted-publisher setup; do not add an npm token to CI or
-replace an existing registry version.
+The source/server/UI and public npm package are MCP **0.2.0**. The release used
+the main-only manual workflow and npm trusted publishing, with the tested
+archive's checksum verified before publication. The SDK stays at published
+**0.1.0** for this adapter release. A fresh external registry consumer verified
+the same resource and offline tools in both protocol modes, with and without
+Apps capability. See [SDK releases](SDK_RELEASES.md) for the release commit,
+registry integrity and protected publishing setup. Do not add an npm token to
+CI or replace an existing registry version.

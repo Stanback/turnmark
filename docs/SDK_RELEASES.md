@@ -1,9 +1,9 @@
 # SDK releases
 
 Status: [@turnmark/sdk@0.1.0](https://www.npmjs.com/package/@turnmark/sdk) and
-[@turnmark/mcp@0.1.0](https://www.npmjs.com/package/@turnmark/mcp) were published
-on October 18, 2026. The website version is independent. This first public
-package targets JavaScript/TypeScript. The native apps already consume generated
+[@turnmark/mcp@0.2.0](https://www.npmjs.com/package/@turnmark/mcp) are published.
+The website version is independent. These public packages target
+JavaScript/TypeScript. The native apps already consume generated
 Swift and Kotlin libraries from the same Rust core; standalone SwiftPM binary
 and Maven releases are still follow-up work. No native registry release is
 implied by an npm release.
@@ -32,7 +32,7 @@ the installed `turnmark-mcp` executable passed tool discovery, 42 exact SDK-resu
 comparisons and eight malformed-input cases in each supported protocol mode,
 also without network access. Maintainer login and two-factor authentication
 were used for this bootstrap release; these artifacts do not carry GitHub
-provenance. Trusted publishing remains a prerequisite for future CI publication.
+provenance. MCP 0.2.0 uses trusted publishing as documented below.
 
 ## Prepare and verify
 
@@ -114,22 +114,38 @@ an existing package. During 0.x, breaking public API changes increment the minor
 version and compatible fixes increment the patch version. Dataset editions
 remain explicit in responses and release notes.
 
-## Prepared MCP 0.2.0
+## Published MCP 0.2.0
 
-MCP Apps is implemented in the adapter's 0.2.0 source and Worker artifact. The
-registry remains at MCP 0.1.0 until a separately authenticated publication.
+MCP Apps is included in the adapter's published 0.2.0 package and Worker artifact.
 `npm run test:mcp` verifies packed offline consumers, both HTTP protocol modes,
 resource metadata and the official browser bridge over stdio and Workers HTTP. A fresh MCP tarball was also
 installed against published SDK 0.1.0, with conversion/resource reads verified
 without runtime network access. The adapter does not require a new SDK release.
 See [MCP Apps review](MCP_APPS_REVIEW.md) for screenshots and host limits.
 
-From the reviewed release commit, run `npm run pack:mcp` to retain the exact
-verified MCP tarball and `SHA256SUMS` in ignored `release/`. Review its contents
-and integrity, then use the protected trusted-publisher workflow once configured,
-selecting `mcp` and `0.2.0` (leave Publish false for preparation only). Configure
-npm trust separately for each package using the same exact workflow/environment.
-The preparation job tests both the workspace SDK and published registry SDK
-without runtime network access; the publishing runner still has no checkout,
-application dependencies or stored token. Do not silently bypass the documented release boundary or introduce
-an npm publishing token to make an unattended release possible.
+Release source: `d7b8d9cc54ab58b92a65b1ee154e5af80084ae5e`.
+The [release workflow](https://github.com/Stanback/turnmark/actions/runs/39196653276)
+tested the exact archive before publishing it with OIDC and GitHub provenance.
+The `npm-production` environment accepts only `main` and requires review by
+Stanback. Package-level trust permits this repository's `sdk-release.yml` in
+that environment; bypass 2FA tokens are disabled for MCP. SDK trust remains a
+separate package-level setup.
+
+A fresh external project installed MCP 0.2.0 and registry SDK 0.1.0 with
+lifecycle scripts disabled. Both supported protocol modes, with and without
+Apps capability, passed discovery, the versioned resource/MIME/CSP checks,
+42 exact SDK-result comparisons and eight malformed requests per mode,
+source attribution, cancellation and recovery with runtime fetch disabled.
+The registry archive's integrity matches the tested same-run artifact.
+`npm audit signatures` verified all 18 installed packages' registry signatures
+and 10 available attestations.
+
+| Package         | Version | Registry `dist.shasum`                     |
+| --------------- | ------- | ------------------------------------------ |
+| `@turnmark/mcp` | `0.2.0` | `7eba288d429dc27c4b584ac06302ea232f3bae80` |
+
+Future preparations can retain a verified MCP tarball and `SHA256SUMS` in ignored
+`release/` with `npm run pack:mcp`. The preparation job tests both the workspace
+SDK and published registry SDK without runtime network access; the publishing
+runner has no checkout, application dependencies or stored token. Do not add an
+npm publishing token to CI or replace an existing registry version.

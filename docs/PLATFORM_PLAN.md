@@ -407,14 +407,14 @@ Rust is the single calculation implementation, with canonical snapshots in
 The web UI, native UI and agent/publisher adapters retain their own platform
 state and controls. SDK consumers do not require Svelte.
 
-| Surface | Current scope | Details |
-| --- | --- | --- |
-| SDK | Published JavaScript 0.1.0; shared Rust/native bindings; original-swim benchmark assessment added in unreleased source | [Engine](SHARED_ENGINE.md), [SDK](../packages/sdk/README.md), [release status](SDK_RELEASES.md) |
-| Web | Converter, standards/points, browser-local history, offline installation | [Live app](https://turnmark.app/) |
-| Publisher widget | Versioned isolated iframe, light/dark/device appearance and copyable setup | [Setup](https://turnmark.app/embed/) |
-| Native apps | SwiftUI/Compose converter, offline My times/import/export, Standards & points including B–AAAA, adaptive layouts | [Native scope](NATIVE_APPS.md), [standards review](NATIVE_STANDARDS_REVIEW.md) |
-| MCP | Published text-only stdio 0.1.0, hosted Streamable HTTP, six read-only tools; official Apps card implemented for adapter 0.2.0 | [MCP](MCP.md), [Apps review](MCP_APPS_REVIEW.md) |
-| WebMCP | Planned, separate from the MCP Apps iframe extension | [Agent interfaces](AGENT_INTERFACES.md) |
+| Surface          | Current scope                                                                                                           | Details                                                                                         |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| SDK              | Published JavaScript 0.1.0; shared Rust/native bindings; original-swim benchmark assessment added in unreleased source  | [Engine](SHARED_ENGINE.md), [SDK](../packages/sdk/README.md), [release status](SDK_RELEASES.md) |
+| Web              | Converter, standards/points, browser-local history, offline installation                                                | [Live app](https://turnmark.app/)                                                               |
+| Publisher widget | Versioned isolated iframe, light/dark/device appearance and copyable setup                                              | [Setup](https://turnmark.app/embed/)                                                            |
+| Native apps      | SwiftUI/Compose converter, offline My times/import/export, Standards & points including B–AAAA, adaptive layouts        | [Native scope](NATIVE_APPS.md), [standards review](NATIVE_STANDARDS_REVIEW.md)                  |
+| MCP              | Published stdio 0.2.0 and hosted Streamable HTTP, six read-only tools, official Apps card with text/structured fallback | [MCP](MCP.md), [Apps review](MCP_APPS_REVIEW.md)                                                |
+| WebMCP           | Planned, separate from the MCP Apps iframe extension                                                                    | [Agent interfaces](AGENT_INTERFACES.md)                                                         |
 
 The source has 69 portable fixtures and a 6,061-case cross-runtime corpus.
 Packed artifacts are tested outside the monorepo. The native apps remain
