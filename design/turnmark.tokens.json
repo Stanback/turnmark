@@ -158,18 +158,18 @@
       "$description": "Raised content and secondary control fill.",
       "$value": {
         "colorSpace": "srgb",
-        "components": [0.09803922, 0.22745098, 0.28627451],
+        "components": [0.11372549, 0.20392157, 0.29803922],
         "alpha": 1,
-        "hex": "#193a49"
+        "hex": "#1d344c"
       }
     },
     "surfaceInput": {
       "$description": "Time-entry background.",
       "$value": {
         "colorSpace": "srgb",
-        "components": [0.05098039, 0.15686275, 0.21176471],
+        "components": [0.0627451, 0.14509804, 0.21176471],
         "alpha": 1,
-        "hex": "#0d2836"
+        "hex": "#102536"
       }
     },
     "text": {
@@ -194,9 +194,9 @@
       "$description": "Decorative dividers; not an interactive control boundary.",
       "$value": {
         "colorSpace": "srgb",
-        "components": [0.17647059, 0.30588235, 0.36862745],
+        "components": [0.18823529, 0.29411765, 0.38039216],
         "alpha": 1,
-        "hex": "#2d4e5e"
+        "hex": "#304b61"
       }
     },
     "borderControl": {
@@ -248,9 +248,9 @@
       "$description": "Selected course fill; selection also needs a mark and accessible state.",
       "$value": {
         "colorSpace": "srgb",
-        "components": [0.16078431, 0.27843137, 0.32156863],
+        "components": [0.16470588, 0.2627451, 0.35686275],
         "alpha": 1,
-        "hex": "#294752"
+        "hex": "#2a435b"
       }
     },
     "error": {
