@@ -99,11 +99,19 @@ function render(value: unknown, request: ConversionRequest) {
       !input({ ...request, swim: { ...request.swim, event: v.event } })
     )
       throw new Error("Invalid result");
-    line("p", "YOUR COMPARISON", "eyebrow");
+    line("p", "EQUIVALENT TIME", "eyebrow");
     line("h1", context(v.event, request.table), "context").prepend(
       swimIcon(v.event.stroke),
     );
-    line("p", v.time, "clock");
+    const clock = line("p", "", "clock");
+    const dot = v.time.lastIndexOf(".");
+    if (dot >= 0) {
+      clock.append(document.createTextNode(v.time.slice(0, dot)));
+      const hundredths = document.createElement("span");
+      hundredths.className = "hundredths";
+      hundredths.textContent = v.time.slice(dot);
+      clock.append(hundredths);
+    } else clock.textContent = v.time;
     line(
       "p",
       {
@@ -142,16 +150,86 @@ function render(value: unknown, request: ConversionRequest) {
     const source = outcome.provenance;
     const details = document.createElement("details");
     const summary = document.createElement("summary");
-    summary.textContent = "Source & method";
+    summary.textContent = "How this is calculated";
     details.append(summary);
     const p = document.createElement("p");
     p.textContent = `${source.title} · ${source.id} · ${source.revision}`;
-    details.append(p);
+    const comparison = value as {
+      methodComparison?: {
+        method: string;
+        label: string;
+        result: Result<ConversionValue>;
+      }[];
+      methodDifferenceSeconds?: number;
+    };
+    if (Array.isArray(comparison.methodComparison)) {
+      const heading = document.createElement("h2");
+      heading.textContent = `Compare methods · ${request.to}`;
+      details.append(heading);
+      const methods = document.createElement("dl");
+      methods.className = "method-comparison";
+      for (const item of comparison.methodComparison) {
+        if (!["ncaa-2025-27", "colorado-teamunify-2026"].includes(item.method))
+          continue;
+        const row = document.createElement("div");
+        row.dataset.method = item.method;
+        const name = document.createElement("dt");
+        name.textContent = `${item.label}${item.method === (request.method ?? "ncaa-2025-27") ? " · Selected" : ""}`;
+        const time = document.createElement("dd");
+        time.textContent =
+          item.result.status === "available"
+            ? item.result.value.time
+            : "Unavailable for this event";
+        row.append(name, time);
+        methods.append(row);
+      }
+      details.append(methods);
+      const difference = document.createElement("p");
+      difference.className = "method-difference";
+      difference.textContent = `${typeof comparison.methodDifferenceSeconds === "number" && Number.isFinite(comparison.methodDifferenceSeconds) ? `Method difference: ${comparison.methodDifferenceSeconds.toFixed(2)}s. ` : ""}Different conversion rules, not a prediction range or confidence interval. Follow the method required by your meet.`;
+      details.append(difference);
+    }
+    const inputs = document.createElement("h2");
+    inputs.textContent = "Why the times differ";
+    details.append(inputs);
+    for (const [title, text] of [
+      [
+        "NCAA",
+        "Published factors vary by event and category. Metric-to-yards values are direct; reverse and SCM/LCM comparisons use ratios.",
+      ],
+      [
+        "Colorado Timing",
+        "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.",
+      ],
+      [
+        "Pool length",
+        "Shorter pools add turns and push-offs. These rules do not measure your technique, endurance or individual development.",
+      ],
+      [
+        "Distance events",
+        "500, 1000 and 1650 yards map to 400, 800 and 1500 meters.",
+      ],
+    ]) {
+      const group = document.createElement("div");
+      group.className = "calculation-explanation";
+      const heading = document.createElement("h3");
+      heading.textContent = title;
+      const explanation = document.createElement("p");
+      explanation.textContent = text;
+      group.append(heading, explanation);
+      details.append(group);
+    }
     if (outcome.status === "available" && outcome.value.kind !== "swum") {
+      const heading = document.createElement("h2");
+      heading.textContent = "Selected calculation";
+      details.append(heading);
       const formula = document.createElement("p");
-      formula.textContent = `Seconds × ${outcome.value.factor}${outcome.value.offsetSeconds ? ` ${outcome.value.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(outcome.value.offsetSeconds)}s` : ""}; final result truncated to hundredths.`;
+      formula.textContent = `Seconds × ${outcome.value.factor.toFixed(5)}${outcome.value.offsetSeconds ? ` ${outcome.value.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(outcome.value.offsetSeconds)}s` : ""}; factor rounded for display, final result truncated to hundredths.`;
       details.append(formula);
     }
+    const sourceHeading = document.createElement("h2");
+    sourceHeading.textContent = "Source";
+    details.append(sourceHeading, p);
     if (typeof source.url === "string" && source.url.startsWith("https://")) {
       const button = document.createElement("button");
       button.type = "button";

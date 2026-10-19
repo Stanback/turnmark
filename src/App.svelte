@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import MethodComparison from "./lib/MethodComparison.svelte";
+  import { onMount, tick } from "svelte";
   import Icon from "./lib/Icon.svelte";
   import HeroCurrent from "./lib/HeroCurrent.svelte";
   import Masters from "./lib/Masters.svelte";
@@ -54,6 +55,8 @@
   let elevationUnit = $state<"ft" | "m">("ft");
   let elevationOpen = $state(false);
   let resourcesOpen = $state(false);
+  let methodologyOpen = $state(false);
+  let historyOpen = $state(false);
   type HistoryEntry = {
     id: string;
     form: SwimState;
@@ -216,6 +219,8 @@
 
   onMount(() => {
     resourcesOpen = window.location.hash === "#resources";
+    methodologyOpen = window.location.hash === "#method";
+    historyOpen = window.location.hash === "#history";
     let preferences = readPreferences(null);
     try {
       preferences = readPreferences(
@@ -397,7 +402,11 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => (toast = ""), 3500);
   }
-  function go(id: string) {
+  async function go(id: string) {
+    if (id === "history") historyOpen = true;
+    if (id === "method") methodologyOpen = true;
+    if (id === "resources") resourcesOpen = true;
+    await tick();
     activeSection = id === "conversion-results" ? "converter" : id;
     document.getElementById(id)?.scrollIntoView({
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -579,8 +588,8 @@
       <p class="converter-eyebrow">The swim time converter</p>
       <h1 id="page-title">Your swim.<br /><span>Any course.</span></h1>
       <p>
-        Swim time converter for yards and meters.<br />Compare 25-yard,
-        25-meter, and 50-meter pools.
+        Convert swim times and check published standards.<br />Your offline
+        companion for 25-yard, 25-meter, and 50-meter pools.
       </p>
     </div>
     <HeroCurrent />
@@ -915,21 +924,41 @@
             <span><Icon name="info" size={15} />How this is calculated</span>
             <Icon name="chevron" size={15} />
           </summary>
-          <div class="result-explanation">
-            <p>
-              {#if error}Results will appear when your input is valid.{:else if focused.kind === "unavailable"}{focused.reason}{:else if focused.kind === "swum"}{adjustment
-                  ? `Your sea-level estimate in ${form.course}.`
-                  : "Your entered swim, exactly as timed."}{:else}{form.course} →
-                {focus}:
-                <strong
-                  >{`× ${focused.factor?.toFixed(5)}${focused.offsetSeconds ? ` ${focused.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(focused.offsetSeconds).toFixed(2)}s` : ""}`}</strong
-                >. {form.method === coloradoMethod
-                  ? "Colorado Timing formula."
-                  : focused.kind === "published"
-                    ? "Published NCAA factor."
-                    : "Derived from NCAA metric-to-yards factors."} Truncated to hundredths.{/if}
-            </p>
-          </div>
+          {#if error}<div class="result-explanation">
+              <p>Results will appear when your input is valid.</p>
+            </div>{/if}
+          {#if !error}
+            <MethodComparison
+              adjusted={adjustment > 0}
+              selected={form.method}
+              request={{
+                swim: {
+                  time: correctedTime!.toFixed(2),
+                  event: {
+                    distance: sourceDistance,
+                    stroke: (
+                      {
+                        FR: "freestyle",
+                        BK: "backstroke",
+                        BR: "breaststroke",
+                        FL: "butterfly",
+                        IM: "individual-medley",
+                      } as const
+                    )[form.stroke],
+                    course: form.course,
+                  },
+                },
+                to: focus,
+                table: form.category,
+              }}
+            />
+            {#if adjustment}<p class="altitude-method-note">
+                Both methods use the same sea-level estimate of {formatTime(
+                  correctedTime,
+                )} after the {adjustment.toFixed(2)}s altitude deduction. Your
+                original swim remains {form.time}.
+              </p>{/if}
+          {/if}
           <button class="text-button method-link" onclick={() => go("method")}
             >View methodology &amp; sources <Icon
               name="arrow"
@@ -952,40 +981,6 @@
         </div>
       </div>
     </div>
-    <button
-      class="next-target-preview"
-      onclick={() => {
-        standardMode = "targets";
-        go("standards");
-      }}
-    >
-      <span class="next-target-icon"><Icon name="standards" size={22} /></span>
-      <span class="next-target-copy">
-        {#if !error && !adjustment && form.standardSystem === "youth" && standing?.next !== null && standing?.next !== undefined && nextGap !== null}
-          <span class="next-target-label"
-            >Next standard · {levels[standing.next]}</span
-          >
-          <strong
-            ><span>{nextGap.toFixed(2)}s</span> to {formatTime(
-              nextTime,
-            )}</strong
-          >
-          <span
-            >{currentLabel} · {form.course} · {form.category === "women"
-              ? "Girls"
-              : "Boys"}
-            {ages.find((a) => a.id === form.age)?.label} · Your entered swim</span
-          >
-        {:else}
-          <span class="next-target-label">Put your swim in perspective</span>
-          <strong>Explore standards &amp; points</strong>
-          <span>Published benchmarks for your entered swim.</span>
-        {/if}
-      </span>
-      <span class="next-target-link"
-        >View standards <Icon name="arrow" size={17} /></span
-      >
-    </button>
   </section>
 
   <div class="insights-grid page-width">
@@ -1260,118 +1255,124 @@
       {/if}
     </section>
     <section class="history-panel" id="history" aria-labelledby="history-title">
-      <div class="history-heading">
-        <div>
+      <details class="history-disclosure" bind:open={historyOpen}>
+        <summary class="history-heading">
           <h2 id="history-title">
             Recent conversions <span>{conversions.length}</span>
           </h2>
-        </div>
-        {#if conversions.length}<button
-            class="text-button clear-history"
-            onclick={() => {
-              if (
-                !window.confirm(
-                  "Clear all conversion history on this device? This cannot be undone.",
-                )
-              )
-                return;
-              writeHistory([]);
-              notify("Conversion history cleared.");
-            }}>Clear history <Icon name="trash" size={14} /></button
-          >{/if}
-      </div>
-      <p class="history-subtitle">
-        Your last 50 conversions. Only on this device.
-      </p>
-      <div
-        class="history-filters"
-        role="group"
-        aria-label="Filter conversion history"
-      >
-        <button
-          class:active={historyFilter === "all"}
-          aria-pressed={historyFilter === "all"}
-          onclick={() => (historyFilter = "all")}>All</button
-        >
-        {#each strokes as stroke}<button
-            class:active={historyFilter === stroke.id}
-            aria-pressed={historyFilter === stroke.id}
-            aria-label={`Filter history: ${stroke.short}`}
-            onclick={() => (historyFilter = stroke.id)}>{stroke.short}</button
-          >{/each}
-      </div>
-      <div
-        class="history-list"
-        role="region"
-        aria-label="Recent conversion entries"
-      >
-        {#each filteredHistory as entry (entry.id)}
-          <div class="history-row">
-            <button
-              class="history-restore"
-              onclick={() => restoreConversion(entry)}
-              title="Restore this conversion"
-            >
-              <span
-                class="history-wave"
-                class:medley={entry.form.stroke === "IM"}
-                ><Icon name="wave" size={20} /></span
-              >
-              <span class="history-event"
-                ><strong
-                  >{eventLabel(
-                    entry.form.distance,
-                    entry.form.course,
-                    entry.form.stroke,
-                  )}</strong
-                ><small
-                  >{entry.form.course} <span aria-hidden="true">→</span>
-                  {entry.target} · {entry.form.category === "women"
-                    ? "Women"
-                    : "Men"}</small
-                ></span
-              >
-              <span class="history-times"
-                ><strong
-                  >{formatTime(parseTime(entry.form.time))} <span>→</span>
-                  {formatTime(historyResult(entry))}</strong
-                ><small>{dateLabel(entry.createdAt)}</small></span
-              >
-              <Icon name="chevron" size={14} />
-            </button>
-            <button
-              class="history-remove"
-              aria-label={`Remove conversion ${entry.form.time}`}
-              onclick={() =>
-                writeHistory(conversions.filter((x) => x.id !== entry.id))}
-              ><Icon name="close" size={14} /></button
-            >
-          </div>
-        {:else}
-          <div class="history-empty">
-            <span class="empty-icon"
-              ><Icon
-                name={conversions.length ? "wave" : "history"}
-                size={26}
-              /></span
-            >
-            <h3>
-              {conversions.length
-                ? "No conversions for this stroke."
-                : "No conversions yet."}
-            </h3>
-            <p>
-              {conversions.length
-                ? "Try another filter to find a previous conversion."
-                : "Change a time or event above. Your conversion will appear here automatically."}
+          <Icon name="chevron" size={17} />
+        </summary>
+        <div class="history-body">
+          <div class="history-tools">
+            <p class="history-subtitle">
+              Your last 50 conversions. Only on this device.
             </p>
-            <span
-              ><Icon name="lock" size={13} />Private to this browser. No account
-              needed.</span
-            >
+            {#if conversions.length}<button
+                class="text-button clear-history"
+                onclick={() => {
+                  if (
+                    !window.confirm(
+                      "Clear all conversion history on this device? This cannot be undone.",
+                    )
+                  )
+                    return;
+                  writeHistory([]);
+                  notify("Conversion history cleared.");
+                }}>Clear history <Icon name="trash" size={14} /></button
+              >{/if}
           </div>
-        {/each}
-      </div>
+          <div
+            class="history-filters"
+            role="group"
+            aria-label="Filter conversion history"
+          >
+            <button
+              class:active={historyFilter === "all"}
+              aria-pressed={historyFilter === "all"}
+              onclick={() => (historyFilter = "all")}>All</button
+            >
+            {#each strokes as stroke}<button
+                class:active={historyFilter === stroke.id}
+                aria-pressed={historyFilter === stroke.id}
+                aria-label={`Filter history: ${stroke.short}`}
+                onclick={() => (historyFilter = stroke.id)}
+                >{stroke.short}</button
+              >{/each}
+          </div>
+          <div
+            class="history-list"
+            role="region"
+            aria-label="Recent conversion entries"
+          >
+            {#each filteredHistory as entry (entry.id)}
+              <div class="history-row">
+                <button
+                  class="history-restore"
+                  onclick={() => restoreConversion(entry)}
+                  title="Restore this conversion"
+                >
+                  <span
+                    class="history-wave"
+                    class:medley={entry.form.stroke === "IM"}
+                    ><Icon name="wave" size={20} /></span
+                  >
+                  <span class="history-event"
+                    ><strong
+                      >{eventLabel(
+                        entry.form.distance,
+                        entry.form.course,
+                        entry.form.stroke,
+                      )}</strong
+                    ><small
+                      >{entry.form.course} <span aria-hidden="true">→</span>
+                      {entry.target} · {entry.form.category === "women"
+                        ? "Women"
+                        : "Men"}</small
+                    ></span
+                  >
+                  <span class="history-times"
+                    ><strong
+                      >{formatTime(parseTime(entry.form.time))} <span>→</span>
+                      {formatTime(historyResult(entry))}</strong
+                    ><small>{dateLabel(entry.createdAt)}</small></span
+                  >
+                  <Icon name="chevron" size={14} />
+                </button>
+                <button
+                  class="history-remove"
+                  aria-label={`Remove conversion ${entry.form.time}`}
+                  onclick={() =>
+                    writeHistory(conversions.filter((x) => x.id !== entry.id))}
+                  ><Icon name="close" size={14} /></button
+                >
+              </div>
+            {:else}
+              <div class="history-empty">
+                <span class="empty-icon"
+                  ><Icon
+                    name={conversions.length ? "wave" : "history"}
+                    size={26}
+                  /></span
+                >
+                <h3>
+                  {conversions.length
+                    ? "No conversions for this stroke."
+                    : "No conversions yet."}
+                </h3>
+                <p>
+                  {conversions.length
+                    ? "Try another filter to find a previous conversion."
+                    : "Change a time or event above. Your conversion will appear here automatically."}
+                </p>
+                <span
+                  ><Icon name="lock" size={13} />Private to this browser. No
+                  account needed.</span
+                >
+              </div>
+            {/each}
+          </div>
+        </div>
+      </details>
     </section>
   </div>
 
@@ -1380,7 +1381,9 @@
       aria-labelledby="swimboard-title"
     >
       <div class="board-heading">
-        <h2 id="swimboard-title">Your swimboard<span>{saved.length}</span></h2>
+        <h2 id="swimboard-title">
+          Saved comparisons<span>{saved.length}</span>
+        </h2>
         <p>Saved on this device.</p>
       </div>
       <div class="saved-grid">
@@ -1412,90 +1415,6 @@
       </div>
     </section>{/if}
 
-  <section
-    class="method-section page-width"
-    id="method"
-    aria-labelledby="method-title"
-  >
-    <div class="method-intro">
-      <h2 id="method-title">Sources and methodology</h2>
-      <p>
-        Turns, technique, and race-day conditions make every swim different.
-        Here’s what goes into your estimate.
-      </p>
-      <a
-        href="https://github.com/Stanback/turnmark/blob/main/docs/METHODOLOGY.md"
-        target="_blank"
-        rel="noreferrer"
-        >Read the full methodology<Icon name="arrow" size={17} /></a
-      >
-    </div>
-    <div class="method-items">
-      <article>
-        <div>
-          <h3>Course conversion</h3>
-          <p>
-            NCAA metric-to-yards tables power course conversions by default.
-            Reverse conversions and meter-to-meter comparisons use ratios of
-            those factors and are labeled as derived estimates. Unsupported
-            events stay unavailable. Colorado Timing formulas are available
-            under Conversion method in the converter.
-          </p>
-          <a href={conversionSource.url} target="_blank" rel="noreferrer"
-            >2025–27 NCAA rules · updated Oct 2026<Icon
-              name="external"
-              size={12}
-            /></a
-          >
-        </div>
-      </article>
-      <article>
-        <div>
-          <h3>USA Swimming standards</h3>
-          <p>
-            2,892 published times from USA Swimming’s 2024–2028 age group
-            standards, revised October 2025. The ladder compares your input in
-            its original course, age group, and published category.
-          </p>
-          <a href={standardsSource.url} target="_blank" rel="noreferrer"
-            >USA Swimming motivational standards<Icon
-              name="external"
-              size={12}
-            /></a
-          >
-        </div>
-      </article>
-      <article>
-        <div>
-          <h3>Altitude adjustments</h3>
-          <p>
-            Optional altitude adjustments follow USA Swimming’s published table.
-            They’re applied to eligible individual events before course
-            conversion. Your meet’s rules still govern accepted entries.
-          </p>
-          <a href={altitudeSource.url} target="_blank" rel="noreferrer"
-            >USA Swimming times policy · §4.7<Icon
-              name="external"
-              size={12}
-            /></a
-          >
-        </div>
-      </article>
-      <article>
-        <div>
-          <h3>World Aquatics points</h3>
-          <p>
-            World Aquatics points compare entered metric swims against published
-            2026 base times. This is a separate scoring system from course
-            conversion and age-group targets.
-          </p>
-          <a href={pointsSource.method} target="_blank" rel="noreferrer"
-            >World Aquatics scoring method<Icon name="external" size={12} /></a
-          >
-        </div>
-      </article>
-    </div>
-  </section>
   <section class="faq-section page-width" aria-labelledby="faq-title">
     <div class="faq-intro">
       <h2 id="faq-title">About the swim time converter</h2>
@@ -1516,6 +1435,101 @@
           </div>
         </details>{/each}
     </div>
+  </section>
+  <section
+    class="method-section page-width"
+    id="method"
+    aria-labelledby="method-title"
+  >
+    <details bind:open={methodologyOpen}>
+      <summary
+        ><h2 id="method-title">Sources &amp; methodology</h2>
+        <Icon name="chevron" size={16} /></summary
+      >
+      <div class="method-content">
+        <div class="method-intro">
+          <p>
+            Turns, technique, and race-day conditions make every swim different.
+            Here’s what goes into your estimate.
+          </p>
+          <a
+            href="https://github.com/Stanback/turnmark/blob/main/docs/METHODOLOGY.md"
+            target="_blank"
+            rel="noreferrer"
+            >Read the full methodology<Icon name="arrow" size={17} /></a
+          >
+        </div>
+        <div class="method-items">
+          <article>
+            <div>
+              <h3>Course conversion</h3>
+              <p>
+                NCAA metric-to-yards tables power course conversions by default.
+                Reverse conversions and meter-to-meter comparisons use ratios of
+                those factors and are labeled as derived estimates. Unsupported
+                events stay unavailable. Colorado Timing formulas are available
+                under Conversion method in the converter.
+              </p>
+              <a href={conversionSource.url} target="_blank" rel="noreferrer"
+                >2025–27 NCAA rules · updated Oct 2026<Icon
+                  name="external"
+                  size={12}
+                /></a
+              >
+            </div>
+          </article>
+          <article>
+            <div>
+              <h3>USA Swimming standards</h3>
+              <p>
+                2,892 published times from USA Swimming’s 2024–2028 age group
+                standards, revised October 2025. The ladder compares your input
+                in its original course, age group, and published category.
+              </p>
+              <a href={standardsSource.url} target="_blank" rel="noreferrer"
+                >USA Swimming motivational standards<Icon
+                  name="external"
+                  size={12}
+                /></a
+              >
+            </div>
+          </article>
+          <article>
+            <div>
+              <h3>Altitude adjustments</h3>
+              <p>
+                Optional altitude adjustments follow USA Swimming’s published
+                table. They’re applied to eligible individual events before
+                course conversion. Your meet’s rules still govern accepted
+                entries.
+              </p>
+              <a href={altitudeSource.url} target="_blank" rel="noreferrer"
+                >USA Swimming times policy · §4.7<Icon
+                  name="external"
+                  size={12}
+                /></a
+              >
+            </div>
+          </article>
+          <article>
+            <div>
+              <h3>World Aquatics points</h3>
+              <p>
+                World Aquatics points compare entered metric swims against
+                published 2026 base times. This is a separate scoring system
+                from course conversion and age-group targets.
+              </p>
+              <a href={pointsSource.method} target="_blank" rel="noreferrer"
+                >World Aquatics scoring method<Icon
+                  name="external"
+                  size={12}
+                /></a
+              >
+            </div>
+          </article>
+        </div>
+      </div>
+    </details>
   </section>
   <section
     class="resources-section page-width"
@@ -1564,9 +1578,8 @@
   </div>
   <div class="footer-bottom">
     <nav class="footer-docs" aria-label="Documentation">
-      <a href="#method">Methodology</a><a
-        href="#resources"
-        onclick={() => (resourcesOpen = true)}>Resources</a
+      <a href="#method" onclick={() => (methodologyOpen = true)}>Methodology</a
+      ><a href="#resources" onclick={() => (resourcesOpen = true)}>Resources</a
       ><a href="/embed/">Widget setup</a><a href="/mcp/">MCP setup</a>
     </nav>
     <div class="footer-meta">

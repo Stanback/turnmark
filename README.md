@@ -16,7 +16,7 @@ Available in the web app:
 - Automatic, device-local conversion history with stroke filters, restore, remove, and clear
 - 904 published 2026 USMS Nationals targets for adults, with explicit SCY/LCM and age-group coverage
 - Optional USA Swimming altitude adjustments with feet/meters input and an explicit sea-level comparison
-- Shareable URL fragments, CSV export, and an optional local swimboard
+- Shareable URL fragments, CSV export, and up to eight device-local saved comparisons
 - Automatic system light/dark mode with a saved appearance override
 - Installable desktop/mobile app with offline calculations and bundled tables
 - Pre-rendered introduction and expandable FAQs, canonical/social metadata, and app structured data
@@ -29,7 +29,7 @@ No backend, account, analytics, third-party runtime requests, or uploaded swim d
 The web app is live. The native screens below are development previews, not store releases.
 
 The web converter starts with a blank time. This example shows 58.32 in SCY,
-its NCAA course equivalents, and the next published standard for the entered swim.
+and its NCAA course equivalents. Published standards and points follow in their own section.
 
 ![Turnmark web converter with editable inputs, SCY SCM LCM comparisons and an original-course next standard](docs/screenshots/web-converter-comparison-dark.png)
 

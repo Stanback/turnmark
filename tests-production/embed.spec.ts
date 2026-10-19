@@ -17,6 +17,15 @@ test("widget keeps NCAA default and offers Colorado offline without changing the
   await expect(page.locator(".method-options")).not.toHaveAttribute("open", "");
   await context.setOffline(true);
   await page.locator(".method-options summary").click();
+  const methods = page.getByRole("region", { name: "Compare methods in SCY" });
+  await expect(methods.locator('[data-method="ncaa-2025-27"]')).toContainText(
+    "52.44",
+  );
+  await expect(
+    methods.locator('[data-method="colorado-teamunify-2026"]'),
+  ).toContainText("52.61");
+  await expect(methods).toContainText("Method difference: 0.17s");
+
   await page
     .getByRole("combobox", { name: "Method", exact: true })
     .selectOption("colorado-teamunify-2026");
@@ -24,7 +33,9 @@ test("widget keeps NCAA default and offers Colorado offline without changing the
   await expect(lcm).toContainText("1:00.00");
   await expect(lcm).toContainText("Entered swim");
   await expect(
-    page.getByRole("link", { name: "Colorado Timing source" }),
+    page
+      .locator("footer")
+      .getByRole("link", { name: "Colorado Timing source" }),
   ).toHaveAttribute("href", /sportsengine/);
   await page
     .getByRole("combobox", { name: "Method", exact: true })

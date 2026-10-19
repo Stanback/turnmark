@@ -1,7 +1,9 @@
 # Web cleanup review
 
-Actual production-build captures, using sample local conversion history. The
-main README showcase follows native Standards & points work.
+Historical review of the cleanup preceding the converter hierarchy follow-up.
+The captures below document that earlier pass. Current layout and screenshots
+are maintained in [Converter layout review](CONVERTER_LAYOUT_EXPLORATION.md).
+The equal-height standards/history arrangement below has been superseded.
 
 - Recent conversions fills the desktop standards row. Its entries scroll within
   the card; the last entry remains reachable by keyboard. Youth, masters and

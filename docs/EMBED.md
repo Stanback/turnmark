@@ -39,7 +39,11 @@ or numerical tables. Each result shows its actual destination distance/course
 and whether it is the entered swim, a published-factor conversion or a derived
 estimate. Unsupported conversions remain unavailable. Times are estimates;
 meet rules determine eligibility. The source link and Turnmark credit stay
-visible. Standards, points, altitude and personal history remain in the full app.
+visible. A collapsed Conversion method section keeps NCAA as default and offers
+Colorado Timing. It also compares both methods for a chosen destination, naming
+the gap a method difference rather than a prediction interval. Expanded copy
+explains the inputs and limits. Standards, points, altitude and personal history
+remain in the full app.
 
 The implementation is GPL-3.0-or-later, with source in this repository.
 Preserve its license and source attribution when redistributing code. Numerical

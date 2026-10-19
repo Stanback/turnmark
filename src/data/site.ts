@@ -3,7 +3,7 @@ export const site = {
   title: "Swim Time Converter: SCY, SCM & LCM | Turnmark",
   url: "https://turnmark.app/",
   description:
-    "Convert swim times between yards and meters (SCY, SCM, LCM). Compare USA Swimming and USMS standards, calculate World Aquatics points, and adjust for altitude.",
+    "Your offline swim companion: convert SCY, SCM and LCM times, check published standards and World Aquatics points, save comparisons locally, and optionally adjust for altitude.",
 };
 export const faqs = [
   {

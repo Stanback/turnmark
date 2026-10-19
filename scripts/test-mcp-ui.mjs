@@ -54,7 +54,7 @@ if (mode === "HTTP") {
     }),
   );
 }
-const uri = "ui://turnmark/conversion/0.3.0.html";
+const uri = "ui://turnmark/conversion/0.3.0-r2.html";
 const card = (await client.readResource({ uri })).contents[0].text;
 const host = await build({
   absWorkingDir: process.cwd(),
@@ -117,7 +117,26 @@ try {
     initial,
   });
   const frame = page.frameLocator("iframe").first();
-  await frame.getByText("1:06.72", { exact: true }).waitFor();
+  await frame.locator(".clock").getByText("1:06.72", { exact: true }).waitFor();
+  await frame.locator("#result summary").click();
+  await frame
+    .locator("body")
+    .screenshot({ path: `${shots}/mcp-methods-light.png` });
+  assert.match(
+    await frame.locator('[data-method="ncaa-2025-27"]').textContent(),
+    /1:06.72/,
+  );
+  assert.match(
+    await frame
+      .locator('[data-method="colorado-teamunify-2026"]')
+      .textContent(),
+    /1:06.33/,
+  );
+  assert.match(
+    await frame.locator(".method-difference").textContent(),
+    /0.39s/,
+  );
+  await frame.locator("#result summary").click();
   assert.equal(
     await frame.locator("#original").textContent(),
     "100 yd Freestyle · SCY · Women",
@@ -277,8 +296,13 @@ try {
     await frame.locator(".clock").evaluate((el) => {
       const range = document.createRange();
       range.selectNodeContents(el);
+      const rects = [...range.getClientRects()];
+      // The main clock and highlighted hundredths are separate inline runs.
+      // They must share one line and fit the available width.
       return (
-        range.getClientRects().length === 1 && el.scrollWidth <= el.clientWidth
+        rects.length > 0 &&
+        rects.every((rect) => Math.abs(rect.top - rects[0].top) < 1) &&
+        el.scrollWidth <= el.clientWidth
       );
     }),
     true,

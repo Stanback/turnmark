@@ -9,7 +9,7 @@ test("built HTML contains useful content, metadata and valid structured data wit
   expect(html).toContain(
     "How do I convert swim times between yards and meters?",
   );
-  expect(html).toContain("Swim time converter for yards and meters");
+  expect(html).toContain("Convert swim times and check published standards");
   expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
   expect(html.match(/<title>/g)).toHaveLength(1);
   const context = await browser.newContext({ javaScriptEnabled: false });

@@ -1,10 +1,10 @@
 {
-  "capturedAt": "2026-10-19T19:51:39.506Z",
-  "branch": "design/converter-layout-exploration",
-  "sourceBase": "5a30655",
+  "capturedAt": "2026-10-19T22:53:10.366140+00:00",
+  "branch": "feat/method-comparison",
+  "sourceBase": "a2c69729245c67f406a58e30f20de6129dff22ad",
   "sourceHashes": {
-    "src/App.svelte": "09bf80234be4b6330c9e62dab3c2ea522433dc962c9a1d6c63d0b78ac5bbe7c3",
-    "src/converter.css": "4eda10c7f2d7866cc67fd2c9e5374ddad4afab0253a10dc3a4d420f4afa7cc17",
+    "src/App.svelte": "0da2a82a62c5c42c369e69e240be357a94d2e531f76b116ded2d9a1ac8f6e252",
+    "src/converter.css": "40d567a6d482276083010d2258f96f04173397f67b875bfd689eaf284592e6ee",
     "src/app.css": "76f7065b58be4f721825dbf92434b1a9eb21e3d923ef57648502c6cbf3e79bf1",
     "design/turnmark.tokens.json": "aeaddebc1caadbbd96ba58e1d26bd0073b02ee78f4537f41c554a60c5b0d7634",
     "public/images/water-ribbons.webp": "00c268a88616c4bf1402ef8153547966821e95ebc5bedf83a7f80e6a4ebbb447"
@@ -12,39 +12,39 @@
   "captures": [
     {
       "file": "web-converter-comparison-dark.png",
-      "sha256": "bc42420b7a44e39e9f0b2b7e3f3d7fd681be499ec099d106afb259af86dd22a2"
+      "sha256": "3528af972214defa14a93c02db8d7d622f025f5630c6e803cc731908b03f85f2"
     },
     {
       "file": "web-converter-desktop-layout-dark.png",
-      "sha256": "8d370eaa410476925103c97a405217721611f1aa15c4bfd487d42dc3434c4f05"
+      "sha256": "14c6729118c65bf1f85074107076abd73dd835e3d31e48b9a7c9761da297982b"
     },
     {
       "file": "web-converter-method-dark.png",
-      "sha256": "50911eff7b047344bde181b7c5865d40e6d49b209f753725503f273179898f81"
+      "sha256": "449c3d3e97eba58b25888060a3f87295cb3e30c12f0ea2149661f0980024d2d2"
     },
     {
       "file": "web-converter-comparison-light.png",
-      "sha256": "0bb758c25d86c13fab3f84c7115a3c1cba38f90a4cf424458369ec06bdcff160"
+      "sha256": "9e50e0f6bb07cacde511627c3e0ae3169340307749c3495f29cb51f485ae8eff"
     },
     {
       "file": "web-converter-empty-mobile.png",
-      "sha256": "9bc111442210f57846d672c2da873698096f05a5351ecad744c996696f3fe94d"
+      "sha256": "ef6b912d971efe304f6dd68712b96b20924fa5ab77eac72773aac6546e49d7c8"
     },
     {
       "file": "web-converter-comparison-mobile.png",
-      "sha256": "1c367cfb65804bb90fdbfeff9300936e6f25dcdbcf2b1a87defd0a284655f3c8"
+      "sha256": "565e2b4f864d1687d711eb92092bda5b1b503c1217d4b05473e63aa7f0f52f33"
     },
     {
       "file": "web-converter-results-mobile.png",
-      "sha256": "cc67a236887f8e6ac704c3bee67a51db734e3d016b231682d24775a58a2ff338"
+      "sha256": "1d7ff89e344b11a20ae36b9c71053cb7a4eee15da135e10fb5b9df77a9070369"
     },
     {
       "file": "web-converter-method-mobile.png",
-      "sha256": "cbee8470102c20219b34516ae0881dcefab1e25ba04858bcc8bca370c068ae38"
+      "sha256": "9fe2e2f2e812f0d29f6b4f84a84c14425c7971a79b8478db8fd6dfde99d12141"
     },
     {
       "file": "web-converter-large-text.png",
-      "sha256": "642e2b0219525561dfe5f16b73c3b34eb6cf1fdb8f156da53e3bac01a79a7c94"
+      "sha256": "dfc92d4a333110f7cc62fb970117c67d376b813f10383d5df56414e918958909"
     }
   ],
   "sample": {
@@ -57,10 +57,10 @@
     "supplementMethod": "Colorado Timing"
   },
   "notes": [
-    "Actual local Vite build; sample data only. Calculation details collapsed except method supplements.",
-    "Desktop: 1120x1450 converter crop and viewport. Mobile: 390x844 viewport.",
-    "Mobile result capture reached through See your results with the actual fixed navigation visible.",
-    "Long-time content crop: 320x900, root font 200%; fixed navigation omitted only in this long crop.",
-    "Native images unchanged; separate native layout adoption remains a follow-up."
+    "Actual local Vite build; sample data only. Desktop 1120\u00d71450, phone 390\u00d7844.",
+    "Default NCAA: 58.32 SCY 100 freestyle, women, age 15\u201316; optional Colorado supplement.",
+    "Long-time content check: 320\u00d7900, 150% root font, 59:59.99.",
+    "Native captures and validation are maintained in the paired native review.",
+    "Long calculation-disclosure content crop omits fixed mobile navigation and transient toast; regular phone captures retain navigation."
   ]
 }

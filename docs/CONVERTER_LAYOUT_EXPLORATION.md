@@ -1,8 +1,11 @@
 # Converter layout exploration
 
-The web layout and polish passes are implemented in PR26, separate from
-conversion-model research. The owner approved the visual direction on October
-19, 2026. Native adoption remains separate work.
+The initial web flow shipped in PR26. The October 19 follow-up removes the
+redundant target banner, gives Standards / Points its own row, and places recent
+and saved comparisons below it. Recent conversions, Sources & methodology and
+Swimming resources use disclosures; About remains visible. Native adoption is a
+paired follow-up documented in [Native visual review](NATIVE_VISUAL_REVIEW.md).
+Conversion-model research remains separate.
 
 ## Direction
 
@@ -13,8 +16,8 @@ comparisons. Keep those capabilities and record types distinct in product copy.
 
 Bring the editable swim and its three course equivalents into one visual group.
 Make the original time, destination event/course and derived estimate easy to
-scan. Explore a compact next-target summary using the existing published
-standards, with the full standards/points view still reachable. Keep the navy,
+scan. Put the standards/points view directly after the converter; its existing
+next-target assessment is the single source of that information. Keep the navy,
 cyan and lime identity and generated semantic tokens.
 
 Keep water artwork behind the content, restrained border highlights and subtle
@@ -24,8 +27,8 @@ swimmers and invented probability/confidence graphics are outside this study.
 
 NCAA stays the default. The alternative conversion method stays a quiet setting;
 its selected source and original-swim benchmark distinction remain accessible.
-Native controls remain platform-owned; this web study does not imply a shared
-web/native layout or a native redesign.
+Native controls remain platform-owned. The paired native follow-up adapts this
+hierarchy rather than sharing web layout code.
 
 ## Implemented web flow
 
@@ -44,14 +47,14 @@ input shows validation, with no stale result or enabled save/share action.
 Keep result updates stable while typing: no automatic scrolling, disappearing
 keyboard, reordered controls or layout jump to a result. Below the inputs, show
 all three course equivalents clearly, with the original identified. Follow with
-one relevant next target and a route into full standards/points. Methods,
+the full Standards / Points section and quieter local comparisons. Methods,
 altitude and other optional details remain quiet. Do not add an experimental
 probability display until the separate research work earns one.
 
-The native reference currently puts a prominent result first. This new
-input-first direction should be evaluated for native apps in a paired follow-up
-as well; it is not implemented by this web study. Preserve native navigation,
-keyboard/focus behavior, Dynamic Type and platform controls in that work.
+The paired native follow-up adopts input-first phone arrival and all-course
+rows while preserving native navigation, active entry, Dynamic Type and platform
+controls. Larger workspaces retain independent input/result panes. Check its
+actual-build review separately; a web layout cannot establish native parity.
 
 Polish supports this hierarchy: readable labels, consistent tokens, restrained
 border illumination, generous touch targets and quieter secondary actions.
@@ -65,9 +68,9 @@ scoring system is not part of this layout PR.
 
 ## README screenshots are part of this PR
 
-Before this draft is ready, update the root README's images from the actual
-running builds after the explored layout settles. Do not use the supplied
-concept art as a screenshot of implemented behavior.
+The README images come from running builds after the layout settled. Supplied
+concept art is not used as evidence of implemented behavior. The review follows
+these capture conventions:
 
 - Lead with the main converter: a readable original swim, editable time/event
   and SCY/SCM/LCM results. Avoid a hero-heavy crop that cuts off the converter.
@@ -84,12 +87,10 @@ concept art as a screenshot of implemented behavior.
 - Update image paths, alt text and captions together. Record source revision,
   method, sample event/time, viewport/device and capture procedure in the review.
 
-The README now leads with an actual converter-region capture containing all
-inputs, three equivalents and the next standard. The same sample's Colorado
-capture is linked separately. Native home images remain the preceding actual
-build captures: both use 58.32 SCY and the 1:06.72 NCAA LCM comparison, and native
-source/presentation is unchanged in this web PR. They are development previews,
-not evidence that native apps have adopted blank or input-first arrival.
+The README leads with an actual converter-region capture containing the inputs
+and three equivalents. Colorado is linked separately. Native home images are
+maintained by the paired native follow-up; its own review records native build
+and test evidence. Widget and MCP captures are maintained in their reviews.
 
 ## Actual-build review — October 19, 2026
 
@@ -101,7 +102,7 @@ not evidence that native apps have adopted blank or input-first arrival.
 | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | <img src="screenshots/web-converter-empty-mobile.png" width="250" alt="Blank time with Try an example and neutral controls"> | <img src="screenshots/web-converter-comparison-mobile.png" width="250" alt="Example swim inputs before the results"> | <img src="screenshots/web-converter-results-mobile.png" width="250" alt="Course equivalents reached by scrolling below the input panel"> |
 
-[Colorado method and unchanged original-course next standard](screenshots/web-converter-method-dark.png) ·
+[Colorado method and unchanged entered swim](screenshots/web-converter-method-dark.png) ·
 [320px long-time and enlarged-root-text content review](screenshots/web-converter-large-text.png)
 
 [Full desktop composition with the water artwork](screenshots/web-converter-desktop-layout-dark.png) ·
@@ -129,7 +130,7 @@ opens Conversion method and the calculation disclosure, then selects documented 
 
 Mobile captures use 390×844 and ordinary viewport screenshots, with the input or
 results panel scrolled to the top. They retain the actual fixed navigation bar.
-The 320×900 content check uses 60:00.00 and a 200% root-font preference; this is
+The 320×900 content check uses 59:59.99 and a 150% root-font preference; this is
 a narrow reflow check, not proof of complete browser zoom or screen-reader
 coverage. Its long content crop omits fixed navigation to avoid an artificial
 navigation overlay midway through the exported image. Category controls stack at the smallest width, and age controls can
@@ -138,9 +139,11 @@ the [local review manifest](screenshots/converter-review.json).
 
 The shared semantic tokens, static water artwork, original/derived labels,
 quiet method/altitude settings and explicit result navigation remain intact.
-The new next-standard shortcut uses the existing youth table and unadjusted
-entered swim. Other systems or altitude-adjusted input show a general route to
-the full standards view rather than inventing a compact target.
+Standards / Points now occupies its own full-width row. Recent conversions is
+collapsed initially with its count; History navigation opens it. Saved comparisons
+follow as a separate section. About stays expanded, while Sources & methodology
+and Swimming resources open on demand. Explicit methodology links open their
+section before scrolling to it.
 
 ## Completion checks
 
@@ -148,10 +151,9 @@ This pass passes Svelte/TypeScript checks, 138 unit tests, 43 browser cases
 (one desktop-inapplicable case skipped), and 20 production/offline cases.
 Light/dark screenshots, 320px controls, enlarged root text, invalid/unavailable
 results, method sharing/persistence, keyboard focus/disclosure and phone action
-visibility were reviewed. Hosted CI passed the reviewed implementation, including
-the polish pass, and the owner approved the web design on October 19, 2026.
-The branch is synchronized with main; final branch checks remain the merge gate.
-No native layout or widget/MCP presentation changed.
+visibility were reviewed. The owner approved the web direction on October 19, 2026. Final hosted branch
+checks remain the merge gate. The method-comparison follow-up also updates the
+widget and MCP; native alignment is reviewed separately.
 
 - Confirm which layout to keep through actual desktop/mobile browser previews.
 - Keep calculations, unsupported/invalid states, offline behavior, shared links,

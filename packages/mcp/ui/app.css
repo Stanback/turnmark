@@ -19,7 +19,9 @@ header {
   align-items: center;
   gap: 8px;
   font-weight: 750;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  font-size: 1.25rem;
+  letter-spacing: -0.04em;
 }
 .wordmark {
   white-space: nowrap;
@@ -41,21 +43,44 @@ p {
 }
 #original {
   color: var(--tm-color-text-muted);
+  font-size: 0.825rem;
+  margin: 4px 0 0;
 }
+.edit-heading {
+  grid-column: 1/-1;
+}
+.edit-heading h2 {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+}
+#result h2 {
+  color: var(--tm-color-text);
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+
 #result {
   border: 1px solid var(--tm-color-border-subtle);
   border-radius: var(--tm-radius-card);
-  padding: 24px;
-  background: linear-gradient(
-    135deg,
-    var(--tm-color-surface-raised),
-    var(--tm-color-surface)
-  );
+  padding: clamp(20px, 5vw, 32px);
+  color: var(--tm-color-text);
+  background:
+    radial-gradient(
+      ellipse at 100% 0,
+      color-mix(in srgb, var(--tm-color-accent) 8%, transparent),
+      transparent 65%
+    ),
+    linear-gradient(
+      135deg,
+      var(--tm-color-surface-raised),
+      var(--tm-color-surface)
+    );
 }
 .context {
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 600;
-  margin: 8px 0;
+  margin: 12px 0 18px;
   overflow-wrap: anywhere;
 }
 .swim-icon {
@@ -73,17 +98,22 @@ p {
 }
 .clock {
   font-size: clamp(1.25rem, 12vw, 4.5rem);
-  font-weight: 750;
-  letter-spacing: -0.04em;
-  color: var(--tm-color-result-highlight);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  color: var(--tm-color-text);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   overflow-wrap: normal;
   line-height: 1.2;
 }
-.kind {
-  font-weight: 650;
+.hundredths {
+  color: var(--tm-color-result-highlight);
 }
+.kind {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
 .muted,
 details {
   color: var(--tm-color-text-muted);
@@ -100,14 +130,20 @@ summary {
   padding: 8px 0;
 }
 #convert {
-  margin-top: 20px;
+  margin-top: 16px;
+  padding: 20px;
+  border: 1px solid var(--tm-color-border-subtle);
+  border-radius: var(--tm-radius-card);
+  background: var(--tm-color-surface);
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 12px;
+  gap: 16px;
 }
 .method-options {
   grid-column: 1 / -1;
   margin-top: 0;
+  padding-top: 4px;
+  font-weight: 400;
 }
 label {
   display: flex;
@@ -126,7 +162,7 @@ button {
 input,
 select {
   width: 100%;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border: 1px solid var(--tm-color-border-control);
   color: var(--tm-color-text);
   background: var(--tm-color-surface-input);
@@ -194,7 +230,7 @@ button.link {
   color: var(--tm-color-text-muted);
 }
 footer {
-  margin-top: 16px;
+  margin: 16px 4px 0;
   font-size: 0.8rem;
   color: var(--tm-color-text-muted);
 }
@@ -211,4 +247,53 @@ footer {
   #convert {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+.method-comparison {
+  margin: 12px 0;
+}
+.method-comparison > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--tm-color-border-subtle);
+}
+.method-comparison dd {
+  margin: 0;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  color: var(--tm-color-text);
+}
+
+@media (prefers-contrast: more) {
+  #result {
+    background: var(--tm-color-surface);
+    border-color: var(--tm-color-border-control);
+  }
+}
+@media (forced-colors: active) {
+  #result {
+    color: CanvasText;
+    background: Canvas;
+    border-color: CanvasText;
+  }
+  .clock,
+  .hundredths {
+    color: CanvasText;
+  }
+}
+
+.calculation-explanation {
+  margin-block: 16px;
+}
+.calculation-explanation h3 {
+  font-size: 0.875rem;
+  color: var(--tm-color-text);
+  margin: 0 0 4px;
+  font-weight: 650;
+}
+.calculation-explanation p {
+  margin: 0;
 }
