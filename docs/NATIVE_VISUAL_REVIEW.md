@@ -54,6 +54,17 @@ Corrections from reviewing the rendered screens:
   NavigationSplitView, with selected-record state above both layouts. Editors and deletion confirmation
   also live above the changing panes so keyboard/fold reflow cannot discard them.
 
+## Default phone screens
+
+The README uses fresh-install converter captures from main's native Standards &
+points build, with the generated navy palette. Both show the default 58.32 SCY
+100 freestyle swim for women and its 1:06.72 LCM comparison, in light appearance
+with ordinary text size. Only system status indicators are normalized for the
+screenshots. Existing simulator/emulator records were not reset. Feature sheets
+and expanded layouts remain in the detailed reviews.
+
+[iOS home](screenshots/ios-home-light.png) · [Android home](screenshots/android-home-light.png)
+
 ## Captures
 
 | Case                                            | Evidence                                                                                                                                                                                                                                                |

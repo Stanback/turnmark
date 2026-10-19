@@ -30,9 +30,9 @@ The web app is live. The native screens below are development previews, not stor
 
 ![Turnmark web converter, recent conversions and published standards](docs/screenshots/web-liquid-surfaces-dark.png)
 
-| iOS · Standards & points | Android · Expanded layout |
-| --- | --- |
-| <img src="docs/screenshots/ios-standards-light.png" width="280" alt="iOS youth benchmark, next AA target and original swim context"> | <img src="docs/screenshots/android-youth-standards-summary.png" width="420" alt="Android standards sheet over an expanded two-pane converter"> |
+| iOS · Converter                                                                                                                      | Android · Converter                                                                                                                                     |
+| ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="docs/screenshots/ios-home-light.png" width="280" alt="Default iPhone converter with the original swim and LCM comparison"> | <img src="docs/screenshots/android-home-light.png" width="280" alt="Default Android phone converter showing the same original swim and LCM comparison"> |
 
 [Embed the widget](https://turnmark.app/embed/) · [Connect MCP](https://turnmark.app/mcp/) · [Native review and more screenshots](docs/NATIVE_STANDARDS_REVIEW.md)
 
