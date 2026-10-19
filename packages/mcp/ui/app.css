@@ -105,6 +105,10 @@ summary {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 12px;
 }
+.method-options {
+  grid-column: 1 / -1;
+  margin-top: 0;
+}
 label {
   display: flex;
   flex-direction: column;

@@ -65,11 +65,14 @@ val strokeCodes = listOf("FR", "BK", "BR", "FL", "IM")
 data class Draft(
     val time: String = "58.32", val strokeIndex: Int = 0, val distance: UInt = 100u,
     val courseIndex: Int = 0, val categoryIndex: Int = 0, val targetIndex: Int = 2,
+    val methodId: String = "ncaa-2025-27",
 ) {
+    val method get() = if (methodId == "colorado-teamunify-2026") ConversionMethod.COLORADO else ConversionMethod.NCAA
+    val methodLabel get() = if (method == ConversionMethod.COLORADO) "Colorado Timing" else "NCAA"
     val options get() = getEventOptions(courses[courseIndex], strokes[strokeIndex])
-    val outcome get() = convertSwim(ConversionRequest(
+    val outcome get() = convertSwimWithMethod(ConversionRequest(
         Swim(time, SwimEvent(distance, strokes[strokeIndex], courses[courseIndex])),
-        courses[targetIndex], if (categoryIndex == 0) Category.WOMEN else Category.MEN))
+        courses[targetIndex], if (categoryIndex == 0) Category.WOMEN else Category.MEN), method)
     val available get() = outcome is ConversionOutcome.Available
     val category get() = if (categoryIndex == 0) "Women" else "Men"
     val unit get() = if (courseIndex == 0) "yd" else "m"
@@ -80,14 +83,16 @@ data class Draft(
         else copy(distance = options.first().event.distance)
     fun encode(): String = JSONObject().put("time", time).put("stroke", strokeIndex)
         .put("distance", distance.toLong()).put("course", courseIndex)
-        .put("category", categoryIndex).put("target", targetIndex).toString()
+        .put("category", categoryIndex).put("target", targetIndex).put("method", methodId).toString()
     val shareUrl: String get() {
         val query = Uri.Builder().appendQueryParameter("t", time)
             .appendQueryParameter("s", strokeCodes[strokeIndex])
             .appendQueryParameter("d", options.first { it.event.distance == distance }.canonicalDistance.toString())
             .appendQueryParameter("c", courses[courseIndex].name)
             .appendQueryParameter("g", if (categoryIndex == 0) "women" else "men")
-            .appendQueryParameter("h", "0").build().encodedQuery
+            .appendQueryParameter("h", "0").apply {
+                if (method == ConversionMethod.COLORADO) appendQueryParameter("m", methodId)
+            }.build().encodedQuery
         return Uri.parse("https://turnmark.app/").buildUpon().encodedFragment(query).build().toString()
     }
     companion object {
@@ -96,7 +101,8 @@ data class Draft(
             val distance = json.getLong("distance")
             require(distance in 1..UInt.MAX_VALUE.toLong())
             val draft = Draft(json.getString("time"), json.getInt("stroke"), distance.toUInt(),
-                json.getInt("course"), json.getInt("category"), json.getInt("target"))
+                json.getInt("course"), json.getInt("category"), json.getInt("target"),
+                json.optString("method", "ncaa-2025-27"))
             require(draft.strokeIndex in strokes.indices && draft.courseIndex in courses.indices &&
                 draft.targetIndex in courses.indices && draft.categoryIndex in 0..1)
             require(draft.options.any { it.event.distance == draft.distance })
@@ -194,6 +200,14 @@ private fun share(context: Context, draft: Draft) {
                                         Icon(Icons.Default.MoreVert, contentDescription = "More options")
                                     }
                                     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                                        Text("Conversion method", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), style = MaterialTheme.typography.labelMedium)
+                                        listOf("NCAA (default)" to "ncaa-2025-27", "Colorado Timing" to "colorado-teamunify-2026").forEach { (label, method) ->
+                                            DropdownMenuItem(text = { Text(label) }, onClick = {
+                                                expanded = false; focus.clearFocus(); keyboard?.hide(); update(draft.copy(methodId = method))
+                                            }, leadingIcon = { RadioButton(selected = draft.methodId == method, onClick = null) },
+                                                modifier = Modifier.testTag("conversionMethod-$method"))
+                                        }
+                                        HorizontalDivider()
                                         DropdownMenuItem(text = { Text("About Turnmark") }, onClick = {
                                             expanded = false; focus.clearFocus(); keyboard?.hide(); showingMethod = true
                                         }, leadingIcon = { Icon(Icons.Default.Info, null) })
@@ -235,9 +249,10 @@ private fun share(context: Context, draft: Draft) {
             Column(Modifier.verticalScroll(rememberScrollState()).padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text("About Turnmark", style = MaterialTheme.typography.headlineSmall)
                 Text("How comparisons work", style = MaterialTheme.typography.titleMedium)
-                Text("Published NCAA factors estimate a yards time from a metric swim. Reverse and cross-metric conversions are derived estimates. The original time stays separate.")
+                Text("NCAA factors are the default. Colorado Timing formulas are available in the overflow menu. Reverse and cross-metric NCAA conversions are derived estimates. The original time stays separate.")
                 Text("A converted time is not an official swim or confirmation of meet-entry eligibility.")
                 TextButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://turnmark.app/#method"))) }) { Text("Methodology and coverage") }
+                TextButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://turnmark.app/#resources"))) }) { Text("Swimming resources") }
                 Text("Your data", style = MaterialTheme.typography.titleMedium)
                 Text("Inputs and swim history stay on this device. Export/import moves a copy of recorded swims; there is no account or cloud sync. Sharing includes the original swim in a link. Source links need an internet connection.")
                 TextButton(onClick = { showingMethod = false }) { Text("Done") }
@@ -443,7 +458,7 @@ private fun share(context: Context, draft: Draft) {
                 Text(draft.resultLabel(result.value.event), color = c.textMuted, style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.testTag("resultContext"))
                 ResultTime(result.value.time, compact)
-                Text(kindLabel(result.value.kind), color = c.textMuted, style = MaterialTheme.typography.labelMedium)
+                Text(kindLabel(result.value.kind) + if (result.value.kind != ConversionKind.SWUM && draft.method == ConversionMethod.COLORADO) " · Colorado Timing" else "", color = c.textMuted, style = MaterialTheme.typography.labelMedium)
                 if (result.value.kind != ConversionKind.SWUM) Text("From ${draft.time} · ${draft.distance} ${draft.unit} ${courses[draft.courseIndex]}",
                     color = c.textMuted, style = MaterialTheme.typography.bodySmall)
                 if (compact) {
@@ -458,8 +473,8 @@ private fun share(context: Context, draft: Draft) {
                 if (!compact || showingCourses) {
                     HorizontalDivider()
                     courses.forEachIndexed { index, course ->
-                        val row = convertSwim(ConversionRequest(Swim(draft.time, SwimEvent(draft.distance, strokes[draft.strokeIndex], courses[draft.courseIndex])),
-                            course, if (draft.categoryIndex == 0) Category.WOMEN else Category.MEN))
+                        val row = convertSwimWithMethod(ConversionRequest(Swim(draft.time, SwimEvent(draft.distance, strokes[draft.strokeIndex], courses[draft.courseIndex])),
+                            course, if (draft.categoryIndex == 0) Category.WOMEN else Category.MEN), draft.method)
                         TextButton(onClick = { selectCourse?.invoke(index) }, modifier = Modifier.fillMaxWidth().testTag("equivalent-$course"),
                             colors = ButtonDefaults.textButtonColors(contentColor = if (index == draft.targetIndex) c.resultHighlight else c.text)) {
                             Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -550,11 +565,13 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
         Text(when (result.value.kind) {
             ConversionKind.SWUM -> "The entered time is unchanged."
             ConversionKind.PUBLISHED -> "Uses the published NCAA metric-to-yards factor."
-            ConversionKind.DERIVED -> "Derived from the published NCAA factors; this is an estimate."
+            ConversionKind.DERIVED -> if (draft.method == ConversionMethod.COLORADO) "Uses the documented Colorado Timing formula; this is an estimate."
+                else "Derived from the published NCAA factors; this is an estimate."
         })
         Text("Time multiplier: ${result.value.factor}")
+        if (result.value.offsetSeconds != 0.0) Text("Time offset: ${result.value.offsetSeconds} seconds")
         if (result.value.kind != ConversionKind.SWUM) {
-            Text("Multiplies the entered seconds by this factor, then truncates to hundredths.",
+            Text("Multiplies the entered seconds by this factor, adds any time offset, then truncates to hundredths.",
                 style = MaterialTheme.typography.bodySmall)
         }
         HorizontalDivider()

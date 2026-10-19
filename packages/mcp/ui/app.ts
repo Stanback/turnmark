@@ -6,12 +6,13 @@ import type {
   Result,
 } from "@turnmark/sdk/conversion";
 
-const app = new App({ name: "Turnmark conversion", version: "0.2.1" }, {});
+const app = new App({ name: "Turnmark conversion", version: "0.3.0" }, {});
 const $ = <T extends HTMLElement>(id: string) =>
   document.getElementById(id) as T;
 const form = $("convert");
 const time = $<HTMLInputElement>("time");
 const course = $<HTMLSelectElement>("course");
+const method = $<HTMLSelectElement>("method");
 const update = $<HTMLButtonElement>("update");
 const cancel = $<HTMLButtonElement>("cancel");
 const status = $("status");
@@ -54,7 +55,7 @@ function swimIcon(name: keyof typeof swimIcons) {
 }
 function controls() {
   update.disabled = !connected || !original || !!pending;
-  time.disabled = course.disabled = !original || !!pending;
+  time.disabled = course.disabled = method.disabled = !original || !!pending;
   cancel.hidden = !pending;
   form.setAttribute("aria-busy", String(!!pending));
 }
@@ -109,7 +110,10 @@ function render(value: unknown, request: ConversionRequest) {
         swum: "Original time",
         published: "Published conversion",
         derived: "Derived estimate",
-      }[v.kind],
+      }[v.kind] +
+        (v.kind !== "swum" && request.method === "colorado-teamunify-2026"
+          ? " · Colorado Timing"
+          : ""),
       "kind",
     );
     line(
@@ -143,6 +147,11 @@ function render(value: unknown, request: ConversionRequest) {
     const p = document.createElement("p");
     p.textContent = `${source.title} · ${source.id} · ${source.revision}`;
     details.append(p);
+    if (outcome.status === "available" && outcome.value.kind !== "swum") {
+      const formula = document.createElement("p");
+      formula.textContent = `Seconds × ${outcome.value.factor}${outcome.value.offsetSeconds ? ` ${outcome.value.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(outcome.value.offsetSeconds)}s` : ""}; final result truncated to hundredths.`;
+      details.append(formula);
+    }
     if (typeof source.url === "string" && source.url.startsWith("https://")) {
       const button = document.createElement("button");
       button.type = "button";
@@ -178,6 +187,8 @@ app.ontoolinput = ({ arguments: args }) => {
   original = structuredClone(args);
   time.value = args.swim.time;
   course.value = args.to;
+  method.value =
+    args.method === "colorado-teamunify-2026" ? args.method : "ncaa-2025-27";
   $("original").textContent = context(args.swim.event, args.table);
   message("Waiting for the conversion…");
   controls();
@@ -225,6 +236,7 @@ update.onclick = async () => {
     ...original,
     swim: { ...original.swim, time: time.value.trim() },
     to: course.value as ConversionRequest["to"],
+    method: method.value as ConversionRequest["method"],
   };
   const controller = (pending = new AbortController());
   const id = ++generation;

@@ -6,9 +6,11 @@ to the dedicated Worker and Custom Domain. The local server is published as
 [@turnmark/mcp@0.2.0](https://www.npmjs.com/package/@turnmark/mcp); it includes
 the SDK dependency and requires no Rust toolchain to install.
 
-The current source-only `0.2.1` UI patch adds the shared vector stroke glyphs and
-a new immutable card URI. The npm release remains `0.2.0`; publishing the patch
-is separate from updating the hosted Worker through protected main CI.
+The current source prepares `0.3.0` with SDK `0.2.0`: an optional Colorado
+Timing method, collapsed method setting, source discovery and additive offsets,
+plus the shared vector glyphs and wordmark. NCAA remains the default. The npm
+release remains `0.2.0`; publish SDK `0.2.0` before MCP `0.3.0`. Publication is
+separate from protected main CI updates to the hosted Worker.
 
 The public [MCP quick start](https://turnmark.app/mcp/) covers hosted connection
 settings and links to the [Markdown reference](https://turnmark.app/mcp/index.md).
@@ -53,7 +55,7 @@ npm run dev --workspace @turnmark/mcp-worker
 The package test packs and installs both SDK and MCP tarballs outside the
 workspace with lifecycle scripts disabled. It runs actual client discovery and
 all 50 non-parser portable cases through stdio and local workerd, in legacy and
-2026-07-28 modes: 42 exact SDK-result comparisons and eight malformed argument
+2026-07-28 modes: 53 exact SDK-result comparisons and eight malformed argument
 cases per transport/mode. The local server runs with fetch disabled. Checks also
 cover source metadata, unknown tools, extra arguments, cancellation/recovery,
 missing Wasm startup failure, route/method/Origin rejection, oversized bodies,
@@ -126,9 +128,10 @@ Sources: [official TypeScript SDK](https://github.com/modelcontextprotocol/types
 
 ## MCP Apps conversion UI
 
-The source adapter/server version is now `0.2.0`, independently of SDK `0.1.0`.
+The source adapter/server version is `0.3.0`, using SDK `0.2.0`.
 The official Apps extension adds metadata/resource discovery to `convert_swim`;
-all six tool names, input/output schemas and text/structured outcomes remain.
+all six tool names and text/structured fallback remain. `convert_swim` accepts
+the optional method; `get_sources` additionally lists conversion methods.
 Registration is static: a fresh per-request stateless server cannot reliably
 infer initialized UI capabilities during construction. Hosts choose whether to
 render the resource. Both clients with and without Apps are tested in both

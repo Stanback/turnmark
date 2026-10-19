@@ -1,6 +1,26 @@
 import XCTest
 
 final class TurnmarkUITests: XCTestCase {
+    @MainActor func testConversionMethodPersistsAndKeepsNcaaDefault() {
+        let app = launch()
+        XCTAssertEqual(app.staticTexts["resultTime"].label, "1:06.72")
+        app.buttons["converterMenu"].tap()
+        app.buttons["conversionMethodMenu"].tap()
+        app.buttons["Colorado Timing"].tap()
+        XCTAssertEqual(app.staticTexts["resultTime"].label, "1:06.33")
+        capture(app, "Colorado comparison")
+        app.terminate(); app.launchArguments = []; app.launch()
+        XCTAssertEqual(app.staticTexts["resultTime"].label, "1:06.33")
+        let details = app.buttons["conversionDetails"]
+        reach(details, in: app); details.tap()
+        XCTAssertTrue(app.staticTexts["Time offset: 1.6 seconds"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Edition: colorado-teamunify-2026"].exists)
+        app.buttons["Done"].tap()
+        app.buttons["converterMenu"].tap()
+        app.buttons["conversionMethodMenu"].tap()
+        app.buttons["NCAA (default)"].tap()
+        XCTAssertEqual(app.staticTexts["resultTime"].label, "1:06.72")
+    }
     @MainActor private func launch(_ extra: [String] = []) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments = ["-uitesting-reset"] + extra

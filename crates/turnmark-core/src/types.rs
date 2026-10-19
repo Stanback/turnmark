@@ -26,11 +26,11 @@ pub enum Stroke {
 }
 
 macro_rules! record {
-    ($name:ident { $($field:ident: $ty:ty),* $(,)? }) => {
+    ($name:ident { $($(#[$meta:meta])* $field:ident: $ty:ty),* $(,)? }) => {
         #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
         #[serde(rename_all = "camelCase")]
         #[cfg_attr(feature = "native", derive(uniffi::Record))]
-        pub struct $name { $(pub $field: $ty),* }
+        pub struct $name { $($(#[$meta])* pub $field: $ty),* }
     };
 }
 record!(SwimEvent {
@@ -63,6 +63,14 @@ record!(ConversionRequest {
     to: Course,
     table: Category
 });
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "native", derive(uniffi::Enum))]
+pub enum ConversionMethod {
+    #[serde(rename = "ncaa-2025-27")]
+    Ncaa,
+    #[serde(rename = "colorado-teamunify-2026")]
+    Colorado,
+}
 record!(Elevation {
     value: f64,
     unit: ElevationUnit
@@ -135,9 +143,14 @@ record!(ConversionValue {
     seconds: f64,
     hundredths: u64,
     factor: f64,
+    #[serde(default, skip_serializing_if = "is_zero")]
+    offset_seconds: f64,
     kind: ConversionKind,
     event: SwimEvent
 });
+fn is_zero(value: &f64) -> bool {
+    *value == 0.0
+}
 record!(AltitudeValue {
     raw_time: String,
     adjusted_time: String,

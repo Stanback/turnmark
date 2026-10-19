@@ -2,6 +2,36 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { createServer } from "node:http";
 
+test("widget keeps NCAA default and offers Colorado offline without changing the entered swim", async ({
+  page,
+  context,
+}) => {
+  await page.goto("./embed/v1/?theme=dark");
+  const scy = page
+    .locator("article")
+    .filter({ hasText: "100 Freestyle · SCY" });
+  const lcm = page
+    .locator("article")
+    .filter({ hasText: "100 Freestyle · LCM" });
+  await expect(scy).toContainText("52.44");
+  await expect(page.locator(".method-options")).not.toHaveAttribute("open", "");
+  await context.setOffline(true);
+  await page.locator(".method-options summary").click();
+  await page
+    .getByRole("combobox", { name: "Method", exact: true })
+    .selectOption("colorado-teamunify-2026");
+  await expect(scy).toContainText("52.61");
+  await expect(lcm).toContainText("1:00.00");
+  await expect(lcm).toContainText("Entered swim");
+  await expect(
+    page.getByRole("link", { name: "Colorado Timing source" }),
+  ).toHaveAttribute("href", /sportsengine/);
+  await page
+    .getByRole("combobox", { name: "Method", exact: true })
+    .selectOption("ncaa-2025-27");
+  await expect(scy).toContainText("52.44");
+});
+
 test("publisher iframe converts offline without reading the host app's storage", async ({
   page,
   context,

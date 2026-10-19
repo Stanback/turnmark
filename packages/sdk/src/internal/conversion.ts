@@ -1,5 +1,6 @@
 import { compatibility } from "../core.js";
 import type { Stroke, Course, Category } from "./events.js";
+import { conversionMethod, type ConversionMethod } from "../conversion.js";
 export function toYardFactor(
   stroke: Stroke,
   distance: number,
@@ -21,6 +22,7 @@ export function adjustedTime(
 export type Conversion = {
   time: number | null;
   factor: number | null;
+  offsetSeconds?: number;
   kind: "swum" | "published" | "derived" | "unavailable";
   reason?: string;
 };
@@ -31,6 +33,15 @@ export function convert(
   from: Course,
   to: Course,
   category: Category,
+  method: ConversionMethod = conversionMethod,
 ): Conversion {
-  return compatibility("convert", [time, stroke, distance, from, to, category]);
+  return compatibility("convert", [
+    time,
+    stroke,
+    distance,
+    from,
+    to,
+    category,
+    method,
+  ]);
 }

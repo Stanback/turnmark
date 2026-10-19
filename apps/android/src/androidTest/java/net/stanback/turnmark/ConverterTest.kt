@@ -34,6 +34,23 @@ class ConverterTest {
         compose.activityRule.scenario.recreate()
     }
 
+    @Test fun conversionMethodPersistsAndKeepsNcaaDefault() {
+        compose.onNodeWithTag("resultTime").assertTextEquals("1:06.72")
+        compose.onNodeWithTag("converterMenu").performClick()
+        compose.onNodeWithTag("conversionMethod-colorado-teamunify-2026").performClick()
+        compose.onNodeWithTag("resultTime").assertTextEquals("1:06.33")
+        capture("android-colorado-comparison")
+        compose.activityRule.scenario.recreate()
+        compose.onNodeWithTag("resultTime").assertTextEquals("1:06.33")
+        compose.onNodeWithTag("conversionDetails").performScrollTo().performClick()
+        compose.onNodeWithText("Time offset: 1.6 seconds").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("Edition: colorado-teamunify-2026").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("Done").performScrollTo().performClick()
+        compose.onNodeWithTag("converterMenu").performClick()
+        compose.onNodeWithTag("conversionMethod-ncaa-2025-27").performClick()
+        compose.onNodeWithTag("resultTime").assertTextEquals("1:06.72")
+    }
+
     @Test fun benchmarksUseOriginalSwimAndRememberAgeSettings() {
         compose.onNodeWithTag("converterBrand").assertIsDisplayed()
         compose.onNodeWithTag("converterMenu").performClick()

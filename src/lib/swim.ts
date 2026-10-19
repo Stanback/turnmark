@@ -10,6 +10,11 @@ import {
   type Course,
   type Stroke,
 } from "@turnmark/sdk/compat";
+import {
+  conversionMethod,
+  coloradoMethod,
+  type ConversionMethod,
+} from "@turnmark/sdk/conversion";
 export {
   availableEvent,
   courses,
@@ -71,6 +76,7 @@ export interface SwimState {
   altitude: number;
   standardSystem: "youth" | "masters";
   mastersAge: string;
+  method: ConversionMethod;
 }
 export const defaultState: SwimState = {
   time: "58.32",
@@ -82,6 +88,7 @@ export const defaultState: SwimState = {
   altitude: 0,
   standardSystem: "youth",
   mastersAge: "18-24",
+  method: conversionMethod,
 };
 export function readState(hash: string): SwimState {
   const p = new URLSearchParams(hash.replace(/^#/, ""));
@@ -104,6 +111,7 @@ export function readState(hash: string): SwimState {
     state.altitude = altitude;
   if (p.get("b") === "masters") state.standardSystem = "masters";
   if (mastersAges.includes(p.get("ma") ?? "")) state.mastersAge = p.get("ma")!;
+  if (p.get("m") === coloradoMethod) state.method = coloradoMethod;
   return state;
 }
 export function stateHash(state: SwimState) {
@@ -115,6 +123,7 @@ export function stateHash(state: SwimState) {
     g: state.category,
     a: state.age,
     h: String(state.altitude),
+    ...(state.method === coloradoMethod ? { m: state.method } : {}),
     ...(state.standardSystem === "masters"
       ? { b: "masters", ma: state.mastersAge }
       : {}),

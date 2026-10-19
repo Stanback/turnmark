@@ -6,7 +6,11 @@
     type Category,
     type Stroke,
   } from "@turnmark/sdk";
-  import { conversionSource } from "@turnmark/sdk/conversion";
+  import {
+    conversionMethod,
+    conversionMethods,
+    type ConversionMethod,
+  } from "@turnmark/sdk/conversion";
   const courses: Course[] = ["SCY", "SCM", "LCM"];
   const strokes: { value: Stroke; label: string }[] = [
     { value: "freestyle", label: "Freestyle" },
@@ -20,6 +24,10 @@
   let stroke = $state<Stroke>("freestyle");
   let distance = $state(100);
   let table = $state<Category>("women");
+  let method = $state<ConversionMethod>(conversionMethod);
+  const selectedMethod = $derived(
+    conversionMethods.find((item) => item.id === method)!,
+  );
   // These are selectable UI options; the engine decides support and mappings.
   const distances = $derived(
     stroke === "freestyle"
@@ -40,6 +48,7 @@
         swim: { time, event: { distance, stroke, course } },
         to,
         table,
+        method,
       }),
     })),
   );
@@ -144,11 +153,23 @@
       </article>
     {/each}
   </section>
+  <details class="method-options">
+    <summary>Conversion method · {selectedMethod.label}</summary>
+    <label
+      >Method<select bind:value={method}
+        >{#each conversionMethods as item}<option value={item.id}
+            >{item.label}</option
+          >{/each}</select
+      ></label
+    >
+  </details>
   <footer>
     <p>Converted times are estimates. Meet rules decide entry eligibility.</p>
     <div>
-      <a href={conversionSource.url} target="_blank" rel="noopener noreferrer"
-        >NCAA factors ↗</a
+      <a
+        href={selectedMethod.source.url}
+        target="_blank"
+        rel="noopener noreferrer">{selectedMethod.label} source ↗</a
       ><a
         class="brand"
         href="https://turnmark.app/"
@@ -189,6 +210,20 @@
     max-width: 640px;
     margin: auto;
     padding: 22px;
+  }
+  .method-options {
+    margin-top: 18px;
+    color: var(--muted);
+  }
+  .method-options summary {
+    cursor: pointer;
+    font-size: 0.875rem;
+  }
+  .method-options label {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+    color: var(--ink);
   }
   header {
     display: flex;

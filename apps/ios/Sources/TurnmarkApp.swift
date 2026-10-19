@@ -16,6 +16,10 @@ struct Draft: Codable, Equatable {
     var courseIndex = 0
     var categoryIndex = 0
     var targetIndex = 2
+    // Optional for decoding drafts saved before method selection existed.
+    var methodID: String?
+    var method: ConversionMethod { methodID == "colorado-teamunify-2026" ? .colorado : .ncaa }
+    var methodLabel: String { method == .colorado ? "Colorado Timing" : "NCAA" }
 
     static func decode(_ text: String?) -> Draft? {
         guard let text, let data = text.data(using: .utf8),
@@ -30,9 +34,9 @@ struct Draft: Codable, Equatable {
     var encoded: String { String(data: try! JSONEncoder().encode(self), encoding: .utf8)! }
     var options: [EventOption] { getEventOptions(course: courses[courseIndex], stroke: strokes[strokeIndex]) }
     var outcome: ConversionOutcome {
-        convertSwim(request: ConversionRequest(
+        convertSwimWithMethod(request: ConversionRequest(
             swim: Swim(time: time, event: SwimEvent(distance: distance, stroke: strokes[strokeIndex], course: courses[courseIndex])),
-            to: courses[targetIndex], table: categoryIndex == 0 ? .women : .men))
+            to: courses[targetIndex], table: categoryIndex == 0 ? .women : .men), method: method)
     }
     var available: Bool { if case .available = outcome { return true }; return false }
     mutating func reconcile() {
@@ -54,6 +58,7 @@ struct Draft: Codable, Equatable {
             URLQueryItem(name: "c", value: courseNames[courseIndex]),
             URLQueryItem(name: "g", value: categoryIndex == 0 ? "women" : "men"),
             URLQueryItem(name: "h", value: "0")]
+        if method == .colorado { query.queryItems?.append(URLQueryItem(name: "m", value: "colorado-teamunify-2026")) }
         var url = URLComponents(string: "https://turnmark.app/")!
         url.percentEncodedFragment = query.percentEncodedQuery
         return url.url!
@@ -141,6 +146,13 @@ private struct TurnmarkView: View {
                     ToolbarItem(placement: .principal) { Color.clear.frame(width: 0, height: 0).accessibilityHidden(true) }
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
+                            Menu {
+                                Picker("Method", selection: Binding(get: { draft.methodID ?? "ncaa-2025-27" }, set: { draft.methodID = $0 })) {
+                                    Text("NCAA (default)").tag("ncaa-2025-27")
+                                    Text("Colorado Timing").tag("colorado-teamunify-2026")
+                                }
+                            } label: { Label("Conversion method", systemImage: "slider.horizontal.3") }
+                                .accessibilityIdentifier("conversionMethodMenu")
                             Button { dismissTimeEntry(); showingMethod = true } label: { Label("About Turnmark", systemImage: "info.circle") }
                                 .accessibilityIdentifier("converterAbout")
                             Link(destination: URL(string: "https://turnmark.app/#method")!) {
@@ -377,7 +389,7 @@ struct ConversionResult: View {
                 Text(input.resultLabel(value.event)).font(.subheadline)
                     .foregroundStyle(TurnmarkResultPalette.textMuted).accessibilityIdentifier("resultContext")
                 timeLabel(value.time)
-                Text(kindLabel(value.kind)).font(.footnote.weight(.semibold)).foregroundStyle(TurnmarkResultPalette.textMuted)
+                Text(kindLabel(value.kind) + (value.kind != .swum && input.method == .colorado ? " · Colorado Timing" : "")).font(.footnote.weight(.semibold)).foregroundStyle(TurnmarkResultPalette.textMuted)
                 if value.kind != .swum {
                     Text("From \(input.time) · \(input.distance) \(input.unit) \(courseNames[input.courseIndex])")
                         .font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted)
@@ -530,9 +542,10 @@ struct MethodScreen: View {
         NavigationStack {
             List {
                 Section("How comparisons work") {
-                    Text("Published NCAA factors estimate a yards time from a metric swim. Reverse and cross-metric conversions are derived estimates. The original time stays separate.")
+                    Text("NCAA factors are the default. Colorado Timing formulas are available under Conversion method in the overflow menu. Reverse and cross-metric NCAA conversions are derived estimates. The original time stays separate.")
                     Text("A converted time is not an official swim or confirmation of meet-entry eligibility.")
                     Link("Methodology and coverage", destination: URL(string: "https://turnmark.app/#method")!)
+                    Link("Swimming resources", destination: URL(string: "https://turnmark.app/#resources")!)
                 }
                 Section("Your data") {
                     Text("Inputs and swim history stay on this device. Export/import moves a copy of recorded swims; there is no account or cloud sync. Sharing includes the original swim in a link. Source links need an internet connection.")
@@ -558,13 +571,15 @@ private struct ConversionDetails: View {
                     Section(value.kind == .swum ? "Same course" : "Comparison") {
                         Text(value.time).font(.title2.bold()).monospacedDigit()
                         Text(input.resultLabel(value.event))
-                        Text(value.kind == .swum ? "The entered time is unchanged." : value.kind == .published
+                        Text(value.kind == .swum ? "The entered time is unchanged." : input.method == .colorado
+                             ? "Uses the documented Colorado Timing formula; this is an estimate." : value.kind == .published
                              ? "Uses the published NCAA metric-to-yards factor."
                              : "Derived from the published NCAA factors; this is an estimate.")
                         Text("Time multiplier: \(String(value.factor))")
                             .monospacedDigit()
+                        if value.offsetSeconds != 0 { Text("Time offset: \(String(value.offsetSeconds)) seconds").monospacedDigit() }
                         if value.kind != .swum {
-                            Text("Multiplies the entered seconds by this factor, then truncates to hundredths.")
+                            Text("Multiplies the entered seconds by this factor, adds any time offset, then truncates to hundredths.")
                                 .font(.footnote).foregroundStyle(.secondary)
                         }
                     }

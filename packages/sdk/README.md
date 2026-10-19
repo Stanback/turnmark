@@ -3,11 +3,11 @@
 Offline course conversion, altitude, USA Swimming standards, USMS targets, and
 World Aquatics points, calculated by the shared Rust engine. Swift and Kotlin
 libraries are generated from the same core. The JavaScript package is
-`@turnmark/sdk`, version `0.1.0`.
+`@turnmark/sdk`. The published version is `0.1.0`; this checkout prepares `0.2.0`.
 
 Install with `npm install @turnmark/sdk@0.1.0`. A source checkout
 can also produce a tested installable tarball with `npm run pack:sdk`; install
-`release/turnmark-sdk-0.1.0.tgz` in your consumer project. Consumers need neither
+`release/turnmark-sdk-0.2.0.tgz` in your consumer project. Consumers need neither
 Rust nor package install scripts. The ESM package supports modern browsers and
 Node 22.12 or newer.
 
@@ -183,3 +183,15 @@ attached. Invalid inputs and missing published targets retain their distinct
 outcomes. Meeting a target does not confirm entry eligibility. Native bindings
 also expose `getStandardAgeGroups` from the same core; selecting 85+ for the
 bundled USMS table produces explicit missing-age-group coverage.
+
+## Alternative conversion method (unreleased 0.2.0)
+
+Omit `method` for the unchanged NCAA default, or pass
+`method: "colorado-teamunify-2026"` to `engine.convert` / `convertSwim`.
+`conversionMethods` from `@turnmark/sdk/conversion` supplies labels, identifiers
+and source metadata. Results carry the selected provenance and optional
+`offsetSeconds` (absent when zero): the untruncated calculation is
+`inputSeconds × factor + offsetSeconds`. Colorado results are estimates and
+unsupported formulas remain unavailable. Swift/Kotlin use
+`convertSwimWithMethod(request, method)`; the existing `convertSwim` stays NCAA.
+See the methodology for the exact source scope and distance-event exceptions.

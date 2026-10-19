@@ -8,7 +8,8 @@ import { conversionHtml } from "./generated/ui.js";
 import { z } from "zod";
 import type { Engine } from "@turnmark/sdk";
 import {
-  conversionMethod,
+  conversionMethods,
+  type ConversionMethod,
   conversionProvenance,
   altitudeProvenance,
 } from "@turnmark/sdk/conversion";
@@ -24,7 +25,7 @@ import {
   pointsValidity,
 } from "@turnmark/sdk/points";
 
-export const conversionResourceUri = "ui://turnmark/conversion/0.2.1.html";
+export const conversionResourceUri = "ui://turnmark/conversion/0.3.0.html";
 const uiMeta = {
   ui: {
     csp: { connectDomains: [], resourceDomains: [], frameDomains: [] },
@@ -99,7 +100,7 @@ function result(value: Record<string, unknown>) {
 /** Fresh protocol server per connection/request; one immutable engine can be reused. */
 export function createServer(engine: Engine) {
   const server = new McpServer(
-    { name: "turnmark", version: "0.2.1" },
+    { name: "turnmark", version: "0.3.0" },
     {
       instructions:
         "Swimming calculations from published sources. Preserve available/unavailable/invalid, event/course context, published/derived kinds and source editions. Missing targets remain missing. Qualifying targets are benchmarks, not confirmation of entry eligibility. No personal history access or storage.",
@@ -125,7 +126,7 @@ export function createServer(engine: Engine) {
     "convert_swim",
     {
       description:
-        "Convert an entered swim to an explicit course using published NCAA factors or labeled derived reverse/cross-metric estimates.",
+        "Convert an entered swim to an explicit course. NCAA is the default; colorado-teamunify-2026 selects documented Colorado Timing formulas. Preserve the returned source and method; conversions are estimates, not entry approval.",
       inputSchema: z.strictObject({
         swim,
         to: z.enum(["SCY", "SCM", "LCM"]),
@@ -145,7 +146,7 @@ export function createServer(engine: Engine) {
       result(
         engine.convert({
           ...input,
-          method: input.method as typeof conversionMethod | undefined,
+          method: input.method as ConversionMethod | undefined,
         }),
       ),
   );
@@ -241,6 +242,7 @@ export function createServer(engine: Engine) {
       outputSchema: z.object({
         engineVersion: z.string(),
         conversion: z.unknown(),
+        conversionMethods: z.unknown(),
         altitude: z.unknown(),
         youth: z.unknown(),
         masters: z.unknown(),
@@ -252,6 +254,7 @@ export function createServer(engine: Engine) {
       result({
         engineVersion: engine.version,
         conversion: conversionProvenance,
+        conversionMethods,
         altitude: altitudeProvenance,
         youth: {
           edition: youthEdition,

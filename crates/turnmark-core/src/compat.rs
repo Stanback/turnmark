@@ -90,20 +90,26 @@ pub(crate) fn evaluate(input: &Value) -> Result<Value, EngineError> {
         }
         "convert" => {
             let distance = arg(args, 2)?;
-            let result = engine::convert_seconds(
-                event(distance, arg(args, 3)?, stroke(args, 1)?),
-                distance,
-                arg::<Option<f64>>(args, 0)?.unwrap_or(f64::NAN),
-                arg(args, 4)?,
-                arg(args, 5)?,
-            );
+            let event = event(distance, arg(args, 3)?, stroke(args, 1)?);
+            let seconds = arg::<Option<f64>>(args, 0)?.unwrap_or(f64::NAN);
+            let to = arg(args, 4)?;
+            let table = arg(args, 5)?;
+            let result = engine::conversion_method(args.get(6)).and_then(|method| {
+                engine::convert_seconds_with_method(event, distance, seconds, to, table, method)
+            });
             match result {
                 Ok((value, _)) => {
-                    json!({"time": value.seconds, "factor": value.factor, "kind": value.kind})
+                    let mut result =
+                        json!({"time": value.seconds, "factor": value.factor, "kind": value.kind});
+                    if value.offset_seconds != 0.0 {
+                        result["offsetSeconds"] = json!(value.offset_seconds);
+                    }
+                    result
                 }
                 Err(failure) => {
                     json!({"time": null, "factor": null, "kind": "unavailable", "reason": match failure {
                         Failure::Unavailable { reason: CoverageReason::EventNotPublished, .. } => "100 IM is a short-course event.",
+                        Failure::Unavailable { ref provenance, .. } if provenance.id == "colorado-teamunify-2026" => "No documented Colorado formula for this event.",
                         Failure::Unavailable { .. } => "No published NCAA long-course factor for this event.",
                         _ => "Enter a valid positive time.",
                     }})

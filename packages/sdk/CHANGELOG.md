@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 — unreleased
+
+- Optional `colorado-teamunify-2026` conversion method, pinned source metadata
+  and direction-specific formulas. Omitted methods retain NCAA results.
+- Conversion results expose optional `offsetSeconds`; native bindings expose
+  `convertSwimWithMethod` and a typed method enum.
 
 - `assessSwimBenchmark` / `engine.benchmark` compare an original swim against
   youth or USMS targets, returning met states, the achieved level, next target

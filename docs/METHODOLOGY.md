@@ -1,8 +1,12 @@
 # Methodology
 
-Source review: October 16, 2026. Turnmark provides perspective for training and planning. Meet organizers determine accepted entry times and conversion methods.
+Source review: October 19, 2026 (Colorado formulas); October 16, 2026 (other datasets). Turnmark provides perspective for training and planning. Meet organizers determine accepted entry times and conversion methods.
 
 ## Course conversion
+
+**NCAA is the default conversion method.** The collapsed Conversion method control offers Colorado Timing as an alternative. Native apps place it in the overflow menu; widget and MCP cards keep it in a collapsed section. The selection changes estimates, never the original swim used for standards or points. Web preferences, history and links retain the method; older links and records default to NCAA.
+
+### NCAA
 
 Factors are transcribed from **Appendix C, printed page 120** of the [NCAA 2025–26 and 2026–27 Swimming and Diving Rules Book](https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125), updated October 1, 2026. Source metadata and SHA-256 are recorded in `data/sources.json`; factors live in `data/conversions.json`.
 
@@ -22,6 +26,27 @@ The corresponding distance events are 400m ↔ 500yd, 800m ↔ 1000yd, and 1500m
 No LCM factor is invented for 50 backstroke, breaststroke, or butterfly. Those course conversions are unavailable, while SCY ↔ SCM remains supported. The 100 IM is unavailable in LCM. Missing standards and factors are left blank with an explanation.
 
 Pool lengths/turn counts describe the selected event’s geometry. The displayed pace is an even average per 100 units, not a race split prediction. Turns, underwater skill, fatigue, starts, age, and other individual differences are not modeled.
+
+### Colorado Timing
+
+The alternative `colorado-teamunify-2026` implements the **USA Swimming teams** section of [SportsEngine Motion / TeamUnify’s documented course-conversion formulas](https://motion-help.sportsengine.com/en/articles/8538107-how-to-perform-course-conversion-factoring-of-times), updated August 6, 2026 and checked October 19, 2026. The source snapshot metadata, fingerprint and coefficients live in `data/colorado.json`. These are direction-specific legacy formulas, not NCAA factors or a swimmer-specific statistical prediction. Categories do not alter these formulas.
+
+For ordinary events, let `d` be the metric event distance and `k` the additional seconds per 50 meters: freestyle/IM 0.8, backstroke 0.6, breaststroke 1.0 and butterfly 0.7. Let `i = k × d / 50`.
+
+| Direction | Calculation         |
+| --------- | ------------------- |
+| SCY → SCM | `time × 1.11`       |
+| SCM → SCY | `time / 1.11`       |
+| SCY → LCM | `time × 1.11 + i`   |
+| LCM → SCY | `(time − i) / 1.11` |
+| SCM → LCM | `time + i`          |
+| LCM → SCM | `time − i`          |
+
+For distance freestyle, SCY↔LCM instead uses multiplication/division by **0.8925** for 500yd↔400m and 1000yd↔800m, or **1.02** for 1650yd↔1500m, without an added yards offset. SCM↔LCM adds/subtracts **6.4, 12.8 or 24.0 seconds** respectively. The documented SCY↔SCM rule remains ×/÷1.11, including distance freestyle; do not route through LCM or substitute another distance ratio. The source’s separate non-USA-team method is not this implementation.
+
+No cross-course 100 IM formula is inferred. Same-course results retain the input. Invalid or nonpositive calculated results remain invalid. As with NCAA, only the final result is truncated to hundredths. Returned provenance identifies the selected edition; `factor` and optional `offsetSeconds` expose `time × factor + offsetSeconds` (zero offset is omitted from JSON).
+
+Independent examples: 58.32 SCY 100 freestyle → **1:06.33 LCM**; 2:00.00 SCY 200 butterfly → **2:16.00 LCM**; 5:00.00 SCY 500 freestyle → **4:27.75 LCM** and **5:33.00 SCM**. These reproduce this documented formula set; they are not qualifying-time guarantees. The [SwimSwam converter](https://swimswam.com/swimming-times-conversion-tool/) remains linked as a community resource, not a promise of identical historical implementations.
 
 ## Motivational standards
 
@@ -55,4 +80,4 @@ For eligible individual-event distances of 200, 400/500, 800/1000, and 1500/1650
 
 ## Privacy
 
-The app makes no runtime requests to source organizations. Its service worker caches public static assets for offline use; user inputs are not included in cache requests. Appearance preferences are saved locally, with Auto following the system setting. Data, fonts, icons, and calculations ship with the static build. After a valid edit settles for 1.4 seconds, the conversion is recorded in device-local history, capped at the most recent 50 entries. Merely opening the default or a shared swim does not create an entry. Each entry retains event, source course, focused target course, input time, category, age group, elevation, and a timestamp. Restoring history does not add a duplicate. History supports per-entry removal and clearing, and never syncs between browsers. Save swim keeps an additional explicit collection of at most eight distinct swims. Copy link uses the URL fragment and clipboard; CSV export creates a device download. Browser storage can be blocked or cleared. Following a source link opens that organization’s website. No analytics or user accounts are included.
+The app makes no runtime requests to source organizations. Its service worker caches public static assets for offline use; user inputs are not included in cache requests. Appearance preferences are saved locally, with Auto following the system setting. Data, fonts, icons, and calculations ship with the static build. After a valid edit settles for 1.4 seconds, the conversion is recorded in device-local history, capped at the most recent 50 entries. Merely opening the default or a shared swim does not create an entry. Each entry retains event, source course, focused target course, input time, category, age group, elevation, conversion method, and a timestamp. Restoring history does not add a duplicate. History supports per-entry removal and clearing, and never syncs between browsers. Save swim keeps an additional explicit collection of at most eight distinct swims. Copy link uses the URL fragment and clipboard; CSV export creates a device download. Browser storage can be blocked or cleared. Following a source link opens that organization’s website. No analytics or user accounts are included.

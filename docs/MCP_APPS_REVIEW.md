@@ -8,8 +8,8 @@ The [research](MCP_APPS.md) records the protocol/host decisions and primary sour
 ## User experience
 
 The card displays the destination event/course/category and returned time, its
-original performance, published/derived kind, and source edition. Time and target
-course are editable; an explicit Update comparison calls `convert_swim` through
+original performance, published/derived kind, and source edition. Time, target
+course and the collapsed conversion method are editable; an explicit Update comparison calls `convert_swim` through
 the host. Original event/course/category stay fixed to the request. No factors,
 numerical tables or Wasm execute in the view. A 500 yd→400 m conversion uses the
 returned event. Other tools retain text/structured results.
@@ -34,9 +34,9 @@ text, the clock fits one line and surrounding copy wraps normally:
 - Six existing read-only tools and schemas stay intact. Only `convert_swim`
   advertises `_meta.ui.resourceUri`; the one static resource is registered
   independently of initialization capabilities for stateless HTTP compatibility.
-- Current source URI `ui://turnmark/conversion/0.2.1.html`, MIME
+- Current source URI `ui://turnmark/conversion/0.3.0.html`, MIME
   `text/html;profile=mcp-app`. Change the resource version for later view releases.
-  The shared-vector patch is not yet published to npm; published `0.2.0` keeps
+  The alternative-method release is not yet published to npm; published `0.2.0` keeps
   its original `ui://turnmark/conversion/0.2.0.html` resource.
   Both list/read carry CSP with empty connect/resource/frame domain lists.
 - The card wordmark uses the shared accent token for its period in both themes.
@@ -65,11 +65,13 @@ text, the clock fits one line and surrounding copy wraps normally:
 
 - Packed stdio and local workerd Streamable HTTP, in both supported protocol
   modes, with and without Apps capabilities: eight combinations. Each checks
-  42 exact SDK-equal outcomes, eight malformed requests, all tools, cancellation,
+  53 exact SDK-equal outcomes, eight malformed requests, all tools, cancellation,
   resource discovery/read/unknown URI, MIME, immutable URI, CSP and text fallback.
-- Packed stdio runs outside the workspace with network disabled. A second fresh
-  installation against **registry SDK 0.1.0** also runs both protocol modes,
-  full result fixtures and resource reads with runtime fetch disabled.
+- Packed stdio runs outside the workspace with network disabled. Once SDK 0.2.0 is published, a second fresh installation against that exact
+  registry version also runs both protocol modes, result fixtures and resource
+  reads with runtime fetch disabled. Development explicitly reports an unpublished
+  dependency; release mode fails until the registry check can run. The prior
+  0.2.0 release was verified with registry SDK 0.1.0.
 - Actual local Worker bindings enforce request/body/Origin/rate/aggregate limits.
 - Official AppBridge in Chromium with both a real stdio MCP server and a local
   Workers Streamable HTTP server, an opaque-origin
@@ -92,11 +94,10 @@ usage; verify production responses after deployment and monitor actual Free
 limits without enabling a paid plan.
 
 The published npm package remains MCP **0.2.0**; the current source/server/UI
-prepares the **unreleased 0.2.1** shared-glyph patch. Protected main CI can update
+prepares the **unreleased 0.3.0** method-selector release with SDK **0.2.0**. Protected main CI can update
 the hosted Worker independently of npm publication. The 0.2.0 release used
 the main-only manual workflow and npm trusted publishing, with the tested
-archive's checksum verified before publication. The SDK stays at published
-**0.1.0** for this adapter release. A fresh external registry consumer verified
+archive's checksum verified before publication. SDK **0.1.0** remains published; SDK **0.2.0** must publish before this adapter. A fresh external registry consumer verified
 the same resource and offline tools in both protocol modes, with and without
 Apps capability. See [SDK releases](SDK_RELEASES.md) for the release commit,
 registry integrity and protected publishing setup. Do not add an npm token to

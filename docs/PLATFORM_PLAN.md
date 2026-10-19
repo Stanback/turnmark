@@ -407,16 +407,16 @@ Rust is the single calculation implementation, with canonical snapshots in
 The web UI, native UI and agent/publisher adapters retain their own platform
 state and controls. SDK consumers do not require Svelte.
 
-| Surface          | Current scope                                                                                                           | Details                                                                                         |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| SDK              | Published JavaScript 0.1.0; shared Rust/native bindings; original-swim benchmark assessment added in unreleased source  | [Engine](SHARED_ENGINE.md), [SDK](../packages/sdk/README.md), [release status](SDK_RELEASES.md) |
-| Web              | Converter, standards/points, browser-local history, offline installation                                                | [Live app](https://turnmark.app/)                                                               |
-| Publisher widget | Versioned isolated iframe, light/dark/device appearance and copyable setup                                              | [Setup](https://turnmark.app/embed/)                                                            |
-| Native apps      | SwiftUI/Compose converter, offline My times/import/export, Standards & points including B–AAAA, adaptive layouts        | [Native scope](NATIVE_APPS.md), [standards review](NATIVE_STANDARDS_REVIEW.md)                  |
-| MCP              | Published stdio 0.2.0 and hosted Streamable HTTP, six read-only tools, official Apps card with text/structured fallback | [MCP](MCP.md), [Apps review](MCP_APPS_REVIEW.md)                                                |
-| WebMCP           | Planned, separate from the MCP Apps iframe extension                                                                    | [Agent interfaces](AGENT_INTERFACES.md)                                                         |
+| Surface          | Current scope                                                                                                             | Details                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| SDK              | Published JavaScript 0.1.0; shared Rust/native bindings; benchmark assessment and Colorado method in unreleased SDK 0.2.0 | [Engine](SHARED_ENGINE.md), [SDK](../packages/sdk/README.md), [release status](SDK_RELEASES.md) |
+| Web              | Converter, standards/points, browser-local history, offline installation                                                  | [Live app](https://turnmark.app/)                                                               |
+| Publisher widget | Versioned isolated iframe, light/dark/device appearance and copyable setup                                                | [Setup](https://turnmark.app/embed/)                                                            |
+| Native apps      | SwiftUI/Compose converter, offline My times/import/export, Standards & points including B–AAAA, adaptive layouts          | [Native scope](NATIVE_APPS.md), [standards review](NATIVE_STANDARDS_REVIEW.md)                  |
+| MCP              | Published stdio 0.2.0 and hosted Streamable HTTP, six read-only tools, official Apps card with text/structured fallback   | [MCP](MCP.md), [Apps review](MCP_APPS_REVIEW.md)                                                |
+| WebMCP           | Planned, separate from the MCP Apps iframe extension                                                                      | [Agent interfaces](AGENT_INTERFACES.md)                                                         |
 
-The source has 69 portable fixtures and a 6,061-case cross-runtime corpus.
+The source has 80 portable fixtures and a 7,368-case cross-runtime corpus.
 Packed artifacts are tested outside the monorepo. The native apps remain
 development builds: physical devices, screen readers, signing/store metadata
 and beta/submission are release work. Standalone SwiftPM/Maven registry releases
@@ -424,20 +424,28 @@ and native altitude entry are also follow-ups. Public npm versions and prepared
 changes are distinguished in the release documentation; an implementation plan
 is not evidence of registry publication or store approval.
 
-## Potential future product direction
+## Product scope and anti-goals — October 19, 2026
 
-Recorded October 18, 2026 as an exploratory direction, not committed release
-scope: Turnmark could grow into a general swim logger, with time conversion as
-one tool alongside an athlete’s history and progress. The name and current
-original-swim record model leave room for that broader role.
+The October 18 exploration of a general swim logger, cloud synchronization and
+coach features is withdrawn. Turnmark stays a focused offline conversion,
+standards and points utility. Existing local records, saved comparisons and
+portable export/import remain supported; this decision does not remove data or
+turn estimates into recorded performances. Do not expand personal-best tracking,
+accounts, cloud infrastructure, recruiting or coach dashboards under this plan.
 
-Possible later steps include optional cloud synchronization across devices and
-coach-centric features built around swimmers sharing their recorded swims and
-progress. The specific workflows, permissions, account/support model and
-priorities still need exploration. No cloud service, coach portal or delivery
-date is approved or implemented by this note.
+Link to established result/profile services through a small resources section
+instead of building a competing results database. NCAA remains the default
+conversion method; alternative published methods belong in a quiet advanced
+setting, with the selected method preserved in shared comparisons and clearly
+identified in the calculation details.
 
-Keep the current offline log and portable export/import useful independently.
-Actual performances must remain distinct from estimates as the product grows;
-sync or coach features should build on that distinction rather than turning
-saved conversions into recorded results.
+A separate conversion-model research experiment on the follow-up branch
+`research/conversion-model` may
+evaluate matched real swims against NCAA and legacy Colorado baselines. It is
+an offline development experiment, not a replacement default, an accepted-entry
+mode, a physiological assessment or a promise of improved accuracy. A production
+model needs independent held-out evaluation and an explicit later decision.
+
+Anti-goals for now: a general swim logger, expanded personal-best tracking,
+automatic meet-result aggregation, cloud accounts/sync, recruiting and coach
+features. Existing local records and export/import are maintenance scope.

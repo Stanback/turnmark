@@ -1,6 +1,44 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
+test("conversion method is optional, persists and round-trips through comparison links", async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/");
+  await expect(page.getByTestId("result-LCM")).toHaveText("1:06.72");
+  const options = page.locator(".conversion-options");
+  await expect(options).not.toHaveAttribute("open");
+  await options.locator("summary").click();
+  await page
+    .locator("#conversion-method")
+    .selectOption("colorado-teamunify-2026");
+  await expect(page.getByTestId("result-LCM")).toHaveText("1:06.33");
+  await expect(page.locator(".result-explanation")).toContainText("+ 1.60s");
+  await page.getByRole("button", { name: "Copy link", exact: true }).click();
+  const link = await page.evaluate(() => navigator.clipboard.readText());
+  expect(link).toContain("m=colorado-teamunify-2026");
+  await page.reload();
+  await expect(page.getByTestId("result-LCM")).toHaveText("1:06.33");
+  await page.goto("/#t=58.32&s=FR&d=100&c=SCY&g=women");
+  await page.reload();
+  await expect(page.getByTestId("result-LCM")).toHaveText("1:06.72");
+  await page.goto(link);
+  await page.reload();
+  await expect(page.getByTestId("result-LCM")).toHaveText("1:06.33");
+  await page.getByRole("link", { name: "Resources", exact: true }).click();
+  await expect(
+    page.getByRole("link", { name: "SwimSwam converter", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Swim Standards", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "USA Swimming Data Hub", exact: true }),
+  ).toBeVisible();
+});
+
 test("mobile age selectors leave space for their complete selected label", async ({
   page,
 }) => {
@@ -46,7 +84,9 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
     .click();
   await page.locator("#standards-system").selectOption("masters");
   await page.locator("#masters-age").selectOption("40-44");
-  await page.locator(".altitude-options summary").click();
+  await page
+    .locator(".altitude-options:not(.conversion-options) summary")
+    .click();
   const units = page.getByRole("group", { name: "Elevation units" });
   await units.getByRole("button", { name: "m", exact: true }).click();
   await expect(page.locator("#altitude")).toBeVisible();
@@ -84,7 +124,9 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
       .getByRole("group", { name: "Swum in" })
       .getByRole("button", { name: "LCM" }),
   ).toHaveAttribute("aria-pressed", "true");
-  await expect(page.locator(".altitude-options")).toHaveAttribute("open", "");
+  await expect(
+    page.locator(".altitude-options:not(.conversion-options)"),
+  ).toHaveAttribute("open", "");
   await expect(
     units.getByRole("button", { name: "m", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
@@ -116,7 +158,9 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
       .getByRole("group", { name: "Swum in" })
       .getByRole("button", { name: "SCY" }),
   ).toHaveAttribute("aria-pressed", "true");
-  await expect(page.locator(".altitude-options")).not.toHaveAttribute("open");
+  await expect(
+    page.locator(".altitude-options:not(.conversion-options)"),
+  ).not.toHaveAttribute("open");
 });
 
 test("dark standards keep long badges inside their circles and the swim marker visible", async ({
