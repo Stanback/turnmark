@@ -37,15 +37,11 @@ test("arrival is blank, example is explicit, typing keeps focus and reset clears
   await input.fill("59.32");
   await expect(input).toBeFocused();
   expect(await page.evaluate(() => scrollY)).toBe(scroll);
-  await expect(page.locator(".next-target-preview")).toContainText(
-    "Your entered swim",
-  );
+  await expect(page.locator(".next-target-preview")).toHaveCount(0);
   await page.getByRole("button", { name: "Reset", exact: true }).click();
   await expect(input).toHaveValue("");
   await expect(page.getByTestId("result-LCM")).toHaveText("—");
-  await expect(page.locator(".next-target-preview")).not.toContainText(
-    "Next standard",
-  );
+  await expect(page.locator(".next-target-preview")).toHaveCount(0);
   await page.reload();
   await expect(input).toHaveValue("");
 });
@@ -511,11 +507,13 @@ test("conversion history records settled edits, persists, filters, restores and 
   page,
 }) => {
   await openExample(page, "./");
+  await page.locator(".history-disclosure summary").click();
   await expect(page.locator(".history-row")).toHaveCount(0);
   await page.locator("#swim-time").fill("59.10");
   await expect(page.locator(".history-row")).toHaveCount(1);
   await expect(page.locator(".history-row")).toContainText("59.10");
   await page.reload();
+  await page.locator(".history-disclosure summary").click();
   await expect(page.locator(".history-row")).toHaveCount(1);
   const historyA11y = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
@@ -545,12 +543,14 @@ test("conversion history records settled edits, persists, filters, restores and 
     .click();
   await expect(page.locator(".history-row")).toHaveCount(1);
   await page.reload();
+  await page.locator(".history-disclosure summary").click();
   await expect(page.locator(".history-row")).toHaveCount(2);
   page.once("dialog", (dialog) => dialog.accept());
   await page
     .getByRole("button", { name: "Clear history", exact: true })
     .click();
   await page.reload();
+  await page.locator(".history-disclosure summary").click();
   await expect(page.locator(".history-row")).toHaveCount(0);
 });
 
@@ -644,6 +644,7 @@ test("history remembers target-course changes and explicit saves without duplica
   page,
 }) => {
   await openExample(page, "./");
+  await page.locator(".history-disclosure summary").click();
   await page
     .getByRole("button", { name: "Save comparison", exact: true })
     .click();
@@ -782,6 +783,7 @@ test("method retains the NCAA source and install instructions are usable", async
   page,
 }) => {
   await openExample(page, "./");
+  await page.locator("#method summary").click();
   await expect(
     page.locator("#method").getByRole("link", { name: /2025–27 NCAA rules/ }),
   ).toHaveAttribute("href", /PRXSW_RulesBook/);

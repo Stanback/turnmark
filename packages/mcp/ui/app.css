@@ -284,3 +284,16 @@ footer {
     color: CanvasText;
   }
 }
+
+.calculation-explanation {
+  margin-block: 16px;
+}
+.calculation-explanation h3 {
+  font-size: 0.875rem;
+  color: var(--tm-color-text);
+  margin: 0 0 4px;
+  font-weight: 650;
+}
+.calculation-explanation p {
+  margin: 0;
+}

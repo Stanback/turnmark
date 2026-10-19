@@ -2,9 +2,10 @@
 
 Implementation and measured verification are recorded in [MCP Apps review](MCP_APPS_REVIEW.md). This document preserves the research and rollout decisions.
 
-Research date: October 18, 2026. Status: research and a transport compatibility
-probe completed; Turnmark's interactive MCP UI is **not implemented or deployed**.
-The existing six calculation tools and npm `0.1.0` releases remain the baseline.
+Historical research from October 18, 2026, before the MCP Apps implementation.
+The implementation, current screenshots and release distinctions are maintained
+in [MCP Apps review](MCP_APPS_REVIEW.md); the proposal below records the original
+decisions and is not the current implementation status.
 
 ## Recommendation
 

@@ -154,7 +154,6 @@ function render(value: unknown, request: ConversionRequest) {
     details.append(summary);
     const p = document.createElement("p");
     p.textContent = `${source.title} · ${source.id} · ${source.revision}`;
-    details.append(p);
     const comparison = value as {
       methodComparison?: {
         method: string;
@@ -191,22 +190,46 @@ function render(value: unknown, request: ConversionRequest) {
       details.append(difference);
     }
     const inputs = document.createElement("h2");
-    inputs.textContent = "What goes into the calculation";
+    inputs.textContent = "Why the times differ";
     details.append(inputs);
-    for (const text of [
-      "NCAA uses event- and category-specific metric-to-yards factors; reverse and SCM/LCM comparisons are derived. Colorado Timing uses event- and course-specific multipliers and fixed time offsets, without age or category inputs.",
-      "Neither measures your turn technique, endurance or individual development. Pool length changes turns and distance; distance freestyle maps 500/1000/1650 yards to 400/800/1500 meters.",
-      "Standards and points use the entered swim separately.",
+    for (const [title, text] of [
+      [
+        "NCAA",
+        "Published factors vary by event and category. Metric-to-yards values are direct; reverse and SCM/LCM comparisons use ratios.",
+      ],
+      [
+        "Colorado Timing",
+        "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.",
+      ],
+      [
+        "Pool length",
+        "Shorter pools add turns and push-offs. These rules do not measure your technique, endurance or individual development.",
+      ],
+      [
+        "Distance events",
+        "500, 1000 and 1650 yards map to 400, 800 and 1500 meters.",
+      ],
     ]) {
+      const group = document.createElement("div");
+      group.className = "calculation-explanation";
+      const heading = document.createElement("h3");
+      heading.textContent = title;
       const explanation = document.createElement("p");
       explanation.textContent = text;
-      details.append(explanation);
+      group.append(heading, explanation);
+      details.append(group);
     }
     if (outcome.status === "available" && outcome.value.kind !== "swum") {
+      const heading = document.createElement("h2");
+      heading.textContent = "Selected calculation";
+      details.append(heading);
       const formula = document.createElement("p");
       formula.textContent = `Seconds × ${outcome.value.factor.toFixed(5)}${outcome.value.offsetSeconds ? ` ${outcome.value.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(outcome.value.offsetSeconds)}s` : ""}; factor rounded for display, final result truncated to hundredths.`;
       details.append(formula);
     }
+    const sourceHeading = document.createElement("h2");
+    sourceHeading.textContent = "Source";
+    details.append(sourceHeading, p);
     if (typeof source.url === "string" && source.url.startsWith("https://")) {
       const button = document.createElement("button");
       button.type = "button";
