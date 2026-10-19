@@ -83,8 +83,10 @@ and keyboard behavior; they predate this small palette refinement.
 
 The later hosted recording test exposed a test-observation issue: its video
 shows Done dismissing the software keyboard while XCTest still reports a hidden
-keyboard AX node as existing. Dismissal checks now require both visible/hittable
-keys and the converter's Done control to disappear. Scroll helpers also ignore
-hidden/offscreen keyboard frames, retaining category/time/recording assertions.
+keyboard AX node as existing. Dismissal checks now require both onscreen keyboard
+geometry/keys and the converter's Done control to disappear. Scroll helpers also ignore
+retained empty keyboard nodes, retaining category/time/recording assertions.
 The CI recording is retained as evidence; application code was unchanged for
-this test correction.
+this test correction. The Duo’s system keyboard can occupy its other display
+outside the application’s primary AX frame; its own geometry/key content must
+be checked without intersecting that primary frame.

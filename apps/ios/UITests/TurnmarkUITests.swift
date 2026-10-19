@@ -10,22 +10,29 @@ final class TurnmarkUITests: XCTestCase {
     @MainActor private func visibleKeyboard(in app: XCUIApplication) -> XCUIElement? {
         let keyboard = app.keyboards.firstMatch
         guard keyboard.exists else { return nil }
+        // The system keyboard may occupy the Duo's other display, outside
+        // the app's primary AX frame. Check its own geometry and key content.
         let frame = keyboard.frame
         guard frame.width > 0, frame.height > 0,
               frame.minX.isFinite, frame.minY.isFinite,
-              frame.intersects(app.frame), keyboard.keys.firstMatch.exists,
-              keyboard.keys.firstMatch.isHittable else { return nil }
+              keyboard.keys.firstMatch.exists else { return nil }
         return keyboard
     }
     @MainActor private func assertConverterKeyboardDismissed(in app: XCUIApplication,
         file: StaticString = #filePath, line: UInt = #line) {
         // iOS may retain a hidden keyboard AX node after a successful dismissal.
-        // Assert visible/hittable keys and the entry toolbar are both gone.
+        // Assert onscreen keyboard geometry/keys and the entry toolbar are gone.
+        // Keyboard key hit-testing itself is not exposed reliably by XCTest.
         let dismissed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
             let done = app.buttons["dismissConverterKeyboard"]
             return self.visibleKeyboard(in: app) == nil && !(done.exists && done.isHittable)
         }, object: nil)
-        XCTAssertEqual(XCTWaiter.wait(for: [dismissed], timeout: 5), .completed, file: file, line: line)
+        let result = XCTWaiter.wait(for: [dismissed], timeout: 5)
+        if result != .completed {
+            let keyboard = app.keyboards.firstMatch
+            print("Dismissal observation: exists=\(keyboard.exists), frame=\(keyboard.exists ? keyboard.frame : .zero), keys=\(keyboard.keys.count)")
+        }
+        XCTAssertEqual(result, .completed, file: file, line: line)
     }
     @MainActor private func reach(_ element: XCUIElement, in app: XCUIApplication) {
         for _ in 0..<10 {
