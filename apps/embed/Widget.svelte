@@ -76,7 +76,7 @@
         ? "Enter a positive time, such as 58.32 or 1:02.45 (up to 60:00)."
         : "Minutes : seconds . hundredths"}
     </p>
-    <label
+    <label class="wide-field"
       >Stroke<span class="select-wrap"
         ><select bind:value={stroke} onchange={reconcileDistance}
           >{#each strokes as s}<option value={s.value}>{s.label}</option
@@ -100,7 +100,7 @@
         ><Icon name="chevron" size={16} /></span
       ></label
     >
-    <label
+    <label class="wide-field"
       >Published table<span class="select-wrap"
         ><select bind:value={table}
           ><option value="women">Women / girls</option><option value="men"
@@ -338,6 +338,11 @@
   }
   .brand {
     font-weight: 750;
+  }
+  @media (max-width: 440px) {
+    .wide-field {
+      grid-column: 1 / -1;
+    }
   }
   @media (max-width: 360px) {
     .converter {
