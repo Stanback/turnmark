@@ -172,6 +172,7 @@ jobs:
           sparse-checkout: |
             /deployment/
             /packages/mcp-worker/wrangler.jsonc
+            /packages/mcp/package.json
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
@@ -214,7 +215,8 @@ jobs:
           const raw = readFileSync(process.env.RUNNER_TEMP + '/mcp-tools.json', 'utf8').trim();
           const body = JSON.parse(raw.startsWith('{') ? raw : raw.split(/\r?\n/).filter(line => line.startsWith('data: ')).map(line => line.slice(6)).join('\n'));
           assert.deepEqual(body.result.tools.map(t => t.name).sort(), ['adjust_altitude','convert_swim','get_masters_target','get_sources','get_world_points','get_youth_standards']);
-          const uri = 'ui://turnmark/conversion/0.2.0.html';
+          const { version } = JSON.parse(readFileSync('packages/mcp/package.json', 'utf8'));
+          const uri = `ui://turnmark/conversion/${version}.html`;
           assert.equal(body.result.tools.find(t => t.name === 'convert_swim')._meta.ui.resourceUri, uri);
           async function rpc(method, params) {
             const response = await fetch('https://mcp.turnmark.app/mcp', {
