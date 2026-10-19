@@ -7,6 +7,7 @@
   const paths: Record<string, string> = {
     wave: "M3 8q4-6 9 0t9 0M3 16q4-6 9 0t9 0",
     history: "M3 4v6h6M3 10a9 9 0 1 1 .6 7M12 7v5l3 2",
+    trash: "M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7",
     reset: "M20 4v6h-6M20 10a8 8 0 1 0 .1 4",
     lock: "M7 10V7a5 5 0 0 1 10 0v3M5 10h14v11H5zM12 14v3",
     standards: "M8 4h8v4H8zM8 6H5v15h14V6h-3M9 12h6M9 16h6",

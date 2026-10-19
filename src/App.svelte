@@ -893,12 +893,12 @@
       </div>
       {#if standardMode === "targets"}
         <label class="standards-system" for="standards-system"
-          >Standards<select
-            id="standards-system"
-            bind:value={form.standardSystem}
-            ><option value="youth">USA Swimming · Youth</option><option
-              value="masters">U.S. Masters Swimming · Adults</option
-            ></select
+          >Standards<span class="select-wrap standards-select"
+            ><select id="standards-system" bind:value={form.standardSystem}
+              ><option value="youth">USA Swimming · Youth</option><option
+                value="masters">U.S. Masters Swimming · Adults</option
+              ></select
+            ><Icon name="chevron" size={16} /></span
           ></label
         >
         {#if form.standardSystem === "masters"}
@@ -918,9 +918,12 @@
             </div>
             <div class="standards-controls">
               <label for="age-group"
-                >Age group<select id="age-group" bind:value={form.age}
-                  >{#each ages as age}<option value={age.id}>{age.label}</option
-                    >{/each}</select
+                >Age group<span class="select-wrap standards-select"
+                  ><select id="age-group" bind:value={form.age}
+                    >{#each ages as age}<option value={age.id}
+                        >{age.label}</option
+                      >{/each}</select
+                  ><Icon name="chevron" size={16} /></span
                 ></label
               ><span class="standards-edition"
                 >2024–2028<br /><span>National age group standards</span></span
@@ -1143,11 +1146,17 @@
           </h2>
         </div>
         {#if conversions.length}<button
-            class="text-button"
+            class="text-button clear-history"
             onclick={() => {
+              if (
+                !window.confirm(
+                  "Clear all conversion history on this device? This cannot be undone.",
+                )
+              )
+                return;
               writeHistory([]);
               notify("Conversion history cleared.");
-            }}>Clear history</button
+            }}>Clear history <Icon name="trash" size={14} /></button
           >{/if}
       </div>
       <p class="history-subtitle">
@@ -1391,20 +1400,30 @@
   <Theme />
 </div>
 <footer class="page-width">
-  <a class="footer-brand wordmark" href="./" aria-label="Turnmark home"
-    >turnmark<span class="brand-period">.</span></a
-  ><span
-    >Built by <a href="https://bristanback.com" target="_blank" rel="noreferrer"
-      >Bri Stanback</a
-    > · Open source, always.</span
-  >
-  <nav class="footer-docs" aria-label="Documentation">
-    <a href="#method">Methodology</a><a href="/embed/">Widget setup</a><a
-      href="/mcp/">MCP setup</a
+  <div class="footer-top">
+    <a class="footer-brand wordmark" href="./" aria-label="Turnmark home"
+      >turnmark<span class="brand-period">.</span></a
     >
-  </nav>
-  <span class="footer-privacy">No account. No uploads.</span>
-  <span>Sources checked October 16, 2026</span>
+    <p class="footer-credit">
+      Built by <a
+        href="https://bristanback.com"
+        target="_blank"
+        rel="noreferrer">Bri Stanback</a
+      ><span>Open source, always.</span>
+    </p>
+  </div>
+  <div class="footer-bottom">
+    <nav class="footer-docs" aria-label="Documentation">
+      <a href="#method">Methodology</a><a href="/embed/">Widget setup</a><a
+        href="/mcp/">MCP setup</a
+      >
+    </nav>
+    <div class="footer-meta">
+      <span>No account. No uploads.</span><span
+        >Sources checked October 16, 2026</span
+      >
+    </div>
+  </div>
 </footer>
 <nav class="mobile-nav" aria-label="Mobile navigation">
   {#each [{ id: "converter", icon: "wave", label: "Converter" }, { id: "standards", icon: "standards", label: "Standards" }, { id: "history", icon: "history", label: "History" }] as item}

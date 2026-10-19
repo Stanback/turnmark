@@ -812,13 +812,12 @@ summary::-webkit-details-marker {
 
 footer {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 25px;
+  flex-direction: column;
+  gap: 24px;
   font-size: 14px;
   color: var(--muted);
-  padding-top: 28px;
-  padding-bottom: 28px;
+  padding-top: 32px;
+  padding-bottom: 32px;
 }
 .footer-brand {
   font-family: var(--heading);
@@ -837,12 +836,34 @@ footer {
   color: inherit;
   text-underline-offset: 3px;
 }
-footer > span:last-child {
-  margin-left: auto;
-  font-size: 13px;
+.footer-top,
+.footer-bottom {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
 }
-footer > span > a {
+.footer-credit {
+  margin: 0;
+  line-height: 1.8;
+  text-align: right;
+}
+.footer-credit span,
+.footer-meta span {
+  display: block;
+}
+.footer-credit a {
   text-underline-offset: 3px;
+}
+.footer-meta {
+  font-size: 13px;
+  line-height: 1.9;
+  text-align: right;
+}
+.footer-docs {
+  column-gap: 24px;
+  row-gap: 12px;
 }
 .toast {
   position: fixed;
@@ -1434,10 +1455,15 @@ footer > span > a {
   .footer-brand {
     font-size: 22px;
   }
-  footer > span:last-child {
-    width: 100%;
-    margin: 0;
-    font-size: 13px;
+  .footer-top,
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+  .footer-credit,
+  .footer-meta {
+    text-align: left;
   }
   .mobile-nav {
     position: fixed;

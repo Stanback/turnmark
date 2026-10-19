@@ -324,6 +324,20 @@ test("conversion history records settled edits, persists, filters, restores and 
   await expect(page.locator("#event")).toHaveValue("FR:100");
   // Invalid input must never enter history.
   await page.locator("#swim-time").fill("1:60");
+  page.once("dialog", async (dialog) => {
+    expect(dialog.type()).toBe("confirm");
+    expect(dialog.message()).toContain(
+      "Clear all conversion history on this device?",
+    );
+    await dialog.dismiss();
+  });
+  await page
+    .getByRole("button", { name: "Clear history", exact: true })
+    .click();
+  await expect(page.locator(".history-row")).toHaveCount(1);
+  await page.reload();
+  await expect(page.locator(".history-row")).toHaveCount(2);
+  page.once("dialog", (dialog) => dialog.accept());
   await page
     .getByRole("button", { name: "Clear history", exact: true })
     .click();

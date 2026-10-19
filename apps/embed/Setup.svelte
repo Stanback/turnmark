@@ -175,7 +175,7 @@
   }
   .docs-select svg {
     position: absolute;
-    inset-inline-end: 16px;
+    inset-inline-end: 20px;
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
@@ -183,7 +183,7 @@
   select {
     appearance: none;
     max-width: 100%;
-    padding: 12px 48px 12px 16px;
+    padding: 12px 52px 12px 16px;
     background: var(--docs-surface);
     color: inherit;
     border: 1px solid var(--docs-control);
