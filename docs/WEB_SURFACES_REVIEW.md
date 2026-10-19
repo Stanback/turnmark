@@ -28,7 +28,9 @@ the methodology. Reset has a glyph, the privacy note lives in the footer, and
 its wordmark uses the same type weight and colored dot as the header. The theme
 controls have a named Appearance landmark. The result has a static cyan rim
 that fades out along the top and right edges from its upper-right corner.
-Inactive Standards/Points buttons have a restrained hover/focus tint. Native
+Inactive Standards/Points buttons have a restrained hover/focus tint. History
+filters, icons, standards pickers and benchmark help now use the same generated
+surface/input/border roles as the converter instead of independent older blues. Native
 select pickers retain keyboard and mobile behavior, with custom chevrons inset
 20 pixels. The footer separates brand/credit from documentation and privacy/source
 notes into two rows, with stacked groups on phones. Clear history has a trash

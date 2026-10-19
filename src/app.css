@@ -1930,8 +1930,8 @@ footer {
 [data-theme="dark"] .history-panel,
 [data-theme="dark"] .standards-section,
 [data-theme="dark"] .saved-card {
-  background: #122a3d;
-  border-color: #253e53;
+  background: var(--surface);
+  border-color: var(--line);
 }
 [data-theme="dark"] .history-heading .eyebrow {
   color: #a5bdd0;
@@ -1941,13 +1941,13 @@ footer {
 }
 [data-theme="dark"] .standards-controls select,
 [data-theme="dark"] .standards-system select {
-  background: #172f43;
-  border-color: #395268;
-  color: #e0edf7;
+  background: var(--surface-input);
+  border-color: var(--tm-color-border-control);
+  color: var(--ink);
 }
 [data-theme="dark"] .elevation-units {
   background: #0c2233;
-  border-color: #395268;
+  border-color: var(--tm-color-border-control);
 }
 [data-theme="dark"] .elevation-units button {
   color: #b5cbdc;
@@ -1994,43 +1994,43 @@ footer {
 [data-theme="dark"] .history-heading h2 > span,
 [data-theme="dark"] .history-wave,
 [data-theme="dark"] .empty-icon {
-  background: #1e4058;
-  color: #b6e5f6;
-  border-color: #36546b;
+  background: var(--surface-raised);
+  color: var(--muted);
+  border-color: var(--line);
 }
 [data-theme="dark"] .history-wave.medley {
   background: #34482b;
   color: #d4e7aa;
 }
 [data-theme="dark"] .history-filters button {
-  background: #203a50;
-  color: #cbdfea;
+  background: var(--surface-raised);
+  color: var(--muted);
 }
 [data-theme="dark"] .history-filters button.active {
-  background: #276581;
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface-raised));
   color: white;
 }
 [data-theme="dark"] .history-row {
-  border-color: #2a4358;
+  border-color: var(--line);
 }
 [data-theme="dark"] .history-restore:hover {
-  background: #1c374b;
+  background: var(--surface-raised);
 }
 [data-theme="dark"] .history-times strong > span,
 [data-theme="dark"] .history-restore > svg,
 [data-theme="dark"] .history-empty > span:last-child {
-  color: #a8c6d9;
+  color: var(--muted);
 }
 [data-theme="dark"] .standards-tabs {
-  background: #0d2233;
+  background: var(--surface-input);
 }
 [data-theme="dark"] .standards-tabs button.active {
-  background: #2a465b;
-  color: #eff7fb;
+  background: var(--surface-raised);
+  color: var(--ink);
 }
 [data-theme="dark"] .standards-edition,
 [data-theme="dark"] .standards-context > a {
-  color: #bad7e7;
+  color: var(--muted);
 }
 [data-theme="dark"] .standard-achievement p strong {
   color: #d6e6ef;
@@ -2040,12 +2040,12 @@ footer {
 }
 [data-theme="dark"] .swim-marker {
   background: #d6f28d;
-  border-color: #122a3d;
+  border-color: var(--surface);
   outline: 2px solid #d6f28d;
 }
 [data-theme="dark"] .swim-marker > span {
   background: #d6f28d;
-  color: #122a3d;
+  color: var(--surface);
 }
 [data-theme="dark"] .swim-marker > span:after {
   background: #d6f28d;
@@ -2054,20 +2054,20 @@ footer {
 [data-theme="dark"] .points-score > span,
 [data-theme="dark"] .points-formula > span,
 [data-theme="dark"] .masters-context {
-  color: #afcbdd;
+  color: var(--muted);
 }
 [data-theme="dark"] .points-panel .points-note,
 [data-theme="dark"] .install-dialog .install-offline {
-  background: #1b3a50;
+  background: var(--surface-raised);
 }
 [data-theme="dark"] .points-source,
 [data-theme="dark"] .method-items a,
 [data-theme="dark"] .faq-answer a {
-  color: #9ddbf0;
+  color: var(--accent);
 }
 [data-theme="dark"] .masters-status {
-  background: #1c394e;
-  border-color: #35576e;
+  background: var(--surface-raised);
+  border-color: var(--line);
 }
 [data-theme="dark"] .masters-status.met {
   background: #293e2b;
@@ -2076,7 +2076,7 @@ footer {
 [data-theme="dark"] .masters-status > svg,
 [data-theme="dark"] .masters-comparison > svg,
 [data-theme="dark"] .masters-empty {
-  color: #b2d4e6;
+  color: var(--muted);
 }
 [data-theme="dark"] .masters-status.met > svg {
   color: #cbe99a;
@@ -2100,13 +2100,13 @@ footer {
   border-color: #426077;
 }
 [data-theme="dark"] .theme-control > div {
-  background: #102739;
+  background: var(--surface-input);
 }
 [data-theme="dark"] .theme-control button {
   color: #b3ccdd;
 }
 [data-theme="dark"] .theme-control button.active {
-  background: #2b4c63;
+  background: var(--surface-raised);
   color: #edf6fb;
 }
 [data-theme="dark"] .mobile-nav {

@@ -16,7 +16,7 @@ groups, not an implementation of the separate DTCG Resolver specification.
 | Consumer                      | Current status                                                  | Adapter boundary                                                |
 | ----------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
 | Web converter                 | Uses the generated palette and selected spacing/radius roles    | CSS variables; responsive web layout                            |
-| Web history/standards/dialogs | Inherits base text roles; some older styles remain              | Further component-by-component adoption                         |
+| Web history/standards/dialogs | Generated surface/text roles for history and benchmark controls | Further component-by-component adoption                         |
 | Widget/MCP setup pages        | Shared generated palette, fonts, content width and brand header | Static HTML/CSS; setup remains readable without JavaScript      |
 | Embedded widget               | Existing independent palette; adoption next                     | Its own compact stylesheet and appearance selection             |
 | iOS                           | Generated screen palette; native controls and result adopted    | SwiftUI palette and semantic system text styles                 |
