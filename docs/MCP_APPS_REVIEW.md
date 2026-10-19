@@ -39,6 +39,7 @@ text, the clock fits one line and surrounding copy wraps normally:
   The shared-vector patch is not yet published to npm; published `0.2.0` keeps
   its original `ui://turnmark/conversion/0.2.0.html` resource.
   Both list/read carry CSP with empty connect/resource/frame domain lists.
+- The card wordmark uses the shared accent token for its period in both themes.
 - One self-contained HTML asset, including the official bridge SDK: approximately
   659 KB raw, under an enforced 750,000-byte build budget. No CDN,
   font request, direct fetch, local storage, history access or nested iframe.

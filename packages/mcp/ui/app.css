@@ -21,6 +21,12 @@ header {
   font-weight: 750;
   margin-bottom: 16px;
 }
+.wordmark {
+  white-space: nowrap;
+}
+.brand-dot {
+  color: var(--tm-color-accent);
+}
 header svg {
   width: 32px;
   height: 32px;
