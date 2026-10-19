@@ -449,3 +449,13 @@ model needs independent held-out evaluation and an explicit later decision.
 Anti-goals for now: a general swim logger, expanded personal-best tracking,
 automatic meet-result aggregation, cloud accounts/sync, recruiting and coach
 features. Existing local records and export/import are maintenance scope.
+
+## Converter layout follow-up
+
+Explore a clearer grouping of swim inputs, course equivalents and the next
+published target with subtle ambient effects. The [layout study](CONVERTER_LAYOUT_EXPLORATION.md)
+keeps this separate from statistical-model research. Refresh the root README’s
+actual-build screenshots in that same PR: lead with the converter and retain
+paired native Convert/home previews, making the method choice discoverable
+without letting an open menu obscure the main view. The study remains a draft;
+this plan does not claim a redesigned layout has shipped.
