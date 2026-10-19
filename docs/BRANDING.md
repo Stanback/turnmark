@@ -44,3 +44,10 @@ not need Node or a browser to produce their icons.
 The iOS icon is a flat asset-catalog icon for now. Layered Icon Composer artwork
 and its light/dark/clear/tinted previews remain part of store-artwork refinement.
 No lighting, rounded mask, or simulated glass is baked into the app icon.
+
+Browser favicons use an optical variant of the canonical wave: a 1.32× centered
+scale and a slightly heavier stroke. This fills about 71% of the rounded square
+width and keeps both crests distinct at 16–32px. Launcher and in-app wave geometry
+remain unchanged; regenerate the derived browser SVG/PNG with the brand script.
+
+![Rounded favicon reviewed at actual 16, 20, 24, 32 and 64px sizes on light and dark backgrounds](screenshots/favicon-optical-sizes.png)

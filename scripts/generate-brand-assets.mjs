@@ -17,10 +17,18 @@ const [, wave, width] = path;
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="${background}"/><path d="${wave}" fill="none" stroke="${stroke}" stroke-width="${width}" stroke-linecap="round"/></svg>\n`;
 // Browser favicons own their shape. Launchers keep full-bleed artwork so each
 // platform can apply its native mask without a second set of rounded corners.
-const faviconSvg = svg.replace(
-  '<rect width="512" height="512"',
-  '<rect width="512" height="512" rx="112"',
-);
+// Optical favicon variant: the same wave fills ~71% of the width, with a
+// slightly heavier stroke so both crests remain distinct in a 16px browser tab.
+const faviconSvg = svg
+  .replace(
+    '<rect width="512" height="512"',
+    '<rect width="512" height="512" rx="112"',
+  )
+  .replace(
+    "<path ",
+    '<path transform="translate(256 256) scale(1.32) translate(-256 -256)" ',
+  )
+  .replace(`stroke-width="${width}"`, `stroke-width="${Number(width) + 4}"`);
 const digest = (content) => createHash("sha256").update(content).digest("hex");
 const sourceHash = digest(
   geometry +
