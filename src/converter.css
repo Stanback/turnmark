@@ -800,12 +800,51 @@
 .standards-select {
   display: inline-block;
   min-width: 0;
+  flex-shrink: 0;
+}
+.event-select select {
+  padding-left: 50px;
+}
+.select-wrap > .select-leading-icon {
+  left: 17px;
+  right: auto;
+  transform: translateY(-50%);
+  color: var(--muted);
+}
+.equivalents-title .equivalents-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: inherit;
+  color: inherit;
 }
 .standards-system .standards-select {
   width: 100%;
 }
 .standards-select select {
   padding-right: 52px;
+}
+.standards-controls {
+  flex-wrap: wrap;
+  row-gap: 12px;
+}
+.standards-controls label {
+  flex-shrink: 0;
+}
+#age-group,
+#masters-age {
+  min-width: 10rem;
+}
+@media (max-width: 480px) {
+  .standards-controls label {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+  .standards-controls .standards-edition {
+    flex-basis: 100%;
+    padding-left: 0;
+    border-left: 0;
+  }
 }
 .theme-control button {
   padding-inline: 16px;

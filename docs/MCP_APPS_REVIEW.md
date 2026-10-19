@@ -34,11 +34,14 @@ text, the clock fits one line and surrounding copy wraps normally:
 - Six existing read-only tools and schemas stay intact. Only `convert_swim`
   advertises `_meta.ui.resourceUri`; the one static resource is registered
   independently of initialization capabilities for stateless HTTP compatibility.
-- URI `ui://turnmark/conversion/0.2.0.html`, MIME
+- Current source URI `ui://turnmark/conversion/0.2.1.html`, MIME
   `text/html;profile=mcp-app`. Change the resource version for later view releases.
+  The shared-vector patch is not yet published to npm; published `0.2.0` keeps
+  its original `ui://turnmark/conversion/0.2.0.html` resource.
   Both list/read carry CSP with empty connect/resource/frame domain lists.
+- The card wordmark uses the shared accent token for its period in both themes.
 - One self-contained HTML asset, including the official bridge SDK: approximately
-  656 KB raw / 139 KB gzip, under an enforced 750,000-byte build budget. No CDN,
+  659 KB raw, under an enforced 750,000-byte build budget. No CDN,
   font request, direct fetch, local storage, history access or nested iframe.
   Installed third-party license notices are derived from the bundle graph and
   included in both the HTML resource and npm archive.
@@ -88,7 +91,9 @@ every host or directory approval. Local profiling does not establish edge CPU
 usage; verify production responses after deployment and monitor actual Free
 limits without enabling a paid plan.
 
-The source/server/UI and public npm package are MCP **0.2.0**. The release used
+The published npm package remains MCP **0.2.0**; the current source/server/UI
+prepares the **unreleased 0.2.1** shared-glyph patch. Protected main CI can update
+the hosted Worker independently of npm publication. The 0.2.0 release used
 the main-only manual workflow and npm trusted publishing, with the tested
 archive's checksum verified before publication. The SDK stays at published
 **0.1.0** for this adapter release. A fresh external registry consumer verified

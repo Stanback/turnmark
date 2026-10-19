@@ -6,6 +6,7 @@ let courseNames = ["SCY", "SCM", "LCM"]
 let courses: [Course] = [.scy, .scm, .lcm]
 let strokeNames = ["Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual medley"]
 let strokeCodes = ["FR", "BK", "BR", "FL", "IM"]
+let strokeImages = ["Swim-freestyle", "Swim-backstroke", "Swim-breaststroke", "Swim-butterfly", "Swim-individual-medley"]
 let strokes: [Stroke] = [.freestyle, .backstroke, .breaststroke, .butterfly, .individualMedley]
 
 struct Draft: Codable, Equatable {
@@ -132,8 +133,22 @@ private struct TurnmarkView: View {
                     }
                 }
                 .background(TurnmarkPalette.canvas)
-                .toolbar(.hidden, for: .navigationBar)
+                .navigationTitle("turnmark.").navigationBarTitleDisplayMode(.inline)
                 .toolbar {
+                    converterBrandToolbar
+                    // Keep the brand leading, rather than duplicating the inline
+                    // navigation title in the system's centered title position.
+                    ToolbarItem(placement: .principal) { Color.clear.frame(width: 0, height: 0).accessibilityHidden(true) }
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Menu {
+                            Button { dismissTimeEntry(); showingMethod = true } label: { Label("About Turnmark", systemImage: "info.circle") }
+                                .accessibilityIdentifier("converterAbout")
+                            Link(destination: URL(string: "https://turnmark.app/#method")!) {
+                                Label("Methodology and coverage", systemImage: "arrow.up.right.square")
+                            }
+                        } label: { Image(systemName: "ellipsis") }
+                            .accessibilityLabel("More options").accessibilityIdentifier("converterMenu")
+                    }
                     if editingTime {
                         ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("Done", action: dismissTimeEntry).accessibilityIdentifier("dismissConverterKeyboard") }
                     }
@@ -169,6 +184,30 @@ private struct TurnmarkView: View {
         .onChange(of: draft.courseIndex) { _, _ in draft.reconcile() }
         .onChange(of: draft.strokeIndex) { _, _ in draft.reconcile() }
     }
+    private var toolbarWave: some View {
+        Image("Swim-brand-wave").resizable().scaledToFit().frame(width: 27, height: 27)
+            .foregroundStyle(TurnmarkPalette.accent)
+    }
+    private var toolbarBrand: some View {
+        HStack(spacing: 7) {
+            toolbarWave
+            if !typeSize.isAccessibilitySize {
+                HStack(alignment: .firstTextBaseline, spacing: 1) {
+                    Text("turnmark")
+                    Text(".").foregroundStyle(TurnmarkPalette.accent)
+                }.font(.headline.weight(.bold)).lineLimit(1)
+            }
+        }.fixedSize(horizontal: true, vertical: false)
+            .accessibilityElement(children: .ignore).accessibilityLabel("Turnmark")
+            .accessibilityAddTraits(.isHeader).accessibilityIdentifier("converterBrand")
+    }
+    @ToolbarContentBuilder private var converterBrandToolbar: some ToolbarContent {
+        if #available(iOS 26.0, *) {
+            ToolbarItem(placement: .topBarLeading) { toolbarBrand }.sharedBackgroundVisibility(.hidden)
+        } else {
+            ToolbarItem(placement: .topBarLeading) { toolbarBrand }
+        }
+    }
 
     private func dismissTimeEntry() {
         // Explicit dismissal supersedes any pane-change restoration still
@@ -195,16 +234,20 @@ private struct TurnmarkView: View {
     }
 
     private var compactConverter: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
+        Form {
+            Section {
                 ConversionResult(input: draft, compact: true, benchmarks: { dismissTimeEntry(); benchmarking = $0 }) { draft.targetIndex = $0 }
-                inputContent
-            }.padding(16).frame(maxWidth: 600).frame(maxWidth: .infinity)
-        }.scrollDismissesKeyboard(.interactively)
+                    .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
+            }
+            inputContent
+        }.formStyle(.grouped).scrollContentBackground(.hidden)
+            .scrollDismissesKeyboard(.interactively)
+            .frame(maxWidth: 600).frame(maxWidth: .infinity)
     }
     private var inputPane: some View {
-        ScrollView { inputContent.padding(20).frame(maxWidth: 600).frame(maxWidth: .infinity) }
+        Form { inputContent }.formStyle(.grouped).scrollContentBackground(.hidden)
             .scrollDismissesKeyboard(.interactively)
+            .frame(maxWidth: 600).frame(maxWidth: .infinity)
     }
     private var resultPane: some View {
         comparisonPane()
@@ -216,34 +259,42 @@ private struct TurnmarkView: View {
         }
     }
     private var inputContent: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        Group {
             inputCard
-            if let logNotice { Text(logNotice).font(.footnote).foregroundStyle(TurnmarkPalette.textMuted).accessibilityIdentifier("logNotice") }
-            if history.error != nil { Text("History is unavailable. Open History to try again.").font(.footnote) }
-            HStack {
-                Text("On this device. Works offline.").font(.footnote).foregroundStyle(TurnmarkPalette.textMuted)
-                Spacer()
-                Button { showingMethod = true } label: { Label("About", systemImage: "info.circle") }
-                    .font(.footnote).accessibilityIdentifier("methodology")
-            }
+            Section {
+                if let logNotice { Text(logNotice).font(.footnote).foregroundStyle(TurnmarkPalette.textMuted).accessibilityIdentifier("logNotice") }
+                if history.error != nil { Text("History is unavailable. Open My times to try again.").font(.footnote) }
+                Button { showingMethod = true } label: { Label("About Turnmark", systemImage: "info.circle") }
+                    .accessibilityIdentifier("methodology")
+            } footer: { Text("On this device. Works offline.") }
+                .listRowBackground(TurnmarkPalette.surface)
         }.foregroundStyle(TurnmarkPalette.text)
     }
     private var inputCard: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            Text("Your swim").font(.headline)
+        Section {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Your time").font(.subheadline.weight(.semibold))
-                TextField("58.32", text: $draft.time)
-                    .font(.system(size: entrySize, weight: .semibold)).monospacedDigit()
-                    .keyboardType(.numbersAndPunctuation).focused($editingTime)
-                    .submitLabel(.done).onSubmit(dismissTimeEntry)
-                    .padding(12).background(TurnmarkPalette.surfaceInput, in: RoundedRectangle(cornerRadius: 10))
-                    .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(TurnmarkPalette.borderControl))
-                    .accessibilityLabel("Your time").accessibilityIdentifier("timeInput")
+                HStack {
+                    TextField("58.32", text: $draft.time)
+                        .font(.system(size: entrySize, weight: .semibold)).monospacedDigit()
+                        .keyboardType(.numbersAndPunctuation).focused($editingTime)
+                        .submitLabel(.done).onSubmit(dismissTimeEntry)
+                        .accessibilityLabel("Your time").accessibilityIdentifier("timeInput")
+                    if !draft.time.isEmpty {
+                        Button { draft.time = ""; editingTime = true } label: { Image(systemName: "xmark.circle.fill") }
+                            .buttonStyle(.borderless).foregroundStyle(.secondary)
+                            .accessibilityLabel("Clear time").accessibilityIdentifier("clearConverterTime")
+                    }
+                }.padding(.vertical, 4)
                 Text("For example, 58.32 or 1:02.45").font(.footnote).foregroundStyle(TurnmarkPalette.textMuted)
             }
             if typeSize.isAccessibilitySize { strokePicker; distancePicker }
-            else { HStack { strokePicker; Spacer(); distancePicker } }
+            else {
+                HStack(alignment: .top, spacing: 16) {
+                    strokePicker.frame(maxWidth: .infinity, alignment: .leading)
+                    distancePicker.frame(maxWidth: .infinity, alignment: .leading)
+                }
+            }
             coursePicker("Swum in", selection: $draft.courseIndex, id: "inputCourse")
             VStack(alignment: .leading, spacing: 8) {
                 Text("Published category").font(.subheadline.weight(.semibold))
@@ -252,16 +303,14 @@ private struct TurnmarkView: View {
                 }.pickerStyle(.segmented).accessibilityIdentifier("category")
             }
             coursePicker("Compare with", selection: $draft.targetIndex, id: "targetCourse")
-            Divider()
             Button { dismissTimeEntry(); logging = draft } label: {
-                Label("Record time", systemImage: "plus").fontWeight(.semibold)
+                Label("Log swim", image: "Swim-log-swim").fontWeight(.semibold)
                     .foregroundStyle(TurnmarkPalette.onAction).frame(maxWidth: .infinity)
             }.buttonStyle(.borderedProminent).tint(TurnmarkPalette.actionFill).controlSize(.large)
                 .disabled(!draft.canLog || history.store == nil).accessibilityIdentifier("logSwim")
-            Text("Record the time you swam, with a date and optional meet.")
-                .font(.footnote).foregroundStyle(TurnmarkPalette.textMuted)
-        }.padding(20).background(TurnmarkPalette.surface, in: RoundedRectangle(cornerRadius: TurnmarkPalette.radiusCard))
-            .overlay(RoundedRectangle(cornerRadius: TurnmarkPalette.radiusCard).strokeBorder(TurnmarkPalette.borderSubtle))
+        } header: { Text("Your swim").font(.title3.bold()).textCase(nil).foregroundStyle(TurnmarkPalette.text) }
+          footer: { Text("Add this time to My times, with an optional date and meet.") }
+            .listRowBackground(TurnmarkPalette.surface)
     }
     private func coursePicker(_ title: String, selection: Binding<Int>, id: String) -> some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -276,28 +325,39 @@ private struct TurnmarkView: View {
             Text("Stroke").font(.subheadline.weight(.semibold))
             Menu {
                 Picker("Stroke", selection: $draft.strokeIndex) {
-                    ForEach(strokeNames.indices, id: \.self) { Text(strokeNames[$0]).tag($0) }
+                    ForEach(strokeNames.indices, id: \.self) { Label(strokeNames[$0], image: strokeImages[$0]).tag($0) }
                 }
             } label: {
                 HStack(spacing: 5) {
+                    Image(strokeImages[draft.strokeIndex]).resizable().scaledToFit().frame(width: 20, height: 20).accessibilityHidden(true)
                     Text(draft.strokeIndex == 4 ? "IM" : strokeNames[draft.strokeIndex])
                     Image(systemName: "chevron.up.chevron.down").font(.caption).accessibilityHidden(true)
-                }
-            }.accessibilityLabel("Stroke").accessibilityValue(strokeNames[draft.strokeIndex])
+                }.foregroundStyle(TurnmarkPalette.accent)
+            }.buttonStyle(.borderless).accessibilityLabel("Stroke").accessibilityValue(strokeNames[draft.strokeIndex])
                 .accessibilityIdentifier("strokePicker")
         }
     }
     private var distancePicker: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Distance").font(.subheadline.weight(.semibold))
-            Picker("Distance", selection: $draft.distance) {
-                ForEach(draft.options, id: \.event.distance) { Text("\($0.event.distance) \(draft.unit)").tag($0.event.distance) }
-            }.accessibilityIdentifier("distancePicker")
+            Menu {
+                Picker("Distance", selection: $draft.distance) {
+                    ForEach(draft.options, id: \.event.distance) { Text("\($0.event.distance) \(draft.unit)").tag($0.event.distance) }
+                }
+            } label: {
+                HStack(spacing: 5) {
+                    Image("Swim-distance").resizable().scaledToFit().frame(width: 20, height: 20).accessibilityHidden(true)
+                    Text("\(draft.distance) \(draft.unit)")
+                    Image(systemName: "chevron.up.chevron.down").font(.caption).accessibilityHidden(true)
+                }.foregroundStyle(TurnmarkPalette.accent)
+            }.buttonStyle(.borderless).accessibilityLabel("Distance").accessibilityValue("\(draft.distance) \(draft.unit)")
+                .accessibilityIdentifier("distancePicker")
         }
     }
 }
 
 struct ConversionResult: View {
+    @Environment(\.dynamicTypeSize) private var typeSize
     let input: Draft
     var compact = false
     var benchmarks: ((Draft) -> Void)? = nil
@@ -308,8 +368,9 @@ struct ConversionResult: View {
     @ScaledMetric(relativeTo: .largeTitle) private var fullTimeSize = 64
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Text("Your comparison").font(.caption.weight(.semibold)).textCase(.uppercase).tracking(1.5)
+        VStack(alignment: .leading, spacing: compact ? 10 : 14) {
+            Text(input.courseIndex == input.targetIndex ? "Your time" : "Converted time")
+                .font(.caption.weight(.semibold)).textCase(.uppercase).tracking(1.5)
                 .foregroundStyle(TurnmarkResultPalette.textMuted)
             switch input.outcome {
             case let .available(value, _):
@@ -322,14 +383,13 @@ struct ConversionResult: View {
                         .font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted)
                 }
                 if compact {
-                    DisclosureGroup("All course equivalents", isExpanded: $showingCourses) { courseRows }
+                    Divider().overlay(TurnmarkResultPalette.borderSubtle)
+                    DisclosureGroup(isExpanded: $showingCourses) { courseRows } label: {
+                        Label("All course equivalents", image: "Swim-equivalents")
+                    }
                         .font(.subheadline).tint(TurnmarkResultPalette.accent)
                         .environment(\.colorScheme, .dark).accessibilityIdentifier("courseEquivalents")
                 } else { Divider(); courseRows }
-                ViewThatFits(in: .horizontal) {
-                    HStack { detailsButton; Spacer(); shareButton }
-                    VStack(alignment: .leading, spacing: 8) { detailsButton; shareButton }
-                }.modifier(SwimActionsStyle()).tint(TurnmarkResultPalette.accent).environment(\.colorScheme, .dark)
             case .invalid:
                 Text("Check your time").font(.headline).accessibilityIdentifier("invalidTime")
                 Text("Try 58.32 or 1:02.45, up to 60 minutes.").font(.subheadline).foregroundStyle(TurnmarkResultPalette.textMuted)
@@ -337,18 +397,34 @@ struct ConversionResult: View {
                 Text("No published conversion").font(.headline).accessibilityIdentifier("unavailableConversion")
                 Text("Choose another event or course comparison.").font(.subheadline).foregroundStyle(TurnmarkResultPalette.textMuted)
             }
-            if let benchmarks {
-                Button { benchmarks(input) } label: { Label("Standards & points", systemImage: "chart.bar.xaxis") }
-                    .buttonStyle(.bordered).tint(TurnmarkResultPalette.accent).environment(\.colorScheme, .dark)
-                    .disabled(parseTime(input: input.time) == nil).accessibilityIdentifier("openBenchmarks")
-            }
+            if input.available || benchmarks != nil { resultActions }
         }.frame(maxWidth: .infinity, alignment: .leading).padding(compact ? 20 : 24)
             .foregroundStyle(TurnmarkResultPalette.text)
-            .background(LinearGradient(colors: [TurnmarkResultPalette.surfaceRaised, TurnmarkResultPalette.surface],
-                startPoint: .topLeading, endPoint: .bottomTrailing),
-                in: RoundedRectangle(cornerRadius: TurnmarkPalette.radiusCard))
-            .overlay(RoundedRectangle(cornerRadius: TurnmarkPalette.radiusCard).strokeBorder(TurnmarkResultPalette.borderSubtle))
+            .background(NativeResultSurface())
             .sheet(isPresented: $showingDetails) { ConversionDetails(input: input) }
+    }
+    private var resultActions: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 12) {
+                if input.available { detailsButton; shareButton }
+                Spacer(minLength: 0)
+                benchmarkButton
+            }
+            VStack(alignment: .leading, spacing: 12) {
+                benchmarkButton
+                if input.available { HStack(spacing: 16) { detailsButton; shareButton } }
+            }
+        }.fixedSize(horizontal: false, vertical: true)
+            .modifier(SwimActionsStyle()).tint(TurnmarkResultPalette.accent).environment(\.colorScheme, .dark)
+    }
+    @ViewBuilder private var benchmarkButton: some View {
+        if let benchmarks {
+            Button { benchmarks(input) } label: {
+                Label("Standards & points", systemImage: "chart.bar.xaxis").font(.footnote)
+            }
+                .labelStyle(.titleAndIcon).fixedSize(horizontal: !typeSize.isAccessibilitySize, vertical: true)
+                .disabled(parseTime(input: input.time) == nil).accessibilityIdentifier("openBenchmarks")
+        }
     }
     private func timeLabel(_ time: String) -> some View {
         let parts = time.split(separator: ".", maxSplits: 1)
@@ -388,11 +464,39 @@ struct ConversionResult: View {
     }
     private var detailsButton: some View {
         Button { showingDetails = true } label: { Label("Details", systemImage: "info.circle") }
+            .labelStyle(.iconOnly).buttonBorderShape(.circle)
             .accessibilityIdentifier("conversionDetails")
     }
     private var shareButton: some View {
         ShareLink(item: input.shareURL) { Label("Share", systemImage: "square.and.arrow.up") }
+            .labelStyle(.iconOnly).buttonBorderShape(.circle)
             .accessibilityIdentifier("shareSwim")
+    }
+}
+
+/// Opaque numerical content, shared by the converter and benchmark summaries.
+/// System glass is reserved for the native actions and navigation above it.
+struct NativeResultSurface: View {
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.colorSchemeContrast) private var contrast
+    var body: some View {
+        ZStack {
+            LinearGradient(colors: [TurnmarkResultPalette.surfaceRaised, TurnmarkResultPalette.surface],
+                startPoint: .topLeading, endPoint: .bottomTrailing)
+            if !reduceTransparency && contrast != .increased {
+                Canvas { context, size in
+                    var ribbon = Path()
+                    ribbon.move(to: CGPoint(x: size.width * 0.45, y: 0))
+                    ribbon.addCurve(to: CGPoint(x: size.width, y: size.height * 0.28),
+                        control1: CGPoint(x: size.width * 0.72, y: 0), control2: CGPoint(x: size.width * 0.76, y: size.height * 0.25))
+                    ribbon.addLine(to: CGPoint(x: size.width, y: size.height * 0.44))
+                    ribbon.addCurve(to: CGPoint(x: size.width * 0.45, y: 0),
+                        control1: CGPoint(x: size.width * 0.72, y: size.height * 0.42), control2: CGPoint(x: size.width * 0.68, y: size.height * 0.08))
+                    context.fill(ribbon, with: .color(TurnmarkResultPalette.accent.opacity(0.07)))
+                }.accessibilityHidden(true).allowsHitTesting(false)
+            }
+        }.clipShape(RoundedRectangle(cornerRadius: TurnmarkPalette.radiusCard))
+            .overlay(RoundedRectangle(cornerRadius: TurnmarkPalette.radiusCard).strokeBorder(TurnmarkResultPalette.borderSubtle))
     }
 }
 
@@ -489,10 +593,10 @@ private struct SwimActionsStyle: ViewModifier {
     @ViewBuilder func body(content: Content) -> some View {
         if #available(iOS 26.0, *) {
             GlassEffectContainer(spacing: 16) {
-                content.buttonStyle(.glass).controlSize(.large)
+                content.buttonStyle(.glass).controlSize(.regular)
             }
         } else {
-            content.buttonStyle(.bordered).controlSize(.large)
+            content.buttonStyle(.bordered).controlSize(.regular)
         }
     }
 }

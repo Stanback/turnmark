@@ -9,6 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -27,6 +28,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -39,6 +42,10 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -52,6 +59,7 @@ import uniffi.turnmark_core.*
 val courses = Course.entries
 val strokes = Stroke.entries
 val strokeNames = listOf("Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual medley")
+val strokeImages = listOf(R.drawable.ic_swim_freestyle, R.drawable.ic_swim_backstroke, R.drawable.ic_swim_breaststroke, R.drawable.ic_swim_butterfly, R.drawable.ic_swim_individual_medley)
 val strokeCodes = listOf("FR", "BK", "BR", "FL", "IM")
 
 data class Draft(
@@ -156,9 +164,45 @@ private fun share(context: Context, draft: Draft) {
                 }
                 Scaffold(modifier = Modifier.weight(1f).imePadding(), containerColor = c.canvas,
                     snackbarHost = { SnackbarHost(snackbar) }, topBar = {
-                        if (tab == 1) TopAppBar(title = { Text("My times", fontWeight = FontWeight.Bold) }, actions = {
-                            IconButton(enabled = history.ready && !history.busy, onClick = { loggingJSON = draft.copy(time = "").encode() }, modifier = Modifier.testTag("recordTime")) {
-                                Icon(Icons.Default.Add, contentDescription = "Record time")
+                        TopAppBar(title = {
+                            if (tab == 1) Text("My times", fontWeight = FontWeight.Bold)
+                            else BoxWithConstraints(Modifier.fillMaxWidth().testTag("converterBrand")
+                                .clearAndSetSemantics { contentDescription = "Turnmark"; heading() }) {
+                                val style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                                val wordmark = buildAnnotatedString {
+                                    append("turnmark")
+                                    withStyle(SpanStyle(color = c.accent)) { append(".") }
+                                }
+                                val wordmarkWidth = rememberTextMeasurer().measure(wordmark, style = style).size.width
+                                val showWordmark = wordmarkWidth <= with(LocalDensity.current) { (maxWidth - 34.dp).toPx() }
+                                Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                                    Icon(painterResource(R.drawable.ic_swim_brand_wave), null, tint = c.accent, modifier = Modifier.size(27.dp))
+                                    if (showWordmark) Text(wordmark, style = style, maxLines = 1)
+                                }
+                            }
+                        },
+                            colors = TopAppBarDefaults.topAppBarColors(containerColor = c.canvas), actions = {
+                            if (tab == 1) {
+                                IconButton(enabled = history.ready && !history.busy, onClick = { loggingJSON = draft.copy(time = "").encode() }, modifier = Modifier.testTag("recordTime")) {
+                                    Icon(painterResource(R.drawable.ic_swim_log_swim), contentDescription = "Log swim")
+                                }
+                            } else {
+                                var expanded by remember { mutableStateOf(false) }
+                                Box {
+                                    IconButton(onClick = { expanded = true }, modifier = Modifier.testTag("converterMenu")) {
+                                        Icon(Icons.Default.MoreVert, contentDescription = "More options")
+                                    }
+                                    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                                        DropdownMenuItem(text = { Text("About Turnmark") }, onClick = {
+                                            expanded = false; focus.clearFocus(); keyboard?.hide(); showingMethod = true
+                                        }, leadingIcon = { Icon(Icons.Default.Info, null) })
+                                        DropdownMenuItem(text = { Text("Methodology and coverage") }, onClick = {
+                                            expanded = false
+                                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://turnmark.app/#method")))
+                                        }, leadingIcon = { Icon(Icons.Default.ArrowForward, null) })
+                                    }
+                                }
                             }
                         })
                     }, bottomBar = {
@@ -260,25 +304,53 @@ private fun share(context: Context, draft: Draft) {
             Text("Your time", style = MaterialTheme.typography.labelLarge)
             OutlinedTextField(draft.time, { update(draft.copy(time = it)) },
                 modifier = Modifier.fillMaxWidth().focusRequester(timeFocus).onFocusChanged { editing(it.isFocused) }.testTag("timeInput"), singleLine = true,
+                shape = MaterialTheme.shapes.medium,
                 textStyle = MaterialTheme.typography.headlineLarge.copy(fontFeatureSettings = "tnum"),
+                trailingIcon = {
+                    if (draft.time.isNotEmpty()) IconButton(onClick = { update(draft.copy(time = "")); timeFocus.requestFocus() }) {
+                        Icon(Icons.Default.Clear, contentDescription = "Clear time")
+                    }
+                },
                 supportingText = { Text("For example, 58.32 or 1:02.45") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii, imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(onDone = {
                     focus.clearFocus(); keyboard?.hide()
                 }))
-            FlowRow(maxItemsInEachRow = if (largeText) 1 else 2,
-                horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            @Composable fun StrokeChoice(modifier: Modifier) {
                 Choice("Stroke", if (draft.strokeIndex == 4) "IM" else strokeNames[draft.strokeIndex], strokeNames,
-                    Modifier.semantics { stateDescription = strokeNames[draft.strokeIndex] }) { update(draft.copy(strokeIndex = it)) }
-                Choice("Distance", "${draft.distance} ${draft.unit}", draft.options.map { "${it.event.distance} ${draft.unit}" }, Modifier) {
+                    modifier.semantics { stateDescription = strokeNames[draft.strokeIndex] },
+                    labelIcon = strokeImages[draft.strokeIndex], optionIcons = strokeImages) { update(draft.copy(strokeIndex = it)) }
+            }
+            @Composable fun DistanceChoice(modifier: Modifier) {
+                Choice("Distance", "${draft.distance} ${draft.unit}", draft.options.map { "${it.event.distance} ${draft.unit}" }, modifier, labelIcon = R.drawable.ic_swim_distance) {
                     update(draft.copy(distance = draft.options[it].event.distance))
+                }
+            }
+            BoxWithConstraints(Modifier.fillMaxWidth()) {
+                if (largeText || maxWidth < 320.dp) {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        StrokeChoice(Modifier.fillMaxWidth()); DistanceChoice(Modifier.fillMaxWidth())
+                    }
+                } else {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        StrokeChoice(Modifier.weight(1f)); DistanceChoice(Modifier.weight(1f))
+                    }
                 }
             }
             CourseControl("Swum in", "inputCourse", draft.courseIndex) { update(draft.copy(courseIndex = it)) }
             Text("Published category", style = MaterialTheme.typography.labelLarge)
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOf("Women", "Men").forEachIndexed { index, label ->
-                    FilterChip(draft.categoryIndex == index, { update(draft.copy(categoryIndex = index)) }, { Text(label) })
+            BoxWithConstraints(Modifier.fillMaxWidth()) {
+                if (maxWidth < 240.dp) {
+                    Choice("Published category", draft.category, listOf("Women", "Men"), Modifier.fillMaxWidth()) {
+                        update(draft.copy(categoryIndex = it))
+                    }
+                } else {
+                    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+                        listOf("Women", "Men").forEachIndexed { index, label ->
+                            SegmentedButton(selected = draft.categoryIndex == index, onClick = { update(draft.copy(categoryIndex = index)) },
+                                shape = SegmentedButtonDefaults.itemShape(index, 2)) { Text(label) }
+                        }
+                    }
                 }
             }
             CourseControl("Compare with", "targetCourse", draft.targetIndex) { update(draft.copy(targetIndex = it)) }
@@ -286,30 +358,73 @@ private fun share(context: Context, draft: Draft) {
             Button(onClick = add, enabled = draft.canLog && historyReady,
                 colors = ButtonDefaults.buttonColors(containerColor = c.actionFill, contentColor = c.onAction),
                 modifier = Modifier.fillMaxWidth().testTag("logSwim")) {
-                Icon(Icons.Default.Add, contentDescription = null); Spacer(Modifier.width(8.dp)); Text("Record time")
+                Icon(painterResource(R.drawable.ic_swim_log_swim), contentDescription = null); Spacer(Modifier.width(8.dp)); Text("Log swim")
             }
-            Text("Record the time you swam, with a date and optional meet.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
+            Text("Add this time to My times, with an optional date and meet.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
         }
     }
 }
 
 @Composable fun CourseControl(label: String, tag: String, selected: Int, onSelect: (Int) -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(label, fontWeight = FontWeight.Bold)
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            courses.forEachIndexed { index, course ->
-                FilterChip(selected == index, { onSelect(index) }, { Text(course.name) }, modifier = Modifier.testTag("$tag-${course.name}"))
+    BoxWithConstraints(Modifier.fillMaxWidth()) {
+        if (maxWidth < 240.dp) {
+            Choice(label, courses[selected].name, courses.map { it.name }, Modifier.fillMaxWidth().testTag(tag), onSelect = onSelect)
+        } else {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(label, fontWeight = FontWeight.Bold)
+                SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+                    courses.forEachIndexed { index, course ->
+                        SegmentedButton(selected = selected == index, onClick = { onSelect(index) },
+                            shape = SegmentedButtonDefaults.itemShape(index, courses.size), modifier = Modifier.testTag("$tag-${course.name}")) { Text(course.name) }
+                    }
+                }
             }
         }
     }
 }
 
-@Composable fun Choice(label: String, selected: String, values: List<String>, modifier: Modifier, onSelect: (Int) -> Unit) {
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable fun Choice(label: String, selected: String, values: List<String>, modifier: Modifier, labelIcon: Int? = null, optionIcons: List<Int>? = null, onSelect: (Int) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-    Box(modifier) {
-        OutlinedButton(onClick = { expanded = true }) { Text("$label: $selected") }
-        DropdownMenu(expanded, { expanded = false }) {
-            values.forEachIndexed { index, value -> DropdownMenuItem(text = { Text(value) }, onClick = { expanded = false; onSelect(index) }) }
+    BoxWithConstraints(modifier) {
+        val showIcon = maxWidth >= 160.dp && labelIcon != null
+        ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }, modifier = Modifier.fillMaxWidth()) {
+            OutlinedTextField(value = selected, onValueChange = {}, readOnly = true, singleLine = true, label = {
+                Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                    if (showIcon) Icon(painterResource(labelIcon!!), contentDescription = null, modifier = Modifier.size(16.dp))
+                    Text(label)
+                }
+            }, shape = MaterialTheme.shapes.medium,
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+                modifier = Modifier.fillMaxWidth().menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable).testTag("choice-$label"))
+            ExposedDropdownMenu(expanded, { expanded = false }) {
+                values.forEachIndexed { index, value ->
+                    val icon: (@Composable () -> Unit)? = optionIcons?.getOrNull(index)?.let { resource ->
+                        { Icon(painterResource(resource), contentDescription = null, modifier = Modifier.size(24.dp)) }
+                    }
+                    DropdownMenuItem(text = { Text(value) }, leadingIcon = icon, onClick = { expanded = false; onSelect(index) })
+                }
+            }
+        }
+    }
+}
+
+/** Native opaque result surface shared by conversions, standards and points. */
+@Composable fun NativeResultSurface(compact: Boolean = false, content: @Composable ColumnScope.() -> Unit) {
+    val c = TurnmarkTokens.dark
+    TurnmarkTheme(dark = true) {
+        Surface(shape = RoundedCornerShape(TurnmarkTokens.radiusCard), color = c.surface, contentColor = c.text,
+            border = BorderStroke(1.dp, c.borderSubtle), modifier = Modifier.fillMaxWidth()) {
+            Column(Modifier.background(Brush.linearGradient(listOf(c.surfaceRaised, c.surface))).drawBehind {
+                val ribbon = Path().apply {
+                    moveTo(size.width * .45f, 0f)
+                    cubicTo(size.width * .72f, 0f, size.width * .76f, size.height * .25f, size.width, size.height * .28f)
+                    lineTo(size.width, size.height * .44f)
+                    cubicTo(size.width * .72f, size.height * .42f, size.width * .68f, size.height * .08f, size.width * .45f, 0f)
+                    close()
+                }
+                drawPath(ribbon, c.accent.copy(alpha = .07f))
+            }.padding(if (compact) 20.dp else 24.dp), verticalArrangement = Arrangement.spacedBy(if (compact) 10.dp else 14.dp), content = content)
         }
     }
 }
@@ -321,57 +436,70 @@ private fun share(context: Context, draft: Draft) {
     val result = draft.outcome
     val c = TurnmarkTokens.dark
     val context = LocalContext.current
-    TurnmarkTheme(dark = true) {
-        Column(Modifier.fillMaxWidth().background(Brush.linearGradient(listOf(c.surfaceRaised, c.surface)), RoundedCornerShape(TurnmarkTokens.radiusCard))
-            .padding(if (compact) 20.dp else 24.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-            Text("YOUR COMPARISON", color = c.textMuted, style = MaterialTheme.typography.labelSmall)
-            when (result) {
-                is ConversionOutcome.Available -> {
-                    Text(draft.resultLabel(result.value.event), color = c.textMuted, style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.testTag("resultContext"))
-                    ResultTime(result.value.time, compact)
-                    Text(kindLabel(result.value.kind), color = c.textMuted, style = MaterialTheme.typography.labelMedium)
-                    if (result.value.kind != ConversionKind.SWUM) Text("From ${draft.time} · ${draft.distance} ${draft.unit} ${courses[draft.courseIndex]}",
-                        color = c.textMuted, style = MaterialTheme.typography.bodySmall)
-                    if (compact) TextButton(onClick = { showingCourses = !showingCourses }, modifier = Modifier.testTag("courseEquivalents")) {
-                        Text(if (showingCourses) "Hide course equivalents" else "All course equivalents")
+    NativeResultSurface(compact = compact) {
+        Text(if (draft.courseIndex == draft.targetIndex) "YOUR TIME" else "CONVERTED TIME", color = c.textMuted, style = MaterialTheme.typography.labelSmall)
+        when (result) {
+            is ConversionOutcome.Available -> {
+                Text(draft.resultLabel(result.value.event), color = c.textMuted, style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.testTag("resultContext"))
+                ResultTime(result.value.time, compact)
+                Text(kindLabel(result.value.kind), color = c.textMuted, style = MaterialTheme.typography.labelMedium)
+                if (result.value.kind != ConversionKind.SWUM) Text("From ${draft.time} · ${draft.distance} ${draft.unit} ${courses[draft.courseIndex]}",
+                    color = c.textMuted, style = MaterialTheme.typography.bodySmall)
+                if (compact) {
+                    HorizontalDivider(color = c.borderSubtle)
+                    TextButton(onClick = { showingCourses = !showingCourses }, modifier = Modifier.fillMaxWidth().testTag("courseEquivalents")) {
+                            Icon(painterResource(R.drawable.ic_swim_equivalents), contentDescription = null, modifier = Modifier.size(20.dp))
+                            Spacer(Modifier.width(8.dp))
+                        Text(if (showingCourses) "Hide course equivalents" else "All course equivalents", Modifier.weight(1f))
+                        Icon(if (showingCourses) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown, contentDescription = null)
                     }
-                    if (!compact || showingCourses) {
-                        HorizontalDivider()
-                        courses.forEachIndexed { index, course ->
-                            val row = convertSwim(ConversionRequest(Swim(draft.time, SwimEvent(draft.distance, strokes[draft.strokeIndex], courses[draft.courseIndex])),
-                                course, if (draft.categoryIndex == 0) Category.WOMEN else Category.MEN))
-                            TextButton(onClick = { selectCourse?.invoke(index) }, modifier = Modifier.fillMaxWidth().testTag("equivalent-$course"),
-                                colors = ButtonDefaults.textButtonColors(contentColor = if (index == draft.targetIndex) c.resultHighlight else c.text)) {
-                                Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                        Row { Text(course.name); if (index == draft.targetIndex) { Spacer(Modifier.width(6.dp)); Icon(Icons.Default.Check, "Selected", Modifier.size(18.dp)) } }
-                                        Text(if (row is ConversionOutcome.Available) row.value.time else "Unavailable", fontWeight = FontWeight.Bold)
-                                    }
-                                    Text(if (row is ConversionOutcome.Available) "${draft.resultLabel(row.value.event)} · ${kindLabel(row.value.kind)}" else "No published conversion",
-                                        style = MaterialTheme.typography.bodySmall, color = c.textMuted)
+                }
+                if (!compact || showingCourses) {
+                    HorizontalDivider()
+                    courses.forEachIndexed { index, course ->
+                        val row = convertSwim(ConversionRequest(Swim(draft.time, SwimEvent(draft.distance, strokes[draft.strokeIndex], courses[draft.courseIndex])),
+                            course, if (draft.categoryIndex == 0) Category.WOMEN else Category.MEN))
+                        TextButton(onClick = { selectCourse?.invoke(index) }, modifier = Modifier.fillMaxWidth().testTag("equivalent-$course"),
+                            colors = ButtonDefaults.textButtonColors(contentColor = if (index == draft.targetIndex) c.resultHighlight else c.text)) {
+                            Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                    Row { Text(course.name); if (index == draft.targetIndex) { Spacer(Modifier.width(6.dp)); Icon(Icons.Default.Check, "Selected", Modifier.size(18.dp)) } }
+                                    Text(if (row is ConversionOutcome.Available) row.value.time else "Unavailable", fontWeight = FontWeight.Bold)
                                 }
+                                Text(if (row is ConversionOutcome.Available) "${draft.resultLabel(row.value.event)} · ${kindLabel(row.value.kind)}" else "No published conversion",
+                                    style = MaterialTheme.typography.bodySmall, color = c.textMuted)
                             }
-                            if (index < 2) HorizontalDivider()
                         }
+                        if (index < 2) HorizontalDivider()
                     }
-                    FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        TextButton(onClick = { showingDetails = true }, modifier = Modifier.testTag("conversionDetails")) {
-                            Icon(Icons.Default.Info, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text("Details")
-                        }
-                        OutlinedButton(onClick = { share(context, draft) }, modifier = Modifier.testTag("shareSwim")) { Text("Share") }
-                    }
-                }
-                is ConversionOutcome.Invalid -> {
-                    Text("Check your time", color = c.text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.testTag("invalidTime"))
-                    Text("Try 58.32 or 1:02.45, up to 60 minutes.", color = c.textMuted, style = MaterialTheme.typography.bodyMedium)
-                }
-                is ConversionOutcome.Unavailable -> {
-                    Text("No published conversion", color = c.text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.testTag("unavailableConversion"))
-                    Text("Choose another event or course comparison.", color = c.textMuted, style = MaterialTheme.typography.bodyMedium)
                 }
             }
-            benchmarks?.let { open -> OutlinedButton(onClick = { open(draft) }, enabled = parseTime(draft.time) != null, modifier = Modifier.testTag("openBenchmarks")) { Text("Standards & points") } }
+            is ConversionOutcome.Invalid -> {
+                Text("Check your time", color = c.text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.testTag("invalidTime"))
+                Text("Try 58.32 or 1:02.45, up to 60 minutes.", color = c.textMuted, style = MaterialTheme.typography.bodyMedium)
+            }
+            is ConversionOutcome.Unavailable -> {
+                Text("No published conversion", color = c.text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.testTag("unavailableConversion"))
+                Text("Choose another event or course comparison.", color = c.textMuted, style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+        FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            benchmarks?.let { open ->
+                FilledTonalButton(onClick = { open(draft) }, enabled = parseTime(draft.time) != null,
+                    modifier = Modifier.heightIn(min = 48.dp).testTag("openBenchmarks")) {
+                    Icon(painterResource(R.drawable.ic_standards), contentDescription = null, Modifier.size(18.dp))
+                    Spacer(Modifier.width(8.dp)); Text("Standards & points")
+                }
+            }
+            if (result is ConversionOutcome.Available) {
+                FilledTonalIconButton(onClick = { showingDetails = true }, modifier = Modifier.testTag("conversionDetails")) {
+                    Icon(Icons.Default.Info, contentDescription = "Details")
+                }
+                IconButton(onClick = { share(context, draft) }, modifier = Modifier.testTag("shareSwim")) {
+                    Icon(Icons.Default.Share, contentDescription = "Share")
+                }
+            }
         }
     }
     if (showingDetails && result is ConversionOutcome.Available) ModalBottomSheet(onDismissRequest = { showingDetails = false },

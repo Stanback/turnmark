@@ -58,7 +58,7 @@ struct BenchmarkScreen: View {
                         }
                     }.listRowBackground(TurnmarkPalette.surface)
                 }
-            }.accessibilityIdentifier("benchmarkForm").scrollContentBackground(.hidden).background(TurnmarkPalette.canvas)
+            }.formStyle(.grouped).accessibilityIdentifier("benchmarkForm").scrollContentBackground(.hidden).background(TurnmarkPalette.canvas)
                 .foregroundStyle(TurnmarkPalette.text).tint(TurnmarkPalette.accent)
                 .navigationTitle("Standards & points").navigationBarTitleDisplayMode(.inline)
                 .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() }.accessibilityIdentifier("closeBenchmarks") } }
@@ -87,8 +87,9 @@ struct BenchmarkScreen: View {
                         Text(next.time).font(.largeTitle.bold()).monospacedDigit().foregroundStyle(TurnmarkResultPalette.resultHighlight)
                         Text("\(next.gapSeconds, specifier: "%.2f")s to \(next.label)").font(.subheadline)
                     } else { Text(system == .youth ? "You meet the top published standard for this selection." : "Your entered time meets this published benchmark.").font(.subheadline) }
-                }.padding(.vertical, 8).foregroundStyle(TurnmarkResultPalette.text)
-            }.listRowBackground(resultGradient)
+                }.frame(maxWidth: .infinity, alignment: .leading).padding(20)
+                    .foregroundStyle(TurnmarkResultPalette.text).background(NativeResultSurface())
+            }.listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
             Section(system == .youth ? "Published targets" : "National qualifying benchmark") {
                 ForEach(value.targets, id: \.label) { target in
                     HStack {
@@ -110,8 +111,9 @@ struct BenchmarkScreen: View {
     @ViewBuilder private var pointsContent: some View {
         switch getWorldPoints(request: PointsRequest(swim: swim, table: table)) {
         case let .available(value, provenance):
-            Section("World Aquatics · 2026") {
-                VStack(alignment: .leading, spacing: 14) {
+            Section {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("World Aquatics · 2026").font(.caption.weight(.semibold)).foregroundStyle(TurnmarkResultPalette.textMuted)
                     Text(value.points.formatted()).font(.largeTitle.bold()).monospacedDigit().lineLimit(1).minimumScaleFactor(0.5).accessibilityIdentifier("benchmarkPoints")
                     Text("Points for your original \(courseNames[input.courseIndex]) swim").font(.subheadline).foregroundStyle(TurnmarkResultPalette.textMuted)
                     Divider().overlay(TurnmarkResultPalette.borderSubtle)
@@ -119,8 +121,9 @@ struct BenchmarkScreen: View {
                     LabeledContent("Next \(value.nextMilestone.points) points", value: value.nextMilestone.time).font(.subheadline).monospacedDigit()
                     Text("\(value.nextMilestone.gapSeconds, specifier: "%.2f")s to the next 100-point step. This is a suggested goal, not a qualifying time.")
                         .font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted)
-                }.padding(.vertical, 8).foregroundStyle(TurnmarkResultPalette.text)
-            }.listRowBackground(resultGradient)
+                }.frame(maxWidth: .infinity, alignment: .leading).padding(20)
+                    .foregroundStyle(TurnmarkResultPalette.text).background(NativeResultSurface())
+            }.listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
             source(provenance, note: "\(value.validity). Scores use the fixed published world-record reference, are not age-adjusted, and may lag newer records.")
         case let .unavailable(reason, provenance):
             unavailable(reason, points: true)
@@ -154,6 +157,5 @@ struct BenchmarkScreen: View {
             } label: { Text("Source and coverage") }
         } footer: { Text(note) }.listRowBackground(TurnmarkPalette.surface)
     }
-    private var resultGradient: LinearGradient { LinearGradient(colors: [TurnmarkResultPalette.surfaceRaised, TurnmarkResultPalette.surface], startPoint: .topLeading, endPoint: .bottomTrailing) }
     private func ageLabel(_ age: String) -> String { age == "10u" ? "10 & under" : age.replacingOccurrences(of: "-", with: "–") }
 }

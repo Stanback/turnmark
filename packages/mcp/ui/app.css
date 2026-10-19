@@ -21,6 +21,12 @@ header {
   font-weight: 750;
   margin-bottom: 16px;
 }
+.wordmark {
+  white-space: nowrap;
+}
+.brand-dot {
+  color: var(--tm-color-accent);
+}
 header svg {
   width: 32px;
   height: 32px;
@@ -51,6 +57,13 @@ p {
   font-weight: 600;
   margin: 8px 0;
   overflow-wrap: anywhere;
+}
+.swim-icon {
+  width: 22px;
+  height: 22px;
+  vertical-align: -4px;
+  margin-right: 8px;
+  color: var(--tm-color-text-muted);
 }
 .eyebrow {
   color: var(--tm-color-text-muted);

@@ -44,21 +44,30 @@ final class TurnmarkUITests: XCTestCase {
               (recordDone.exists && recordDone.isHittable) else { return nil }
         return visibleKeyboard(in: app)
     }
-    @MainActor private func reach(_ element: XCUIElement, in app: XCUIApplication) {
-        for _ in 0..<10 {
+    @MainActor private func reach(_ element: XCUIElement, in app: XCUIApplication, earlier: Bool = false) {
+        for attempt in 0..<16 {
             let keyboard = entryKeyboard(in: app)
+            let navigation = app.navigationBars.firstMatch
+            let tabs = app.tabBars.firstMatch
+            // The earlier-result search must stay in the content viewport.
+            // Other callers can intentionally target native toolbar buttons.
+            let visibleTop = earlier && navigation.exists ? navigation.frame.maxY + 12 : app.frame.minY + 80
+            let visibleBottom = min(keyboard?.frame.minY ?? app.frame.maxY - 40,
+                earlier && tabs.exists ? tabs.frame.minY : app.frame.maxY) - 16
             if element.exists && element.isHittable {
                 // XCTest may call a one-pixel sliver hittable. A tap must land
                 // inside the visible form, above the keyboard and home area.
-                let keyboardTop = keyboard?.frame.minY ?? app.frame.maxY - 40
-                if element.frame.midY > app.frame.minY + 80 && element.frame.midY < keyboardTop - 16 { return }
+                if element.frame.midY > visibleTop && element.frame.midY < visibleBottom { return }
             }
             let container = !element.exists || element.identifier.isEmpty ? app.scrollViews.element(boundBy: max(app.scrollViews.count - 1, 0)) :
                 app.scrollViews.containing(.any, identifier: element.identifier).firstMatch
             let nativeList = app.collectionViews.element(boundBy: max(app.collectionViews.count - 1, 0))
             let editor = app.descendants(matching: .any)["swimEditorForm"].firstMatch
             let scroll = editor.exists ? editor : (container.exists ? container : (nativeList.exists ? nativeList : app))
-            let downward = element.exists && element.frame.minY < app.frame.minY + 80
+            // A grouped Form virtualizes rows that have scrolled away. When
+            // the target is absent, search both directions before failing;
+            // once its row is loaded, its actual geometry chooses direction.
+            let downward = element.exists ? element.frame.minY < visibleTop : earlier || attempt >= 6
             if let keyboard {
                 // The form extends behind the keyboard. XCTest's default swipe
                 // can start in its assistant bar, which never scrolls the form.
@@ -73,10 +82,15 @@ final class TurnmarkUITests: XCTestCase {
                 let start = origin.withOffset(CGVector(dx: visible.midX, dy: downward ? upper : lower))
                 let end = origin.withOffset(CGVector(dx: visible.midX, dy: downward ? lower : upper))
                 start.press(forDuration: 0.1, thenDragTo: end)
-            } else if downward { scroll.swipeDown() }
-            else { scroll.swipeUp() }
+            } else if downward {
+                // Avoid flinging past the earlier result card, whose lazy
+                // Form row may otherwise retain stale AX coordinates.
+                if earlier { scroll.swipeDown(velocity: .slow) }
+                else { scroll.swipeDown() }
+            } else { scroll.swipeUp() }
         }
-        XCTAssertTrue(element.exists && element.isHittable, "Element must remain reachable: \(element)")
+        if earlier { XCTFail("Element must remain reachable inside the content viewport: \(element)") }
+        else { XCTAssertTrue(element.exists && element.isHittable, "Element must remain reachable: \(element)") }
     }
     @MainActor private func replace(_ field: XCUIElement, with text: String, in app: XCUIApplication) {
         reach(field, in: app); field.tap()
@@ -95,6 +109,21 @@ final class TurnmarkUITests: XCTestCase {
 
     @MainActor func testBenchmarksUseOriginalSwimAndRememberAgeSettings() {
         let app = launch()
+        let brand = app.descendants(matching: .any)["converterBrand"].firstMatch
+        let menu = app.buttons["converterMenu"]
+        XCTAssertTrue(brand.exists)
+        XCTAssertGreaterThan(brand.frame.width, 90,
+            "Ordinary text must show the wordmark as well as the wave")
+        XCTAssertLessThan(abs(brand.frame.midY - menu.frame.midY), 12,
+            "The compact wordmark and overflow must share the native toolbar row")
+        menu.tap(); app.buttons["converterAbout"].tap()
+        XCTAssertTrue(app.staticTexts["How comparisons work"].waitForExistence(timeout: 5))
+        app.buttons["Done"].firstMatch.tap()
+        let benchmarkAction = app.buttons["openBenchmarks"]
+        XCTAssertTrue(benchmarkAction.waitForExistence(timeout: 5))
+        XCTAssertLessThan(benchmarkAction.frame.height, 80,
+            "The ordinary-text benchmark action must not stretch its grouped Form row")
+        capture(app, "Converter default")
         reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
         XCTAssertEqual(app.staticTexts["benchmarkOriginalTime"].label, "58.32")
         XCTAssertEqual(app.staticTexts["benchmarkSummary"].label, "A standard")
@@ -154,14 +183,27 @@ final class TurnmarkUITests: XCTestCase {
 
     @MainActor func testBenchmarkMissingTargetAtAccessibilityTextSize() {
         let app = launch(["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
+        let clock = app.staticTexts["resultTime"]
+        XCTAssertGreaterThanOrEqual(clock.frame.minX, app.frame.minX)
+        XCTAssertLessThanOrEqual(clock.frame.maxX, app.frame.maxX)
+        capture(app, "Converter result largest text")
         let course = app.segmentedControls["inputCourse"].buttons["LCM"]
         reach(course, in: app); course.tap()
         let stroke = app.buttons["strokePicker"]
         reach(stroke, in: app); stroke.tap(); app.buttons["Butterfly"].tap()
         let distance = app.buttons["distancePicker"]
         reach(distance, in: app); distance.tap(); app.buttons["200 m"].tap()
-        reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
-        XCTAssertTrue(app.staticTexts["benchmarkContext"].waitForExistence(timeout: 5))
+        let benchmarkAction = app.buttons["openBenchmarks"]
+        // The result precedes the inputs. Search toward it immediately rather
+        // than flinging through the rest of the largest-text form first.
+        reach(benchmarkAction, in: app, earlier: true)
+        XCTAssertGreaterThanOrEqual(benchmarkAction.frame.minX, app.frame.minX)
+        XCTAssertLessThanOrEqual(benchmarkAction.frame.maxX, app.frame.maxX)
+        benchmarkAction.tap()
+        guard app.staticTexts["benchmarkContext"].waitForExistence(timeout: 5) else {
+            XCTFail("Standards & points must open the original-swim sheet")
+            return
+        }
         XCTAssertEqual(app.staticTexts["benchmarkContext"].label, "200 m Butterfly · LCM · Women")
         let system = app.descendants(matching: .any)["benchmarkSystem"].firstMatch
         reach(system, in: app); system.tap(); app.buttons["USMS · Masters"].tap()
@@ -370,7 +412,8 @@ final class TurnmarkUITests: XCTestCase {
     @MainActor func testUnsupportedComparisonStaysUnavailable() {
         let app = launch()
         let stroke = app.buttons["strokePicker"]
-        reach(stroke, in: app); stroke.tap(); app.buttons["Individual medley"].tap()
+        reach(stroke, in: app); stroke.tap(); capture(app, "Stroke picker icons")
+        app.buttons["Individual medley"].tap()
         XCTAssertTrue(app.staticTexts["unavailableConversion"].exists)
         XCTAssertFalse(app.staticTexts["resultTime"].exists)
     }

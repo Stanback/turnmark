@@ -176,7 +176,7 @@
     </p>
     <p>
       Calculations continue offline after the widget loads. It does not read
-      saved swims, browser storage or the publisher’s page. Hosting still
+      saved comparisons, browser storage or the publisher’s page. Hosting still
       involves ordinary network requests for the initial assets.
     </p>
     <p>

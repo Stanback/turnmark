@@ -1,115 +1,127 @@
 # Native visual review
 
-October 18, 2026. These are actual simulator/emulator app captures, not mockups
-or App Store artwork. The earlier images in NATIVE_DESIGN_REVIEW and the Duo
-baseline remain historical references. Physical-device ergonomics, VoiceOver
-and TalkBack are still release checks. Subsequent Standards & points work and
-its current verification are recorded in [the standards review](NATIVE_STANDARDS_REVIEW.md).
+Updated October 18, 2026. All images below are actual simulator/emulator captures
+with sample swims. They are not mockups or store artwork. This review supersedes
+the earlier header-free, large-title and mixed-surface presentations. Earlier
+research and adaptive baselines remain in [Native Design Review](NATIVE_DESIGN_REVIEW.md)
+and [Adaptive Layout](ADAPTIVE_LAYOUT.md).
 
-## What changed
+## Default phone views
 
-- Generated CSS, Swift and Kotlin share one palette/spacing/radius source. Native
-  system typography, controls, navigation and materials retain platform behavior.
-- The result has a signature opaque navy surface in both appearances, a tabular
-  clock with restrained lime hundredths, visible destination/category context
-  and original/published/derived labels. Details and sharing remain contextual.
-- Convert and My times match the two main jobs. Record time confirms an actual
-  swim; Recent / Best times filters actual records. An older comparison bookmark
-  remains separate and explicitly restorable/removable.
-- Expanded conversion shows inputs beside the result. Tabletop uses a concise
-  result above the fold and independently scrollable inputs below. My times
-  offers list/detail when there is sufficient room and native single-column
-  navigation when it is narrower.
+Both apps show the same entered swim: women’s 100 freestyle, 58.32 in SCY, with a
+1:06.72 LCM comparison. These are also the README’s default phone images.
 
-## Typography and spacing review
+| iOS 27 · iPhone 18 Pro                                                                                                             | Android API 36 · phone                                                                                                            |
+| ---------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="screenshots/ios-home-light.png" width="300" alt="iPhone converter with compact turnmark wordmark, cyan period and wave"> | <img src="screenshots/android-home-light.png" width="300" alt="Android converter with the same compact wordmark and navy result"> |
 
-Review covers ordinary iPhone text and the largest accessibility category,
-Android phone/foldable layouts, narrow Android at 360 × 640 dp with 200% text,
-both appearances, recorded swims and keyboard entry. Check full clocks, context
-wrapping, action labels, card padding, picker alignment and scrolling to actions.
+A compact **turnmark.** wordmark and canonical wave share one native toolbar row
+with the overflow menu. The period uses the generated accent color. iOS leaves
+the wordmark unframed and keeps the system glass overflow control; Android uses
+its Material app bar and menu. About and published methodology are reachable
+from both. At large text sizes the wordmark can yield to the wave, retaining the
+Turnmark accessibility label and space for the menu.
 
-Corrections from reviewing the rendered screens:
+## Surfaces and native controls
 
-- Record time uses the cyan action fill with a contrasting, stronger label and
-  a plain plus icon. Link teal is not used as its fill on iOS.
-- IM is the compact selected stroke label; selection menus, full event context
-  and accessible values retain Individual medley. No forced single-line clipping
-  is applied to long descriptions or meet names.
-- The time hint uses concrete examples rather than a long compound format word
-  that split awkwardly at accessibility text sizes.
-- My times guidance is a quiet footer on the canvas with shared muted text,
-  without a separate charcoal card or row divider. Empty, error and previous-
-  comparison rows use the shared navy surface in dark appearance.
-- Android stroke/distance controls keep their natural width and flow when the
-  pane is narrow; filters/file actions also flow. Large text uses a native
-  two-row Material app bar for record/edit/detail titles instead of squeezing
-  the title between Cancel and Add swim. The save notice is short.
-- Duo converter focus is restored when an active time field moves between panes.
-  Manual simulator entry continued through open → book → tabletop using the
-  hardware keyboard; a rotation regression also checks typing without retapping.
-- Details/Share can reflow; the complete clock fits its region. Body text retains
-  normal platform scaling and content remains scrollable.
-- Duo's intermediate-width swim list originally stayed over detail actions.
-  The narrower workspace now uses a NavigationStack, while wider windows use
-  NavigationSplitView, with selected-record state above both layouts. Editors and deletion confirmation
-  also live above the changing panes so keyboard/fold reflow cannot discard them.
+Convert, Standards and Points use one numerical surface: an opaque gradient
+between generated dark navy roles, a quiet static accent ribbon, readable event
+context and restrained lime hundredths/next-target emphasis. Supporting content
+follows the current light/dark appearance. No independent component palette or
+native dependency upgrade was introduced.
 
-## Default phone screens
+- iOS uses grouped SwiftUI Forms, native menus and segmented pickers, TabView,
+  sheets and system glass actions on supported versions. Details and Share are
+  quiet icon actions beside labeled Standards & points. Increased contrast and
+  Reduce Transparency hide the decorative ribbon.
+- Android uses Material 3 exposed dropdown fields, single-choice segmented
+  choices, grouped supporting cards, sheets and native bottom navigation/rail.
+  Stroke and distance share a row when space permits and stack in narrower panes
+  or at large text sizes. Very narrow course/category choices use dropdowns.
+- The entered swim stays separate from estimates. Destination event distance,
+  course and category remain visible; original, published and derived labels
+  retain their meaning. Missing targets stay missing and SCY stays unscored in
+  World Aquatics points.
 
-The README uses fresh-install converter captures from main's native Standards &
-points build, with the generated navy palette. Both show the default 58.32 SCY
-100 freestyle swim for women and its 1:06.72 LCM comparison, in light appearance
-with ordinary text size. Only system status indicators are normalized for the
-screenshots. Existing simulator/emulator records were not reset. Feature sheets
-and expanded layouts remain in the detailed reviews.
+[iOS result, dark](screenshots/ios-native-result-dark.png) ·
+[iOS result, light](screenshots/ios-native-result-light.png) ·
+[Android result, light](screenshots/android-current-result-light.png)
 
-[iOS home](screenshots/ios-home-light.png) · [Android home](screenshots/android-home-light.png)
+## Shared glyphs and logging
 
-## Captures
+The [shared vector catalog](../design/ICONS.md) owns the five supported stroke
+icons, distance, equivalents and stopwatch-plus. iOS uses vector template PDFs;
+Android uses VectorDrawables. Web, widget and MCP inline the same paths with
+semantic tint. The toolbar wave derives from the existing brand geometry.
+Readable labels and accessible values remain available.
 
-| Case                                            | Evidence                                                                                                                                                                                                                                                |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| iPhone result, light / dark                     | [Light](screenshots/ios-native-result-light.png) · [Dark](screenshots/ios-native-result-dark.png)                                                                                                                                                       |
-| iPhone Record time action                       | [Light](screenshots/ios-native-record-light.png)                                                                                                                                                                                                        |
-| iPhone My times / bests                         | [My times, dark](screenshots/ios-native-times-dark.png) · [Bests, light](screenshots/ios-native-best-light.png)                                                                                                                                         |
-| iPhone largest accessibility text               | [Input and reflow](screenshots/ios-native-large-text.png) · [Long clock](screenshots/ios-native-long-clock.png)                                                                                                                                         |
-| Duo expanded and book fold                      | [Open](screenshots/ios-native-duo-open-light.png) · [Book](screenshots/ios-native-duo-book-light.png)                                                                                                                                                   |
-| Duo tabletop and compact outer display          | [Tabletop, light](screenshots/ios-native-duo-tabletop-light.png) · [Tabletop, dark](screenshots/ios-native-duo-tabletop-dark.png) · [Outer](screenshots/ios-native-duo-outer-light.png) · [My times surfaces](screenshots/ios-native-duo-help-dark.png) |
-| Android expanded converter, light / dark        | [Light](screenshots/android-native-book-light.png) · [Dark](screenshots/android-native-result-dark.png)                                                                                                                                                 |
-| Android recorded swim and bests                 | [List/detail](screenshots/android-native-times-detail-dark.png) · [Bests](screenshots/android-native-best-dark.png) · [Muted help footer](screenshots/android-native-help-light.png)                                                                    |
-| Android injected book / tabletop fold           | [Book](screenshots/android-native-book-test-dark.png) · [Tabletop](screenshots/android-native-tabletop-test-dark.png)                                                                                                                                   |
-| Android narrow phone, 200% text, long meet name | [Editor](screenshots/android-long-editor-large.png) · [Meet](screenshots/android-long-meet-large.png) · [Detail](screenshots/android-long-detail-large.png) · [Input](screenshots/android-long-input-large.png)                                         |
+| iOS stroke menu                                                                                                      | Android stroke menu                                                                                                |
+| -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| <img src="screenshots/ios-stroke-menu.png" width="300" alt="Native iOS stroke menu with five distinct vector icons"> | <img src="screenshots/android-stroke-menu.png" width="300" alt="Material stroke menu with the same vector glyphs"> |
 
-The Android fold-test pictures use injected WindowManager geometry on a Pixel
-10 Pro Fold emulator profile. They verify the pane arrangement and hinge bounds;
-they are not photos of a physical device. Scrolled captures intentionally show
-part of a longer form; they do not claim all content fits at once.
+**Log swim** uses the stopwatch-plus and opens a confirmation form for an actual
+performance. Its helper reads “Add this time to My times, with an optional date
+and meet.” It never records a converted estimate as a personal best. My times
+retains Recent and Best times, editing, removal and portable export/import.
+Web’s **Save comparison** bookmarks its conversion setup and remains separate.
+See [history and backup limits](MEET_HISTORY.md).
 
-## Checks and limits
+## Standards and Points
 
-- 119 JavaScript/design unit checks and 50 CI selection cases passed. Generated
-  native palettes are checked before both native app suites.
-- iPhone 18 Pro/iOS 27.0 and Duo/iOS 27.1 passed all 16 model/UI cases, including
-  the rotation/focus regression. They exercise persistence,
-  direct recording, best filtering, source details, invalid/unavailable states,
-  original-value sharing, editing and legacy bookmark separation.
-- Android API 36 checks the same jobs plus portable import/export. The fold test
-  verifies hinge avoidance and preserves input plus focus through book/tabletop.
-  A long-event/long-meet test is also exercised at 200% font size.
-- No numerical engine, source snapshot, signing or deployment changes. No native
-  benchmark/points parity, store submission or translation release is implied.
-- Half-window multitasking, physical folding transitions and assistive-technology
-  reading/focus remain explicit release work. Standards/points were subsequently implemented; see [their review](NATIVE_STANDARDS_REVIEW.md). Localization remains a follow-up in [native product notes](NATIVE_PRODUCT_NOTES.md).
+| iOS · youth standards                                                                                                  | Android · youth standards                                                                                                        |
+| ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="screenshots/ios-standards-light.png" width="300" alt="iOS original swim and A standard with next AA target"> | <img src="screenshots/android-youth-standards-summary.png" width="300" alt="Android original swim and matching youth benchmark"> |
 
-## Result gradient follow-up
+| iOS · World Aquatics points                                                                                    | Android · World Aquatics points                                                                                             |
+| -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| <img src="screenshots/ios-points-light.png" width="300" alt="iOS 697 points and the next 700-point milestone"> | <img src="screenshots/android-world-points.png" width="300" alt="Android 697 points using the same navy numerical surface"> |
 
-The result surface now uses a quiet, static diagonal gradient from the generated
-dark `surfaceRaised` to dark `surface` on both platforms, in both appearances.
-All stops remain opaque. White times, muted context, lime highlights and native
-button treatments are unchanged. No animation or new color values are added.
-Reviewed ordinary iPhone light/dark captures, the open Duo dark preview and
-Android's expanded light layout. All 16 iOS and 17 Android tests pass.
+Benchmarks use the original time/event/course/category, never a course or altitude
+estimate. Separate youth/Masters ages and comparison mode persist locally. Source
+editions and meet-entry limits remain visible. More coverage and validation notes
+are in [the standards review](NATIVE_STANDARDS_REVIEW.md).
 
-| iPhone light                                                  | Duo dark                                                      | Android light                                                      |
-| ------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------ |
-| ![iPhone gradient](screenshots/ios-native-gradient-light.png) | ![Duo gradient](screenshots/ios-native-duo-gradient-dark.png) | ![Android gradient](screenshots/android-native-gradient-light.png) |
+## Text scaling and adaptive layouts
+
+| iOS · largest accessibility text                                                                                                                          | Android · 200% text, dark                                                                                                                       |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="screenshots/ios-native-result-largest-text.png" width="300" alt="Full iOS comparison clock with wrapping context at the largest text category"> | <img src="screenshots/android-benchmarks-large-text-dark.png" width="300" alt="Android large-text benchmark controls and missing-target state"> |
+
+The complete result clock stays within its region. Context and labeled actions
+wrap, and longer content scrolls; these captures do not claim every control fits
+in one viewport. iOS regression assertions cover ordinary-size action height,
+wordmark width/toolbar alignment, and largest-text clock/action bounds. Form row
+virtualization is handled by the test scroll helper.
+
+Expanded conversion keeps inputs and results in independently scrollable panes.
+Tabletop places a concise result above the division and inputs below it. Drafts,
+active entry and the original swim behind a benchmark sheet survive layout
+changes. My times uses native single-column or list/detail navigation as space
+permits.
+
+[Duo · current expanded converter](screenshots/ios-current-duo-open.png) ·
+[Android · injected book fold](screenshots/android-current-book.png) ·
+[Android · injected tabletop fold](screenshots/android-current-tabletop.png)
+
+Android’s fold pictures use injected WindowManager geometry on an emulator,
+not physical fold hardware. The Duo image uses its actual inner display;
+XCTest’s generic screenshot attachment is black on that simulator.
+
+## Verification and limits
+
+- iPhone: 19 app cases (6 storage/unit and 13 UI), followed by focused final
+  header/menu, default action sizing, largest-text bounds, details, logging and
+  screenshot checks. Light/dark, missing targets and stroke menus were reviewed.
+- Duo/iOS 27.1: benchmark settings/points and rotation, continued typing and
+  keyboard dismissal pass. Earlier open/book/tabletop/outer-display behavior is
+  documented separately in the adaptive review.
+- Android API 36: all 22 instrumentation cases pass at 320 dp width, including
+  injected book/tabletop geometry. Final phone and expanded-fold capture cases
+  also pass. Test-only size, density, navigation and demo overrides are restored.
+- Generated tokens and vector exports are checked for drift. Web has 127
+  unit/design checks, 35 browser cases and 19 production-runtime cases; one
+  desktop-inapplicable browser case is skipped. The CI selector has 60 cases.
+  MCP packed/offline tools and official AppBridge checks pass over stdio and HTTP.
+- Physical-device ergonomics, VoiceOver/TalkBack, real fold transitions and store
+  signing/review remain release checks. No numerical snapshot, formula, cloud
+  sync or npm publication is part of this visual pass.

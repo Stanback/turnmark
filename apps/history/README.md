@@ -60,7 +60,7 @@ log, not a claim of official verification or a complete lifetime record.
   surfaced without deleting/recreating the store.
 - Existing current-input and saved-conversion preferences are untouched. There
   is no automatic migration into performances. Restore a previous saved
-  comparison into Convert, then explicitly choose **Record time** to confirm
+  comparison into Convert, then explicitly choose **Log swim** to confirm
   the original performance.
 
 A logging session remembers the last chosen meet/date for the next swim, keeps

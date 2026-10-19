@@ -1,6 +1,39 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
+test("mobile age selectors leave space for their complete selected label", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/");
+  for (const [system, id, age] of [
+    ["youth", "age-group", "10u"],
+    ["masters", "masters-age", "40-44"],
+  ]) {
+    await page.locator("#standards-system").selectOption(system);
+    const select = page.locator(`#${id}`);
+    await select.selectOption(age);
+    const fits = await select.evaluate((element) => {
+      const control = element as HTMLSelectElement;
+      const style = getComputedStyle(control);
+      const context = document.createElement("canvas").getContext("2d")!;
+      context.font = style.font;
+      return (
+        context.measureText(control.selectedOptions[0].text).width <=
+        control.clientWidth -
+          parseFloat(style.paddingLeft) -
+          parseFloat(style.paddingRight)
+      );
+    });
+    expect(fits).toBe(true);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+  }
+});
+
 test("remembers swimmer preferences without reusing race inputs, and shared swims override them", async ({
   page,
 }) => {
@@ -157,7 +190,7 @@ test("live conversion, invalid input and course-specific unavailable events", as
   await page.locator("#swim-time").fill("1:60");
   await expect(page.getByRole("alert")).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Save swim", exact: true }),
+    page.getByRole("button", { name: "Save comparison", exact: true }),
   ).toBeDisabled();
   await expect(page.getByTestId("result-SCY")).toHaveText("—");
   await page.locator("#swim-time").fill("1:00");
@@ -217,7 +250,9 @@ test("standards, altitude, local saves, restore and remove", async ({
     page.getByRole("heading", { name: "A time, nicely done." }),
   ).toBeVisible();
   await expect(page.locator(".standard-achievement")).toContainText("1.83s");
-  await page.getByRole("button", { name: "Save swim", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Save comparison", exact: true })
+    .click();
   await expect(page.locator(".saved-card")).toHaveCount(1);
   await page.reload();
   await expect(page.locator(".saved-card")).toHaveCount(1);
@@ -432,9 +467,13 @@ test("history remembers target-course changes and explicit saves without duplica
   page,
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "Save swim", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Save comparison", exact: true })
+    .click();
   await expect(page.locator(".history-row")).toHaveCount(1);
-  await page.getByRole("button", { name: "Save swim", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Save comparison", exact: true })
+    .click();
   await expect(page.locator(".history-row")).toHaveCount(1);
   await page.getByTestId("result-SCM").click();
   await expect(page.locator(".history-row")).toHaveCount(2);
@@ -591,7 +630,9 @@ test("points explain the reference and next milestone; swimboard remove buttons 
   );
   await expect(page.locator(".points-next")).toContainText("500 points");
   await expect(page.getByTestId("points-next-time")).not.toHaveText("—");
-  await page.getByRole("button", { name: "Save swim", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Save comparison", exact: true })
+    .click();
   const bounds = await page.locator(".remove-swim").boundingBox();
   expect(bounds).not.toBeNull();
   expect(Math.abs(bounds!.width - bounds!.height)).toBeLessThan(1);

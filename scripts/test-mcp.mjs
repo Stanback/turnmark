@@ -74,13 +74,13 @@ async function verify(transport, mode, label, ui = false) {
   client.onerror = (e) => errors.push(e);
   try {
     await client.connect(transport);
-    assert.equal(client.getServerVersion().version, "0.2.0");
+    assert.equal(client.getServerVersion().version, "0.2.1");
     const listed = (await client.listTools()).tools;
     assert.deepEqual(
       listed.map((t) => t.name).sort(),
       [...Object.values(tools), "get_sources"].sort(),
     );
-    const uri = "ui://turnmark/conversion/0.2.0.html";
+    const uri = "ui://turnmark/conversion/0.2.1.html";
     assert.equal(
       listed.find((t) => t.name === "convert_swim")._meta.ui.resourceUri,
       uri,

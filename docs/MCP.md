@@ -6,6 +6,10 @@ to the dedicated Worker and Custom Domain. The local server is published as
 [@turnmark/mcp@0.2.0](https://www.npmjs.com/package/@turnmark/mcp); it includes
 the SDK dependency and requires no Rust toolchain to install.
 
+The current source-only `0.2.1` UI patch adds the shared vector stroke glyphs and
+a new immutable card URI. The npm release remains `0.2.0`; publishing the patch
+is separate from updating the hosted Worker through protected main CI.
+
 The public [MCP quick start](https://turnmark.app/mcp/) covers hosted connection
 settings and links to the [Markdown reference](https://turnmark.app/mcp/index.md).
 The website footer links to the setup guide; page metadata identifies

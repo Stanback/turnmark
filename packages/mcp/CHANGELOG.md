@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1 — unreleased
+
+- Shared vector stroke glyphs and an accent-colored wordmark period in the interactive comparison card.
+- New versioned UI resource; tool schemas, calculations and SDK dependency are unchanged.
+
 ## 0.2.0
 
 - Official MCP Apps conversion card for compatible hosts, with editable time

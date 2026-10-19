@@ -80,11 +80,11 @@ struct SwimEditor: View {
                 }
                 if let error { Section { Text(error).foregroundStyle(.red).accessibilityIdentifier("logError") } }
             }.accessibilityIdentifier("swimEditorForm")
-                .navigationTitle(original == nil ? "Record time" : "Edit swim").navigationBarTitleDisplayMode(.inline)
+                .navigationTitle(original == nil ? "Log swim" : "Edit swim").navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
                     ToolbarItem(placement: .confirmationAction) {
-                        Button(original == nil ? "Add swim" : "Save changes") {
+                        Button(original == nil ? "Log swim" : "Save changes") {
                             do { try save(draft.record(date: date.isEmpty ? nil : date, meet: meet, replacing: original)); dismiss() }
                             catch { self.error = error.localizedDescription }
                         }.accessibilityIdentifier("confirmLog").disabled(!draft.canLog)
@@ -214,7 +214,7 @@ struct HistoryScreen: View {
                 ContentUnavailableView("No logged swims", systemImage: "list.bullet.rectangle",
                     description: Text("Record a race or practice time to start your personal record."))
                     .listRowBackground(TurnmarkPalette.surface)
-                Button("Record time", action: recordNew)
+                Button("Log swim", action: recordNew)
                     .listRowBackground(TurnmarkPalette.surface)
             }
             forGroups
@@ -234,7 +234,8 @@ struct HistoryScreen: View {
             .navigationTitle("My times")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button("Record time", systemImage: "plus", action: recordNew).accessibilityIdentifier("recordTime").disabled(controller.store == nil)
+                    Button(action: recordNew) { Label("Log swim", image: "Swim-log-swim") }
+                        .accessibilityIdentifier("recordTime").disabled(controller.store == nil)
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Menu {

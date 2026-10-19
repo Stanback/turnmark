@@ -4,18 +4,24 @@ Captured October 18, 2026 from real simulator/emulator builds. Sample swims only
 The view opens from Convert and from a recorded performance in My times. It
 compares the original time/event/course/category, never a converted estimate.
 
-| iOS 27 · compact, light                                                                             | Android API 36 · expanded, light                                                                                    |
+| iOS 27 · compact, light                                                                             | Android API 36 · phone, light                                                                                       |
 | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| <img src="screenshots/ios-standards-light.png" width="300" alt="iOS A standard and next AA target"> | <img src="screenshots/android-youth-standards-summary.png" width="460" alt="Android A standard and next AA target"> |
+| <img src="screenshots/ios-standards-light.png" width="300" alt="iOS A standard and next AA target"> | <img src="screenshots/android-youth-standards-summary.png" width="300" alt="Android A standard and next AA target"> |
 
 Both use generated palettes, a navy gradient and lime next-target time, while
 retaining native segmented controls, sheets, lists and pickers. Age/provider
 settings start expanded and can subsequently be disclosed. Separate youth and
 Masters ages and comparison mode persist locally; category follows the swim.
 
+The current captures use the same numerical surface as Convert, including its
+quiet static ribbon. iOS keeps grouped Form sections; Android groups the
+original swim, targets, settings and coverage into Material cards on the canvas.
+The main README continues to show default phone converters, rather than these
+feature sheets.
+
 | iOS · World Aquatics points                                                                                 | Android · World Aquatics points                                                                          |
 | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| <img src="screenshots/ios-points-light.png" width="300" alt="iOS 697 points with next 700-point milestone"> | <img src="screenshots/android-world-points.png" width="460" alt="Android 697 points and reference time"> |
+| <img src="screenshots/ios-points-light.png" width="300" alt="iOS 697 points with next 700-point milestone"> | <img src="screenshots/android-world-points.png" width="300" alt="Android 697 points and reference time"> |
 
 Missing Masters targets remain missing and SCY swims remain unscored. Sources,
 coverage and meet-entry limitations are available without obscuring the result.
@@ -23,7 +29,7 @@ The lookups, comparisons and settings work offline; source links need a network.
 
 | iOS · accessibility XXXL                                                                                                                     | Android · 200% text, dark                                                                                                                             |
 | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <img src="screenshots/ios-standards-missing-large-text.png" width="300" alt="Missing Masters target at largest iOS accessibility text size"> | <img src="screenshots/android-benchmarks-large-text-dark.png" width="460" alt="Missing Masters target at large Android text size in dark appearance"> |
+| <img src="screenshots/ios-standards-missing-large-text.png" width="300" alt="Missing Masters target at largest iOS accessibility text size"> | <img src="screenshots/android-benchmarks-large-text-dark.png" width="300" alt="Missing Masters target at large Android text size in dark appearance"> |
 
 ## Verification
 
@@ -35,11 +41,11 @@ The lookups, comparisons and settings work offline; source links need a network.
   B–AAAA, remembered ages/mode, recorded category, SCY coverage, metric points,
   rotation and largest accessibility text. The screenshot-only capture was
   repeated after moving it before the rotation animation.
-- Android: 22 instrumentation tests, plus a fresh 14-case converter run after
-  the final card contrast adjustment. Injected book/tabletop changes keep the
+- Android: 22 instrumentation tests, including a full run at the CI emulator’s
+  narrow 320 dp width. Injected book/tabletop changes keep the
   benchmark sheet and original swim. Large-text controls remain reachable.
-- Web: 126 unit tests, 33 browser tests with one desktop-inapplicable skip,
-  18 production-runtime tests, and Svelte/TypeScript checks pass.
+- Web: 127 unit tests, 35 browser tests with one desktop-inapplicable skip,
+  19 production-runtime tests, and Svelte/TypeScript checks pass.
 - MCP's existing six tools retain their contracts and SDK-equal results over
   packed offline stdio and local Streamable HTTP in both protocol modes.
 
@@ -90,7 +96,6 @@ The CI recording is retained as evidence; application code was unchanged for
 this test correction. The Duo’s system keyboard can occupy its other display
 outside the application’s primary AX frame; its own geometry/key content must
 be checked without intersecting that primary frame.
-
 
 A subsequent hosted run passed dismissal/rotation but timed out resolving
 `app.keyboards.firstMatch.exists` while preparing to tap Delete on recorded-swim

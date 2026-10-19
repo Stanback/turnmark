@@ -445,7 +445,7 @@
       return true;
     } catch {
       notify(
-        "Your browser couldn’t save this swim. You can copy a link instead.",
+        "Your browser couldn’t save this comparison. You can copy a link instead.",
       );
       return false;
     }
@@ -579,7 +579,18 @@
       <label class="field-label" for="event"
         >Event <span>distance &amp; stroke</span></label
       >
-      <div class="select-wrap">
+      <div class="select-wrap event-select">
+        <Icon
+          name={{
+            FR: "freestyle",
+            BK: "backstroke",
+            BR: "breaststroke",
+            FL: "butterfly",
+            IM: "individual-medley",
+          }[form.stroke]}
+          size={22}
+          class="select-leading-icon"
+        />
         <select
           id="event"
           value={selectedEvent}
@@ -789,7 +800,9 @@
         </section>
       {/if}
       <h3 class="equivalents-title">
-        All course equivalents <span>Select a course to focus</span>
+        <span class="equivalents-heading"
+          ><Icon name="equivalents" size={20} />All course equivalents</span
+        > <span>Select a course to focus</span>
       </h3>
       <div
         class="result-cards"
@@ -853,7 +866,7 @@
       >
       <div class="result-actions">
         <button class="primary-button" onclick={save} disabled={!!error}
-          ><Icon name="bookmark" size={16} />Save swim</button
+          ><Icon name="bookmark" size={16} />Save comparison</button
         ><button class="secondary-button" onclick={share} disabled={!!error}
           ><Icon name="link" size={16} />Copy link</button
         ><button

@@ -8,6 +8,11 @@ Swift and Kotlin libraries from the same Rust core; standalone SwiftPM binary
 and Maven releases are still follow-up work. No native registry release is
 implied by an npm release.
 
+The current source prepares an **unreleased MCP 0.2.1 patch** for the shared
+vector stroke glyph. Its versioned Apps resource is
+`ui://turnmark/conversion/0.2.1.html`; npm 0.2.0 and its immutable resource stay
+unchanged. Merging source does not publish a new npm package.
+
 ## Published 0.1.0 artifacts
 
 ```sh

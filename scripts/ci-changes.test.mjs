@@ -25,8 +25,11 @@ const all = flags("web", "core", "ios", "android");
 for (const [path, expected] of [
   ["src/App.svelte", flags("web")],
   ["src/app.css", flags("web")],
+  ["scripts/generate-social-image.mjs", flags("web")],
   ["design/turnmark.tokens.json", all],
   ["design/wave.svg", all],
+  ["design/swim-icons.json", all],
+  ["design/generate-icons.mjs", all],
   ["design/brand-manifest.json", flags("web", "ios", "android")],
   ["design/generate.mjs", all],
   ["apps/embed/Widget.svelte", flags("web")],

@@ -29,6 +29,14 @@ test("committed web, Swift and Kotlin match the validated design contract", () =
   );
   expect(result.status, result.stderr).toBe(0);
 });
+test("shared swim glyphs match their native vector exports", () => {
+  const result = spawnSync(
+    process.execPath,
+    ["design/generate-icons.mjs", "--check"],
+    { encoding: "utf8" },
+  );
+  expect(result.status, result.stderr).toBe(0);
+});
 for (const mode of ["light", "dark"]) {
   test(`${mode} content, accent and error roles meet normal-text contrast`, () => {
     const color = (role) => tokens[mode][role].$value.hex;

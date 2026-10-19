@@ -103,7 +103,7 @@ fallback iframe height; messages can be unavailable if the widget cannot load.
 ## Privacy and offline use
 
 Calculations execute in the iframe after its static assets load. The widget
-makes no calculation requests and does not access app preferences, saved swims,
+makes no calculation requests and does not access app preferences, saved comparisons,
 local/session storage or IndexedDB. It does not set cookies, register a service
 worker or load third-party scripts. Its parent-facing layout message contains
 only a type, contract version and content height, never calculation inputs or

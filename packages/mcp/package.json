@@ -1,6 +1,6 @@
 {
   "name": "@turnmark/mcp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": false,
   "description": "Read-only, offline swimming tools over MCP, powered by the Turnmark Rust SDK.",
   "license": "GPL-3.0-or-later",

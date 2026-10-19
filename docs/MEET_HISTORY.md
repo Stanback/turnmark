@@ -11,7 +11,7 @@ duplicate handling and platform storage details.
 
 Make recording a real swim quick enough to do between races:
 
-1. Enter the time, event and course, then choose **Record time**. This records the
+1. Enter the time, event and course, then choose **Log swim**. This records the
    entered performance, independently of whether a conversion is available.
 2. Show a small confirmation form with the actual time/event, date and an
    optional meet name. Default to today initially; offer the most recently used
@@ -23,7 +23,7 @@ Make recording a real swim quick enough to do between races:
    and event, then course and useful context. Opening it allows correction,
    deletion and **Compare this swim** without modifying the original record.
 
-My times also offers Record time directly, with an empty clock field, and
+My times also offers Log swim directly, with an empty clock field, and
 Recent / Best times views. The previous saved comparison has explicit restore
 and remove actions; restoring its inputs does not record a performance. Existing web conversion history is
 also calculation history, not evidence that those swims actually happened.
@@ -71,6 +71,11 @@ for logging races.
 - Everything above works without an account or network connection. Export/import
   provides a portable copy; encourage users to keep a backup. A device-only log
   is not a synchronization or backup service.
+- No iCloud/CloudKit sync is configured. Normal iOS device backups may include
+  the local app data, according to the user’s settings; this is not a guaranteed
+  reinstall/restore feature. Android currently sets `allowBackup="false"` for
+  cloud backup (some manufacturers may still support device-to-device transfer).
+  Export before deleting the app or clearing its data.
 
 ## Standard interchange follow-up
 

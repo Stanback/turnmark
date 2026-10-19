@@ -67,6 +67,8 @@ export function affectedChecks(paths) {
         "design/turnmark.tokens.json",
         "design/generate.mjs",
         "design/wave.svg",
+        "design/swim-icons.json",
+        "design/generate-icons.mjs",
       ].includes(path)
     )
       select("web", "core", "ios", "android");
@@ -118,7 +120,11 @@ export function affectedChecks(paths) {
       /^tsconfig(?:\.[^/]+)?\.json$/.test(path) ||
       path.startsWith("deployment/") ||
       path === "wrangler.jsonc" ||
-      ["index.html", "scripts/finish-build.mjs"].includes(path)
+      [
+        "index.html",
+        "scripts/finish-build.mjs",
+        "scripts/generate-social-image.mjs",
+      ].includes(path)
     )
       select("web");
     else return all();
