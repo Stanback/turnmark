@@ -46,3 +46,14 @@ rebuild.
 ![Dark converter with ambient currents and pooled cyan light](screenshots/web-liquid-surfaces-dark.png)
 
 ![Light appearance and result controls](screenshots/web-liquid-surfaces-light.png)
+
+The embedded widget imports the generated palette directly, including auto/forced
+appearance, accessible input borders, invalid-input color and entered-result
+emphasis. Legacy web fills, destructive hover tints, dialogs, altitude controls
+and theme buttons now reference semantic tokens rather than independent hex
+colors. Alpha blends are derived from those roles; the white border mask is an
+alpha-only compositing operation, not a visible palette color.
+
+| Embedded widget · dark                                                                                                             | Embedded widget · light                                                                                                              |
+| ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| <img src="screenshots/widget-tokens-dark.png" width="280" alt="Compact embedded converter in dark appearance using shared tokens"> | <img src="screenshots/widget-tokens-light.png" width="280" alt="Compact embedded converter in light appearance using shared tokens"> |

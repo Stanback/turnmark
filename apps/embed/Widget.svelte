@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from "../../src/lib/Icon.svelte";
   import {
     convertSwim,
     type Course,
@@ -76,28 +77,36 @@
         : "Minutes : seconds . hundredths"}
     </p>
     <label
-      >Stroke<select bind:value={stroke} onchange={reconcileDistance}
-        >{#each strokes as s}<option value={s.value}>{s.label}</option
-          >{/each}</select
+      >Stroke<span class="select-wrap"
+        ><select bind:value={stroke} onchange={reconcileDistance}
+          >{#each strokes as s}<option value={s.value}>{s.label}</option
+            >{/each}</select
+        ><Icon name="chevron" size={16} /></span
       ></label
     >
     <label
-      >Distance<select bind:value={distance}
-        >{#each distances as d}<option value={d}
-            >{d} {course === "SCY" ? "yards" : "meters"}</option
-          >{/each}</select
+      >Distance<span class="select-wrap"
+        ><select bind:value={distance}
+          >{#each distances as d}<option value={d}
+              >{d} {course === "SCY" ? "yards" : "meters"}</option
+            >{/each}</select
+        ><Icon name="chevron" size={16} /></span
       ></label
     >
     <label
-      >Entered course<select bind:value={course} onchange={reconcileDistance}
-        >{#each courses as c}<option>{c}</option>{/each}</select
+      >Entered course<span class="select-wrap"
+        ><select bind:value={course} onchange={reconcileDistance}
+          >{#each courses as c}<option>{c}</option>{/each}</select
+        ><Icon name="chevron" size={16} /></span
       ></label
     >
     <label
-      >Published table<select bind:value={table}
-        ><option value="women">Women / girls</option><option value="men"
-          >Men / boys</option
-        ></select
+      >Published table<span class="select-wrap"
+        ><select bind:value={table}
+          ><option value="women">Women / girls</option><option value="men"
+            >Men / boys</option
+          ></select
+        ><Icon name="chevron" size={16} /></span
       ></label
     >
   </div>
@@ -150,36 +159,20 @@
 <style>
   :global(:root) {
     font-family: "DM Sans Variable", system-ui, sans-serif;
+    color-scheme: light dark;
+    --bg: var(--tm-color-canvas);
+    --card: var(--tm-color-surface);
+    --ink: var(--tm-color-text);
+    --muted: var(--tm-color-text-muted);
+    --line: var(--tm-color-border-subtle);
+    --accent: var(--tm-color-accent);
+    --entered: var(--tm-color-selected-surface);
+  }
+  :global(:root[data-theme="light"]) {
     color-scheme: light;
-    --bg: #f5f9fb;
-    --card: #fff;
-    --ink: #163246;
-    --muted: #4c6474;
-    --line: #cfdee7;
-    --accent: #006a82;
-    --entered: #e5f3f7;
   }
   :global(:root[data-theme="dark"]) {
     color-scheme: dark;
-    --bg: #0c202e;
-    --card: #142e40;
-    --ink: #e0edf5;
-    --muted: #adc3d1;
-    --line: #355166;
-    --accent: #91d9ed;
-    --entered: #1b3c4e;
-  }
-  @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme="light"])) {
-      color-scheme: dark;
-      --bg: #0c202e;
-      --card: #142e40;
-      --ink: #e0edf5;
-      --muted: #adc3d1;
-      --line: #355166;
-      --accent: #91d9ed;
-      --entered: #1b3c4e;
-    }
   }
   :global(*) {
     box-sizing: border-box;
@@ -230,12 +223,35 @@
     width: 100%;
     min-height: 44px;
     padding: 10px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: var(--card);
+    border: 1px solid var(--tm-color-border-control);
+    border-radius: var(--tm-radius-control);
+    background: var(--tm-color-surface-input);
     color: var(--ink);
     font: inherit;
     font-size: 15px;
+  }
+  .select-wrap {
+    position: relative;
+  }
+  select {
+    appearance: none;
+    padding-inline-end: 48px;
+  }
+  .select-wrap :global(svg) {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    color: var(--muted);
+    pointer-events: none;
+  }
+  @media (forced-colors: active) {
+    select {
+      appearance: auto;
+    }
+    .select-wrap :global(svg) {
+      display: none;
+    }
   }
   input {
     font-family: "DM Mono", monospace;
@@ -256,11 +272,12 @@
     min-height: 16px;
   }
   #time-help.invalid {
-    color: var(--ink);
+    color: var(--tm-color-error);
     font-weight: 600;
   }
   input[aria-invalid="true"] {
     border-width: 2px;
+    border-color: var(--tm-color-error);
   }
   .results {
     margin-top: 22px;
@@ -274,12 +291,15 @@
     align-items: center;
     padding: 13px;
     border: 1px solid var(--line);
-    border-radius: 10px;
+    border-radius: var(--tm-radius-control);
     background: var(--card);
     min-height: 70px;
   }
   article.entered {
     background: var(--entered);
+  }
+  article.entered strong {
+    color: var(--tm-color-result-highlight);
   }
   h2 {
     margin: 0;

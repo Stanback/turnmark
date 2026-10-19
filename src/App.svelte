@@ -1189,7 +1189,7 @@
             <button
               class="history-restore"
               onclick={() => restoreConversion(entry)}
-              aria-label={`Restore ${eventLabel(entry.form.distance, entry.form.course, entry.form.stroke)} ${entry.form.time}`}
+              title="Restore this conversion"
             >
               <span
                 class="history-wave"

@@ -239,7 +239,7 @@
     border-radius: 10px;
     padding: 12px 18px;
     background: var(--docs-action);
-    color: #062b38;
+    color: var(--tm-color-on-action);
     font: inherit;
     font-weight: 650;
     cursor: pointer;
