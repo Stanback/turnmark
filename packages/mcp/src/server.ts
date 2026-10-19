@@ -25,7 +25,7 @@ import {
   pointsValidity,
 } from "@turnmark/sdk/points";
 
-export const conversionResourceUri = "ui://turnmark/conversion/0.3.0.html";
+export const conversionResourceUri = "ui://turnmark/conversion/0.3.0-r2.html";
 const uiMeta = {
   ui: {
     csp: { connectDomains: [], resourceDomains: [], frameDomains: [] },
@@ -126,7 +126,7 @@ export function createServer(engine: Engine) {
     "convert_swim",
     {
       description:
-        "Convert an entered swim to an explicit course. NCAA is the default; colorado-teamunify-2026 selects documented Colorado Timing formulas. Preserve the returned source and method; conversions are estimates, not entry approval.",
+        "Convert an entered swim to an explicit course. NCAA is the default; colorado-teamunify-2026 selects documented Colorado Timing formulas. The selected method drives the primary result; methodComparison also returns NCAA and Colorado for the same destination. methodDifferenceSeconds is a difference between rules, not a confidence interval. Preserve each source; conversions are estimates, not entry approval.",
       inputSchema: z.strictObject({
         swim,
         to: z.enum(["SCY", "SCM", "LCM"]),
@@ -139,16 +139,49 @@ export function createServer(engine: Engine) {
           visibility: ["model", "app"],
         },
       },
-      outputSchema: outcome,
-      annotations,
-    },
-    (input) =>
-      result(
-        engine.convert({
-          ...input,
-          method: input.method as ConversionMethod | undefined,
+      outputSchema: outcome.and(
+        z.object({
+          methodComparison: z
+            .array(
+              z.object({
+                method: z.string(),
+                label: z.string(),
+                result: outcome,
+              }),
+            )
+            .optional(),
+          methodDifferenceSeconds: z.number().nonnegative().optional(),
         }),
       ),
+      annotations,
+    },
+    (input) => {
+      const primary = engine.convert({
+        ...input,
+        method: input.method as ConversionMethod | undefined,
+      });
+      if (primary.status === "invalid") return result(primary);
+      const methodComparison = conversionMethods.map((method) => ({
+        method: method.id,
+        label: method.label,
+        result:
+          method.id === (input.method ?? conversionMethods[0].id)
+            ? primary
+            : engine.convert({ ...input, method: method.id }),
+      }));
+      const [ncaa, colorado] = methodComparison.map((item) => item.result);
+      return result({
+        ...primary,
+        methodComparison,
+        ...(ncaa.status === "available" && colorado.status === "available"
+          ? {
+              methodDifferenceSeconds:
+                Math.abs(ncaa.value.hundredths - colorado.value.hundredths) /
+                100,
+            }
+          : {}),
+      });
+    },
   );
   server.registerTool(
     "adjust_altitude",

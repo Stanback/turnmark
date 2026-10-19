@@ -1,4 +1,5 @@
 <script lang="ts">
+  import MethodComparison from "../../src/lib/MethodComparison.svelte";
   import Icon from "../../src/lib/Icon.svelte";
   import {
     convertSwim,
@@ -24,6 +25,7 @@
   let stroke = $state<Stroke>("freestyle");
   let distance = $state(100);
   let table = $state<Category>("women");
+  let comparisonCourse = $state<Course>("SCY");
   let method = $state<ConversionMethod>(conversionMethod);
   const selectedMethod = $derived(
     conversionMethods.find((item) => item.id === method)!,
@@ -162,6 +164,19 @@
           >{/each}</select
       ></label
     >
+    <label
+      >Compare methods in<select bind:value={comparisonCourse}
+        >{#each courses as target}<option>{target}</option>{/each}</select
+      ></label
+    >
+    <MethodComparison
+      selected={method}
+      request={{
+        swim: { time, event: { distance, stroke, course } },
+        to: comparisonCourse,
+        table,
+      }}
+    />
   </details>
   <footer>
     <p>Converted times are estimates. Meet rules decide entry eligibility.</p>

@@ -18,6 +18,16 @@ returned event. Other tools retain text/structured results.
 | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | <img src="screenshots/mcp-card-light.png" width="460" alt="Light MCP conversion card with original swim and editable comparison"> | <img src="screenshots/mcp-card-dark-narrow.png" width="260" alt="Dark narrow MCP conversion card"> |
 
+The October 19 follow-up uses the same signature navy numerical surface as the
+native apps in both host appearances, with a white clock and lime hundredths.
+The generated `.tm-result-surface` scope supplies the shared dark roles; no
+independent component palette is added. Original context sits beside editable
+controls instead of being repeated above the result. Calculation details hold
+the NCAA/Colorado comparison and distinguish method differences from predictive
+uncertainty. The form follows the host light/dark appearance.
+
+[Expanded comparison and calculation detail](screenshots/mcp-methods-light.png).
+
 The shared generated colors and canonical wave give it Turnmark's identity.
 All palette roles come from `design/turnmark.tokens.json` through the generated
 CSS bundled into the resource. Keep future UI states on that contract; the host
@@ -31,17 +41,20 @@ text, the clock fits one line and surrounding copy wraps normally:
 
 ## Boundaries
 
-- Six existing read-only tools and schemas stay intact. Only `convert_swim`
+- Six existing read-only tools stay intact. `convert_swim` adds comparison fields
+  while preserving its primary outcome; the other output schemas are unchanged.
+  Only `convert_swim`
   advertises `_meta.ui.resourceUri`; the one static resource is registered
   independently of initialization capabilities for stateless HTTP compatibility.
-- Current source URI `ui://turnmark/conversion/0.3.0.html`, MIME
+- Current source URI `ui://turnmark/conversion/0.3.0-r2.html`, MIME
   `text/html;profile=mcp-app`. Change the resource version for later view releases.
-  The alternative-method release is not yet published to npm; published `0.2.0` keeps
+  The revised resource has a new URI to avoid reusing the previous view's cache
+  key. The alternative-method release is not yet published to npm; published `0.2.0` keeps
   its original `ui://turnmark/conversion/0.2.0.html` resource.
   Both list/read carry CSP with empty connect/resource/frame domain lists.
 - The card wordmark uses the shared accent token for its period in both themes.
 - One self-contained HTML asset, including the official bridge SDK: approximately
-  659 KB raw, under an enforced 750,000-byte build budget. No CDN,
+  664 KB raw, under an enforced 750,000-byte build budget. No CDN,
   font request, direct fetch, local storage, history access or nested iframe.
   Installed third-party license notices are derived from the bundle graph and
   included in both the HTML resource and npm archive.
@@ -65,7 +78,7 @@ text, the clock fits one line and surrounding copy wraps normally:
 
 - Packed stdio and local workerd Streamable HTTP, in both supported protocol
   modes, with and without Apps capabilities: eight combinations. Each checks
-  53 exact SDK-equal outcomes, eight malformed requests, all tools, cancellation,
+  53 SDK-equal primary outcomes plus both method outcomes, eight malformed requests, all tools, cancellation,
   resource discovery/read/unknown URI, MIME, immutable URI, CSP and text fallback.
 - Packed stdio runs outside the workspace with network disabled. Once SDK 0.2.0 is published, a second fresh installation against that exact
   registry version also runs both protocol modes, result fixtures and resource

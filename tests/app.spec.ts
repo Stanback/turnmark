@@ -100,6 +100,20 @@ test("calculation details stay optional and keyboard accessible", async ({
   await page.keyboard.press("Enter");
   await expect(details).toHaveAttribute("open");
   await expect(page.locator(".result-explanation")).toContainText("NCAA");
+  const methods = page.getByRole("region", { name: "Compare methods in LCM" });
+  await expect(methods.locator('[data-method="ncaa-2025-27"]')).toContainText(
+    "1:06.72",
+  );
+  await expect(
+    methods.locator('[data-method="colorado-teamunify-2026"]'),
+  ).toContainText("1:06.33");
+  await expect(methods).toContainText("Method difference: 0.39s");
+  await expect(methods).toContainText("not a prediction range");
+  await page.getByTestId("result-SCM").click();
+  await expect(
+    page.getByRole("region", { name: "Compare methods in SCM" }),
+  ).toContainText("Method difference: 0.35s");
+
   await page.getByTestId("result-SCY").click();
   await expect(page.locator(".result-explanation")).toHaveText(
     "Your entered swim, exactly as timed.",

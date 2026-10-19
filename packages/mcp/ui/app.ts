@@ -99,11 +99,19 @@ function render(value: unknown, request: ConversionRequest) {
       !input({ ...request, swim: { ...request.swim, event: v.event } })
     )
       throw new Error("Invalid result");
-    line("p", "YOUR COMPARISON", "eyebrow");
+    line("p", "EQUIVALENT TIME", "eyebrow");
     line("h1", context(v.event, request.table), "context").prepend(
       swimIcon(v.event.stroke),
     );
-    line("p", v.time, "clock");
+    const clock = line("p", "", "clock");
+    const dot = v.time.lastIndexOf(".");
+    if (dot >= 0) {
+      clock.append(document.createTextNode(v.time.slice(0, dot)));
+      const hundredths = document.createElement("span");
+      hundredths.className = "hundredths";
+      hundredths.textContent = v.time.slice(dot);
+      clock.append(hundredths);
+    } else clock.textContent = v.time;
     line(
       "p",
       {
@@ -142,14 +150,61 @@ function render(value: unknown, request: ConversionRequest) {
     const source = outcome.provenance;
     const details = document.createElement("details");
     const summary = document.createElement("summary");
-    summary.textContent = "Source & method";
+    summary.textContent = "How this is calculated";
     details.append(summary);
     const p = document.createElement("p");
     p.textContent = `${source.title} · ${source.id} · ${source.revision}`;
     details.append(p);
+    const comparison = value as {
+      methodComparison?: {
+        method: string;
+        label: string;
+        result: Result<ConversionValue>;
+      }[];
+      methodDifferenceSeconds?: number;
+    };
+    if (Array.isArray(comparison.methodComparison)) {
+      const heading = document.createElement("h2");
+      heading.textContent = `Compare methods · ${request.to}`;
+      details.append(heading);
+      const methods = document.createElement("dl");
+      methods.className = "method-comparison";
+      for (const item of comparison.methodComparison) {
+        if (!["ncaa-2025-27", "colorado-teamunify-2026"].includes(item.method))
+          continue;
+        const row = document.createElement("div");
+        row.dataset.method = item.method;
+        const name = document.createElement("dt");
+        name.textContent = `${item.label}${item.method === (request.method ?? "ncaa-2025-27") ? " · Selected" : ""}`;
+        const time = document.createElement("dd");
+        time.textContent =
+          item.result.status === "available"
+            ? item.result.value.time
+            : "Unavailable for this event";
+        row.append(name, time);
+        methods.append(row);
+      }
+      details.append(methods);
+      const difference = document.createElement("p");
+      difference.className = "method-difference";
+      difference.textContent = `${typeof comparison.methodDifferenceSeconds === "number" && Number.isFinite(comparison.methodDifferenceSeconds) ? `Method difference: ${comparison.methodDifferenceSeconds.toFixed(2)}s. ` : ""}Different conversion rules, not a prediction range or confidence interval. Follow the method required by your meet.`;
+      details.append(difference);
+    }
+    const inputs = document.createElement("h2");
+    inputs.textContent = "What goes into the calculation";
+    details.append(inputs);
+    for (const text of [
+      "NCAA uses event- and category-specific metric-to-yards factors; reverse and SCM/LCM comparisons are derived. Colorado Timing uses event- and course-specific multipliers and fixed time offsets, without age or category inputs.",
+      "Neither measures your turn technique, endurance or individual development. Pool length changes turns and distance; distance freestyle maps 500/1000/1650 yards to 400/800/1500 meters.",
+      "Standards and points use the entered swim separately.",
+    ]) {
+      const explanation = document.createElement("p");
+      explanation.textContent = text;
+      details.append(explanation);
+    }
     if (outcome.status === "available" && outcome.value.kind !== "swum") {
       const formula = document.createElement("p");
-      formula.textContent = `Seconds × ${outcome.value.factor}${outcome.value.offsetSeconds ? ` ${outcome.value.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(outcome.value.offsetSeconds)}s` : ""}; final result truncated to hundredths.`;
+      formula.textContent = `Seconds × ${outcome.value.factor.toFixed(5)}${outcome.value.offsetSeconds ? ` ${outcome.value.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(outcome.value.offsetSeconds)}s` : ""}; factor rounded for display, final result truncated to hundredths.`;
       details.append(formula);
     }
     if (typeof source.url === "string" && source.url.startsWith("https://")) {

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import MethodComparison from "./lib/MethodComparison.svelte";
   import { onMount } from "svelte";
   import Icon from "./lib/Icon.svelte";
   import HeroCurrent from "./lib/HeroCurrent.svelte";
@@ -579,8 +580,8 @@
       <p class="converter-eyebrow">The swim time converter</p>
       <h1 id="page-title">Your swim.<br /><span>Any course.</span></h1>
       <p>
-        Swim time converter for yards and meters.<br />Compare 25-yard,
-        25-meter, and 50-meter pools.
+        Convert swim times and check published standards.<br />Your offline
+        companion for 25-yard, 25-meter, and 50-meter pools.
       </p>
     </div>
     <HeroCurrent />
@@ -930,6 +931,37 @@
                     : "Derived from NCAA metric-to-yards factors."} Truncated to hundredths.{/if}
             </p>
           </div>
+          {#if !error}
+            <MethodComparison
+              selected={form.method}
+              request={{
+                swim: {
+                  time: correctedTime!.toFixed(2),
+                  event: {
+                    distance: sourceDistance,
+                    stroke: (
+                      {
+                        FR: "freestyle",
+                        BK: "backstroke",
+                        BR: "breaststroke",
+                        FL: "butterfly",
+                        IM: "individual-medley",
+                      } as const
+                    )[form.stroke],
+                    course: form.course,
+                  },
+                },
+                to: focus,
+                table: form.category,
+              }}
+            />
+            {#if adjustment}<p class="altitude-method-note">
+                Both methods use the same sea-level estimate of {formatTime(
+                  correctedTime,
+                )} after the {adjustment.toFixed(2)}s altitude deduction. Your
+                original swim remains {form.time}.
+              </p>{/if}
+          {/if}
           <button class="text-button method-link" onclick={() => go("method")}
             >View methodology &amp; sources <Icon
               name="arrow"
