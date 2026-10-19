@@ -73,7 +73,9 @@ test("production hydrates, registers scoped offline support and converts with no
   await expect(page.getByTestId("altitude-corrected")).toHaveText("20:27.70");
   await page.locator("#swim-time").fill("20:00.20");
   await expect(page.getByTestId("altitude-corrected")).toHaveText("19:27.70");
-  await page.getByRole("button", { name: "Save swim", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Save comparison", exact: true })
+    .click();
   await expect(page.locator(".saved-card")).toHaveCount(1);
   await page.reload();
   await expect(page.locator(".saved-card")).toHaveCount(1);

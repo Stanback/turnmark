@@ -77,7 +77,8 @@
         : "Minutes : seconds . hundredths"}
     </p>
     <label class="wide-field"
-      >Stroke<span class="select-wrap"
+      ><span class="field-caption"><Icon name={stroke} size={18} />Stroke</span
+      ><span class="select-wrap"
         ><select bind:value={stroke} onchange={reconcileDistance}
           >{#each strokes as s}<option value={s.value}>{s.label}</option
             >{/each}</select
@@ -85,7 +86,9 @@
       ></label
     >
     <label
-      >Distance<span class="select-wrap"
+      ><span class="field-caption"
+        ><Icon name="distance" size={18} />Distance</span
+      ><span class="select-wrap"
         ><select bind:value={distance}
           >{#each distances as d}<option value={d}
               >{d} {course === "SCY" ? "yards" : "meters"}</option
@@ -217,6 +220,11 @@
     font-size: 13px;
     font-weight: 650;
     min-width: 0;
+  }
+  .field-caption {
+    display: flex;
+    align-items: center;
+    gap: 7px;
   }
   input,
   select {

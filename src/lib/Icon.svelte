@@ -1,10 +1,12 @@
 <script lang="ts">
+  import swimIcons from "../../design/swim-icons.json";
   let {
     name,
     size = 20,
     ...rest
   }: { name: string; size?: number; [key: string]: unknown } = $props();
   const paths: Record<string, string> = {
+    ...swimIcons,
     wave: "M3 8q4-6 9 0t9 0M3 16q4-6 9 0t9 0",
     history: "M3 4v6h6M3 10a9 9 0 1 1 .6 7M12 7v5l3 2",
     trash: "M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7",

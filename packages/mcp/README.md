@@ -136,9 +136,10 @@ new chat message automatically or accesses personal swim history.
 
 Clients without MCP Apps continue to receive the same text and structured
 results. There is no separate UI endpoint to configure: use the same stdio
-server or Streamable HTTP URL. The immutable resource is
-`ui://turnmark/conversion/0.2.0.html`, served as
-`text/html;profile=mcp-app`. Local Apps require package `0.2.0` or later;
+server or Streamable HTTP URL. Published package `0.2.0` uses immutable resource
+`ui://turnmark/conversion/0.2.0.html`. The current `0.2.1` source patch adds shared
+vector glyphs at `ui://turnmark/conversion/0.2.1.html`; that npm patch is not yet
+published. Both use `text/html;profile=mcp-app`. Local Apps require package `0.2.0` or later;
 package `0.1.0` provides text and structured tools.
 
 Verified with the official AppBridge in an opaque browser sandbox and real

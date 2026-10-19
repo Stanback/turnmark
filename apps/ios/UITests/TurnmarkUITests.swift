@@ -98,6 +98,16 @@ final class TurnmarkUITests: XCTestCase {
 
     @MainActor func testBenchmarksUseOriginalSwimAndRememberAgeSettings() {
         let app = launch()
+        let brand = app.descendants(matching: .any)["converterBrand"].firstMatch
+        let menu = app.buttons["converterMenu"]
+        XCTAssertTrue(brand.exists)
+        XCTAssertGreaterThan(brand.frame.width, 90,
+            "Ordinary text must show the wordmark as well as the wave")
+        XCTAssertLessThan(abs(brand.frame.midY - menu.frame.midY), 12,
+            "The compact wordmark and overflow must share the native toolbar row")
+        menu.tap(); app.buttons["converterAbout"].tap()
+        XCTAssertTrue(app.staticTexts["How comparisons work"].waitForExistence(timeout: 5))
+        app.buttons["Done"].firstMatch.tap()
         let benchmarkAction = app.buttons["openBenchmarks"]
         XCTAssertTrue(benchmarkAction.waitForExistence(timeout: 5))
         XCTAssertLessThan(benchmarkAction.frame.height, 80,
@@ -386,7 +396,8 @@ final class TurnmarkUITests: XCTestCase {
     @MainActor func testUnsupportedComparisonStaysUnavailable() {
         let app = launch()
         let stroke = app.buttons["strokePicker"]
-        reach(stroke, in: app); stroke.tap(); app.buttons["Individual medley"].tap()
+        reach(stroke, in: app); stroke.tap(); capture(app, "Stroke picker icons")
+        app.buttons["Individual medley"].tap()
         XCTAssertTrue(app.staticTexts["unavailableConversion"].exists)
         XCTAssertFalse(app.staticTexts["resultTime"].exists)
     }

@@ -9,12 +9,12 @@
     "build": "wrangler deploy --dry-run --outdir ../../target/mcp-worker"
   },
   "dependencies": {
-    "@turnmark/mcp": "0.2.0",
-    "@turnmark/sdk": "0.1.0",
-    "agents": "0.28.1",
-    "@modelcontextprotocol/server": "2.3.1",
     "@modelcontextprotocol/client": "2.3.1",
     "@modelcontextprotocol/sdk": "1.32.1",
+    "@modelcontextprotocol/server": "2.3.1",
+    "@turnmark/mcp": "0.2.1",
+    "@turnmark/sdk": "0.1.0",
+    "agents": "0.28.1",
     "zod": "4.6.7"
   },
   "devDependencies": {

@@ -116,7 +116,7 @@ A saved conversion is not a recorded race, a personal best or a logged meet swim
 Keep conversion history and actual-swim history clearly named on each surface.
 MCP text fallback must retain the same context and provenance as its future UI.
 
-Native navigation is **Convert · My times**. **Record time** confirms an actual
+Native navigation is **Convert · My times**. **Log swim** confirms an actual
 performance, date and optional meet. From Convert it prefills the entered swim;
 from My times it starts with a blank time. **Recent / Best times** filters actual
 records; a recorded swim can reopen a course comparison without changing the
@@ -171,6 +171,11 @@ event and supported whole pool lengths, not the entered distance for every cours
 
 ## Adoption and assets
 
+The [shared swim glyphs](../design/ICONS.md) use one path catalog for web,
+widget, MCP Apps and native template vectors. Keep their stroke proportions
+consistent and let each host apply its existing semantic tint. Native menus,
+navigation and actions retain their platform behavior.
+
 The paired native adoption is separate from the web and widget adapters. Show light/dark and large-text screenshots using the
 same sample swims. Review invalid, unavailable, original and derived results,
 yard/metric mappings, focus, contrast, keyboard space and native sharing.
@@ -189,3 +194,20 @@ icon artwork and physical-device/store release checks remain explicit work.
 The [adaptive-layout brief](ADAPTIVE_LAYOUT.md) records the researched iPhone Duo
 constraints, proposed expanded/compact workflows and simulator/physical-device
 acceptance matrix for the paired native adoption.
+
+## Shared vector glyphs
+
+The [canonical glyph catalog](../design/ICONS.md) supplies native template/vector
+assets and inline web/widget/MCP SVG paths. Supported stroke icons, distance and
+course equivalents accompany labels and inherit semantic tint. The toolbar wave
+derives from the existing brand geometry; the stopwatch-plus marks **Log swim**,
+which confirms an actual performance. Web’s **Save comparison** bookmarks a
+conversion setup without creating a performance record.
+
+[Glyph board](screenshots/shared-swim-icons.png) ·
+[Responsive widget](screenshots/widget-icons-dark.png) ·
+[Mobile age selector](screenshots/web-age-mobile-dark.png) ·
+[MCP card](screenshots/mcp-card-dark-narrow.png)
+
+The mobile web age controls reserve room for the full selected label and the
+native arrow. Their edition metadata wraps onto a separate row on narrow phones.

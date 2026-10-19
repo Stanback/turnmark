@@ -42,6 +42,11 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -55,6 +60,7 @@ import uniffi.turnmark_core.*
 val courses = Course.entries
 val strokes = Stroke.entries
 val strokeNames = listOf("Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual medley")
+val strokeImages = listOf(R.drawable.ic_swim_freestyle, R.drawable.ic_swim_backstroke, R.drawable.ic_swim_breaststroke, R.drawable.ic_swim_butterfly, R.drawable.ic_swim_individual_medley)
 val strokeCodes = listOf("FR", "BK", "BR", "FL", "IM")
 
 data class Draft(
@@ -159,9 +165,41 @@ private fun share(context: Context, draft: Draft) {
                 }
                 Scaffold(modifier = Modifier.weight(1f).imePadding(), containerColor = c.canvas,
                     snackbarHost = { SnackbarHost(snackbar) }, topBar = {
-                        if (tab == 1) TopAppBar(title = { Text("My times", fontWeight = FontWeight.Bold) }, actions = {
-                            IconButton(enabled = history.ready && !history.busy, onClick = { loggingJSON = draft.copy(time = "").encode() }, modifier = Modifier.testTag("recordTime")) {
-                                Icon(Icons.Default.Add, contentDescription = "Record time")
+                        TopAppBar(title = {
+                            if (tab == 1) Text("My times", fontWeight = FontWeight.Bold)
+                            else BoxWithConstraints(Modifier.fillMaxWidth().testTag("converterBrand")
+                                .clearAndSetSemantics { contentDescription = "Turnmark"; heading() }) {
+                                val style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                                val wordmarkWidth = rememberTextMeasurer().measure(AnnotatedString("turnmark"), style = style).size.width
+                                val showWordmark = wordmarkWidth <= with(LocalDensity.current) { (maxWidth - 34.dp).toPx() }
+                                Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                                    Icon(painterResource(R.drawable.ic_swim_brand_wave), null, tint = c.accent, modifier = Modifier.size(27.dp))
+                                    if (showWordmark) Text("turnmark", style = style, maxLines = 1)
+                                }
+                            }
+                        },
+                            colors = TopAppBarDefaults.topAppBarColors(containerColor = c.canvas), actions = {
+                            if (tab == 1) {
+                                IconButton(enabled = history.ready && !history.busy, onClick = { loggingJSON = draft.copy(time = "").encode() }, modifier = Modifier.testTag("recordTime")) {
+                                    Icon(painterResource(R.drawable.ic_swim_log_swim), contentDescription = "Log swim")
+                                }
+                            } else {
+                                var expanded by remember { mutableStateOf(false) }
+                                Box {
+                                    IconButton(onClick = { expanded = true }, modifier = Modifier.testTag("converterMenu")) {
+                                        Icon(Icons.Default.MoreVert, contentDescription = "More options")
+                                    }
+                                    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                                        DropdownMenuItem(text = { Text("About Turnmark") }, onClick = {
+                                            expanded = false; focus.clearFocus(); keyboard?.hide(); showingMethod = true
+                                        }, leadingIcon = { Icon(Icons.Default.Info, null) })
+                                        DropdownMenuItem(text = { Text("Methodology and coverage") }, onClick = {
+                                            expanded = false
+                                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://turnmark.app/#method")))
+                                        }, leadingIcon = { Icon(Icons.Default.ArrowForward, null) })
+                                    }
+                                }
                             }
                         })
                     }, bottomBar = {
@@ -277,28 +315,39 @@ private fun share(context: Context, draft: Draft) {
                 }))
             @Composable fun StrokeChoice(modifier: Modifier) {
                 Choice("Stroke", if (draft.strokeIndex == 4) "IM" else strokeNames[draft.strokeIndex], strokeNames,
-                    modifier.semantics { stateDescription = strokeNames[draft.strokeIndex] }) { update(draft.copy(strokeIndex = it)) }
+                    modifier.semantics { stateDescription = strokeNames[draft.strokeIndex] },
+                    labelIcon = strokeImages[draft.strokeIndex], optionIcons = strokeImages) { update(draft.copy(strokeIndex = it)) }
             }
             @Composable fun DistanceChoice(modifier: Modifier) {
-                Choice("Distance", "${draft.distance} ${draft.unit}", draft.options.map { "${it.event.distance} ${draft.unit}" }, modifier) {
+                Choice("Distance", "${draft.distance} ${draft.unit}", draft.options.map { "${it.event.distance} ${draft.unit}" }, modifier, labelIcon = R.drawable.ic_swim_distance) {
                     update(draft.copy(distance = draft.options[it].event.distance))
                 }
             }
-            if (largeText) {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    StrokeChoice(Modifier.fillMaxWidth()); DistanceChoice(Modifier.fillMaxWidth())
-                }
-            } else {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    StrokeChoice(Modifier.weight(1f)); DistanceChoice(Modifier.weight(1f))
+            BoxWithConstraints(Modifier.fillMaxWidth()) {
+                if (largeText || maxWidth < 320.dp) {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        StrokeChoice(Modifier.fillMaxWidth()); DistanceChoice(Modifier.fillMaxWidth())
+                    }
+                } else {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        StrokeChoice(Modifier.weight(1f)); DistanceChoice(Modifier.weight(1f))
+                    }
                 }
             }
             CourseControl("Swum in", "inputCourse", draft.courseIndex) { update(draft.copy(courseIndex = it)) }
             Text("Published category", style = MaterialTheme.typography.labelLarge)
-            SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
-                listOf("Women", "Men").forEachIndexed { index, label ->
-                    SegmentedButton(selected = draft.categoryIndex == index, onClick = { update(draft.copy(categoryIndex = index)) },
-                        shape = SegmentedButtonDefaults.itemShape(index, 2)) { Text(label) }
+            BoxWithConstraints(Modifier.fillMaxWidth()) {
+                if (maxWidth < 240.dp) {
+                    Choice("Published category", draft.category, listOf("Women", "Men"), Modifier.fillMaxWidth()) {
+                        update(draft.copy(categoryIndex = it))
+                    }
+                } else {
+                    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+                        listOf("Women", "Men").forEachIndexed { index, label ->
+                            SegmentedButton(selected = draft.categoryIndex == index, onClick = { update(draft.copy(categoryIndex = index)) },
+                                shape = SegmentedButtonDefaults.itemShape(index, 2)) { Text(label) }
+                        }
+                    }
                 }
             }
             CourseControl("Compare with", "targetCourse", draft.targetIndex) { update(draft.copy(targetIndex = it)) }
@@ -306,34 +355,53 @@ private fun share(context: Context, draft: Draft) {
             Button(onClick = add, enabled = draft.canLog && historyReady,
                 colors = ButtonDefaults.buttonColors(containerColor = c.actionFill, contentColor = c.onAction),
                 modifier = Modifier.fillMaxWidth().testTag("logSwim")) {
-                Icon(Icons.Default.Add, contentDescription = null); Spacer(Modifier.width(8.dp)); Text("Record time")
+                Icon(painterResource(R.drawable.ic_swim_log_swim), contentDescription = null); Spacer(Modifier.width(8.dp)); Text("Log swim")
             }
-            Text("Record the time you swam, with a date and optional meet.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
+            Text("Add this time to My times, with an optional date and meet.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
         }
     }
 }
 
 @Composable fun CourseControl(label: String, tag: String, selected: Int, onSelect: (Int) -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(label, fontWeight = FontWeight.Bold)
-        SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
-            courses.forEachIndexed { index, course ->
-                SegmentedButton(selected = selected == index, onClick = { onSelect(index) },
-                    shape = SegmentedButtonDefaults.itemShape(index, courses.size), modifier = Modifier.testTag("$tag-${course.name}")) { Text(course.name) }
+    BoxWithConstraints(Modifier.fillMaxWidth()) {
+        if (maxWidth < 240.dp) {
+            Choice(label, courses[selected].name, courses.map { it.name }, Modifier.fillMaxWidth().testTag(tag), onSelect = onSelect)
+        } else {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(label, fontWeight = FontWeight.Bold)
+                SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+                    courses.forEachIndexed { index, course ->
+                        SegmentedButton(selected = selected == index, onClick = { onSelect(index) },
+                            shape = SegmentedButtonDefaults.itemShape(index, courses.size), modifier = Modifier.testTag("$tag-${course.name}")) { Text(course.name) }
+                    }
+                }
             }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable fun Choice(label: String, selected: String, values: List<String>, modifier: Modifier, onSelect: (Int) -> Unit) {
+@Composable fun Choice(label: String, selected: String, values: List<String>, modifier: Modifier, labelIcon: Int? = null, optionIcons: List<Int>? = null, onSelect: (Int) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }, modifier = modifier) {
-        OutlinedTextField(value = selected, onValueChange = {}, readOnly = true, label = { Text(label) }, shape = MaterialTheme.shapes.medium,
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
-            modifier = Modifier.fillMaxWidth().menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable).testTag("choice-$label"))
-        ExposedDropdownMenu(expanded, { expanded = false }) {
-            values.forEachIndexed { index, value -> DropdownMenuItem(text = { Text(value) }, onClick = { expanded = false; onSelect(index) }) }
+    BoxWithConstraints(modifier) {
+        val showIcon = maxWidth >= 160.dp && labelIcon != null
+        ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }, modifier = Modifier.fillMaxWidth()) {
+            OutlinedTextField(value = selected, onValueChange = {}, readOnly = true, singleLine = true, label = {
+                Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                    if (showIcon) Icon(painterResource(labelIcon!!), contentDescription = null, modifier = Modifier.size(16.dp))
+                    Text(label)
+                }
+            }, shape = MaterialTheme.shapes.medium,
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+                modifier = Modifier.fillMaxWidth().menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable).testTag("choice-$label"))
+            ExposedDropdownMenu(expanded, { expanded = false }) {
+                values.forEachIndexed { index, value ->
+                    val icon: (@Composable () -> Unit)? = optionIcons?.getOrNull(index)?.let { resource ->
+                        { Icon(painterResource(resource), contentDescription = null, modifier = Modifier.size(24.dp)) }
+                    }
+                    DropdownMenuItem(text = { Text(value) }, leadingIcon = icon, onClick = { expanded = false; onSelect(index) })
+                }
+            }
         }
     }
 }
@@ -378,6 +446,8 @@ private fun share(context: Context, draft: Draft) {
                 if (compact) {
                     HorizontalDivider(color = c.borderSubtle)
                     TextButton(onClick = { showingCourses = !showingCourses }, modifier = Modifier.fillMaxWidth().testTag("courseEquivalents")) {
+                            Icon(painterResource(R.drawable.ic_swim_equivalents), contentDescription = null, modifier = Modifier.size(20.dp))
+                            Spacer(Modifier.width(8.dp))
                         Text(if (showingCourses) "Hide course equivalents" else "All course equivalents", Modifier.weight(1f))
                         Icon(if (showingCourses) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown, contentDescription = null)
                     }

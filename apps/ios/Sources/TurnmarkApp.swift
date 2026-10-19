@@ -6,6 +6,7 @@ let courseNames = ["SCY", "SCM", "LCM"]
 let courses: [Course] = [.scy, .scm, .lcm]
 let strokeNames = ["Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual medley"]
 let strokeCodes = ["FR", "BK", "BR", "FL", "IM"]
+let strokeImages = ["Swim-freestyle", "Swim-backstroke", "Swim-breaststroke", "Swim-butterfly", "Swim-individual-medley"]
 let strokes: [Stroke] = [.freestyle, .backstroke, .breaststroke, .butterfly, .individualMedley]
 
 struct Draft: Codable, Equatable {
@@ -132,8 +133,22 @@ private struct TurnmarkView: View {
                     }
                 }
                 .background(TurnmarkPalette.canvas)
-                .toolbar(.hidden, for: .navigationBar)
+                .navigationTitle("turnmark").navigationBarTitleDisplayMode(.inline)
                 .toolbar {
+                    converterBrandToolbar
+                    // Keep the brand leading, rather than duplicating the inline
+                    // navigation title in the system's centered title position.
+                    ToolbarItem(placement: .principal) { Color.clear.frame(width: 0, height: 0).accessibilityHidden(true) }
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Menu {
+                            Button { dismissTimeEntry(); showingMethod = true } label: { Label("About Turnmark", systemImage: "info.circle") }
+                                .accessibilityIdentifier("converterAbout")
+                            Link(destination: URL(string: "https://turnmark.app/#method")!) {
+                                Label("Methodology and coverage", systemImage: "arrow.up.right.square")
+                            }
+                        } label: { Image(systemName: "ellipsis") }
+                            .accessibilityLabel("More options").accessibilityIdentifier("converterMenu")
+                    }
                     if editingTime {
                         ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("Done", action: dismissTimeEntry).accessibilityIdentifier("dismissConverterKeyboard") }
                     }
@@ -168,6 +183,27 @@ private struct TurnmarkView: View {
         .onChange(of: draft) { _, value in UserDefaults.standard.set(value.encoded, forKey: "draft") }
         .onChange(of: draft.courseIndex) { _, _ in draft.reconcile() }
         .onChange(of: draft.strokeIndex) { _, _ in draft.reconcile() }
+    }
+    private var toolbarWave: some View {
+        Image("Swim-brand-wave").resizable().scaledToFit().frame(width: 27, height: 27)
+            .foregroundStyle(TurnmarkPalette.accent)
+    }
+    private var toolbarBrand: some View {
+        HStack(spacing: 7) {
+            toolbarWave
+            if !typeSize.isAccessibilitySize {
+                Text("turnmark").font(.headline.weight(.bold)).lineLimit(1)
+            }
+        }.fixedSize(horizontal: true, vertical: false)
+            .accessibilityElement(children: .ignore).accessibilityLabel("Turnmark")
+            .accessibilityAddTraits(.isHeader).accessibilityIdentifier("converterBrand")
+    }
+    @ToolbarContentBuilder private var converterBrandToolbar: some ToolbarContent {
+        if #available(iOS 26.0, *) {
+            ToolbarItem(placement: .topBarLeading) { toolbarBrand }.sharedBackgroundVisibility(.hidden)
+        } else {
+            ToolbarItem(placement: .topBarLeading) { toolbarBrand }
+        }
     }
 
     private func dismissTimeEntry() {
@@ -265,12 +301,12 @@ private struct TurnmarkView: View {
             }
             coursePicker("Compare with", selection: $draft.targetIndex, id: "targetCourse")
             Button { dismissTimeEntry(); logging = draft } label: {
-                Label("Record time", systemImage: "plus").fontWeight(.semibold)
+                Label("Log swim", image: "Swim-log-swim").fontWeight(.semibold)
                     .foregroundStyle(TurnmarkPalette.onAction).frame(maxWidth: .infinity)
             }.buttonStyle(.borderedProminent).tint(TurnmarkPalette.actionFill).controlSize(.large)
                 .disabled(!draft.canLog || history.store == nil).accessibilityIdentifier("logSwim")
         } header: { Text("Your swim").font(.title3.bold()).textCase(nil).foregroundStyle(TurnmarkPalette.text) }
-          footer: { Text("Record the time you swam, with a date and optional meet.") }
+          footer: { Text("Add this time to My times, with an optional date and meet.") }
             .listRowBackground(TurnmarkPalette.surface)
     }
     private func coursePicker(_ title: String, selection: Binding<Int>, id: String) -> some View {
@@ -286,10 +322,11 @@ private struct TurnmarkView: View {
             Text("Stroke").font(.subheadline.weight(.semibold))
             Menu {
                 Picker("Stroke", selection: $draft.strokeIndex) {
-                    ForEach(strokeNames.indices, id: \.self) { Text(strokeNames[$0]).tag($0) }
+                    ForEach(strokeNames.indices, id: \.self) { Label(strokeNames[$0], image: strokeImages[$0]).tag($0) }
                 }
             } label: {
                 HStack(spacing: 5) {
+                    Image(strokeImages[draft.strokeIndex]).resizable().scaledToFit().frame(width: 20, height: 20).accessibilityHidden(true)
                     Text(draft.strokeIndex == 4 ? "IM" : strokeNames[draft.strokeIndex])
                     Image(systemName: "chevron.up.chevron.down").font(.caption).accessibilityHidden(true)
                 }.foregroundStyle(TurnmarkPalette.accent)
@@ -306,6 +343,7 @@ private struct TurnmarkView: View {
                 }
             } label: {
                 HStack(spacing: 5) {
+                    Image("Swim-distance").resizable().scaledToFit().frame(width: 20, height: 20).accessibilityHidden(true)
                     Text("\(draft.distance) \(draft.unit)")
                     Image(systemName: "chevron.up.chevron.down").font(.caption).accessibilityHidden(true)
                 }.foregroundStyle(TurnmarkPalette.accent)
@@ -344,7 +382,7 @@ struct ConversionResult: View {
                 if compact {
                     Divider().overlay(TurnmarkResultPalette.borderSubtle)
                     DisclosureGroup(isExpanded: $showingCourses) { courseRows } label: {
-                        Label("All course equivalents", systemImage: "water.waves")
+                        Label("All course equivalents", image: "Swim-equivalents")
                     }
                         .font(.subheadline).tint(TurnmarkResultPalette.accent)
                         .environment(\.colorScheme, .dark).accessibilityIdentifier("courseEquivalents")

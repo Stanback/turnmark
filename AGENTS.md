@@ -29,7 +29,7 @@ instructions here.
 
 ## Product conventions
 
-- Native navigation is Convert and My times; Record time confirms an actual
+- Native navigation is Convert and My times; Log swim confirms an actual
   performance. See [native product notes](docs/NATIVE_PRODUCT_NOTES.md) for
   workflow intent and the distinction between entry preparation and eligibility.
 - Preserve the entered swim separately from converted estimates. Estimates
@@ -44,8 +44,10 @@ instructions here.
 - Core workflows work offline, including first launch. Keep personal swim data
   local by default. Sharing and future agent integrations need explicit inputs
   and clear ownership of any data they access.
-- Favor direct time entry and readable results. The converter has no app-name
-  banner or decorative heading. Use the wave identity for app icons and
+- Favor direct time entry and readable results. Native navigation uses the
+  compact turnmark wordmark and wave on the same native toolbar row as the
+  overflow menu; adapt to the wave alone when larger text needs the room. Avoid
+  an additional large title or app-name banner. Use the wave identity for app icons and
   platform launch behavior; keep copy concrete. See [BRANDING.md](docs/BRANDING.md)
   and [NATIVE_DESIGN_REVIEW.md](docs/NATIVE_DESIGN_REVIEW.md).
 - Follow [the shared design contract](docs/DESIGN_CONTRACT.md) for semantic

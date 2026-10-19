@@ -4,8 +4,10 @@ The two-wave geometry in `design/wave.svg` is shared by the website and native
 app icons. The shared token source supplies its dark canvas/accent pair: a navy
 field and cyan waves. The platforms supply their own icon masks.
 `public/icons/app-icon.svg` and `public/favicon.svg` are generated outputs.
-The native converter opens straight into its inputs, without a logo, app-name header or promotional title.
-Saved and Method retain functional page titles. The [shared design contract](DESIGN_CONTRACT.md)
+The native converter uses a compact turnmark wordmark and wave on the same
+platform toolbar row as its overflow menu. At large text sizes, the wave can
+stand alone with a Turnmark accessibility label. My times and detail screens
+retain functional page titles; there is no extra large brand banner. The [shared design contract](DESIGN_CONTRACT.md)
 defines palette ownership and the staged cross-platform adoption.
 
 The website declares the square 192px PNG at the stable

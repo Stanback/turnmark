@@ -67,6 +67,8 @@ export function affectedChecks(paths) {
         "design/turnmark.tokens.json",
         "design/generate.mjs",
         "design/wave.svg",
+        "design/swim-icons.json",
+        "design/generate-icons.mjs",
       ].includes(path)
     )
       select("web", "core", "ios", "android");

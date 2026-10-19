@@ -1,11 +1,12 @@
 import { App } from "@modelcontextprotocol/ext-apps";
+import swimIcons from "../../../design/swim-icons.json";
 import type {
   ConversionRequest,
   ConversionValue,
   Result,
 } from "@turnmark/sdk/conversion";
 
-const app = new App({ name: "Turnmark conversion", version: "0.2.0" }, {});
+const app = new App({ name: "Turnmark conversion", version: "0.2.1" }, {});
 const $ = <T extends HTMLElement>(id: string) =>
   document.getElementById(id) as T;
 const form = $("convert");
@@ -35,6 +36,21 @@ function context(
 }
 function message(text: string) {
   status.textContent = text;
+}
+function swimIcon(name: keyof typeof swimIcons) {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("class", "swim-icon");
+  svg.setAttribute("aria-hidden", "true");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("stroke-width", "1.65");
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+  const path = document.createElementNS(svg.namespaceURI, "path");
+  path.setAttribute("d", swimIcons[name]);
+  svg.append(path);
+  return svg;
 }
 function controls() {
   update.disabled = !connected || !original || !!pending;
@@ -83,7 +99,9 @@ function render(value: unknown, request: ConversionRequest) {
     )
       throw new Error("Invalid result");
     line("p", "YOUR COMPARISON", "eyebrow");
-    line("h1", context(v.event, request.table), "context");
+    line("h1", context(v.event, request.table), "context").prepend(
+      swimIcon(v.event.stroke),
+    );
     line("p", v.time, "clock");
     line(
       "p",

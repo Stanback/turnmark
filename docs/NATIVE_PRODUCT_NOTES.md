@@ -14,10 +14,12 @@ they do not validate demand for Turnmark or establish that a label will test wel
 
 **Convert** contains the temporary comparison, provenance and sharing.
 **My times** contains actual performances, with Recent and Best times views.
-**Record time** opens a confirmation/editor for an actual swim. From Convert it
+**Log swim** opens a confirmation/editor for an actual swim. From Convert it
 prefills the entered swim; from My times the time starts empty, while retaining
 useful event/course context. The optional meet and date can be confirmed there.
 The single confirmation writes the original performance, never the estimate.
+Web’s **Save comparison** bookmarks its conversion setup; it does not write a
+native performance record. Keep labels aligned with these distinct actions.
 
 The Best times view considers this device's recorded data. Importing or editing
 records can change it. It does not claim verification against an official results

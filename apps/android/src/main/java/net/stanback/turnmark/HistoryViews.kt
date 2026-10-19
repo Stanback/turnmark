@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.font.FontWeight
@@ -86,16 +87,17 @@ fun Draft.record(date: String?, meet: String?, replacing: SwimRecord? = null): S
     var meet by rememberSaveable { mutableStateOf(initialMeet) }
     var error by remember { mutableStateOf<String?>(null) }
     val focus = LocalFocusManager.current
+    val keyboard = LocalSoftwareKeyboardController.current
     Dialog(onDismissRequest = { if (!history.busy) dismiss() }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Scaffold(modifier = Modifier.imePadding(), topBar = {
-            RecordTopAppBar(title = if (original == null) "Record time" else "Edit swim", navigationIcon = {
+            RecordTopAppBar(title = if (original == null) "Log swim" else "Edit swim", navigationIcon = {
                 TextButton(onClick = dismiss, enabled = !history.busy) { Text("Cancel") }
             }, actions = {
                 TextButton(enabled = draft.canLog && !history.busy, modifier = Modifier.testTag("confirmLog"), onClick = {
                     runCatching { draft.record(date.ifEmpty { null }, meet, original) }.fold(onSuccess = { record ->
-                        focus.clearFocus(); history.save(record) { saved(record); dismiss() }
+                        focus.clearFocus(); keyboard?.hide(); history.save(record) { saved(record); dismiss() }
                     }, onFailure = { error = it.message ?: "Check the swim and date." })
-                }) { Text(if (original == null) "Add swim" else "Save changes") }
+                }) { Text(if (original == null) "Log swim" else "Save changes") }
             })
         }) { insets ->
             Column(Modifier.padding(insets).fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp),
@@ -184,7 +186,7 @@ fun Draft.record(date: String?, meet: String?, replacing: SwimRecord? = null): S
             } else if (history.swims.isEmpty()) item {
                 Text("No logged swims", style = MaterialTheme.typography.headlineSmall)
                 Text("Record a race or practice time to start your personal record.")
-                Button(onClick = recordNew) { Text("Record time") }
+                Button(onClick = recordNew) { Text("Log swim") }
             }
             val visible = if (bestOnly) history.swims.filter { history.isBest(it) }.distinctBy { it.comparisonKey } else history.swims
             val groups = visible.groupBy { it.date to it.meet }

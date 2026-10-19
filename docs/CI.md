@@ -17,10 +17,13 @@ native apps; editing canonical calculations or data tests every consumer.
 | Documentation, root Markdown instructions, issue/PR templates                                                         | Selection checks only     |
 | Workflows, selection rules, or unfamiliar paths                                                                       | All                       |
 
-The shared palette `design/turnmark.tokens.json`, wave geometry
-`design/wave.svg`, brand export manifest, and brand exporter select web, iOS and
-Android because all three consume launcher/favicon assets. They do not select
-core/calculation checks. The palette generator `design/generate.mjs` also selects all three UI consumers.
+The shared palette `design/turnmark.tokens.json`, its generator, the canonical
+wave geometry `design/wave.svg`, and the shared glyph catalog/generator select
+web, MCP/core and both native checks. The core job also verifies the MCP adapter;
+this selection does not imply that a visual edit changes calculation behavior.
+The brand export manifest and launcher/favicon exporter select web, iOS and
+Android. Native test wrappers and design tests verify the committed vector
+exports before running app tests.
 Other design contract checks select web. Both native app test wrappers verify
 committed generated palettes before testing, so a platform-only edit cannot
 silently drift from the source contract.

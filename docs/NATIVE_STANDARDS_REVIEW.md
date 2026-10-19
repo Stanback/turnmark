@@ -41,11 +41,11 @@ The lookups, comparisons and settings work offline; source links need a network.
   B–AAAA, remembered ages/mode, recorded category, SCY coverage, metric points,
   rotation and largest accessibility text. The screenshot-only capture was
   repeated after moving it before the rotation animation.
-- Android: 22 instrumentation tests, plus a fresh 14-case converter run after
-  the final card contrast adjustment. Injected book/tabletop changes keep the
+- Android: 22 instrumentation tests, including a full run at the CI emulator’s
+  narrow 320 dp width. Injected book/tabletop changes keep the
   benchmark sheet and original swim. Large-text controls remain reachable.
-- Web: 126 unit tests, 33 browser tests with one desktop-inapplicable skip,
-  18 production-runtime tests, and Svelte/TypeScript checks pass.
+- Web: 127 unit tests, 35 browser tests with one desktop-inapplicable skip,
+  19 production-runtime tests, and Svelte/TypeScript checks pass.
 - MCP's existing six tools retain their contracts and SDK-equal results over
   packed offline stdio and local Streamable HTTP in both protocol modes.
 

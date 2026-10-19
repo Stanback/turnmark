@@ -35,6 +35,11 @@ class ConverterTest {
     }
 
     @Test fun benchmarksUseOriginalSwimAndRememberAgeSettings() {
+        compose.onNodeWithTag("converterBrand").assertIsDisplayed()
+        compose.onNodeWithTag("converterMenu").performClick()
+        compose.onNodeWithText("About Turnmark").performClick()
+        compose.onNodeWithText("How comparisons work").assertIsDisplayed()
+        compose.onNodeWithText("Done").performScrollTo().performClick()
         capture("android-converter-default")
         compose.onNodeWithTag("openBenchmarks").performScrollTo().performClick()
         compose.onNodeWithTag("benchmarkOriginalTime").assertTextEquals("58.32")
@@ -217,6 +222,11 @@ class ConverterTest {
         compose.onNodeWithTag("logMeet").performScrollTo().performTextReplacement(meet)
         capture("android-long-editor")
         compose.onNodeWithTag("confirmLog").performClick()
+        // Saving is asynchronous and the IME hides the bottom navigation until
+        // its closing animation finishes. Wait for the actual navigation node.
+        compose.waitUntil(timeoutMillis = 5_000) {
+            compose.onAllNodesWithTag("nav-My times").fetchSemanticsNodes().size == 1
+        }
         compose.onNodeWithTag("nav-My times").performClick()
         compose.onNodeWithText(meet, substring = true).assertExists()
         capture("android-long-meet")
@@ -357,6 +367,7 @@ class ConverterTest {
 
     @Test fun unsupportedComparisonStaysUnavailable() {
         compose.onNodeWithTag("choice-Stroke").performScrollTo().performClick()
+        capture("android-stroke-menu")
         compose.onNodeWithText("Individual medley").performClick()
         compose.onNodeWithTag("unavailableConversion").assertExists()
         compose.onNodeWithTag("resultTime").assertDoesNotExist()

@@ -82,8 +82,8 @@
   <p>Open this page in Safari, tap Share, then Add to Home Screen.</p>
   <p class="install-offline">
     <Icon name="info" size={17} />After the first online visit finishes caching,
-    the converter and its bundled tables work offline. Saved swims stay on this
-    device.
+    the converter and its bundled tables work offline. Saved comparisons stay on
+    this device.
   </p>
   <button class="primary-button" onclick={() => help.close()}>Got it</button>
 </dialog>

@@ -47,7 +47,7 @@ behavior is made from these store images.
 | 9        | [DealSeek](https://play.google.com/store/apps/details?id=com.dealseekorg.dealseek&gl=us)                 | First panel is promotional; no in-app header conclusion from that panel. |
 | 10       | [McDonald’s](https://play.google.com/store/apps/details?id=com.mcdonalds.app&gl=us)                      | Location selection uses a functional header above the map.               |
 
-## Turnmark decision
+## Earlier Turnmark decision
 
 The sample is mixed: some feeds retain a small wordmark, some use an icon, and
 focused workflows often show actions or task context. It does not establish a
@@ -62,6 +62,14 @@ its system splash, with a background matching the app’s light/dark appearance.
 There is no extra splash activity, timer or loading animation. On iOS, a launch
 background matching the first screen leads straight into the converter, without
 an additional logo screen.
+
+The later native visual direction restores a compact **turnmark + wave** on
+the same native toolbar row as the overflow menu on both apps. This supersedes
+the intermediate large “Swim converter” title. The menu exposes About and
+published methodology; at larger text sizes the wordmark can yield to the wave.
+An additional app-name banner stays out of the converter;
+the current [visual review](NATIVE_VISUAL_REVIEW.md) and default phone captures
+supersede the earlier header-free presentation.
 
 This follows [Apple’s launch guidance](https://developer.apple.com/design/human-interface-guidelines/launching),
 which favors immediate interaction, matching the first screen and avoiding

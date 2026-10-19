@@ -14,6 +14,9 @@ cards use the same opaque generated navy gradient and restrained accent ribbon;
 supporting surfaces follow the current light/dark appearance.
 
 - iOS uses a grouped SwiftUI Form, native pickers and the existing TabView.
+  A compact turnmark wordmark and wave share the native toolbar row with the
+  overflow menu for About and methodology; earlier header-free and large-title
+  captures are historical.
   Details and Share use system glass icon buttons, alongside a labeled
   Standards & points action. Actions reflow at accessibility text sizes.
   Increased contrast and Reduce Transparency hide the decorative ribbon.
@@ -22,9 +25,19 @@ supporting surfaces follow the current light/dark appearance.
   Event fields share a row at ordinary text size and stack for large text.
   The compact result places the labeled benchmark action beside Details and
   Share; supporting benchmark content uses grouped Material cards.
-- Both retain the original swim separately from estimates. Record time,
+  Its native app bar carries the same compact wordmark/wave and a Material
+  overflow menu. Event fields stack in narrow panes; very narrow course/category choices
+  use native dropdowns instead of compressing segmented rows.
+- Both retain the original swim separately from estimates. Log swim,
   published factors, missing targets and unscored SCY points keep their existing
-  meaning. No calculation, source snapshot or dependency version changed.
+  meaning. No calculation, source snapshot or native dependency version changed.
+
+Stroke, distance and equivalents glyphs share a vector path catalog with web,
+widget and MCP UI. iOS menu assets remain vector PDFs; Android uses native vector
+drawables. The toolbar wave derives from the canonical brand geometry. At
+large text sizes, the wordmark can yield to the wave while keeping the Turnmark
+accessibility label and overflow action. Labels remain readable and icons inherit
+the host's semantic tint.
 
 The current home and benchmark captures below replace the earlier presentation.
 The remaining historical captures document adaptive, history and entry behavior;
@@ -51,7 +64,7 @@ shows the full clock and wrapping context; the longer card remains scrollable.
 - The result has a signature opaque navy surface in both appearances, a tabular
   clock with restrained lime hundredths, visible destination/category context
   and original/published/derived labels. Details and sharing remain contextual.
-- Convert and My times match the two main jobs. Record time confirms an actual
+- Convert and My times match the two main jobs. Log swim confirms an actual
   swim; Recent / Best times filters actual records. An older comparison bookmark
   remains separate and explicitly restorable/removable.
 - Expanded conversion shows inputs beside the result. Tabletop uses a concise
@@ -68,7 +81,7 @@ wrapping, action labels, card padding, picker alignment and scrolling to actions
 
 Corrections from reviewing the rendered screens:
 
-- Record time uses the cyan action fill with a contrasting, stronger label and
+- Log swim uses the cyan action fill with a contrasting, stronger label and
   a plain plus icon. Link teal is not used as its fill on iOS.
 - IM is the compact selected stroke label; selection menus, full event context
   and accessible values retain Individual medley. No forced single-line clipping
@@ -104,12 +117,21 @@ and expanded layouts remain in the detailed reviews.
 
 [iOS home](screenshots/ios-home-light.png) · [Android home](screenshots/android-home-light.png)
 
+[Shared vector glyphs](screenshots/shared-swim-icons.png) ·
+[iOS stroke menu](screenshots/ios-stroke-menu.png) ·
+[Android stroke menu](screenshots/android-stroke-menu.png)
+
+**Log swim** uses a stopwatch-plus glyph and confirms an actual performance.
+Its helper text points to My times and the optional date/meet. Web’s **Save
+comparison** retains the existing bookmark behavior; it does not create a
+recorded performance. See [history and backup limits](MEET_HISTORY.md).
+
 ## Captures
 
 | Case                                            | Evidence                                                                                                                                                                                                                                                |
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | iPhone result, light / dark                     | [Light](screenshots/ios-native-result-light.png) · [Dark](screenshots/ios-native-result-dark.png)                                                                                                                                                       |
-| iPhone Record time action                       | [Light](screenshots/ios-native-record-light.png)                                                                                                                                                                                                        |
+| iPhone Log swim action                          | [Light](screenshots/ios-native-record-light.png)                                                                                                                                                                                                        |
 | iPhone My times / bests                         | [My times, dark](screenshots/ios-native-times-dark.png) · [Bests, light](screenshots/ios-native-best-light.png)                                                                                                                                         |
 | iPhone largest accessibility text               | [Input and reflow](screenshots/ios-native-large-text.png) · [Long clock](screenshots/ios-native-long-clock.png)                                                                                                                                         |
 | Duo expanded and book fold                      | [Open](screenshots/ios-native-duo-open-light.png) · [Book](screenshots/ios-native-duo-book-light.png)                                                                                                                                                   |
