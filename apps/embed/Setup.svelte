@@ -7,7 +7,7 @@
     `${site.url}embed/v1/${theme === "auto" ? "" : `?theme=${theme}`}`,
   );
   const code = $derived(
-    `<iframe src="${url}" title="Swim time converter by Turnmark" width="100%" height="740" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" style="max-width:640px;border:0;border-radius:16px;"></iframe>`,
+    `<iframe src="${url}" title="Swim time converter by Turnmark" width="100%" height="820" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" style="max-width:640px;border:0;border-radius:16px;"></iframe>`,
   );
   async function copy() {
     copied = false;
@@ -98,7 +98,7 @@
       src={`/embed/v1/${theme === "auto" ? "" : `?theme=${theme}`}`}
       title="Swim time converter preview"
       width="100%"
-      height="740"
+      height="820"
       loading="lazy"
     ></iframe>
   </details>
@@ -175,7 +175,7 @@
   }
   .docs-select svg {
     position: absolute;
-    inset-inline-end: 16px;
+    inset-inline-end: 20px;
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
@@ -183,7 +183,7 @@
   select {
     appearance: none;
     max-width: 100%;
-    padding: 12px 48px 12px 16px;
+    padding: 12px 52px 12px 16px;
     background: var(--docs-surface);
     color: inherit;
     border: 1px solid var(--docs-control);
@@ -239,7 +239,7 @@
     border-radius: 10px;
     padding: 12px 18px;
     background: var(--docs-action);
-    color: #062b38;
+    color: var(--tm-color-on-action);
     font: inherit;
     font-weight: 650;
     cursor: pointer;

@@ -53,7 +53,10 @@ instructions here.
   values in `design/turnmark.tokens.json`; regenerate the committed CSS, Swift and Kotlin outputs
   with `node design/generate.mjs`. Consumer adoption is tracked there;
   do not claim parity from the web adapter alone. Native system controls,
-  accessibility behavior and logical text styles remain platform-owned.
+  accessibility behavior and logical text styles remain platform-owned. Web,
+  widget and MCP Apps colors must consume the generated semantic tokens,
+  including hover/focus/error states; derive translucent blends from those roles
+  instead of adding independent component palettes. Layout may adapt to its host.
 - Preserve native text scaling, accessible labels/order, keyboard dismissal,
   light/dark appearance and reduced-motion preferences. iOS uses system Liquid
   Glass controls on supported versions; numerical cards retain readable opaque

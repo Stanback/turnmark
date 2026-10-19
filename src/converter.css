@@ -232,6 +232,26 @@
   );
   opacity: 0.5;
 }
+/* A static light-catching rim follows the rounded corner, without changing fill. */
+.results-panel::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid transparent;
+  border-radius: inherit;
+  background: radial-gradient(
+      ellipse 74% 58% at 100% 0%,
+      color-mix(in srgb, var(--accent) 68%, transparent),
+      color-mix(in srgb, var(--accent) 22%, transparent) 38%,
+      transparent 76%
+    )
+    border-box;
+  mask:
+    linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
 .text-button {
   background: transparent;
   color: var(--muted);
@@ -289,13 +309,13 @@
   background: var(--surface-raised);
   color: var(--ink);
   font-size: 16px;
-  padding: 15px 38px 15px 16px;
+  padding: 15px 52px 15px 16px;
   cursor: pointer;
 }
 .select-wrap > svg {
   position: absolute;
   top: 50%;
-  right: 16px;
+  right: 20px;
   transform: translateY(-50%) rotate(90deg);
   pointer-events: none;
   color: var(--muted);
@@ -749,7 +769,7 @@
     transition: none;
   }
 }
-@media (max-width: 760px), print {
+@media (max-width: 680px), print {
   .hero-atmosphere,
   .intro::before {
     display: none;
@@ -772,8 +792,31 @@
   color: var(--ink);
   gap: 6px;
 }
-.footer-privacy {
-  font-size: 13px;
+.clear-history {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.standards-select {
+  display: inline-block;
+  min-width: 0;
+}
+.standards-system .standards-select {
+  width: 100%;
+}
+.standards-select select {
+  padding-right: 52px;
+}
+.theme-control button {
+  padding-inline: 16px;
+}
+@media (forced-colors: active) {
+  .standards-select select {
+    appearance: auto;
+  }
+  .standards-select > svg {
+    display: none;
+  }
 }
 .mobile-results-jump {
   display: none;
@@ -1026,7 +1069,7 @@
   }
   .factor-row select {
     max-width: 155px;
-    padding-right: 25px;
+    padding-right: 48px;
   }
   .factor-row label span {
     max-width: 88px;
@@ -1117,6 +1160,24 @@
   line-height: 1.3;
   border-radius: 7px;
   color: var(--muted);
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .standards-tabs button:not(.active):hover {
+    background: color-mix(in srgb, var(--accent) 9%, var(--surface-input));
+    color: var(--ink);
+  }
+}
+.standards-tabs button:not(.active):focus-visible {
+  background: color-mix(in srgb, var(--accent) 9%, var(--surface-input));
+  color: var(--ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .standards-tabs button {
+    transition: none;
+  }
 }
 .standards-tabs button.active,
 [data-theme="dark"] .standards-tabs button.active {

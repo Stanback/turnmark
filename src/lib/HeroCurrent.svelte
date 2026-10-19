@@ -57,7 +57,7 @@
       opacity: 0.7;
     }
   }
-  @media (max-width: 760px), print {
+  @media (max-width: 680px), print {
     .hero-current {
       display: none;
     }

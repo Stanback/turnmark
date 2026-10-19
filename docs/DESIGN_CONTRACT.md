@@ -13,15 +13,15 @@ subset of the [DTCG Format Module 2025.10](https://www.designtokens.org/tr/2025.
 with Turnmark contract version 1 in `$extensions`. Light and dark are explicit
 groups, not an implementation of the separate DTCG Resolver specification.
 
-| Consumer                      | Current status                                                  | Adapter boundary                                                |
-| ----------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------- |
-| Web converter                 | Uses the generated palette and selected spacing/radius roles    | CSS variables; responsive web layout                            |
-| Web history/standards/dialogs | Inherits base text roles; some older styles remain              | Further component-by-component adoption                         |
-| Widget/MCP setup pages        | Shared generated palette, fonts, content width and brand header | Static HTML/CSS; setup remains readable without JavaScript      |
-| Embedded widget               | Existing independent palette; adoption next                     | Its own compact stylesheet and appearance selection             |
-| iOS                           | Generated screen palette; native controls and result adopted    | SwiftUI palette and semantic system text styles                 |
-| Android                       | Generated screen palette; native controls and result adopted    | Kotlin colors mapped into Material 3 and custom result roles    |
-| MCP Apps                      | Research/design only                                            | Shared web tokens plus host theme and accessibility preferences |
+| Consumer                      | Current status                                                         | Adapter boundary                                                |
+| ----------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Web converter                 | Uses the generated palette and selected spacing/radius roles           | CSS variables; responsive web layout                            |
+| Web history/standards/dialogs | Generated palette across history, benchmarks, dialogs and interactions | Further component-by-component adoption                         |
+| Widget/MCP setup pages        | Shared generated palette, fonts, content width and brand header        | Static HTML/CSS; setup remains readable without JavaScript      |
+| Embedded widget               | Generated palette, control boundaries and result emphasis              | Its own compact stylesheet and appearance selection             |
+| iOS                           | Generated screen palette; native controls and result adopted           | SwiftUI palette and semantic system text styles                 |
+| Android                       | Generated screen palette; native controls and result adopted           | Kotlin colors mapped into Material 3 and custom result roles    |
+| MCP Apps                      | Research/design only                                                   | Shared web tokens plus host theme and accessibility preferences |
 
 The contract is a foundation, not a claim that every screen is already aligned.
 Do not create a shared UI runtime, move styling into the calculation SDK, or add

@@ -39,10 +39,12 @@
   </p>
   <div class="standards-controls">
     <label for="masters-age"
-      >Age group<select id="masters-age" bind:value={age}
-        >{#each mastersAges as group}<option value={group}
-            >{group.replaceAll("-", "–")}</option
-          >{/each}</select
+      >Age group<span class="select-wrap standards-select"
+        ><select id="masters-age" bind:value={age}
+          >{#each mastersAges as group}<option value={group}
+              >{group.replaceAll("-", "–")}</option
+            >{/each}</select
+        ><Icon name="chevron" size={16} /></span
       ></label
     ><span class="standards-edition"
       >2026<span>

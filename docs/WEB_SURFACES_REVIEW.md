@@ -10,7 +10,7 @@ navigation and copy preserves readability; light mode
 uses a much fainter treatment. The background is included in the offline build.
 
 The open currents fade in over 2.8 seconds, then stay still; reduced motion shows
-them immediately. Water and currents are hidden at 760 pixels and below to keep
+them immediately. Water and currents are hidden at 680 pixels and below, matching the converter’s single-column breakpoint, to keep
 the mobile form close to the heading. No animation library, pointer tracker,
 shader, new dependency or calculation change is involved.
 
@@ -26,7 +26,15 @@ Three decorative marks mirror the selected SCY, SCM or LCM result. The top sourc
 chip is removed; the calculation explanation and official NCAA source remain in
 the methodology. Reset has a glyph, the privacy note lives in the footer, and
 its wordmark uses the same type weight and colored dot as the header. The theme
-controls have a named Appearance landmark.
+controls have a named Appearance landmark. The result has a static cyan rim
+that fades out along the top and right edges from its upper-right corner.
+Inactive Standards/Points buttons have a restrained hover/focus tint. History
+filters, icons, standards pickers and benchmark help now use the same generated
+surface/input/border roles as the converter instead of independent older blues. Native
+select pickers retain keyboard and mobile behavior, with custom chevrons inset
+20 pixels. The footer separates brand/credit from documentation and privacy/source
+notes into two rows, with stacked groups on phones. Clear history has a trash
+glyph and a browser confirmation; Cancel preserves stored conversions.
 
 Validation: Svelte/TypeScript; unit, browser and production suites; direct
 Chromium and WebKit checks in light/dark with no Axe violations, stable hover
@@ -38,3 +46,14 @@ rebuild.
 ![Dark converter with ambient currents and pooled cyan light](screenshots/web-liquid-surfaces-dark.png)
 
 ![Light appearance and result controls](screenshots/web-liquid-surfaces-light.png)
+
+The embedded widget imports the generated palette directly, including auto/forced
+appearance, accessible input borders, invalid-input color and entered-result
+emphasis. Legacy web fills, destructive hover tints, dialogs, altitude controls
+and theme buttons now reference semantic tokens rather than independent hex
+colors. Alpha blends are derived from those roles; the white border mask is an
+alpha-only compositing operation, not a visible palette color.
+
+| Embedded widget · dark                                                                                                             | Embedded widget · light                                                                                                              |
+| ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| <img src="screenshots/widget-tokens-dark.png" width="280" alt="Compact embedded converter in dark appearance using shared tokens"> | <img src="screenshots/widget-tokens-light.png" width="280" alt="Compact embedded converter in light appearance using shared tokens"> |

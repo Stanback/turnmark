@@ -3,6 +3,7 @@ import "@fontsource-variable/dm-sans";
 import "@fontsource/dm-mono/400.css";
 import { createEngine } from "@turnmark/sdk";
 import wasmUrl from "@turnmark/sdk/engine.wasm?url";
+import "../../src/generated/design-tokens.css";
 import Widget from "./Widget.svelte";
 
 // The widget does not read/write app preferences, history, cookies or storage,
