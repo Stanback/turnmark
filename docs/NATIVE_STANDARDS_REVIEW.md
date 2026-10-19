@@ -4,8 +4,8 @@ Captured October 18, 2026 from real simulator/emulator builds. Sample swims only
 The view opens from Convert and from a recorded performance in My times. It
 compares the original time/event/course/category, never a converted estimate.
 
-| iOS 27 · compact, light | Android API 36 · expanded, light |
-| --- | --- |
+| iOS 27 · compact, light                                                                             | Android API 36 · expanded, light                                                                                    |
+| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | <img src="screenshots/ios-standards-light.png" width="300" alt="iOS A standard and next AA target"> | <img src="screenshots/android-youth-standards-summary.png" width="460" alt="Android A standard and next AA target"> |
 
 Both use generated palettes, a navy gradient and lime next-target time, while
@@ -13,16 +13,16 @@ retaining native segmented controls, sheets, lists and pickers. Age/provider
 settings start expanded and can subsequently be disclosed. Separate youth and
 Masters ages and comparison mode persist locally; category follows the swim.
 
-| iOS · World Aquatics points | Android · World Aquatics points |
-| --- | --- |
+| iOS · World Aquatics points                                                                                 | Android · World Aquatics points                                                                          |
+| ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | <img src="screenshots/ios-points-light.png" width="300" alt="iOS 697 points with next 700-point milestone"> | <img src="screenshots/android-world-points.png" width="460" alt="Android 697 points and reference time"> |
 
 Missing Masters targets remain missing and SCY swims remain unscored. Sources,
 coverage and meet-entry limitations are available without obscuring the result.
 The lookups, comparisons and settings work offline; source links need a network.
 
-| iOS · accessibility XXXL | Android · 200% text, dark |
-| --- | --- |
+| iOS · accessibility XXXL                                                                                                                     | Android · 200% text, dark                                                                                                                             |
+| -------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | <img src="screenshots/ios-standards-missing-large-text.png" width="300" alt="Missing Masters target at largest iOS accessibility text size"> | <img src="screenshots/android-benchmarks-large-text-dark.png" width="460" alt="Missing Masters target at large Android text size in dark appearance"> |
 
 ## Verification
@@ -55,8 +55,8 @@ The original-swim/settings/points test also passes on the iPhone Duo with iOS
 screenshot attachment is black on that simulator. Only local screenshot timing
 was paused to capture the display; application code was unchanged.
 
-| Duo · Standards | Duo · Points |
-| --- | --- |
+| Duo · Standards                                                                                                                      | Duo · Points                                                                                                                 |
+| ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
 | <img src="screenshots/ios-duo-standards-light.png" width="430" alt="Standards and published youth targets on the Duo inner display"> | <img src="screenshots/ios-duo-points-light.png" width="430" alt="World Aquatics points and source on the Duo inner display"> |
 
 The first CI pass exposed a keyboard focus issue in the existing adaptive
@@ -71,3 +71,12 @@ pane. Width/native divisions/text size now choose the arrangement; height stays
 scrollable. The extended rotation test also starts a fresh wide entry and checks
 Done dismissal in both orientations. The paired recording/rotation checks pass
 on iPhone 18 Pro/iOS 27.0 and Duo/iOS 27.1.
+
+## Shared navy palette follow-up
+
+Raised/control, input, selected and divider roles now use the shared deeper
+blue-navy family, while action cyan, result lime and native chrome remain
+unchanged. The full 19 iOS and 22 Android checks pass after regeneration. The
+compact iOS and expanded Android standards/points screenshots above were
+refreshed from those actual builds. Older Duo captures establish adaptive layout
+and keyboard behavior; they predate this small palette refinement.

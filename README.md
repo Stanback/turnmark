@@ -28,7 +28,7 @@ No backend, account, analytics, third-party runtime requests, or uploaded swim d
 
 The web app is live. The native screens below are development previews, not store releases.
 
-![Turnmark web converter, recent conversions and published standards](docs/screenshots/web-cleanup-grid-dark.png)
+![Turnmark web converter, recent conversions and published standards](docs/screenshots/web-liquid-surfaces-dark.png)
 
 | iOS · Standards & points | Android · Expanded layout |
 | --- | --- |
