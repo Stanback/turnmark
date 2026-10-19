@@ -25,6 +25,12 @@ choose explicitly. The frame is responsive down to 320 CSS pixels. Its height
 can be increased to suit the page or larger text; content scrolls within the
 frame when necessary. It does not resize or style the publisher's page.
 
+The setup page fits its own preview to the content because both documents are
+on Turnmark's origin. The copied public embed stays a plain iframe, with no
+publisher script or cross-origin resize messages. If a real publisher needs
+automatic sizing later, an optional loader can be added without changing the
+existing iframe contract.
+
 ## Behavior and attribution
 
 The widget converts the entered event across SCY, SCM and LCM. It uses the

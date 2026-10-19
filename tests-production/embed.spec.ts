@@ -258,6 +258,19 @@ test("widget setup has pre-rendered instructions, its own route and accessible r
         .frameLocator("iframe")
         .getByRole("heading", { name: "Swim time converter", exact: true }),
     ).toBeVisible();
+    await expect
+      .poll(() =>
+        page.locator("iframe").evaluate((frame) => {
+          const content = frame.contentDocument?.getElementById("widget");
+          if (!content) return false;
+          const expected = Math.max(
+            240,
+            Math.ceil(content.getBoundingClientRect().height) + 2,
+          );
+          return Math.abs(frame.getBoundingClientRect().height - expected) <= 2;
+        }),
+      )
+      .toBe(true);
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,
