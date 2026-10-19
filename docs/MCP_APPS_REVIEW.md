@@ -14,8 +14,8 @@ the host. Original event/course/category stay fixed to the request. No factors,
 numerical tables or Wasm execute in the view. A 500 yd→400 m conversion uses the
 returned event. Other tools retain text/structured results.
 
-| Light, 680 px | Dark, 320 px |
-| --- | --- |
+| Light, 680 px                                                                                                                     | Dark, 320 px                                                                                       |
+| --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | <img src="screenshots/mcp-card-light.png" width="460" alt="Light MCP conversion card with original swim and editable comparison"> | <img src="screenshots/mcp-card-dark-narrow.png" width="260" alt="Dark narrow MCP conversion card"> |
 
 The shared generated colors and canonical wave give it Turnmark's identity.
@@ -75,7 +75,7 @@ text, the clock fits one line and surrounding copy wraps normally:
   denied tool/context/link calls, malformed/invalid/unavailable outcomes, hostile strings,
   mapped destination event and independent card instances. Axe reports no
   violations or untested-frame finding. No external requests or page errors.
-- Svelte/TypeScript checks, web unit tests, 18 production-runtime tests and
+- Svelte/TypeScript checks, web unit tests, 19 production-runtime tests and
   affected-check selection tests pass. UI/build/harness edits select MCP/core;
   shared tokens also select web; ordinary card edits do not rebuild native apps.
 
