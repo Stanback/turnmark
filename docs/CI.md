@@ -160,6 +160,44 @@ allocator stalls also documented in
 The existing native-library alignment check still runs. This does not establish
 16 KB runtime compatibility; that remains a separate release check.
 
+### Native build caches
+
+Native jobs restore Cargo downloads and compiled host/cross-target artifacts.
+iOS also restores Xcode's content-addressed compiler cache, shared by the SDK
+and app builds. The wrapper explicitly enables
+`COMPILATION_CACHE_ENABLE_CACHING`, uses a repository-local
+`target/xcode-compilation-cache`, and emits compiler cache remarks. It always
+checks/builds current sources before running tests. See Apple's
+[build settings reference](https://developer.apple.com/documentation/xcode/build-settings-reference).
+
+These caches are partitioned by OS, architecture, pinned Apple SDK/NDK and Rust
+dependency/toolchain inputs. A commit-specific key with a compatible restore
+prefix lets successful main runs publish updated build state. Only successful
+main jobs save them; PRs restore without writing. Explicit paths exclude
+xcresults, app DerivedData, simulator/device state, generated bindings and
+release bundles. Cargo and Xcode still validate compilation inputs, and packaging
+always regenerates the bindings and libraries from the current sources.
+
+Android enables Gradle's local task-output build cache. Dependencies, compiled
+build scripts, transforms, wrapper distributions and that build cache are also
+in the explicit GitHub cache, keyed additionally by JDK/Gradle build inputs.
+The official [setup-gradle action](https://github.com/gradle/actions/blob/main/docs/setup-gradle.md)
+validates the wrapper and uses its documented `external` cache-provider mode
+to avoid a second cache for the same files. Commit-specific entries refresh task
+outputs from successful main runs, with PRs restoring read-only. This avoids the
+basic provider's immutable build-file-only cache while keeping storage in GitHub.
+No remote Gradle service, Build Scan publication or configuration-cache secret
+is needed. Monitor archive size/restore time and GitHub's cache eviction; don't
+raise cache storage budgets without first measuring the benefit.
+
+Test execution is never conditional on a cache hit. Android's managed test task
+still uses `--rerun`, and iOS still executes `test-without-building` after a fresh
+build check. Caches reduce downloads/compilation; boot and interaction time
+remain. First use and evicted caches must work cold. The initial successful main
+run seeds caches for subsequent PRs; a cold PR cannot demonstrate cross-run
+hosted savings before that seed exists. Inspect restore/save logs and compiler
+remarks alongside the phase metrics before claiming a speedup.
+
 ### October 20 local measurement
 
 On the same iPhone 18 Pro / iOS 27.0 development simulator, the earlier serial
@@ -170,6 +208,13 @@ one worker, and direct app tests alone took **5.3s**. The 20 existing UI test
 method bodies were preserved unchanged when splitting the classes. On the
 managed Android 17 profile, all 30 app tests passed in **83s** including dependency
 recompilation, and both SDK cases passed in **19s**.
+
+With compilation caching enabled, cleaning app build outputs and rebuilding
+produced **23/23 Xcode compiler-cache hits**, followed by all seven direct app
+tests passing. Cleaning both Android modules and assembling again restored
+**67 Gradle tasks from cache** (1s reported build, versus 9s while populating it).
+These checks demonstrate local cache reuse after clean builds, not hosted
+cross-run restore performance.
 
 These are single local development observations, not a promised CI speedup or
 an isolated parallelism benchmark: screenshot capture is also now opt-in, and

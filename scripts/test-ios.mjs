@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { parseArgs } from "node:util";
 import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
 import {
   iosSmoke,
   iosTestCases,
@@ -70,6 +71,7 @@ const timing = timedRun(output, {
   workers,
   expectedTests: expected.length,
   screenshots: values.screenshots,
+  compilationCache: resolve("target/xcode-compilation-cache"),
 });
 let passed = false;
 try {
@@ -127,6 +129,9 @@ try {
       ? ["-testPlan", values.suite === "smoke" ? "Smoke" : "Full"]
       : []),
     "CODE_SIGNING_ALLOWED=NO",
+    "COMPILATION_CACHE_ENABLE_CACHING=YES",
+    "COMPILATION_CACHE_ENABLE_DIAGNOSTIC_REMARKS=YES",
+    `COMPILATION_CACHE_CAS_PATH=${timing.report.compilationCache}`,
   ];
   // Always check/build current sources once; focused re-runs reuse incremental
   // products without an unsafe 'skip build' path accepting stale binaries.
