@@ -89,6 +89,9 @@ final class TurnmarkUITests: XCTestCase {
         XCTAssertEqual(app.staticTexts["resultTime"].label, "1:06.33")
         let details = app.buttons["conversionDetails"]
         reach(details, in: app); details.tap()
+        let explanation = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Factors vary by event and course, not age.")).firstMatch
+        reach(explanation, in: app)
+        capture(app, "Conversion method explanations")
         reach(app.staticTexts["Time offset: 1.6 seconds"], in: app)
         XCTAssertTrue(app.staticTexts["Time offset: 1.6 seconds"].exists)
         reach(app.staticTexts["Edition: colorado-teamunify-2026"], in: app)

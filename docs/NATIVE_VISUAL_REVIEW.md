@@ -107,6 +107,14 @@ another nearby card. More coverage and validation notes
 are in [the standards review](NATIVE_STANDARDS_REVIEW.md). The selector also
 includes the editioned [Futures, Junior Nationals and NISCA benchmarks](NATIONAL_BENCHMARKS.md).
 
+The calculation explanation distinguishes NCAA's category-specific long-course
+factors from its shared short-course factors. Neither NCAA nor Colorado uses age
+or models individual swimming ability. The method gap is not a confidence interval.
+
+| iOS · method explanation                                                                                                                        | Android · method explanation                                                                                                                        |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="screenshots/ios-method-comparison-light.png" width="300" alt="iOS grouped calculation explanation with NCAA age and category limits"> | <img src="screenshots/android-method-comparison-light.png" width="300" alt="Android calculation explanation with the same age and category limits"> |
+
 ## Text scaling and adaptive layouts
 
 | iOS · largest accessibility text                                                                                                                          | Android · 200% text, dark                                                                                                                       |

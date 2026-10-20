@@ -293,15 +293,16 @@ private struct TurnmarkView: View {
         ScrollViewReader { scroll in
             Form {
                 inputCard
-                if draft.available {
-                    Section {
-                        Button {
-                            dismissTimeEntry()
-                            scroll.scrollTo("comparison", anchor: .top)
-                        } label: { Label("See your results", systemImage: "arrow.down") }
-                            .accessibilityIdentifier("seeResults")
-                    }.listRowBackground(TurnmarkPalette.surface)
-                }
+                // Keep the Form's row structure stable while the first valid
+                // digit arrives; inserting a section can interrupt text entry.
+                Section {
+                    Button {
+                        dismissTimeEntry()
+                        scroll.scrollTo("comparison", anchor: .top)
+                    } label: { Label("See your results", systemImage: "arrow.down") }
+                        .disabled(!draft.available)
+                        .accessibilityIdentifier("seeResults")
+                }.listRowBackground(TurnmarkPalette.surface)
                 Section {
                     resultContent(compact: true)
                         .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
@@ -733,16 +734,16 @@ private struct ConversionDetails: View {
                         }
                     }
                 } footer: {
-                    Text("Two conversion rules, not a prediction range. Use the method required by your meet.")
+                    Text("Two conversion rules, not a prediction range or confidence interval. Use the method required by your meet.")
                 }
                 var colorado: Draft { var copy = input; copy.methodID = "colorado-teamunify-2026"; return copy }
                 if case let .available(value, _) = colorado.outcome, value.caveat != nil {
                     Section { Text(coloradoDistanceCaveat).font(.footnote).foregroundStyle(.secondary) }
                 }
                 Section("Why the times differ") {
-                    detail("NCAA", "Published factors vary by event and category. Metric-to-yards values are direct; reverse and SCM/LCM comparisons use ratios.")
+                    detail("NCAA", "Factors vary by event and course, not age. Long-course factors use separate men’s and women’s tables; short-course meters-to-yards factors are shared. NCAA publishes metric-to-yards factors; reverse and SCM/LCM conversions are derived.")
                     detail("Colorado Timing", "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.")
-                    detail("Pool length", "Shorter pools add turns and push-offs. These rules do not measure your technique, endurance or individual development.")
+                    detail("Pool length", "Shorter pools mean more turns and push-offs. These rules do not adjust for your starts, underwater skill, technique, endurance or individual development.")
                     detail("Distance events", "500, 1000 and 1650 yards map to 400, 800 and 1500 meters.")
                 }
                 if case let .available(value, source) = input.outcome {

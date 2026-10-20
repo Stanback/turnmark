@@ -1619,7 +1619,7 @@
     </nav>
     <div class="footer-meta">
       <span>No account. No uploads.</span><span
-        >Sources checked October 16, 2026</span
+        >Sources checked October 16–19, 2026</span
       >
     </div>
   </div>

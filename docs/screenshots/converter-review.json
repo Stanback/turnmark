@@ -1,20 +1,20 @@
 {
-  "capturedAt": "2026-10-20T02:28:43.862607+00:00",
+  "capturedAt": "2026-10-20T03:04:03.086787+00:00",
   "branch": "feat/national-benchmarks",
   "sourceBase": "9851b20f54a9d9c86e282c7c47fee64b624a229e",
   "sourceHashes": {
-    "src/App.svelte": "34168d371bcee7d70e26174f10f2e6c7c0e8beac6ba823cc738f9e29500da723",
+    "src/App.svelte": "8fb6d6326835fe9cc5ece8a276adcd6c3126a5f799af737bbf2942515fc1ead7",
     "src/converter.css": "b922604329f32893a9d2c9c96c0f884c3eb36ad74eb03bb6d4abbd028c514da5",
     "src/app.css": "76f7065b58be4f721825dbf92434b1a9eb21e3d923ef57648502c6cbf3e79bf1",
     "design/turnmark.tokens.json": "aeaddebc1caadbbd96ba58e1d26bd0073b02ee78f4537f41c554a60c5b0d7634",
     "public/images/water-ribbons.webp": "00c268a88616c4bf1402ef8153547966821e95ebc5bedf83a7f80e6a4ebbb447",
-    "src/lib/MethodComparison.svelte": "d43a0d4ca89516d4b8c2ed44ff4d07b11e539b45724bde330c7d5c04a012c19a",
+    "src/lib/MethodComparison.svelte": "4ec3f48ed75b724dca304dc7be7e11ea2e2a5e7c0b30889858c3773b6d015869",
     "src/lib/AltitudeComparison.svelte": "c1d1213e45f58f6209ca47173ae4a442477877da94ca2a6efc70ff8acb46dd06",
     "src/lib/AltitudeControls.svelte": "76a98326d9789bbece2d64b6dd39e8d1e066416839266a005e711ba411edfb7b",
     "apps/embed/Widget.svelte": "769c0833220be23122e60b02407df9e5833343a763ac5c54af4f3fd4c75428d3",
-    "packages/mcp/ui/app.ts": "10ff97cc05a415cdfe77f8a9b0043253f56b3af9c980868544134bb167302162",
-    "apps/ios/Sources/TurnmarkApp.swift": "f94d0266d77a9c918c72a59f46fdafc430c91f254dde9dc23d817d13d0c848bc",
-    "apps/android/src/main/java/net/stanback/turnmark/MainActivity.kt": "a8d8611f3f12c9bc795e887806f8c54879c3d0dbc10a05fe2df13d8bccded084",
+    "packages/mcp/ui/app.ts": "6856cef9e2d3314639c44881b6955030dc840500718d0da6ec25aec81f1b292d",
+    "apps/ios/Sources/TurnmarkApp.swift": "f8ebd2bd27ac0509994fa0d4d4650bdf5c892ac81f9682204d24f248a1165db2",
+    "apps/android/src/main/java/net/stanback/turnmark/MainActivity.kt": "ae183602491715d22b5f9ead932272be13fa86dffcb29d6cd70c6ccbe480d75b",
     "packages/mcp/ui/app.css": "9b2dc8bf68aadd0ad90551dcfee18478937533e1a02c9ccc437eb28d2228d4bf",
     "scripts/build-mcp-ui.mjs": "f5f5b8e349b9d4c9fc79030296abc88b8196f147bb1b48de33750a2457666768",
     "src/lib/NationalStandards.svelte": "b84ded785b0a17f6d7a9459edee41b7ee4e0738ac681ddd1731900a181a0932b",
@@ -22,7 +22,9 @@
     "apps/android/src/main/java/net/stanback/turnmark/BenchmarkViews.kt": "3cb6b040ea45970ac429205bb029663b3ffc0089d0502f6760758be8e4546d43",
     "data/national-standards.json": "1f7487d0c18e8b325932bfd2efcbcfa72535eba80a216fe8bde74b886f2e60e5",
     "data/national-sources.json": "30f8f0921c63b6703f484244216061a8e338578a999be74787b38b0bf56f42c0",
-    "data/source-tables/national-2027.csv": "d3206c060adb115c9a94e0d19534b1dd3e9d032967b1f57aa27c0d59dbdea39e"
+    "data/source-tables/national-2027.csv": "d3206c060adb115c9a94e0d19534b1dd3e9d032967b1f57aa27c0d59dbdea39e",
+    "src/lib/calculation-copy.ts": "1393506b030d2fe420f9a120e7b12e6be0152b82b3d29c0c4a916ae4d3a41e82",
+    "src/data/site.ts": "d4d123249e33b7be3f2a7d5d9e293f7e1de20ddb2c54f6d3ae4bfc81f8c51280"
   },
   "captures": [
     {
@@ -35,11 +37,11 @@
     },
     {
       "file": "web-converter-method-dark.png",
-      "sha256": "62bdf14be5cc657196f2138fb5adaca6f1a564312423a79179e36e4fa1284e9c"
+      "sha256": "057a6788b762efe6b4b5cd1d2cb0878957f5b2624ee73c1c402aced0b987e03d"
     },
     {
       "file": "web-converter-comparison-light.png",
-      "sha256": "2788f4491abeed12a997ec6fbf30e8a4a7422cd4b0730e59c66c117a00201f7a"
+      "sha256": "f941ace3b9d0edd9584eb2f36bf2de8e51a9bf1469ab90a9e291ef0ceb1e576d"
     },
     {
       "file": "web-converter-empty-mobile.png",
@@ -55,11 +57,11 @@
     },
     {
       "file": "web-converter-method-mobile.png",
-      "sha256": "fffd64d8c74de6cfd44558aefec71686392839949edec4ac8da79ba688519e4d"
+      "sha256": "e81e316b2ff65b6a19fedbe90caab00d8facb83bbf511560f1611fe9f4fa17b2"
     },
     {
       "file": "web-converter-large-text.png",
-      "sha256": "28f71a55d6d570d11df42a8723167f43984945b27bea461a5972b03d0e347098"
+      "sha256": "45031208278293e3275b32ca9c3dc694242d5a6bda276f5f402a6ea55943f77f"
     },
     {
       "file": "web-altitude-settings.png",
@@ -67,11 +69,11 @@
     },
     {
       "file": "widget-altitude-settings-dark.png",
-      "sha256": "e7444fd9001dcda9893bc846ef1456d3e1046473560a281309aa6ed944640333"
+      "sha256": "e2c3c8ae1c4a219910f8d9b60d14bcb2ff9f36bbb20b1b94ab44ebed4dd81cbd"
     },
     {
       "file": "ios-home-light.png",
-      "sha256": "0c047a25e9e934632f27451d8257cf37fa8d9d4228d07a05bb6394c845c49827"
+      "sha256": "d2634c53e08bcdebc27687f3d3cd9431562a23f82dbc19cc9855b72f903ba84c"
     },
     {
       "file": "android-home-light.png",
@@ -107,7 +109,7 @@
     },
     {
       "file": "mcp-altitude-dark.png",
-      "sha256": "b2d654dd9675efb1e2e9e1dcbe4a8df41f4a53df4df02bb069344626a7236405"
+      "sha256": "4e0f4ef37bdfbce6e8455a1bd571530fffe44b101b2892ba69b0e606ca5586c0"
     },
     {
       "file": "ios-calculation-options.png",
@@ -173,6 +175,8 @@
     "Native screenshots come from the 25-case iOS and 28-case Android builds; UI animation is disabled only by the DEBUG test harness.",
     "Calculation options groups separate course-conversion and optional altitude-policy controls on web, native, widget and MCP. Native settings captures include the enabled restored policy.",
     "National benchmark captures use original sample swims and editioned Futures/Junior Nationals/NISCA tables. Numeric transcription and source hashes are tracked alongside the rendered UI source.",
-    "Collapsed Recent conversions centers its heading, count and chevron with equal top/bottom space at phone and desktop widths. National native captures include the final compact single-target layout."
+    "Collapsed Recent conversions centers its heading, count and chevron with equal top/bottom space at phone and desktop widths. National native captures include the final compact single-target layout.",
+    "Calculation details state NCAA age/category scope, distinguish shared short-course factors, and exclude individual swimming ability. Detail captures use the paired native method checks; browser and MCP captures use the same explanatory copy.",
+    "The iOS results-jump row remains present and disabled for empty/invalid input to preserve Form structure during first entry. Empty-arrival captures were refreshed; the cold-entry/altitude case passed three consecutive local runs."
   ]
 }

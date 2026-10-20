@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { coloradoDistanceCaveat } from "./calculation-copy";
+  import {
+    coloradoDistanceCaveat,
+    ncaaMethodExplanation,
+    poolLengthExplanation,
+    methodComparisonCaveat,
+  } from "./calculation-copy";
   import AltitudeComparison from "./AltitudeComparison.svelte";
   import {
     convertSwim,
@@ -72,10 +77,7 @@
   {#if difference !== null}<p class="method-gap">
       Method difference: <strong>{difference}s</strong>
     </p>{/if}
-  <p>
-    Two conversion rules, not a prediction range or confidence interval. Use the
-    method required by your meet.
-  </p>
+  <p>{methodComparisonCaveat}</p>
   {#if request.elevation}<AltitudeComparison
       swim={request.swim}
       elevation={request.elevation}
@@ -85,10 +87,7 @@
   <div class="explanations">
     <div>
       <h4>NCAA</h4>
-      <p>
-        Published factors vary by event and category. Metric-to-yards values are
-        direct; reverse and SCM/LCM comparisons use ratios.
-      </p>
+      <p>{ncaaMethodExplanation}</p>
     </div>
     <div>
       <h4>Colorado Timing</h4>
@@ -99,10 +98,7 @@
     </div>
     <div>
       <h4>Pool length</h4>
-      <p>
-        Shorter pools add turns and push-offs. These rules do not measure your
-        technique, endurance or individual development.
-      </p>
+      <p>{poolLengthExplanation}</p>
     </div>
     <div>
       <h4>Distance events</h4>

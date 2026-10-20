@@ -120,6 +120,8 @@ class ConverterTest {
         compose.activityRule.scenario.recreate()
         compose.onNodeWithTag("resultTime").assertTextEquals("1:06.33")
         compose.onNodeWithTag("conversionDetails").performScrollTo().performClick()
+        compose.onNodeWithText("Factors vary by event and course, not age.", substring = true).performScrollTo()
+        capture("android-method-explanations")
         compose.onNodeWithText("Time offset: 1.6 seconds").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("Edition: colorado-teamunify-2026").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("Done").assertIsDisplayed().performClick()

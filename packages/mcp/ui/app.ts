@@ -1,4 +1,9 @@
-import { coloradoDistanceCaveat } from "../../../src/lib/calculation-copy.js";
+import {
+  coloradoDistanceCaveat,
+  ncaaMethodExplanation,
+  poolLengthExplanation,
+  methodComparisonCaveat,
+} from "../../../src/lib/calculation-copy.js";
 import { elevationDisplay } from "../../../src/lib/elevation-display.js";
 import { App } from "@modelcontextprotocol/ext-apps";
 import swimIcons from "../../../design/swim-icons.json";
@@ -217,7 +222,7 @@ function render(value: unknown, request: ConversionRequest) {
       details.append(methods);
       const difference = document.createElement("p");
       difference.className = "method-difference";
-      difference.textContent = `${typeof comparison.methodDifferenceSeconds === "number" && Number.isFinite(comparison.methodDifferenceSeconds) ? `Method difference: ${comparison.methodDifferenceSeconds.toFixed(2)}s. ` : ""}Different conversion rules, not a prediction range or confidence interval. Follow the method required by your meet.`;
+      difference.textContent = `${typeof comparison.methodDifferenceSeconds === "number" && Number.isFinite(comparison.methodDifferenceSeconds) ? `Method difference: ${comparison.methodDifferenceSeconds.toFixed(2)}s. ` : ""}${methodComparisonCaveat}`;
       details.append(difference);
     }
     if (
@@ -280,18 +285,12 @@ function render(value: unknown, request: ConversionRequest) {
     inputs.textContent = "Why the times differ";
     details.append(inputs);
     for (const [title, text] of [
-      [
-        "NCAA",
-        "Published factors vary by event and category. Metric-to-yards values are direct; reverse and SCM/LCM comparisons use ratios.",
-      ],
+      ["NCAA", ncaaMethodExplanation],
       [
         "Colorado Timing",
         "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.",
       ],
-      [
-        "Pool length",
-        "Shorter pools add turns and push-offs. These rules do not measure your technique, endurance or individual development.",
-      ],
+      ["Pool length", poolLengthExplanation],
       [
         "Distance events",
         "500, 1000 and 1650 yards map to 400, 800 and 1500 meters.",

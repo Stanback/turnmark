@@ -701,15 +701,15 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
                         modifier = Modifier.padding(vertical = 16.dp).testTag("methodDifference")) }
                 }
             }
-            Text("Two conversion rules, not a prediction range. Use the method required by your meet.",
+            Text("Two conversion rules, not a prediction range or confidence interval. Use the method required by your meet.",
                 style = MaterialTheme.typography.bodySmall, color = c.textMuted)
             if (comparisons.any { (it.outcome as? ConversionOutcome.Available)?.value?.caveat != null })
                 Text(coloradoDistanceCaveat, style = MaterialTheme.typography.bodySmall, color = c.textMuted)
             if (draft.altitudeText != null) { Text("Altitude adjustment", style = MaterialTheme.typography.titleMedium); AltitudeDetails(draft) }
             Text("Why the times differ", style = MaterialTheme.typography.titleMedium)
-            CalculationExplanation("NCAA", "Published factors vary by event and category. Metric-to-yards values are direct; reverse and SCM/LCM comparisons use ratios.")
+            CalculationExplanation("NCAA", "Factors vary by event and course, not age. Long-course factors use separate men’s and women’s tables; short-course meters-to-yards factors are shared. NCAA publishes metric-to-yards factors; reverse and SCM/LCM conversions are derived.")
             CalculationExplanation("Colorado Timing", "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.")
-            CalculationExplanation("Pool length", "Shorter pools add turns and push-offs. These rules do not measure your technique, endurance or individual development.")
+            CalculationExplanation("Pool length", "Shorter pools mean more turns and push-offs. These rules do not adjust for your starts, underwater skill, technique, endurance or individual development.")
             CalculationExplanation("Distance events", "500, 1000 and 1650 yards map to 400, 800 and 1500 meters.")
             if (result is ConversionOutcome.Available) {
                 HorizontalDivider(color = c.borderSubtle)
