@@ -255,6 +255,8 @@ try {
     configFile: false,
     root: temporary,
     logLevel: "error",
+    // Measure one engine fetch, not Vite dependency discovery/HMR reloads.
+    optimizeDeps: { noDiscovery: true },
     server: { host: "127.0.0.1", port: 0 },
   });
   await server.listen();
@@ -309,7 +311,11 @@ try {
         `Focused browser: ${fixture.id}`,
       ),
     );
-  assert.equal(focusedRequests.length, 1);
+  assert.equal(
+    focusedRequests.length,
+    1,
+    `Focused page must fetch one engine asset: ${JSON.stringify(focusedRequests)}`,
+  );
   assert.ok(
     focusedRequests[0].includes("/converter/"),
     "Focused browser must load only converter.wasm",
