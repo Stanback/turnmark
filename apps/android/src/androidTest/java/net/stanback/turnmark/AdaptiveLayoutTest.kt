@@ -26,6 +26,7 @@ class AdaptiveLayoutTest {
         compose.activityRule.scenario.recreate()
         compose.onNodeWithTag("timeInput").performScrollTo().performTextReplacement("58.32")
         compose.onNodeWithTag("timeInput").performImeAction()
+        compose.waitUntil(5_000) { compose.onAllNodesWithTag("nav-Convert").fetchSemanticsNodes().isNotEmpty() }
     }
 
     @Test fun foldedPanesAvoidTheHingeAndPreserveEntry() {
