@@ -22,6 +22,53 @@ const flags = (...selected) =>
     ]),
   );
 const all = flags("web", "core", "ios", "android");
+
+test("MCP deploy requires passing checks but permits skipped native ancestors", () => {
+  const workflow = readFileSync(
+    new URL("../.github/workflows/shared-engine.yml", import.meta.url),
+    "utf8",
+  );
+  const job = workflow.split("  mcp-deploy:\n")[1].split("  engine-ci:\n")[0];
+  const expression = job.match(/    if: \$\{\{ (.+) \}\}/)?.[1];
+  assert.ok(expression, "Use an explicit deploy status expression");
+  // GitHub adds success() implicitly unless a status function is present.
+  assert.match(expression, /\b(?:cancelled|always|success|failure)\(/);
+  const evaluate = new Function(
+    "github",
+    "needs",
+    "cancelled",
+    `return (${expression.replaceAll("needs.engine-ci", 'needs["engine-ci"]')});`,
+  );
+  const github = { ref: "refs/heads/main", event_name: "push" };
+  const needs = {
+    mcp: { result: "success" },
+    "engine-ci": { result: "success" },
+    ios: { result: "skipped" },
+    android: { result: "skipped" },
+  };
+  assert.equal(
+    evaluate(github, needs, () => false),
+    true,
+  );
+  assert.equal(
+    evaluate(github, needs, () => true),
+    false,
+  );
+  assert.equal(
+    evaluate({ ...github, event_name: "pull_request" }, needs, () => false),
+    false,
+  );
+  assert.equal(
+    evaluate({ ...github, ref: "refs/heads/feature" }, needs, () => false),
+    false,
+  );
+  for (const name of ["mcp", "engine-ci"])
+    for (const result of ["failure", "cancelled", "skipped"])
+      assert.equal(
+        evaluate(github, { ...needs, [name]: { result } }, () => false),
+        false,
+      );
+});
 for (const [path, expected] of [
   ["src/App.svelte", flags("web")],
   ["src/app.css", flags("web")],
