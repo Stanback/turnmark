@@ -875,7 +875,7 @@
   font: inherit;
   color: inherit;
 }
-.standards-system .standards-select {
+.benchmark-selector .standards-select {
   width: 100%;
 }
 .standards-select select {
@@ -1307,8 +1307,8 @@
   overflow-y: auto;
   overscroll-behavior-y: contain;
 }
-.standards-system {
-  max-width: 440px;
+.benchmark-selector {
+  width: min(100%, 520px);
 }
 .standards-section p {
   max-width: 75ch;
@@ -1337,47 +1337,6 @@
   }
 }
 
-/* The assessed swim leads; the secondary view always has its own row. */
-.standards-tabs {
-  display: flex;
-  align-items: stretch;
-  gap: var(--tm-space-24);
-  align-self: flex-start;
-  width: auto;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-}
-[data-theme="dark"] .standards-tabs {
-  background: transparent;
-}
-.standards-tabs button {
-  flex: initial;
-  min-height: 44px;
-  padding: 10px 0 8px;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  border-radius: 0;
-  background: transparent;
-  color: var(--muted);
-  line-height: 1.4;
-  font-size: 0.875rem;
-}
-.standards-tabs button.active,
-[data-theme="dark"] .standards-tabs button.active {
-  background: transparent;
-  color: var(--ink);
-  border-bottom-color: var(--accent);
-  font-weight: 700;
-  box-shadow: none;
-}
-@media (hover: hover) and (pointer: fine) {
-  .standards-tabs button:hover {
-    color: var(--ink);
-  }
-}
 .points-unavailable {
   margin-block: 24px;
   align-items: flex-start;
@@ -1403,9 +1362,6 @@
 @media (max-width: 680px) {
   body {
     padding-bottom: calc(76px + var(--mobile-safe-bottom));
-  }
-  .standards-tabs button {
-    font-size: 14px;
   }
   .mobile-nav,
   [data-theme="dark"] .mobile-nav {

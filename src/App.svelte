@@ -96,6 +96,9 @@
       : "",
   );
   let standardMode = $state<"targets" | "points">("targets");
+  const benchmarkSelection = $derived(
+    standardMode === "points" ? "world-points" : form.standardSystem,
+  );
   $effect(() => {
     if (form.altitude > 0) {
       calculationOpen = true;
@@ -1092,24 +1095,39 @@
             >Altitude adjusted: {adjustment.toFixed(2)} seconds deducted before course
             conversion.</span
           >{/if}
-        <div
-          class="standards-tabs"
-          role="group"
-          aria-label="Performance comparison"
-        >
-          <button
-            class:active={standardMode === "targets"}
-            aria-pressed={standardMode === "targets"}
-            aria-label="Time standards"
-            onclick={() => (standardMode = "targets")}>Standards</button
-          >
-          <button
-            class:active={standardMode === "points"}
-            aria-pressed={standardMode === "points"}
-            aria-label="World Aquatics points"
-            onclick={() => (standardMode = "points")}>Points</button
-          >
-        </div>
+        <label class="benchmark-selector" for="benchmark-target">
+          Compare against
+          <span class="select-wrap standards-select">
+            <select
+              id="benchmark-target"
+              value={benchmarkSelection}
+              onchange={(event) => {
+                const value = event.currentTarget.value;
+                if (value === "world-points") standardMode = "points";
+                else {
+                  form.standardSystem = value as SwimState["standardSystem"];
+                  standardMode = "targets";
+                }
+              }}
+            >
+              <optgroup label="Time standards">
+                <option value="youth">USA Swimming · Youth</option>
+                <option value="masters">USMS · Masters</option>
+                {#each nationalPrograms as program}
+                  <option value={program.system}
+                    >{program.system === "juniors"
+                      ? "Junior Nationals"
+                      : program.label}</option
+                  >
+                {/each}
+              </optgroup>
+              <optgroup label="Points">
+                <option value="world-points">World Aquatics points</option>
+              </optgroup>
+            </select>
+            <Icon name="chevron" size={16} />
+          </span>
+        </label>
       </div>
       {#if benchmarkBasis === "estimate"}<p
           class="benchmark-preview-note"
@@ -1129,18 +1147,6 @@
           entered swim. No entered-time fallback is used.
         </p>
       {:else if standardMode === "targets"}
-        <label class="standards-system" for="standards-system"
-          ><span class="benchmark-a11y">Published standards</span><span
-            class="select-wrap standards-select"
-            ><select id="standards-system" bind:value={form.standardSystem}
-              ><option value="youth">USA Swimming · Youth</option><option
-                value="masters">U.S. Masters Swimming · Adults</option
-              >{#each nationalPrograms as program}<option value={program.system}
-                  >{program.label}</option
-                >{/each}</select
-            ><Icon name="chevron" size={16} /></span
-          ></label
-        >
         {#if form.standardSystem === "masters"}
           <Masters
             bind:age={form.mastersAge}
@@ -1331,14 +1337,6 @@
                   >
                 </div>
               </div>
-              <button
-                class="points-standards-link"
-                onclick={() => (standardMode = "targets")}
-                >Compare with age-group time standards <Icon
-                  name="arrow"
-                  size={15}
-                /></button
-              >
             </div>
             {#if benchmarkCourse !== "SCY"}<p class="points-note">
                 <Icon name="info" size={17} />{benchmarkBasis === "estimate"

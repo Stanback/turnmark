@@ -35,6 +35,13 @@ struct BenchmarkScreen: View {
         return value.adjustmentSeconds > 0
     }
     private var provider: String { program.map { "\($0.title) · \($0.scope)" } ?? (system == .masters ? "USMS · 2026" : "USA Swimming · 2024–28") }
+    private var benchmarkSelection: Binding<String> {
+        Binding(get: { mode == "points" ? "world-points" : systemName }, set: { value in
+            if value == "world-points" { mode = "points" }
+            else { systemName = value; mode = "standards" }
+            configured = true
+        })
+    }
 
     var body: some View {
         NavigationStack {
@@ -67,9 +74,15 @@ struct BenchmarkScreen: View {
                 } footer: { if preview { Text("Estimate only; not a recorded performance or proof of entry eligibility.") } }
                     .listRowBackground(TurnmarkPalette.surface)
                 Section {
-                    Picker("Comparison", selection: $mode) { Text("Standards").tag("standards"); Text("Points").tag("points") }
-                        .pickerStyle(.segmented).accessibilityIdentifier("benchmarkMode")
-                }.listRowBackground(Color.clear).listRowInsets(EdgeInsets())
+                    Picker("Compare against", selection: benchmarkSelection) {
+                        Section("Time standards") {
+                            Text("USA Swimming · Youth").tag("youth")
+                            Text("USMS · Masters").tag("masters")
+                            ForEach(programs, id: \.system) { Text($0.label).tag(String(describing: $0.system)) }
+                        }
+                        Section("Points") { Text("World Aquatics points").tag("world-points") }
+                    }.pickerStyle(.menu).accessibilityIdentifier("benchmarkTarget")
+                }.listRowBackground(TurnmarkPalette.surface)
                 if preview && comparisonSwim == nil {
                     Section {
                         Label("Conversion unavailable", systemImage: "info.circle").accessibilityIdentifier("benchmarkPreviewUnavailable")
@@ -80,10 +93,6 @@ struct BenchmarkScreen: View {
                     benchmarkContent
                     Section {
                         DisclosureGroup(isExpanded: $settingsExpanded) {
-                            Picker("Standard system", selection: $systemName) {
-                                Text("USA Swimming · Youth").tag("youth"); Text("USMS · Masters").tag("masters")
-                                ForEach(programs, id: \.system) { Text($0.label).tag(String(describing: $0.system)) }
-                            }.pickerStyle(.menu).accessibilityIdentifier("benchmarkSystem")
                             if !getStandardAgeGroups(system: system).isEmpty { Picker("Age group", selection: Binding(get: { age }, set: {
                                 if system == .masters { mastersAge = $0 } else if system == .futures { futuresAge = $0 } else { youthAge = $0 }
                             })) {

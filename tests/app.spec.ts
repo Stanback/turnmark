@@ -143,7 +143,7 @@ test("calculation details stay optional and keyboard accessible", async ({
   }
 });
 
-test("mobile age selectors leave space for their complete selected label", async ({
+test("mobile age and benchmark selectors leave space for complete labels", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 375, height: 812 });
@@ -152,7 +152,7 @@ test("mobile age selectors leave space for their complete selected label", async
     ["youth", "age-group", "10u"],
     ["masters", "masters-age", "40-44"],
   ]) {
-    await page.locator("#standards-system").selectOption(system);
+    await page.locator("#benchmark-target").selectOption(system);
     const select = page.locator(`#${id}`);
     await select.selectOption(age);
     const fits = await select.evaluate((element) => {
@@ -174,6 +174,23 @@ test("mobile age selectors leave space for their complete selected label", async
       ),
     ).toBe(true);
   }
+  await page.setViewportSize({ width: 320, height: 812 });
+  const labelsFit = await page
+    .getByRole("combobox", { name: "Compare against", exact: true })
+    .evaluate((control) => {
+      const select = control as HTMLSelectElement;
+      const style = getComputedStyle(select);
+      const context = document.createElement("canvas").getContext("2d")!;
+      context.font = style.font;
+      const available =
+        select.clientWidth -
+        parseFloat(style.paddingLeft) -
+        parseFloat(style.paddingRight);
+      return Array.from(select.options).every(
+        (option) => context.measureText(option.text).width <= available,
+      );
+    });
+  expect(labelsFit).toBe(true);
 });
 
 test("small screens retain complete category and age labels with enlarged root text", async ({
@@ -214,7 +231,7 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
     .getByRole("group", { name: "Swum in" })
     .getByRole("button", { name: "LCM" })
     .click();
-  await page.locator("#standards-system").selectOption("masters");
+  await page.locator("#benchmark-target").selectOption("masters");
   await page.locator("#masters-age").selectOption("40-44");
   await enableAltitude(page);
   const units = page.getByRole("group", { name: "Elevation units" });
@@ -227,8 +244,8 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
   await page.locator("#swim-time").fill("2:00");
   await page.locator("#event").selectOption("BR:200");
   await page
-    .getByRole("button", { name: "World Aquatics points", exact: true })
-    .click();
+    .getByRole("combobox", { name: "Compare against", exact: true })
+    .selectOption("world-points");
   await expect
     .poll(() =>
       page.evaluate(
@@ -263,12 +280,11 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
   ).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator("#altitude")).toHaveValue("1599.9");
   await page
-    .getByRole("group", { name: "Performance comparison" })
-    .getByRole("button", { name: "Time standards", exact: true })
-    .click();
-  await expect(page.locator("#standards-system")).toHaveValue("masters");
+    .getByRole("combobox", { name: "Compare against", exact: true })
+    .selectOption("masters");
+  await expect(page.locator("#benchmark-target")).toHaveValue("masters");
   await expect(page.locator("#masters-age")).toHaveValue("40-44");
-  await page.locator("#standards-system").selectOption("youth");
+  await page.locator("#benchmark-target").selectOption("youth");
   await expect(page.locator("#age-group")).toHaveValue("17-18");
   await openExample(page, "./#t=1%3A05&s=FR&d=100&c=SCM&g=women&a=13-14&h=0");
   await expect(page.locator("#category")).toHaveValue("women");
@@ -567,8 +583,8 @@ test("World Aquatics points score entered metric swims and leave yards unscored"
 }) => {
   await openExample(page, "./");
   await page
-    .getByRole("button", { name: "World Aquatics points", exact: true })
-    .click();
+    .getByRole("combobox", { name: "Compare against", exact: true })
+    .selectOption("world-points");
   await expect(page.getByTestId("points-score")).toHaveCount(0);
   await expect(
     page.getByRole("heading", { name: "SCY isn’t scored" }),
@@ -720,7 +736,7 @@ test("USMS adult targets handle categories, courses, missing data and share cont
   page,
 }) => {
   await openExample(page, "./");
-  await page.locator("#standards-system").selectOption("masters");
+  await page.locator("#benchmark-target").selectOption("masters");
   await expect(page.getByTestId("masters-target")).toHaveText("1:04.07");
   await expect(page.locator(".masters-status")).toContainText("5.75s faster");
   await page.locator("#masters-age").selectOption("25-29");
@@ -746,7 +762,7 @@ test("USMS adult targets handle categories, courses, missing data and share cont
     page,
     "./#t=58.32&s=FR&d=100&c=SCY&g=women&a=15-16&h=0&b=masters&ma=40-44",
   );
-  await expect(page.locator("#standards-system")).toHaveValue("masters");
+  await expect(page.locator("#benchmark-target")).toHaveValue("masters");
   await expect(page.locator("#masters-age")).toHaveValue("40-44");
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
@@ -814,8 +830,8 @@ test("points explain the reference and next milestone; swimboard remove buttons 
 }) => {
   await openExample(page, "./#t=1%3A05&s=FR&d=100&c=SCM&g=women&a=15-16&h=0");
   await page
-    .getByRole("button", { name: "World Aquatics points", exact: true })
-    .click();
+    .getByRole("combobox", { name: "Compare against", exact: true })
+    .selectOption("world-points");
   await expect(page.locator(".points-tldr")).toContainText(
     "1,000 points matches the world-record reference time",
   );
@@ -841,9 +857,14 @@ test("points explain the reference and next milestone; swimboard remove buttons 
     })),
   ).toEqual([]);
   await page
-    .getByRole("button", { name: "Compare with age-group time standards" })
-    .click();
-  await expect(page.locator("#standards-system")).toBeVisible();
+    .getByRole("combobox", { name: "Compare against", exact: true })
+    .selectOption("youth");
+  await expect(
+    page.getByRole("heading", {
+      name: "USA Swimming time standards",
+      exact: true,
+    }),
+  ).toBeVisible();
 });
 
 test("altitude policy stays separate from course method and original benchmarks", async ({
@@ -900,7 +921,7 @@ test("national benchmarks preserve age tables, course coverage and original swim
   page,
 }) => {
   await openExample(page, "./");
-  await page.locator("#standards-system").selectOption("futures");
+  await page.locator("#benchmark-target").selectOption("futures");
   await expect(page.getByTestId("national-target-Futures")).toContainText(
     "51.89",
   );
@@ -917,15 +938,15 @@ test("national benchmarks preserve age tables, course coverage and original swim
     "8.53s",
   );
   await page.reload();
-  await expect(page.locator("#standards-system")).toHaveValue("futures");
+  await expect(page.locator("#benchmark-target")).toHaveValue("futures");
   await expect(page.locator("#national-age")).toHaveValue("19 & over");
   await page.locator("#swim-time").fill("58.32");
-  await page.locator("#standards-system").selectOption("juniors");
+  await page.locator("#benchmark-target").selectOption("juniors");
   await expect(
     page.getByTestId("national-target-Junior Nationals"),
   ).toContainText("49.79");
   await expect(page.locator("#national-age")).toHaveCount(0);
-  await page.locator("#standards-system").selectOption("nisca");
+  await page.locator("#benchmark-target").selectOption("nisca");
   await page.locator("#swim-time").fill("50.50");
   await expect(page.getByTestId("national-target-Consideration")).toContainText(
     "Time threshold met",
@@ -957,8 +978,8 @@ test("benchmark preview is explicit, tracks the selected method and resets to en
     basis.getByRole("button", { name: /^Entered swim/ }),
   ).toHaveAttribute("aria-pressed", "true");
   await page
-    .getByRole("button", { name: "World Aquatics points", exact: true })
-    .click();
+    .getByRole("combobox", { name: "Compare against", exact: true })
+    .selectOption("world-points");
   await expect(page.getByTestId("points-score")).toHaveCount(0);
   await basis.getByRole("button", { name: /^Converted estimate/ }).click();
   await expect(page.getByTestId("points-score")).toBeVisible();
@@ -976,10 +997,9 @@ test("benchmark preview is explicit, tracks the selected method and resets to en
     "1:06.33",
   );
   await page
-    .getByRole("group", { name: "Performance comparison", exact: true })
-    .getByRole("button", { name: "Time standards", exact: true })
-    .click();
-  await page.locator("#standards-system").selectOption("futures");
+    .getByRole("combobox", { name: "Compare against", exact: true })
+    .selectOption("masters");
+  await page.locator("#benchmark-target").selectOption("futures");
   await expect(page.locator(".national-panel .context")).toContainText(
     "Converted estimate",
   );
@@ -1004,17 +1024,21 @@ test("unavailable benchmark previews never fall back to the original swim", asyn
   await expect(page.getByTestId("points-score")).toHaveCount(0);
 });
 
-test("benchmark swim selection leads its view and marks only applied altitude deductions", async ({
+test("benchmark swim selection leads the unified benchmark selector and marks only applied altitude deductions", async ({
   page,
 }) => {
   await page.goto(
     "./#t=58.32&s=FR&d=100&c=SCY&g=women&h=1000&ap=ncaa-altitude-2026-27-d1",
   );
   const basis = page.getByRole("group", { name: "Compare using", exact: true });
-  const view = page.getByRole("group", {
-    name: "Performance comparison",
+  const view = page.getByRole("combobox", {
+    name: "Compare against",
     exact: true,
   });
+  await expect(view).toHaveCount(1);
+  await expect(page.locator(".standards-tabs")).toHaveCount(0);
+  await expect(view.locator("optgroup")).toHaveCount(2);
+  await expect(view.locator("option")).toHaveCount(6);
   await basis.scrollIntoViewIfNeeded();
   const sourceBounds = await basis.boundingBox();
   const viewBounds = await view.boundingBox();

@@ -1,7 +1,7 @@
 # Converter layout exploration
 
-The initial web flow shipped in PR26. The October 19 follow-up removes the
-redundant target banner, gives Standards / Points its own row, and places recent
+The initial web flow shipped in PR26. The follow-up removes the
+redundant target banner, gives benchmark comparisons their own row, and places recent
 and saved comparisons below it. Recent conversions, Sources & methodology and
 Swimming resources use disclosures; About remains visible. Native adoption is a
 paired follow-up documented in [Native visual review](NATIVE_VISUAL_REVIEW.md).
@@ -138,7 +138,7 @@ the [local review manifest](screenshots/converter-review.json).
 
 The shared semantic tokens, static water artwork, original/derived labels,
 quiet method/altitude settings and explicit result navigation remain intact.
-Standards / Points now occupies its own full-width row. Recent conversions is
+Benchmark comparisons occupy their own full-width row. Recent conversions is
 collapsed initially with its count; History navigation opens it. Saved comparisons
 follow as a separate section. About stays expanded, while Sources & methodology
 and Swimming resources open on demand. Explicit methodology links open their
@@ -198,8 +198,9 @@ Reset and a fresh visit return to entered-swim comparisons. Neither preview
 points nor reached thresholds imply a recorded performance or entry eligibility.
 
 The assessed swim is now the primary grouped selector, with its time/course in
-each choice. Standards/Points are quieter tabs on a separate second row on both
-desktop and phones. The converted choice gains a small mountain only when the
+each choice. A single **Compare against** dropdown follows on a separate row on
+desktop and phones, with options grouped as **Time standards** and **Points**.
+It replaces the mode tabs and separate standards picker. The converted choice gains a small mountain only when the
 engine actually deducts altitude credit; zero-credit policies, below-threshold
 elevations and unavailable estimates do not show it. An accessible description
 states the deduction, and the calculation details retain the selected policy.

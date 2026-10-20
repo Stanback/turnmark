@@ -463,7 +463,7 @@ private fun share(context: Context, draft: Draft) {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable fun Choice(label: String, selected: String, values: List<String>, modifier: Modifier, labelIcon: Int? = null, optionIcons: List<Int?>? = null, selectedIcon: Int? = null, maxLines: Int = 1, onSelect: (Int) -> Unit) {
+@Composable fun Choice(label: String, selected: String, values: List<String>, modifier: Modifier, labelIcon: Int? = null, optionIcons: List<Int?>? = null, selectedIcon: Int? = null, maxLines: Int = 1, optionGroupLabels: Map<Int, String> = emptyMap(), onSelect: (Int) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     BoxWithConstraints(modifier) {
         val showIcon = maxWidth >= 160.dp && labelIcon != null
@@ -481,6 +481,10 @@ private fun share(context: Context, draft: Draft) {
                 modifier = Modifier.fillMaxWidth().menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable).testTag("choice-$label"))
             ExposedDropdownMenu(expanded, { expanded = false }) {
                 values.forEachIndexed { index, value ->
+                    optionGroupLabels[index]?.let { group ->
+                        Text(group, style = MaterialTheme.typography.labelMedium, color = LocalTurnmarkColors.current.textMuted,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp).semantics { heading() })
+                    }
                     val icon: (@Composable () -> Unit)? = optionIcons?.getOrNull(index)?.let { resource ->
                         { Icon(painterResource(resource), contentDescription = null, modifier = Modifier.size(24.dp)) }
                     }

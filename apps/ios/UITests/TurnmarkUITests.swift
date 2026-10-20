@@ -299,6 +299,10 @@ final class TurnmarkUITests: XCTestCase {
         let button = app.buttons[title].firstMatch
         XCTAssertTrue(button.waitForExistence(timeout: 5)); button.tap()
     }
+    @MainActor private func chooseBenchmark(_ label: String, in app: XCUIApplication) {
+        let target = app.buttons["benchmarkTarget"]
+        reach(target, in: app); target.tap(); app.buttons[label].tap()
+    }
     @MainActor private func capture(_ app: XCUIApplication, _ name: String) {
         let screenshot = XCTAttachment(screenshot: app.screenshot())
         screenshot.name = name; screenshot.lifetime = .keepAlways; add(screenshot)
@@ -308,7 +312,7 @@ final class TurnmarkUITests: XCTestCase {
         let app = launch()
         chooseCourseConversion("Colorado Timing", in: app)
         reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
-        app.segmentedControls["benchmarkMode"].buttons["Points"].tap()
+        chooseBenchmark("World Aquatics points", in: app)
         XCTAssertTrue(app.staticTexts["benchmarkUnavailable"].exists)
         let basis = app.buttons["benchmarkBasis"]
         reach(basis, in: app, earlier: true); basis.tap()
@@ -364,8 +368,10 @@ final class TurnmarkUITests: XCTestCase {
         XCTAssertEqual(app.staticTexts["benchmarkSummary"].label, "A standard")
         let aaaa = app.descendants(matching: .any)["benchmark-level-AAAA"].firstMatch
         reach(aaaa, in: app); capture(app, "Youth standards targets")
-        let system = app.buttons["benchmarkSystem"]
-        reach(system, in: app); system.tap(); app.buttons["USMS · Masters"].tap()
+        let system = app.buttons["benchmarkTarget"]
+        reach(system, in: app); system.tap()
+        capture(app, "Unified benchmark choices")
+        app.buttons["USMS · Masters"].tap()
         let age = app.buttons["benchmarkAge"]
         reach(age, in: app); age.tap(); app.buttons["40–44"].tap()
         reach(app.staticTexts["benchmarkSummary"], in: app)
@@ -375,9 +381,12 @@ final class TurnmarkUITests: XCTestCase {
         app.terminate(); app.launchArguments = []; app.launch()
         reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
         XCTAssertTrue(app.staticTexts["40–44 · Women · SCY"].waitForExistence(timeout: 5))
-        app.segmentedControls["benchmarkMode"].buttons["Points"].tap()
+        chooseBenchmark("World Aquatics points", in: app)
         XCTAssertTrue(app.staticTexts["benchmarkUnavailable"].exists)
         XCTAssertFalse(app.staticTexts["benchmarkPoints"].exists)
+        chooseBenchmark("USMS · Masters", in: app)
+        XCTAssertTrue(app.staticTexts["40–44 · Women · SCY"].exists, "Switching to points must preserve the standard's age")
+        chooseBenchmark("World Aquatics points", in: app)
         capture(app, "Points unavailable for yards")
         app.buttons["closeBenchmarks"].tap()
         let course = app.segmentedControls["inputCourse"].buttons["LCM"]
@@ -415,7 +424,7 @@ final class TurnmarkUITests: XCTestCase {
         let app = launch()
         let open = app.buttons["openBenchmarks"]
         reach(open, in: app); open.tap()
-        let system = app.buttons["benchmarkSystem"]
+        let system = app.buttons["benchmarkTarget"]
         reach(system, in: app); system.tap(); app.buttons["USA Swimming · Futures"].tap()
         let age = app.buttons["benchmarkAge"]
         reach(age, in: app); age.tap(); app.buttons["19 & over"].tap()
@@ -464,7 +473,7 @@ final class TurnmarkUITests: XCTestCase {
             return
         }
         XCTAssertEqual(app.staticTexts["benchmarkContext"].label, "200 m Butterfly · LCM · Women")
-        let system = app.buttons["benchmarkSystem"]
+        let system = app.buttons["benchmarkTarget"]
         reach(system, in: app); system.tap(); app.buttons["USMS · Masters"].tap()
         let missing = app.staticTexts["benchmarkUnavailable"]
         // Changing systems can preserve the settings row's scroll position.

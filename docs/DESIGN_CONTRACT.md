@@ -101,10 +101,14 @@ result scroll when large text or the keyboard needs space.
 
 ## Benchmark hierarchy
 
-Choose the assessed swim before choosing Standards or Points. The web uses one
-grouped entered/converted selector with both times and courses, followed by
-quieter view tabs on a separate row at every viewport width. Native screens keep
-their platform pickers and separate comparison-mode row in the same order.
+Choose the assessed swim before choosing a benchmark. The web uses one grouped
+entered/converted selector with both times and courses, followed by a single
+**Compare against** dropdown on its own row at every viewport width. Group its
+options under **Time standards** and **Points**; do not add a separate mode switch
+or provider picker. Native screens keep their platform pickers in the same order:
+SwiftUI menu sections on iOS and a grouped Material exposed dropdown on Android.
+Existing benchmark and age preferences remain intact when switching to points
+and back. Unsupported estimates never fall back to the entered swim.
 
 A small mountain belongs to the converted choice only when an available engine
 result includes a nonzero altitude deduction. Enabling the setting, entering an

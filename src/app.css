@@ -322,29 +322,6 @@ summary::-webkit-details-marker {
   font-size: 13px;
   color: var(--muted);
 }
-.standards-tabs {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  background: var(--surface-raised);
-  border-radius: 7px;
-  padding: 4px;
-  margin-bottom: 19px;
-  width: fit-content;
-}
-.standards-tabs button {
-  background: transparent;
-  color: var(--muted);
-  border-radius: 5px;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 7px 12px;
-}
-.standards-tabs button.active {
-  color: var(--navy);
-  background: var(--surface);
-  box-shadow: 0 2px 4px color-mix(in srgb, var(--tm-color-text) 8%, transparent);
-}
 .standards-title-row {
   display: flex;
   flex-direction: column;
@@ -1298,16 +1275,6 @@ footer {
   .history-empty > span:last-child {
     font-size: 14px;
   }
-  .standards-tabs {
-    width: 100%;
-    margin-bottom: 24px;
-  }
-  .standards-tabs button {
-    flex: 1;
-    min-height: 38px;
-    font-size: 14px;
-    padding: 8px;
-  }
   .standards-title-row {
     gap: 20px;
   }
@@ -1579,7 +1546,7 @@ footer {
   .remove-swim,
   .mobile-nav,
   .history-panel,
-  .standards-tabs {
+  .benchmark-selector {
     display: none !important;
   }
   .page-width {
@@ -1598,15 +1565,15 @@ footer {
   }
 }
 
-.standards-system {
+.benchmark-selector {
   display: flex;
   flex-direction: column;
   gap: 8px;
   font-size: 14px;
   font-weight: 650;
-  margin-bottom: 21px;
+  margin: 0;
 }
-.standards-system select {
+.benchmark-selector select {
   width: 100%;
   border: 1px solid var(--line);
   background: var(--surface);
@@ -1717,7 +1684,7 @@ footer {
   margin-bottom: 0;
 }
 @media (max-width: 680px) {
-  .standards-system select {
+  .benchmark-selector select {
     font-size: 16px;
   }
   .masters-comparison strong {
@@ -1954,7 +1921,7 @@ footer {
   color: var(--muted);
 }
 [data-theme="dark"] .standards-controls select,
-[data-theme="dark"] .standards-system select {
+[data-theme="dark"] .benchmark-selector select {
   background: var(--surface-input);
   border-color: var(--tm-color-border-control);
   color: var(--ink);
@@ -2038,13 +2005,6 @@ footer {
 [data-theme="dark"] .history-restore > svg,
 [data-theme="dark"] .history-empty > span:last-child {
   color: var(--muted);
-}
-[data-theme="dark"] .standards-tabs {
-  background: var(--surface-input);
-}
-[data-theme="dark"] .standards-tabs button.active {
-  background: var(--surface-raised);
-  color: var(--ink);
 }
 [data-theme="dark"] .standards-edition,
 [data-theme="dark"] .standards-context > a {
@@ -2232,23 +2192,6 @@ footer {
   font-weight: 650;
   color: var(--ink);
 }
-.points-standards-link {
-  background: none;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 15px 0 0;
-  color: var(--muted);
-  font-size: 14px;
-  text-align: left;
-  line-height: 1.6;
-  width: 100%;
-}
-.points-standards-link:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
 [data-theme="dark"] .remove-swim {
   background: var(--surface-raised);
   color: var(--ink);
@@ -2263,8 +2206,7 @@ footer {
 [data-theme="dark"] .points-benchmarks .points-next {
   background: var(--tm-color-selected-surface);
 }
-[data-theme="dark"] .points-benchmarks span,
-[data-theme="dark"] .points-standards-link {
+[data-theme="dark"] .points-benchmarks span {
   color: var(--muted);
 }
 @media (max-width: 680px) {
