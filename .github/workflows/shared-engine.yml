@@ -94,7 +94,9 @@ jobs:
       - run: node scripts/test-native-host.mjs swift
       - run: node scripts/test-ios.mjs
       - name: Test unsigned native iOS app
-        run: node scripts/test-ios.mjs app
+        # The hosted runner's two-clone run was slower and hit UI timing failures.
+        # Keep all cases; reserve two workers for measured local iterations.
+        run: node scripts/test-ios.mjs app --workers 1
       - name: Save successful iOS build caches
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && steps.native-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5

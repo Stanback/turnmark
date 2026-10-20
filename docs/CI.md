@@ -235,3 +235,12 @@ These are single local development observations, not a promised CI speedup or
 an isolated parallelism benchmark: screenshot capture is also now opt-in, and
 boot/build caches differ between runs. Use the uploaded phase and per-test
 metrics to assess cold hosted results before reducing any required coverage.
+
+### Hosted worker budget
+
+The initial two-worker hosted iOS run took about 24 minutes in test execution
+and failed two UI timing checks (viewport settling and keyboard dismissal). It
+did not reproduce the local parallelism gain. Hosted CI therefore explicitly uses
+`--workers 1`, preserving all 27 app tests and their assertions. Local full runs
+still default to two workers. Do not raise hosted concurrency again without
+repeatable hosted timing and reliability evidence. Build caching remains enabled.
