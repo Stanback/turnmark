@@ -1,7 +1,7 @@
 import SwiftUI
 import TurnmarkCore
 
-/// One original-swim view, shared by Convert and recorded performances.
+/// Entered/recorded swims remain the default; conversion previews are opt-in.
 struct BenchmarkScreen: View {
     let input: Draft
     var isRecorded = false
@@ -13,6 +13,7 @@ struct BenchmarkScreen: View {
     @AppStorage("benchmarkConfigured") private var configured = false
     @State private var settingsExpanded = false
     @State private var sourceExpanded = false
+    @State private var preview = false
     private let programs = getNationalStandardPrograms()
     private var program: StandardProgram? { programs.first { $0.system == system } }
     @AppStorage("benchmarkFuturesAge") private var futuresAge = "18 & under"
@@ -22,7 +23,12 @@ struct BenchmarkScreen: View {
     private var age: String { system == .masters ? mastersAge : system == .futures ? futuresAge : system == .youth ? youthAge : "" }
     private var swim: Swim { Swim(time: input.time, event: SwimEvent(distance: input.distance, stroke: strokes[input.strokeIndex], course: courses[input.courseIndex])) }
     private var table: TurnmarkCore.Category { input.categoryIndex == 0 ? .women : .men }
-    private var assessment: BenchmarkOutcome { assessSwimBenchmark(request: BenchmarkRequest(swim: swim, table: table, age: age, system: system)) }
+    private var comparisonSwim: Swim? {
+        if !preview { return swim }
+        guard case let .available(value, _) = input.outcome else { return nil }
+        return Swim(time: value.time, event: value.event)
+    }
+    private var comparisonCourse: String { preview ? courseNames[input.targetIndex] : courseNames[input.courseIndex] }
     private var provider: String { program.map { "\($0.title) · \($0.scope)" } ?? (system == .masters ? "USMS · 2026" : "USA Swimming · 2024–28") }
 
     var body: some View {
@@ -34,13 +40,32 @@ struct BenchmarkScreen: View {
                         Text(input.label).font(.subheadline).accessibilityIdentifier("benchmarkContext")
                     }.padding(.vertical, 4)
                 } header: { Text(isRecorded ? "Recorded swim" : "Entered swim").accessibilityIdentifier("benchmarkOriginLabel") }
-                  footer: { Text("Original swim only; no course or altitude estimates.") }
+                  footer: { Text(preview ? "The original performance stays unchanged." : "Original swim only; no course or altitude estimates.") }
+                    .listRowBackground(TurnmarkPalette.surface)
+                Section {
+                    Picker("Compare using", selection: $preview) {
+                        Text("Entered swim").tag(false)
+                        Text("Converted estimate · \(courseNames[input.targetIndex])").tag(true)
+                    }.pickerStyle(.menu).accessibilityIdentifier("benchmarkBasis")
+                    if preview, let converted = comparisonSwim {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(converted.time).font(.title2.bold()).monospacedDigit().accessibilityIdentifier("benchmarkEstimateTime")
+                            Text(input.resultLabel(converted.event)).font(.subheadline).accessibilityIdentifier("benchmarkEstimateContext")
+                            Text("\(input.methodLabel)\(input.altitudeText == nil ? "" : " · " + (input.altitudePolicy == .ncaa ? "NCAA altitude policy" : "USA Swimming altitude policy"))").font(.footnote).foregroundStyle(TurnmarkPalette.textMuted)
+                        }.padding(.vertical, 4)
+                    }
+                } footer: { if preview { Text("Estimate only; not a recorded performance or proof of entry eligibility.") } }
                     .listRowBackground(TurnmarkPalette.surface)
                 Section {
                     Picker("Comparison", selection: $mode) { Text("Standards").tag("standards"); Text("Points").tag("points") }
                         .pickerStyle(.segmented).accessibilityIdentifier("benchmarkMode")
                 }.listRowBackground(Color.clear).listRowInsets(EdgeInsets())
-                if mode == "points" { pointsContent }
+                if preview && comparisonSwim == nil {
+                    Section {
+                        Label("Conversion unavailable", systemImage: "info.circle").accessibilityIdentifier("benchmarkPreviewUnavailable")
+                        Text("Choose another destination in the converter or compare the entered swim. No entered-time fallback is used.").font(.subheadline)
+                    }.listRowBackground(TurnmarkPalette.surface)
+                } else if mode == "points" { pointsContent }
                 else {
                     benchmarkContent
                     Section {
@@ -82,61 +107,65 @@ struct BenchmarkScreen: View {
     }
 
     @ViewBuilder private var benchmarkContent: some View {
-        switch assessment {
-        case let .available(value, provenance):
-            Section {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text(provider).font(.caption.weight(.semibold)).foregroundStyle(TurnmarkResultPalette.textMuted)
-                    Text(system == .youth ? value.achievedLevel.map { "\($0) standard" } ?? "Next target: B" : system == .masters ? (value.achievedLevel == nil ? "NQT benchmark" : "NQT target met") : value.achievedLevel.map { "\($0) threshold met" } ?? "Next published target")
-                        .font(.title2.bold()).accessibilityIdentifier("benchmarkSummary")
-                    Text([ageLabel(value.age), input.category, courseNames[input.courseIndex]].filter { !$0.isEmpty }.joined(separator: " · ")).font(.subheadline)
-                    if let next = value.nextTarget {
-                        Text(next.time).font(.largeTitle.bold()).monospacedDigit().foregroundStyle(TurnmarkResultPalette.resultHighlight).accessibilityIdentifier("benchmarkNextTime")
-                        Text("\(next.gapSeconds, specifier: "%.2f")s to \(next.label)").font(.subheadline)
-                    } else { Text(system == .youth ? "You meet the top published standard for this selection." : "Your entered time meets this published benchmark.").font(.subheadline) }
-                }.frame(maxWidth: .infinity, alignment: .leading).padding(20)
-                    .foregroundStyle(TurnmarkResultPalette.text).background(NativeResultSurface())
-            }.listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
-            if program == nil || value.targets.count > 1 || value.nextTarget == nil { Section(system == .masters ? "National qualifying benchmark" : "Published time thresholds") {
-                ForEach(value.targets, id: \.label) { target in
-                    HStack {
-                        Text(target.label).fontWeight(.semibold)
-                        if target.met { Image(systemName: "checkmark").foregroundStyle(TurnmarkPalette.accent).accessibilityLabel("Met") }
-                        Spacer()
-                        Text(target.time).font(.headline).monospacedDigit()
-                    }.accessibilityElement(children: .combine).accessibilityIdentifier("benchmark-level-\(target.label)")
-                }
-            }.listRowBackground(TurnmarkPalette.surface) }
-            source(provenance, note: program?.note ?? "Benchmarks do not confirm meet-entry eligibility. Meet rules, age dates, qualifying windows and exceptions still apply.")
-        case let .unavailable(reason, provenance):
-            unavailable(reason, points: false)
-            source(provenance, note: "No fallback target is substituted. Check the published meet guidance and entry rules.")
-        case .invalid:
-            Section { Label("Check the original swim", systemImage: "exclamationmark.circle"); Text("Use a valid time, event and age group.").font(.subheadline) }.listRowBackground(TurnmarkPalette.surface)
+        if let swim = comparisonSwim {
+            switch assessSwimBenchmark(request: BenchmarkRequest(swim: swim, table: table, age: age, system: system)) {
+            case let .available(value, provenance):
+                Section {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text(provider).font(.caption.weight(.semibold)).foregroundStyle(TurnmarkResultPalette.textMuted)
+                        Text(preview ? (value.achievedLevel.map { "\($0) threshold in preview" } ?? "Next preview target") : system == .youth ? value.achievedLevel.map { "\($0) standard" } ?? "Next target: B" : system == .masters ? (value.achievedLevel == nil ? "NQT benchmark" : "NQT target met") : value.achievedLevel.map { "\($0) threshold met" } ?? "Next published target")
+                            .font(.title2.bold()).accessibilityIdentifier("benchmarkSummary")
+                        Text([ageLabel(value.age), input.category, comparisonCourse].filter { !$0.isEmpty }.joined(separator: " · ")).font(.subheadline)
+                        if let next = value.nextTarget {
+                            Text(next.time).font(.largeTitle.bold()).monospacedDigit().foregroundStyle(TurnmarkResultPalette.resultHighlight).accessibilityIdentifier("benchmarkNextTime")
+                            Text("\(next.gapSeconds, specifier: "%.2f")s to \(next.label)").font(.subheadline)
+                        } else { Text(preview ? "The estimate reaches the published threshold for this selection." : system == .youth ? "You meet the top published standard for this selection." : "Your entered time meets this published benchmark.").font(.subheadline) }
+                    }.frame(maxWidth: .infinity, alignment: .leading).padding(20)
+                        .foregroundStyle(TurnmarkResultPalette.text).background(NativeResultSurface())
+                }.listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
+                if program == nil || value.targets.count > 1 || value.nextTarget == nil { Section(system == .masters ? "National qualifying benchmark" : "Published time thresholds") {
+                    ForEach(value.targets, id: \.label) { target in
+                        HStack {
+                            Text(target.label).fontWeight(.semibold)
+                            if target.met { Image(systemName: "checkmark").foregroundStyle(TurnmarkPalette.accent).accessibilityLabel("Met") }
+                            Spacer()
+                            Text(target.time).font(.headline).monospacedDigit()
+                        }.accessibilityElement(children: .combine).accessibilityIdentifier("benchmark-level-\(target.label)")
+                    }
+                }.listRowBackground(TurnmarkPalette.surface) }
+                source(provenance, note: program?.note ?? "Benchmarks do not confirm meet-entry eligibility. Meet rules, age dates, qualifying windows and exceptions still apply.")
+            case let .unavailable(reason, provenance):
+                unavailable(reason, points: false)
+                source(provenance, note: "No fallback target is substituted. Check the published meet guidance and entry rules.")
+            case .invalid:
+                Section { Label("Check the original swim", systemImage: "exclamationmark.circle"); Text("Use a valid time, event and age group.").font(.subheadline) }.listRowBackground(TurnmarkPalette.surface)
+            }
         }
     }
     @ViewBuilder private var pointsContent: some View {
-        switch getWorldPoints(request: PointsRequest(swim: swim, table: table)) {
-        case let .available(value, provenance):
-            Section {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("World Aquatics · 2026").font(.caption.weight(.semibold)).foregroundStyle(TurnmarkResultPalette.textMuted)
-                    Text(value.points.formatted()).font(.largeTitle.bold()).monospacedDigit().lineLimit(1).minimumScaleFactor(0.5).accessibilityIdentifier("benchmarkPoints")
-                    Text("Points for your original \(courseNames[input.courseIndex]) swim").font(.subheadline).foregroundStyle(TurnmarkResultPalette.textMuted)
-                    Divider().overlay(TurnmarkResultPalette.borderSubtle)
-                    LabeledContent("1,000-point reference", value: value.baseTime).font(.subheadline).monospacedDigit()
-                    LabeledContent("Next \(value.nextMilestone.points) points", value: value.nextMilestone.time).font(.subheadline).monospacedDigit()
-                    Text("\(value.nextMilestone.gapSeconds, specifier: "%.2f")s to the next 100-point step. This is a suggested goal, not a qualifying time.")
-                        .font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted)
-                }.frame(maxWidth: .infinity, alignment: .leading).padding(20)
-                    .foregroundStyle(TurnmarkResultPalette.text).background(NativeResultSurface())
-            }.listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
-            source(provenance, note: "\(value.validity). Scores use the fixed published world-record reference, are not age-adjusted, and may lag newer records.")
-        case let .unavailable(reason, provenance):
-            unavailable(reason, points: true)
-            source(provenance, note: "Converted estimates are not scored as actual swims.")
-        case .invalid:
-            Section { Label("Check the original swim", systemImage: "exclamationmark.circle") }.listRowBackground(TurnmarkPalette.surface)
+        if let swim = comparisonSwim {
+            switch getWorldPoints(request: PointsRequest(swim: swim, table: table)) {
+            case let .available(value, provenance):
+                Section {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("World Aquatics · 2026").font(.caption.weight(.semibold)).foregroundStyle(TurnmarkResultPalette.textMuted)
+                        Text(value.points.formatted()).font(.largeTitle.bold()).monospacedDigit().lineLimit(1).minimumScaleFactor(0.5).accessibilityIdentifier("benchmarkPoints")
+                        Text(preview ? "Preview points · converted \(comparisonCourse) estimate" : "Points for your original \(comparisonCourse) swim").font(.subheadline).foregroundStyle(TurnmarkResultPalette.textMuted)
+                        Divider().overlay(TurnmarkResultPalette.borderSubtle)
+                        LabeledContent("1,000-point reference", value: value.baseTime).font(.subheadline).monospacedDigit()
+                        LabeledContent("Next \(value.nextMilestone.points) points", value: value.nextMilestone.time).font(.subheadline).monospacedDigit()
+                        Text("\(value.nextMilestone.gapSeconds, specifier: "%.2f")s to the next 100-point step. This is a suggested goal, not a qualifying time.")
+                            .font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted)
+                    }.frame(maxWidth: .infinity, alignment: .leading).padding(20)
+                        .foregroundStyle(TurnmarkResultPalette.text).background(NativeResultSurface())
+                }.listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
+                source(provenance, note: "\(value.validity). Scores use the fixed published world-record reference, are not age-adjusted, and may lag newer records.")
+            case let .unavailable(reason, provenance):
+                unavailable(reason, points: true)
+                source(provenance, note: "Preview points describe an estimate, not an actual performance.")
+            case .invalid:
+                Section { Label("Check the original swim", systemImage: "exclamationmark.circle") }.listRowBackground(TurnmarkPalette.surface)
+            }
         }
     }
     private func unavailable(_ reason: CoverageReason, points: Bool) -> some View {
@@ -147,7 +176,7 @@ struct BenchmarkScreen: View {
     }
     private func coverageMessage(_ reason: CoverageReason, points: Bool) -> String {
         switch reason {
-        case .courseNotSupported: return points ? "World Aquatics points need an original SCM or LCM swim. SCY swims aren’t scored." : program?.note ?? "USMS publishes 2026 NQTs for SCY and LCM, not SCM."
+        case .courseNotSupported: return points ? "World Aquatics points need SCM or LCM. Enter a metric swim, or choose a metric destination and preview its converted estimate. SCY itself isn’t scored." : program?.note ?? "USMS publishes 2026 NQTs for SCY and LCM, not SCM."
         case .ageGroupNotPublished: return "No NQT is published for this age group in the bundled 2026 table. Meet-specific rules and exceptions apply."
         case .noTimePublished: return "This event has no NQT in the published table for this age group. Check the meet’s entry guidance."
         default: return "This event has no published \(points ? "base time" : "target") in the selected table. Missing source data stays unavailable."

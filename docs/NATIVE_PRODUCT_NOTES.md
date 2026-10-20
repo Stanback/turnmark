@@ -79,8 +79,11 @@ Native Standards & points includes USA Swimming motivational standards
 The native screens now consume the shared Rust lookups and benchmark assessment
 through generated Swift/Kotlin APIs. Open contextual Standards & points
 from the entered/recorded performance with age-group controls, source editions,
-coverage states and the achieved course visible. Compare actual performances,
-not converted estimates. Missing source data stays unavailable. This is a contextual
+coverage states and the achieved course visible. Default to the actual entered or recorded performance. **Compare using**
+can explicitly preview the converter’s selected destination, course method and
+altitude settings. The engine-returned event and clock stay labeled as an
+estimate; unsupported conversions never fall back to the original. Preview
+selection is temporary and does not alter history or confirm qualification. Missing source data stays unavailable. This is a contextual
 feature, separate from course conversion and recorded-performance storage.
 
 Use one view/component per platform, accessible from both My times and Convert.

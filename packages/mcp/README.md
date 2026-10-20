@@ -159,3 +159,12 @@ verified in this release; rendering depends on the client and surface. See the
 2027 Futures, 2027 Junior Nationals or 2026–2027 NISCA time thresholds. It returns
 available/unavailable/invalid plus source provenance, and never confirms meet
 entry or an All-America award. No personal history is accessed.
+
+### Optional analytical preview
+
+Benchmark and points tools accept an explicit `preview` object with `to`, and
+optional `method`, `elevation` and `altitudePolicy`. Omit it to assess the original
+swim. Returned `assessmentContext` keeps the original, engine-converted event/time
+and source provenance visible. Failed conversion never falls back to the
+original. Preview results are estimates, not recorded swims or entry approval.
+See [the contract and example](../../docs/MCP.md#explicit-benchmark-previews).

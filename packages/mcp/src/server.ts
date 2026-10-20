@@ -11,6 +11,7 @@ import {
   conversionMethods,
   altitudePolicies,
   type ConversionMethod,
+  type Swim,
   conversionProvenance,
   altitudeProvenance,
 } from "@turnmark/sdk/conversion";
@@ -61,6 +62,15 @@ const elevation = z.strictObject({
   value: z.number(),
   unit: z.enum(["feet", "meters"]),
 });
+// Explicit analytical opt-in; omitted inputs retain the original-swim contract.
+const preview = z
+  .strictObject({
+    to: z.enum(["SCY", "SCM", "LCM"]),
+    method: z.string().optional(),
+    elevation: elevation.optional(),
+    altitudePolicy: z.string().optional(),
+  })
+  .optional();
 const table = z
   .enum(["women", "men"])
   .describe("Category of the published source table.");
@@ -89,6 +99,20 @@ const outcome = z.discriminatedUnion("status", [
     reason: z.string(),
   }),
 ]);
+const assessmentOutcome = outcome.and(
+  z.object({
+    assessmentContext: z
+      .object({
+        basis: z.literal("converted-estimate"),
+        originalSwim: swim,
+        assessedSwim: z.object({ time: z.string(), event }).nullable(),
+        conversion: outcome,
+        preview: preview.unwrap(),
+        note: z.string(),
+      })
+      .optional(),
+  }),
+);
 const annotations = {
   readOnlyHint: true,
   destructiveHint: false,
@@ -111,6 +135,39 @@ export function createServer(engine: Engine) {
         "Swimming calculations from published sources. Preserve available/unavailable/invalid, event/course context, published/derived kinds and source editions. Missing targets remain missing. Qualifying targets are benchmarks, not confirmation of entry eligibility. No personal history access or storage.",
     },
   );
+  function assess(
+    input: {
+      swim: Swim;
+      table: "women" | "men";
+      preview?: z.infer<typeof preview>;
+    },
+    lookup: (swim: Swim) => Record<string, unknown>,
+  ) {
+    if (!input.preview) return result(lookup(input.swim));
+    const conversion = engine.convert({
+      swim: input.swim,
+      table: input.table,
+      ...input.preview,
+      method: input.preview.method as ConversionMethod | undefined,
+      altitudePolicy: input.preview.altitudePolicy as
+        (typeof altitudePolicies)[number]["id"] | undefined,
+    });
+    const assessedSwim =
+      conversion.status === "available"
+        ? { time: conversion.value.time, event: conversion.value.event }
+        : null;
+    return result({
+      ...(assessedSwim ? lookup(assessedSwim) : conversion),
+      assessmentContext: {
+        basis: "converted-estimate",
+        originalSwim: input.swim,
+        assessedSwim,
+        conversion,
+        preview: input.preview,
+        note: "Estimate only; not a recorded performance or proof of entry eligibility.",
+      },
+    });
+  }
   registerAppResource(
     server,
     "Turnmark conversion",
@@ -290,36 +347,48 @@ export function createServer(engine: Engine) {
     "assess_swim_benchmark",
     {
       description:
-        "Compare the original entered swim with youth, Masters, 2027 Futures, 2027 Junior Nationals (main standards, not bonus) or 2026–27 NISCA All-America time thresholds. Futures age is '18 & under' or '19 & over'; omit age for Juniors/NISCA. NISCA only covers original SCY/SCM interscholastic benchmarks; a time is not an award and an eligible application is required. Never use course or altitude estimates as recorded performances or proof of eligibility.",
+        "Compare the original entered swim with youth, Masters, 2027 Futures, 2027 Junior Nationals (main standards, not bonus) or 2026–27 NISCA All-America time thresholds. Futures age is '18 & under' or '19 & over'; omit age for Juniors/NISCA. NISCA only covers original SCY/SCM interscholastic benchmarks; a time is not an award and an eligible application is required. Optional preview explicitly converts to the requested course/method/altitude policy first and assesses that estimate for perspective only. assessmentContext preserves the original swim, converted swim and conversion provenance. Never use estimates as recorded performances or proof of eligibility; failed conversion never falls back to the original.",
       inputSchema: z.strictObject({
         swim,
         table,
         system: z.enum(["youth", "masters", "futures", "juniors", "nisca"]),
         age: z.string().default(""),
         edition: z.string().optional(),
+        preview,
       }),
-      outputSchema: outcome,
+      outputSchema: assessmentOutcome,
       annotations,
     },
-    (input) => result(engine.benchmark(input)),
+    (input) =>
+      assess(input, (swim) =>
+        engine.benchmark({
+          swim,
+          table: input.table,
+          system: input.system,
+          age: input.age,
+          edition: input.edition,
+        }),
+      ),
   );
   server.registerTool(
     "get_world_points",
     {
       description:
-        "Calculate World Aquatics points for the raw entered metric swim, with base time, validity and a derived next 100-point milestone. This is not USA Swimming/Hy-Tek Power Points. No SCY or age-adjusted points.",
+        "Calculate World Aquatics points for the raw entered metric swim, with base time, validity and a derived next 100-point milestone. This is not USA Swimming/Hy-Tek Power Points. No SCY or age-adjusted points. Optional preview explicitly converts to a metric destination first; these are preview points for an estimate, not a score for an actual metric performance. Failed conversion never falls back to the original.",
       inputSchema: z.strictObject({
         swim,
         table,
         edition: z.string().optional(),
+        preview,
       }),
-      outputSchema: outcome,
+      outputSchema: assessmentOutcome,
       annotations,
     },
     (input) =>
-      result(
+      assess(input, (swim) =>
         engine.points({
-          ...input,
+          swim,
+          table: input.table,
           edition: input.edition as typeof pointsEdition | undefined,
         }),
       ),

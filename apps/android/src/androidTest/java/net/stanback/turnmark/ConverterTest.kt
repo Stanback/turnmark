@@ -129,6 +129,37 @@ class ConverterTest {
         compose.onNodeWithTag("resultTime").assertTextEquals("1:06.72")
     }
 
+    @Test fun benchmarkPreviewScoresEstimateAndKeepsOriginal() {
+        example()
+        chooseCourseConversion("Colorado Timing")
+        compose.onNodeWithTag("openBenchmarks").performScrollTo().performClick()
+        compose.onNodeWithTag("benchmarkMode-points").performScrollTo().performClick()
+        compose.onNodeWithTag("benchmarkUnavailable").assertExists()
+        compose.onNodeWithTag("benchmarkBasis").performScrollTo().performClick()
+        compose.onNode(hasText("Converted estimate · LCM") and hasClickAction()).performClick()
+        compose.onNodeWithTag("benchmarkEstimateTime").assertTextEquals("1:06.33")
+        compose.onNodeWithTag("benchmarkEstimateContext").assertTextEquals("100 m Freestyle · LCM · Women")
+        compose.onNodeWithTag("benchmarkPoints").performScrollTo().assertExists()
+        capture("android-benchmark-estimate-preview")
+        compose.onNodeWithTag("benchmarkOriginalTime").performScrollTo().assertTextEquals("58.32")
+        compose.onNodeWithTag("closeBenchmarks").performScrollTo().performClick()
+        compose.onNodeWithTag("openBenchmarks").performScrollTo().performClick()
+        compose.onNodeWithTag("benchmarkEstimateTime").assertDoesNotExist()
+        compose.onNodeWithTag("benchmarkUnavailable").assertExists()
+    }
+
+    @Test fun benchmarkPreviewUnavailableDoesNotSubstituteEnteredTime() {
+        example()
+        compose.onNodeWithTag("choice-Stroke").performScrollTo().performClick()
+        compose.onNode(hasText("Individual medley") and hasClickAction()).performClick()
+        compose.onNodeWithTag("openBenchmarks").performScrollTo().performClick()
+        compose.onNodeWithTag("benchmarkBasis").performScrollTo().performClick()
+        compose.onNode(hasText("Converted estimate · LCM") and hasClickAction()).performClick()
+        compose.onNodeWithTag("benchmarkPreviewUnavailable").assertExists()
+        compose.onNodeWithTag("benchmarkSummary").assertDoesNotExist()
+        compose.onNodeWithTag("benchmarkPoints").assertDoesNotExist()
+    }
+
     @Test fun benchmarksUseOriginalSwimAndRememberAgeSettings() {
         example()
         compose.onNodeWithTag("converterBrand").assertIsDisplayed()

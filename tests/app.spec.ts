@@ -947,3 +947,61 @@ test("national benchmarks preserve age tables, course coverage and original swim
     .analyze();
   expect(violations.violations).toEqual([]);
 });
+
+test("benchmark preview is explicit, tracks the selected method and resets to entered", async ({
+  page,
+}) => {
+  await openExample(page, "/#t=58.32&s=FR&d=100&c=SCY&g=women&h=0");
+  const basis = page.getByRole("group", { name: "Compare using", exact: true });
+  await expect(
+    basis.getByRole("button", { name: "Entered swim", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await page
+    .getByRole("button", { name: "World Aquatics points", exact: true })
+    .click();
+  await expect(page.getByTestId("points-score")).toHaveCount(0);
+  await basis
+    .getByRole("button", { name: "Converted estimate · LCM", exact: true })
+    .click();
+  await expect(page.getByTestId("points-score")).toBeVisible();
+  await expect(page.locator(".benchmark-preview-note").first()).toContainText(
+    "1:06.72",
+  );
+  await expect(page.locator(".points-note").first()).toContainText(
+    "Preview points",
+  );
+  await openCalculationOptions(page);
+  await page
+    .locator("#conversion-method")
+    .selectOption("colorado-teamunify-2026");
+  await expect(page.locator(".benchmark-preview-note").first()).toContainText(
+    "1:06.33",
+  );
+  await page
+    .getByRole("group", { name: "Performance comparison", exact: true })
+    .getByRole("button", { name: "Time standards", exact: true })
+    .click();
+  await page.locator("#standards-system").selectOption("futures");
+  await expect(page.locator(".national-panel .context")).toContainText(
+    "Converted estimate",
+  );
+  await page.getByRole("button", { name: "Reset", exact: true }).click();
+  await expect(
+    basis.getByRole("button", { name: "Entered swim", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+});
+
+test("unavailable benchmark previews never fall back to the original swim", async ({
+  page,
+}) => {
+  await openExample(page, "/#t=58.32&s=IM&d=100&c=SCY&g=women&h=0");
+  await page
+    .getByRole("group", { name: "Compare using", exact: true })
+    .getByRole("button", { name: "Converted estimate · LCM", exact: true })
+    .click();
+  await expect(page.locator("#standards")).toContainText(
+    "Conversion unavailable",
+  );
+  await expect(page.locator(".standard-summary")).toHaveCount(0);
+  await expect(page.getByTestId("points-score")).toHaveCount(0);
+});

@@ -1561,3 +1561,39 @@
   text-align: right;
   max-width: 100%;
 }
+
+.benchmark-basis {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
+  width: min(100%, 420px);
+  gap: var(--tm-space-8);
+  margin-block: var(--tm-space-16);
+}
+.benchmark-basis button {
+  border: 1px solid var(--line);
+  border-radius: var(--tm-radius-control);
+  min-height: 44px;
+  padding: 10px 12px;
+  background: var(--surface-input);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.benchmark-basis button.active {
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  color: var(--ink);
+  border-color: var(--accent);
+}
+.benchmark-preview-note {
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.65;
+  margin-bottom: var(--tm-space-24);
+  max-width: 90ch;
+}
+
+.standards-empty {
+  padding-block: var(--tm-space-24);
+}

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { coloradoDistanceCaveat } from "./lib/calculation-copy";
+  import { benchmarkPreview } from "./lib/benchmark-preview";
   import MethodComparison from "./lib/MethodComparison.svelte";
   import { onMount, tick } from "svelte";
   import Icon from "./lib/Icon.svelte";
@@ -77,6 +78,23 @@
   let conversions = $state<HistoryEntry[]>([]);
   let historyFilter = $state<Stroke | "all">("all");
   let activeSection = $state("converter");
+  let benchmarkBasis = $state<"entered" | "estimate">("entered");
+  const benchmarkForm = $derived(
+    benchmarkBasis === "entered" ? form : benchmarkPreview(form, focus),
+  );
+  const benchmarkTime = $derived(
+    benchmarkForm ? parseTime(benchmarkForm.time) : null,
+  );
+  const benchmarkCourse = $derived(benchmarkForm?.course ?? focus);
+  const benchmarkLabel = $derived(
+    benchmarkForm
+      ? eventLabel(
+          benchmarkForm.distance,
+          benchmarkForm.course,
+          benchmarkForm.stroke,
+        )
+      : "",
+  );
   let standardMode = $state<"targets" | "points">("targets");
   $effect(() => {
     if (form.altitude > 0) {
@@ -123,17 +141,26 @@
   const time = $derived(parseTime(form.time));
   const emptyTime = $derived(form.time.trim() === "");
   const points = $derived(
-    worldPoints(time, form.course, form.distance, form.stroke, form.category),
+    benchmarkForm
+      ? worldPoints(
+          benchmarkTime,
+          benchmarkForm.course,
+          benchmarkForm.distance,
+          benchmarkForm.stroke,
+          benchmarkForm.category,
+        )
+      : null,
   );
-
   const pointContext = $derived(
-    worldPointsContext(
-      time,
-      form.course,
-      form.distance,
-      form.stroke,
-      form.category,
-    ),
+    benchmarkForm
+      ? worldPointsContext(
+          benchmarkTime,
+          benchmarkForm.course,
+          benchmarkForm.distance,
+          benchmarkForm.stroke,
+          benchmarkForm.category,
+        )
+      : null,
   );
 
   const altitudeValid = $derived(
@@ -179,16 +206,20 @@
     conversionMethods.find((method) => method.id === form.method)!,
   );
   const thresholds = $derived(
-    getStandards(
-      form.age,
-      form.category,
-      form.course,
-      form.distance,
-      form.stroke,
-    ),
+    benchmarkForm
+      ? getStandards(
+          form.age,
+          form.category,
+          benchmarkForm.course,
+          benchmarkForm.distance,
+          benchmarkForm.stroke,
+        )
+      : null,
   );
   const standing = $derived(
-    thresholds && time !== null ? standardStatus(time, thresholds) : null,
+    thresholds && benchmarkTime !== null
+      ? standardStatus(benchmarkTime, thresholds)
+      : null,
   );
   const nextTime = $derived(
     thresholds && standing?.next !== null && standing?.next !== undefined
@@ -196,11 +227,13 @@
       : null,
   );
   const nextGap = $derived(
-    nextTime !== null && time !== null ? Math.max(0, time - nextTime) : null,
+    nextTime !== null && benchmarkTime !== null
+      ? Math.max(0, benchmarkTime - nextTime)
+      : null,
   );
   const marker = $derived(
-    thresholds && time !== null
-      ? Math.max(2, Math.min(98, ladderPosition(time, thresholds)))
+    thresholds && benchmarkTime !== null
+      ? Math.max(2, Math.min(98, ladderPosition(benchmarkTime, thresholds)))
       : 0,
   );
   const sourceDistance = $derived(
@@ -436,6 +469,7 @@
   function reset() {
     form = { ...defaultState, time: "" };
     focus = "LCM";
+    benchmarkBasis = "entered";
     calculationOpen = false;
     altitudeEnabled = false;
     elevationUnit = "ft";
@@ -1036,7 +1070,37 @@
           onclick={() => (standardMode = "points")}>Points</button
         >
       </div>
-      {#if standardMode === "targets"}
+      <div class="benchmark-basis" role="group" aria-label="Compare using">
+        <button
+          class:active={benchmarkBasis === "entered"}
+          aria-pressed={benchmarkBasis === "entered"}
+          onclick={() => (benchmarkBasis = "entered")}>Entered swim</button
+        >
+        <button
+          class:active={benchmarkBasis === "estimate"}
+          aria-pressed={benchmarkBasis === "estimate"}
+          onclick={() => (benchmarkBasis = "estimate")}
+          >Converted estimate · {focus}</button
+        >
+      </div>
+      {#if benchmarkBasis === "estimate"}<p
+          class="benchmark-preview-note"
+          role="status"
+        >
+          {benchmarkForm
+            ? `${benchmarkForm.time} · ${benchmarkLabel} · ${benchmarkCourse}`
+            : "Conversion unavailable for this selection."}. From {form.time ||
+            "your time"} · {currentLabel} · {form.course}, using {selectedMethod.label}{form.altitude >
+          0
+            ? ` and ${altitudePolicies.find((p) => p.id === form.altitudePolicy)?.label} altitude adjustment`
+            : ""}. Estimate only; not a recorded performance or proof of entry
+          eligibility.
+        </p>{/if}
+      {#if !benchmarkForm}<p class="benchmark-preview-note" role="status">
+          Choose an available destination in the converter, or compare your
+          entered swim. No entered-time fallback is used.
+        </p>
+      {:else if standardMode === "targets"}
         <label class="standards-system" for="standards-system"
           >Standards<span class="select-wrap standards-select"
             ><select id="standards-system" bind:value={form.standardSystem}
@@ -1051,17 +1115,19 @@
         {#if form.standardSystem === "masters"}
           <Masters
             bind:age={form.mastersAge}
-            course={form.course}
+            course={benchmarkForm.course}
             category={form.category}
-            distance={form.distance}
-            stroke={form.stroke}
-            {time}
+            distance={benchmarkForm.distance}
+            stroke={benchmarkForm.stroke}
+            time={benchmarkTime}
+            preview={benchmarkBasis === "estimate"}
           />
         {:else if form.standardSystem !== "youth"}
           <NationalStandards
             system={form.standardSystem}
             bind:age={form.futuresAge}
-            {form}
+            form={benchmarkForm}
+            preview={benchmarkBasis === "estimate"}
           />
         {:else}
           <div class="standards-title-row">
@@ -1085,17 +1151,20 @@
           </div>
           <div class="standards-card">
             <div class="standards-context">
-              <span class="context-pill">{currentLabel} · {form.course}</span
+              <span class="context-pill"
+                >{benchmarkLabel} · {benchmarkCourse}</span
               ><span
                 >{form.category === "women" ? "Girls" : "Boys"} · {ages.find(
                   (a) => a.id === form.age,
                 )?.label} <span class="context-divider">/</span>
-                Your entered course</span
+                {benchmarkBasis === "estimate"
+                  ? "Converted estimate"
+                  : "Your entered course"}</span
               ><a href={standardsSource.url} target="_blank" rel="noreferrer"
                 >Official table<Icon name="external" size={12} /></a
               >
             </div>
-            {#if thresholds && standing && correctedTime !== null}<div
+            {#if thresholds && standing && benchmarkTime !== null}<div
                 class="standard-summary"
               >
                 <div class="standard-achievement">
@@ -1110,7 +1179,9 @@
                   <div>
                     <h3>
                       {standing.achieved >= 0
-                        ? `${levels[standing.achieved]} time, nicely done.`
+                        ? benchmarkBasis === "estimate"
+                          ? `${levels[standing.achieved]} threshold in this preview`
+                          : `${levels[standing.achieved]} time, nicely done.`
                         : "Your next chapter starts here."}
                     </h3>
                     <p>
@@ -1136,7 +1207,7 @@
                 <div class="ladder-track">
                   <div class="ladder-progress" style={`width:${marker}%`}></div>
                   <span class="swim-marker"
-                    ><span>{formatTime(time)}</span></span
+                    ><span>{formatTime(benchmarkTime)}</span></span
                   >
                 </div>
                 <div class="ladder-levels">
@@ -1155,20 +1226,25 @@
                 </div>
               </div>
               <p class="standards-note">
-                Compared using your entered {form.course} time, before altitude or
-                course conversion. Estimates above don’t count as official swims.
+                {benchmarkBasis === "estimate"
+                  ? `Preview using a converted ${benchmarkCourse} estimate. This is not an official swim or confirmation of qualification.`
+                  : `Compared using your entered ${benchmarkCourse} time, before altitude or course conversion. Estimates above don’t count as official swims.`}
               </p>
             {:else}<div class="standards-empty">
                 <Icon name="info" size={22} />
                 <h3>
-                  {error
-                    ? "Your next goal is one time away."
-                    : "No published standard for this selection."}
+                  {emptyTime
+                    ? "Enter your time to compare standards"
+                    : benchmarkTime === null
+                      ? "Check your time"
+                      : "No published standard for this selection."}
                 </h3>
                 <p>
-                  {error
-                    ? "Enter a valid swim above to explore the ladder."
-                    : "Try another age group or event. We leave missing data empty."}
+                  {emptyTime
+                    ? "See how your swim compares with the published thresholds."
+                    : benchmarkTime === null
+                      ? "Use a time like 58.32 or 1:02.45 in Your swim above."
+                      : "Try another age group or event. We leave missing data empty."}
                 </p>
               </div>{/if}
           </div>
@@ -1177,8 +1253,10 @@
         <div class="points-panel">
           <h2 id="standards-title">World Aquatics points</h2>
           <p>
-            Compare your entered metric swim with the published 2026 reference
-            times. Higher points mean a faster relative performance.
+            Compare {benchmarkBasis === "estimate"
+              ? "a converted metric estimate"
+              : "your entered metric swim"} with the published 2026 reference times.
+            Higher points mean a faster relative performance.
           </p>
           {#if pointContext && points !== null}
             <div class="points-score">
@@ -1189,7 +1267,8 @@
             </div>
             <div class="points-context">
               <p class="points-event">
-                {currentLabel} · {form.course} · {form.category === "women"
+                {benchmarkLabel} · {benchmarkCourse} · {form.category ===
+                "women"
                   ? "Women"
                   : "Men"}
               </p>
@@ -1205,7 +1284,7 @@
                 <div>
                   <span>World-record reference · 1,000 points</span><strong
                     >{formatTime(pointContext.base)}</strong
-                  ><small>2026 · {form.course}</small>
+                  ><small>2026 · {benchmarkCourse}</small>
                 </div>
                 <div class="points-next">
                   <span
@@ -1214,8 +1293,10 @@
                   ><strong data-testid="points-next-time"
                     >{formatTime(pointContext.target)}</strong
                   ><small
-                    ><b>{pointContext.gap.toFixed(2)}s</b> to drop from your entered
-                    time</small
+                    ><b>{pointContext.gap.toFixed(2)}s</b> to drop from this {benchmarkBasis ===
+                    "estimate"
+                      ? "estimate"
+                      : "entered time"}</small
                   >
                   <small
                     >Next 100-point step: a suggested goal, not an official
@@ -1232,11 +1313,11 @@
                 /></button
               >
             </div>
-            {#if form.course !== "SCY"}<p class="points-note">
-                <Icon name="info" size={17} />Based on your entered {form.course}
-                time, without altitude adjustment. {pointsValidity[
-                  form.course
-                ]}.
+            {#if benchmarkCourse !== "SCY"}<p class="points-note">
+                <Icon name="info" size={17} />{benchmarkBasis === "estimate"
+                  ? "Preview points for the converted estimate; not an actual metric performance."
+                  : `Based on your entered ${benchmarkCourse} time, without altitude adjustment.`}
+                {pointsValidity[benchmarkCourse]}.
               </p>{/if}
           {:else}
             <div class="points-unavailable points-note" role="status">
@@ -1245,15 +1326,15 @@
                 <h3>
                   {error
                     ? "Enter a valid swim"
-                    : form.course === "SCY"
+                    : benchmarkCourse === "SCY"
                       ? "SCY isn’t scored"
                       : "No published points for this event"}
                 </h3>
                 <p>
                   {error
                     ? "Check your entered time and event in the converter."
-                    : form.course === "SCY"
-                      ? "Points are published for 25m and 50m pools. Enter an SCM or LCM swim to see a score. Converted estimates aren’t scored as actual swims."
+                    : benchmarkCourse === "SCY"
+                      ? "Points are published for 25m and 50m pools. Enter a metric swim, or choose an SCM/LCM destination and preview its converted estimate. Preview points are not an actual performance score."
                       : "The published table has no base time for this selection. Try another event or metric course."}
                 </p>
                 <button class="text-button" onclick={() => go("converter")}
@@ -1264,7 +1345,7 @@
           {/if}
           <div class="points-formula">
             <span>Formula</span><code
-              title="Base time divided by your entered time"
+              title="Base time divided by the selected comparison time"
               >1,000 × (base / time)³</code
             >
           </div>

@@ -301,6 +301,39 @@ final class TurnmarkUITests: XCTestCase {
         screenshot.name = name; screenshot.lifetime = .keepAlways; add(screenshot)
     }
 
+    @MainActor func testBenchmarkPreviewScoresEstimateAndKeepsOriginal() {
+        let app = launch()
+        chooseCourseConversion("Colorado Timing", in: app)
+        reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
+        app.segmentedControls["benchmarkMode"].buttons["Points"].tap()
+        XCTAssertTrue(app.staticTexts["benchmarkUnavailable"].exists)
+        let basis = app.buttons["benchmarkBasis"]
+        reach(basis, in: app, earlier: true); basis.tap()
+        app.buttons["Converted estimate · LCM"].tap()
+        XCTAssertEqual(app.staticTexts["benchmarkEstimateTime"].label, "1:06.33")
+        XCTAssertEqual(app.staticTexts["benchmarkEstimateContext"].label, "100 m Freestyle · LCM · Women")
+        reach(app.staticTexts["benchmarkPoints"], in: app)
+        XCTAssertTrue(app.staticTexts["benchmarkPoints"].exists)
+        capture(app, "Converted estimate points preview")
+        reach(app.staticTexts["benchmarkOriginalTime"], in: app, earlier: true)
+        XCTAssertEqual(app.staticTexts["benchmarkOriginalTime"].label, "58.32")
+        app.buttons["closeBenchmarks"].tap()
+        reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
+        XCTAssertFalse(app.staticTexts["benchmarkEstimateTime"].exists)
+        XCTAssertTrue(app.staticTexts["benchmarkUnavailable"].exists)
+    }
+
+    @MainActor func testBenchmarkPreviewUnavailableDoesNotSubstituteEnteredTime() {
+        let app = launch()
+        let stroke = app.buttons["strokePicker"]
+        reach(stroke, in: app, earlier: true); stroke.tap(); app.buttons["Individual medley"].tap()
+        reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
+        app.buttons["benchmarkBasis"].tap(); app.buttons["Converted estimate · LCM"].tap()
+        XCTAssertTrue(app.staticTexts["benchmarkPreviewUnavailable"].exists)
+        XCTAssertFalse(app.staticTexts["benchmarkSummary"].exists)
+        XCTAssertFalse(app.staticTexts["benchmarkPoints"].exists)
+    }
+
     @MainActor func testBenchmarksUseOriginalSwimAndRememberAgeSettings() {
         let app = launch()
         let brand = app.descendants(matching: .any)["converterBrand"].firstMatch
