@@ -307,7 +307,7 @@ export function createServer(engine: Engine) {
     "get_world_points",
     {
       description:
-        "Calculate World Aquatics points for the raw entered metric swim, with base time, validity and a derived next 100-point milestone. No SCY or age-adjusted points.",
+        "Calculate World Aquatics points for the raw entered metric swim, with base time, validity and a derived next 100-point milestone. This is not USA Swimming/Hy-Tek Power Points. No SCY or age-adjusted points.",
       inputSchema: z.strictObject({
         swim,
         table,

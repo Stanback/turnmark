@@ -40,6 +40,29 @@ A custom target covers those cases without a sprawling source list. Historical
 rank percentiles and age-graded adult ladders would need their own defensible
 dataset/methodology and maintenance; they are not cheap static add-ons.
 
+## USA Swimming Power Points source check
+
+Checked October 19, 2026. The official [Data Hub index](https://www.usaswimming.org/times/popular-resources/)
+lists a Power Point Calculator. The older
+[calculator route](https://data.usaswimming.org/datahub/powerpointcalculator)
+redirected to the new Programs calculator route; an anonymous browser session
+showed a login prompt rather than a downloadable scoring table. No versioned
+offline numerical table or complete formula was verified in this check.
+
+[HY-TEK's own documentation](https://hytek.active.com/user_guides_html/swmm7/hy-tekpoints.htm)
+distinguishes age-group, single-year and open point systems. These are not
+interchangeable with World Aquatics points, and that description alone does not
+provide the coefficients needed to reproduce USA Swimming's current calculator.
+Do not substitute World Aquatics' cubic formula or infer scores from the B–AAAA
+motivational ladder.
+
+Before implementation, obtain an attributable table/formula with a known edition,
+confirm event/course/age coverage, and verify boundary and rounding examples
+against the official calculator. The absence of a verified source in this search
+does not establish that no suitable archived or publisher-provided table exists.
+USA Swimming Power Points remain unimplemented; this research does not add an
+online dependency or send entered swims to an external service.
+
 ## Keep the interface small
 
 Show one appropriate next target, not every possible achievement at once.
