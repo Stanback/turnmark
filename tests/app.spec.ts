@@ -895,3 +895,55 @@ test("distance freestyle keeps destination context and labels the legacy Colorad
     "unequal-distance freestyle",
   );
 });
+
+test("national benchmarks preserve age tables, course coverage and original swim", async ({
+  page,
+}) => {
+  await openExample(page, "./");
+  await page.locator("#standards-system").selectOption("futures");
+  await expect(page.getByTestId("national-target-Futures")).toContainText(
+    "51.89",
+  );
+  await page.locator("#national-age").selectOption("19 & over");
+  await expect(page.getByTestId("national-target-Futures")).toContainText(
+    "49.79",
+  );
+  await enableAltitude(page);
+  await page.locator("#altitude").fill("5000");
+  await page
+    .locator("#conversion-method")
+    .selectOption("colorado-teamunify-2026");
+  await expect(page.getByTestId("national-target-Futures")).toContainText(
+    "8.53s",
+  );
+  await page.reload();
+  await expect(page.locator("#standards-system")).toHaveValue("futures");
+  await expect(page.locator("#national-age")).toHaveValue("19 & over");
+  await page.locator("#swim-time").fill("58.32");
+  await page.locator("#standards-system").selectOption("juniors");
+  await expect(
+    page.getByTestId("national-target-Junior Nationals"),
+  ).toContainText("49.79");
+  await expect(page.locator("#national-age")).toHaveCount(0);
+  await page.locator("#standards-system").selectOption("nisca");
+  await page.locator("#swim-time").fill("50.50");
+  await expect(page.getByTestId("national-target-Consideration")).toContainText(
+    "Time threshold met",
+  );
+  await expect(
+    page.getByTestId("national-target-All-America time"),
+  ).toContainText("0.33s");
+  await expect(page.locator(".national-panel .note")).toContainText(
+    "not an All-America award",
+  );
+  await page
+    .getByRole("button", { name: "LCM 50 meters", exact: true })
+    .click();
+  await expect(page.locator(".national-panel .empty")).toContainText(
+    "No published target for this course",
+  );
+  const violations = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+    .analyze();
+  expect(violations.violations).toEqual([]);
+});

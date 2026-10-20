@@ -152,6 +152,11 @@ function render(value: unknown, request: ConversionRequest) {
     if (v.caveat) line("p", coloradoDistanceCaveat, "muted");
     line(
       "p",
+      "Converted times are estimates. Check your meet’s entry rules.",
+      "muted",
+    );
+    line(
+      "p",
       `From ${request.swim.time} · ${context(request.swim.event, request.table)}`,
       "muted",
     );

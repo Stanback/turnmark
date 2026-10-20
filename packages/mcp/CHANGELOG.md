@@ -2,8 +2,10 @@
 
 ## Unreleased
 
-- Add optional, explicit altitude context to conversion tools/card and an independent USA Swimming / NCAA altitude policy. Both policies are compared without confidence claims; original inputs and altitude provenance remain separate. UI resource revision is `0.3.0-r4.html`.
-  follow-up
+- Add original-swim national benchmark comparisons through `assess_swim_benchmark`;
+  keep conversion estimate guidance beside the result.
+
+- Add optional, explicit altitude context to conversion tools/card and an independent USA Swimming / NCAA altitude policy. Both policies are compared without confidence claims; original inputs and altitude provenance remain separate. UI resource revision is `0.3.0-r5.html`.
 
 - `convert_swim` adds `methodComparison` (NCAA/Colorado outcomes with their own
   provenance) and `methodDifferenceSeconds` when both results exist. The chosen
@@ -19,7 +21,7 @@
 - Uses SDK 0.2.0, preserving the NCAA default and adding documented Colorado
   Timing formulas through the optional method input and a collapsed card setting.
 - Source discovery lists both conversion methods; the card shows additive
-  offsets when applicable. New immutable resource URI ends in `0.3.0.html`.
+  offsets when applicable. Current immutable resource URI ends in `0.3.0-r5.html`.
 - Includes the source-only 0.2.1 glyph/wordmark work below. Publish SDK 0.2.0
   before MCP 0.3.0; release checks require that exact registry dependency.
 

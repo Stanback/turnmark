@@ -27,6 +27,8 @@ jobs:
           cache: npm
       - name: Install pinned Rust toolchain
         run: rustup show active-toolchain
+      - name: Verify reviewed national benchmark snapshot
+        run: python3 scripts/import-national-standards.py --check
       - run: cargo fmt --all --check
       - run: cargo clippy --locked --workspace --all-targets --features turnmark-core/native -- -D warnings
       - run: cargo test --locked --workspace --features turnmark-core/native

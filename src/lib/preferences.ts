@@ -10,6 +10,7 @@ export type SwimPreferences = Pick<
   SwimState,
   | "age"
   | "mastersAge"
+  | "futuresAge"
   | "standardSystem"
   | "category"
   | "course"
@@ -26,6 +27,7 @@ export function readPreferences(value: unknown): SwimPreferences {
   const preferences: SwimPreferences = {
     age: defaultState.age,
     mastersAge: defaultState.mastersAge,
+    futuresAge: defaultState.futuresAge,
     standardSystem: defaultState.standardSystem,
     category: defaultState.category,
     course: defaultState.course,
@@ -49,8 +51,16 @@ export function readPreferences(value: unknown): SwimPreferences {
     mastersAges.includes(raw.mastersAge)
   )
     preferences.mastersAge = raw.mastersAge;
-  if (raw.standardSystem === "youth" || raw.standardSystem === "masters")
-    preferences.standardSystem = raw.standardSystem;
+  if (
+    typeof raw.standardSystem === "string" &&
+    ["youth", "masters", "futures", "juniors", "nisca"].includes(
+      raw.standardSystem,
+    )
+  )
+    preferences.standardSystem =
+      raw.standardSystem as SwimState["standardSystem"];
+  if (raw.futuresAge === "18 & under" || raw.futuresAge === "19 & over")
+    preferences.futuresAge = raw.futuresAge;
   if (raw.category === "women" || raw.category === "men")
     preferences.category = raw.category;
   if (courses.includes(raw.course as SwimState["course"]))

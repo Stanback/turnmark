@@ -23,7 +23,7 @@ available integrations and does not implement WebMCP or expose personal data.
 
 ## One calculation engine
 
-`packages/mcp` registers six read-only tools around `@turnmark/sdk`.
+`packages/mcp` registers seven read-only tools in the current source adapter around `@turnmark/sdk`.
 `packages/mcp-worker` supplies stateless Streamable HTTP using the same server
 factory. Node loads the packaged Wasm bytes; Workers imports a bundled,
 precompiled `WebAssembly.Module`. Each HTTP request gets a fresh protocol server;
@@ -130,7 +130,9 @@ Sources: [official TypeScript SDK](https://github.com/modelcontextprotocol/types
 
 The source adapter/server version is `0.3.0`, using SDK `0.2.0`.
 The official Apps extension adds metadata/resource discovery to `convert_swim`;
-all six tool names and text/structured fallback remain. `convert_swim` accepts
+the six original tool names and text/structured fallback remain. The source
+adapter also adds `assess_swim_benchmark` for original-swim standards, including
+Futures, Junior Nationals and NISCA; published npm 0.2.0 still has six tools. `convert_swim` accepts
 the optional method; `get_sources` additionally lists conversion methods.
 Registration is static: a fresh per-request stateless server cannot reliably
 infer initialized UI capabilities during construction. Hosts choose whether to

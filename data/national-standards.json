@@ -1,0 +1,2206 @@
+{
+  "schemaVersion": 1,
+  "programs": [
+    {
+      "id": "futures",
+      "edition": "usa-swimming-futures-2027",
+      "label": "USA Swimming · Futures",
+      "title": "Futures Championships",
+      "scope": "2027 · Individual events",
+      "ages": ["18 & under", "19 & over"],
+      "levels": ["Futures"],
+      "source": {
+        "title": "2027 TYR Futures Championships",
+        "url": "https://www.usaswimming.org/docs/default-source/timesdocuments/time-standards/2027/13240385687_2027_events_tyrfutureschampionships_timestandards.pdf",
+        "revision": "2027",
+        "verified": "2026-10-19",
+        "sha256": "19ddd6f8fb571e23aaa65bfe3b4a08492ef8b68f6a96c4422d1a2ffb2f9cd3f9"
+      },
+      "note": "Compare the original swim with the selected 2027 age table. Qualifying windows, age dates and meet entry rules still apply. Relays are not included."
+    },
+    {
+      "id": "juniors",
+      "edition": "usa-swimming-juniors-2027",
+      "label": "USA Swimming · Junior Nationals",
+      "title": "Junior National Championships",
+      "scope": "2027 · Individual events",
+      "ages": [],
+      "levels": ["Junior Nationals"],
+      "source": {
+        "title": "2027 Speedo Junior National Championships",
+        "url": "https://www.usaswimming.org/docs/default-source/timesdocuments/time-standards/2027/13240385687_2027_events_speedojuniornationalchampionships_timestandards.pdf",
+        "revision": "2027",
+        "verified": "2026-10-19",
+        "sha256": "9030b0d5cc93b97203160a865fe8c61bc3380010f6b6410058d81e9241846bbd"
+      },
+      "note": "The main 2027 individual-event standard, excluding bonus and relay standards. Meeting a time does not confirm meet entry eligibility; check age dates, qualifying windows and the meet announcement."
+    },
+    {
+      "id": "nisca",
+      "edition": "nisca-all-america-2026-27",
+      "label": "NISCA · All-America",
+      "title": "NISCA All-America time standards",
+      "scope": "2026–2027 · High school · SCY / SCM",
+      "ages": [],
+      "levels": ["Consideration", "All-America time"],
+      "source": {
+        "title": "2026–2027 NISCA Swimming All-America · Yards",
+        "url": "https://niscaonline.org/images/Documents/AllAmerica/Swimming/2027_Yards.pdf",
+        "revision": "2026–2027",
+        "verified": "2026-10-19",
+        "sha256": "ddcb0c6685d9f4f96b72d73265eb246865233996c23dd66c727262be4c4bc4ec"
+      },
+      "sourceByCourse": {
+        "SCY": {
+          "title": "2026–2027 NISCA Swimming All-America · Yards",
+          "url": "https://niscaonline.org/images/Documents/AllAmerica/Swimming/2027_Yards.pdf",
+          "revision": "2026–2027",
+          "verified": "2026-10-19",
+          "sha256": "ddcb0c6685d9f4f96b72d73265eb246865233996c23dd66c727262be4c4bc4ec"
+        },
+        "SCM": {
+          "title": "2026–2027 NISCA Swimming All-America · Meters",
+          "url": "https://niscaonline.org/images/Documents/AllAmerica/Swimming/2027_Meters.pdf",
+          "revision": "2026–2027",
+          "verified": "2026-10-19",
+          "sha256": "5e0aa072c82400b4db6912756820187304ab955ae8fd64c033c7d2fe6705fac6"
+        }
+      },
+      "note": "Time thresholds only, not an All-America award. A completed application, eligible interscholastic performance and other NISCA requirements apply. Only original 25-yard or 25-meter swims; no LCM or relay comparison.",
+      "rules": {
+        "title": "NISCA Swimming All America rules",
+        "url": "https://niscaonline.org/images/Documents/AllAmerica/Swimming/AASwimRules.pdf",
+        "revision": "Checked 2026-10-19",
+        "verified": "2026-10-19",
+        "sha256": "2cfba95d9cffc8e3cb18df6a4a3744059b6052065d66ff95982b3ad7f1187de1"
+      }
+    }
+  ],
+  "records": [
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "women",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [23.89]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "women",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [27.39]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "men",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [24.59]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "men",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [21.29]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "women",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [51.89]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "women",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [59.29]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "men",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [53.59]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "men",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [46.39]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "women",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [112.29]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "women",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [127.79]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "men",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [117.79]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "men",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [101.59]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "women",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [302.59]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "women",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [268.79]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "men",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [249.99]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "men",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [277.09]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "women",
+      "distance": 1000,
+      "stroke": "FR",
+      "times": [620.49]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "women",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [553.79]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "men",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [520.69]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "men",
+      "distance": 1000,
+      "stroke": "FR",
+      "times": [574.29]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "women",
+      "distance": 1650,
+      "stroke": "FR",
+      "times": [1034.39]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "women",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1060.19]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "men",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [998.99]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "men",
+      "distance": 1650,
+      "stroke": "FR",
+      "times": [965.49]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "women",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [26.29]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "women",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [30.89]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "men",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [27.89]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "men",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [23.69]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "women",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [57.09]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "women",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [66.79]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "men",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [60.59]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "men",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [51.49]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "women",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [124.19]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "women",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [143.99]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "men",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [131.89]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "men",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [112.79]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "women",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [29.79]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "women",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [34.79]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "men",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [30.89]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "men",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [26.29]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "women",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [65.49]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "women",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [75.99]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "men",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [68.19]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "men",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [57.99]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "women",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [142.69]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "women",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [163.39]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "men",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [149.09]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "men",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [127.99]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "women",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [25.69]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "women",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [29.49]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "men",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [26.29]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "men",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [22.89]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "women",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [56.59]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "women",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [64.69]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "men",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [57.99]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "men",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [50.59]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "women",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [125.39]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "women",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [141.89]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "men",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [130.19]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "men",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [113.69]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "women",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [126.39]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "women",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [146.19]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "men",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [132.79]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "men",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [113.89]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "women",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [270.69]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "women",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [307.29]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "LCM",
+      "category": "men",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [282.39]
+    },
+    {
+      "program": "futures",
+      "age": "18 & under",
+      "course": "SCY",
+      "category": "men",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [246.99]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "women",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [22.89]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "women",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [26.59]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "men",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [23.79]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "men",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [20.19]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "women",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [49.79]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "women",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [57.59]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "men",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [51.89]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "men",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [44.29]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "women",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [107.89]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "women",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [124.99]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "men",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [113.89]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "men",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [97.19]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "women",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [289.99]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "women",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [263.59]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "men",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [242.19]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "men",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [265.39]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "women",
+      "distance": 1000,
+      "stroke": "FR",
+      "times": [603.79]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "women",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [546.79]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "men",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [503.09]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "men",
+      "distance": 1000,
+      "stroke": "FR",
+      "times": [553.19]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "women",
+      "distance": 1650,
+      "stroke": "FR",
+      "times": [1010.19]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "women",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1046.79]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "men",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [965.09]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "men",
+      "distance": 1650,
+      "stroke": "FR",
+      "times": [930.99]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "women",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [25.19]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "women",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [29.79]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "men",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [26.69]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "men",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [22.49]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "women",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [54.09]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "women",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [64.29]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "men",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [58.09]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "men",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [48.39]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "women",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [117.49]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "women",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [138.99]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "men",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [126.79]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "men",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [106.09]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "women",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [28.79]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "women",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [33.49]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "men",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [29.59]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "men",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [25.29]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "women",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [62.19]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "women",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [73.09]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "men",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [64.79]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "men",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [54.79]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "women",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [134.89]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "women",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [158.29]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "men",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [141.99]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "men",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [119.69]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "women",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [24.69]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "women",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [28.09]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "men",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [25.29]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "men",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [21.99]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "women",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [53.79]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "women",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [62.39]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "men",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [55.79]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "men",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [47.99]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "women",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [120.09]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "women",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [138.39]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "men",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [125.09]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "men",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [107.49]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "women",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [120.59]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "women",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [141.19]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "men",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [127.79]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "men",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [107.99]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "women",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [258.09]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "women",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [300.29]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "LCM",
+      "category": "men",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [273.09]
+    },
+    {
+      "program": "futures",
+      "age": "19 & over",
+      "course": "SCY",
+      "category": "men",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [232.69]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [22.89]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "women",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [26.59]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "men",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [23.79]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [20.19]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [49.79]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "women",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [57.59]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "men",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [51.89]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [44.29]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [107.89]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "women",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [124.99]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "men",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [113.89]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [97.19]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [289.99]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "women",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [263.59]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "men",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [242.19]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [265.39]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 1000,
+      "stroke": "FR",
+      "times": [603.79]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "women",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [546.79]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "men",
+      "distance": 800,
+      "stroke": "FR",
+      "times": [503.09]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 1000,
+      "stroke": "FR",
+      "times": [553.19]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 1650,
+      "stroke": "FR",
+      "times": [1010.19]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "women",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [1046.79]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "men",
+      "distance": 1500,
+      "stroke": "FR",
+      "times": [965.09]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 1650,
+      "stroke": "FR",
+      "times": [930.99]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [25.19]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "women",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [29.79]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "men",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [26.69]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 50,
+      "stroke": "BK",
+      "times": [22.49]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [54.09]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "women",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [64.29]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "men",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [58.09]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [48.39]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [117.49]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "women",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [138.99]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "men",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [126.79]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 200,
+      "stroke": "BK",
+      "times": [106.09]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [28.79]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "women",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [33.49]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "men",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [29.59]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 50,
+      "stroke": "BR",
+      "times": [25.29]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [62.19]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "women",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [73.09]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "men",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [64.79]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [54.79]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [134.89]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "women",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [158.29]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "men",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [141.99]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 200,
+      "stroke": "BR",
+      "times": [119.69]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [24.69]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "women",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [28.09]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "men",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [25.29]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 50,
+      "stroke": "FL",
+      "times": [21.99]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [53.79]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "women",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [62.39]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "men",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [55.79]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [47.99]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [120.09]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "women",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [138.39]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "men",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [125.09]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 200,
+      "stroke": "FL",
+      "times": [107.49]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [120.59]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "women",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [141.19]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "men",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [127.79]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [107.99]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [258.09]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "women",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [300.29]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "LCM",
+      "category": "men",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [273.09]
+    },
+    {
+      "program": "juniors",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 400,
+      "stroke": "IM",
+      "times": [232.69]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [99.36, 97.78]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [110.62, 108.77]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [110.77, 108.84]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [123.71, 121.55]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [20.71, 20.34]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [23.48, 23.07]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [49.37, 48.29]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [55.48, 54.22]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [45.3, 44.6]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [51.03, 50.17]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [272.84, 267.72]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 500,
+      "stroke": "FR",
+      "times": [297.57, 292.42]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [50.07, 48.77]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [55.82, 54.7]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCY",
+      "category": "men",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [56.15, 54.99]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCY",
+      "category": "women",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [63.85, 62.59]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCM",
+      "category": "men",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [110.09, 108.34]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCM",
+      "category": "women",
+      "distance": 200,
+      "stroke": "FR",
+      "times": [122.57, 120.52]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCM",
+      "category": "men",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [123.07, 120.92]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCM",
+      "category": "women",
+      "distance": 200,
+      "stroke": "IM",
+      "times": [137.32, 134.92]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCM",
+      "category": "men",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [23.17, 22.76]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCM",
+      "category": "women",
+      "distance": 50,
+      "stroke": "FR",
+      "times": [26.18, 25.72]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCM",
+      "category": "men",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [55.0, 53.8]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCM",
+      "category": "women",
+      "distance": 100,
+      "stroke": "FL",
+      "times": [61.64, 60.24]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCM",
+      "category": "men",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [50.33, 49.55]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCM",
+      "category": "women",
+      "distance": 100,
+      "stroke": "FR",
+      "times": [56.75, 55.79]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCM",
+      "category": "men",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [239.55, 235.06]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCM",
+      "category": "women",
+      "distance": 400,
+      "stroke": "FR",
+      "times": [261.03, 256.51]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCM",
+      "category": "men",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [55.63, 54.18]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCM",
+      "category": "women",
+      "distance": 100,
+      "stroke": "BK",
+      "times": [62.02, 60.77]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCM",
+      "category": "men",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [62.33, 61.04]
+    },
+    {
+      "program": "nisca",
+      "age": "",
+      "course": "SCM",
+      "category": "women",
+      "distance": 100,
+      "stroke": "BR",
+      "times": [71.0, 69.6]
+    }
+  ],
+  "transcriptionSha256": "d3206c060adb115c9a94e0d19534b1dd3e9d032967b1f57aa27c0d59dbdea39e"
+}

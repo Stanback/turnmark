@@ -1,5 +1,7 @@
 export {
   assessSwimBenchmark,
+  getNationalStandardPrograms,
+  type StandardProgram,
   type BenchmarkRequest,
   type BenchmarkValue,
   type TimeTarget,

@@ -363,6 +363,34 @@ final class TurnmarkUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Manually logged performance"].exists)
     }
 
+    @MainActor func testNationalBenchmarksKeepOriginalSwimAndAgeTable() {
+        let app = launch()
+        let open = app.buttons["openBenchmarks"]
+        reach(open, in: app); open.tap()
+        let system = app.descendants(matching: .any)["benchmarkSystem"].firstMatch
+        reach(system, in: app); system.tap(); app.buttons["USA Swimming · Futures"].tap()
+        let age = app.descendants(matching: .any)["benchmarkAge"].firstMatch
+        reach(age, in: app); age.tap(); app.buttons["19 & over"].tap()
+        let target = app.staticTexts["benchmarkNextTime"]
+        reach(target, in: app, earlier: true)
+        XCTAssertTrue(app.staticTexts["49.79"].firstMatch.exists)
+        let original = app.staticTexts["benchmarkOriginalTime"]
+        reach(original, in: app, earlier: true)
+        XCTAssertEqual(original.label, "58.32")
+        reach(target, in: app)
+        capture(app, "Futures original swim benchmark")
+        reach(system, in: app, earlier: true); system.tap(); app.buttons["USA Swimming · Junior Nationals"].tap()
+        let junior = app.staticTexts["benchmarkNextTime"]
+        reach(junior, in: app, earlier: true); XCTAssertEqual(junior.label, "49.79")
+        reach(system, in: app, earlier: true); system.tap(); app.buttons["NISCA · All-America"].tap()
+        let consideration = app.descendants(matching: .any)["benchmark-level-Consideration"].firstMatch
+        reach(consideration, in: app, earlier: true); XCTAssertTrue(consideration.exists)
+        XCTAssertTrue(app.descendants(matching: .any)["benchmark-level-All-America time"].firstMatch.exists)
+        XCTAssertFalse(age.exists)
+        capture(app, "NISCA original swim thresholds")
+        app.buttons["closeBenchmarks"].tap()
+    }
+
     @MainActor func testBenchmarkMissingTargetAtAccessibilityTextSize() {
         let app = launch(["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
         let clock = app.staticTexts["resultTime"]

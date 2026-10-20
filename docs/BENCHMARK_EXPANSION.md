@@ -1,17 +1,18 @@
 # Benchmark expansion shortlist
 
-Research checked October 19, 2026. These are candidates, not shipped tables or
-new scoring implementations. The shipped benchmarks remain USA Swimming youth
-motivational standards, USMS Nationals NQTs and World Aquatics points.
+Updated October 19, 2026. Futures, Junior Nationals and NISCA All-America
+time thresholds are implemented in the [national benchmarks follow-up](NATIONAL_BENCHMARKS.md).
+Custom targets and additional points systems remain candidates. Existing USA
+Swimming youth standards, USMS NQTs and World Aquatics points remain available.
 
 ## Small additions with a useful payoff
 
 | Candidate                     | Why it is useful                                                                        | Maintenance and recommendation                                                                                                                                                     |
 | ----------------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Custom target time            | A local meet cut, personal goal or coach-supplied target without maintaining every meet | Lowest data maintenance. One explicit time/course/event context; store locally if desired. Label it user-provided, never official by inference                                     |
-| USA Swimming Futures          | A recognizable national-meet benchmark beyond the motivational ladder                   | Prioritize one edition of the official individual-event table, with source/date and missing-event handling                                                                         |
-| USA Swimming Junior Nationals | A further national threshold in the same publisher's standards index                    | Add alongside Futures using the same import framework; keep summer/winter editions and validity distinct                                                                           |
-| NISCA All-America standards   | A useful high-school comparison                                                         | Secondary priority. Annual yards/meters tables and automatic/consideration categories must remain distinct; meeting a time does not itself award All-America status                |
+| USA Swimming Futures          | A recognizable national-meet benchmark beyond the motivational ladder                   | Bundled 2027 individual-event tables; separate 18-and-under / 19-and-over cuts, with source editions and missing-event handling                                                    |
+| USA Swimming Junior Nationals | A further national threshold in the same publisher's standards index                    | Bundled 2027 main individual-event standards; bonus and relay standards excluded. Winter Juniors remains a separate unbundled edition                                              |
+| NISCA All-America standards   | A useful high-school comparison                                                         | Bundled 2026–2027 SCY/SCM individual-event thresholds. Consideration and All-America time columns remain distinct; a time does not itself award status                             |
 | USA Swimming Power Points     | Another way to compare performances; possibly the “national points” mentioned           | Investigate next. The official Data Hub lists a calculator, but an authoritative versioned offline table/formula and reproducible examples have not yet been verified for Turnmark |
 | NISCA Power Points            | High-school event-quality scoring, distinct from USA Swimming and World Aquatics points | Later candidate after validating the official table edition, scope and reproducible scoring behavior                                                                               |
 
@@ -65,5 +66,5 @@ A later scheduled job can check source indexes and fetch changed documents,
 produce a source/value diff, run import validation and prepare a reviewable PR.
 It should not silently promote a new edition, merge its own changes or deploy
 unreviewed numbers. Source-fingerprint changes sometimes reflect layout only;
-validity and edition changes also need UI metadata updates. No cron or new
-data source has been implemented by this document.
+validity and edition changes also need UI metadata updates. No automated source-promotion cron is implemented. The national benchmark
+addition uses a reviewed static snapshot and an explicit importer.

@@ -28,6 +28,8 @@ for (const name of [
   "masters",
   "points",
   "sources",
+  "national-standards",
+  "national-sources",
 ]) {
   const bytes = await readFile(
     new URL(`../data/${name}.json`, import.meta.url),

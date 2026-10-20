@@ -440,7 +440,6 @@ private fun share(context: Context, draft: Draft) {
                         style = MaterialTheme.typography.bodySmall, color = c.textMuted)
                 }
             }
-            Text("Estimates for perspective. Meet rules decide entry eligibility.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
         }
     }
 }
@@ -576,6 +575,7 @@ private fun share(context: Context, draft: Draft) {
                     }
                 }
             }
+            Text("Converted times are estimates. Check your meet’s entry rules.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
             TextButton(onClick = { showingDetails = true }, modifier = Modifier.testTag("conversionDetails")) {
                 Icon(Icons.Default.Info, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp)); Text("How this is calculated")
             }

@@ -268,7 +268,13 @@ outcome!(PointsOutcome, PointsValue);
 pub enum StandardSystem {
     Youth,
     Masters,
+    Futures,
+    Juniors,
+    Nisca,
 }
+record!(StandardProgram {
+    system: StandardSystem, label: String, title: String, scope: String, ages: Vec<String>, note: String
+});
 record!(BenchmarkRequest {
     swim: Swim,
     table: Category,

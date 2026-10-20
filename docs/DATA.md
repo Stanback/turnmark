@@ -45,3 +45,32 @@ Run `npm run check`, `npm test`, `npm run test:browser`, and `npm run build` bef
 `npm run data:masters` fetches the official USMS NQT page with curl and extracts its first four 2026 tables. Exact headings, course/category order, 13 published age columns, row counts, unique event keys, and numeric cell formats are validated. The checked-in snapshot contains 70 event/category rows and 904 numeric targets. Six source cells say NO TIME and stay null. Source URL, checked date, year, and the source HTML SHA-256 are stored in `data/masters.json`.
 
 Review a newer edition before changing importer guards. Ages 85+ have no USMS NQT; SCM has no target in these Nationals tables. Never infer those missing values, interpolate adult age groups, or generate an adult B–AAAA ladder from NQTs. The UI uses the entered course/time and does not apply NCAA course estimates or USA Swimming altitude corrections to adult eligibility comparisons. USMS entry guidance and event exceptions remain authoritative.
+
+## National meet and high-school benchmarks
+
+`python3 scripts/import-national-standards.py` builds `data/national-standards.json`
+from the reviewed numeric CSV in `data/source-tables/national-2027.csv` and the
+pinned official source manifest `data/national-sources.json`. `--check` verifies
+snapshot drift; `--verify-sources` downloads the pinned PDFs and rejects changed
+fingerprints. No source PDFs are redistributed.
+
+The 2027 USA Swimming documents are image-only. Their 17 individual-event rows
+were transcribed and visually reviewed in the published column order (women SCY,
+women LCM, men LCM, men SCY). OCR was used only as an exploratory aid and is not a
+numerical source. Futures has separate 18-and-under and 19-and-over pages; Junior
+Nationals uses its main standards page, excluding its bonus standards and relays.
+The Futures pages publish different qualifying-window start dates; the benchmark
+does not determine whether a particular swim meets an entry window or age date.
+
+NISCA's 2026–2027 tables contribute eight individual events in SCY and SCM for
+each category, with Consideration and All-America time thresholds kept separate.
+The official rules accept only 25-yard or 25-meter swims. LCM, relays, award
+applications, scholastic eligibility and meet validation are outside this lookup.
+A time threshold alone does not award All-America status.
+
+For a new edition, inspect every relevant PDF page, update the CSV and source
+manifest together, review the numeric diff, then regenerate. The importer rejects
+duplicate keys, unexpected row counts, malformed clocks and reversed threshold
+order. Independent samples and coverage/age boundaries belong in the portable
+SDK fixtures. The shared Rust benchmark operation uses original swims only;
+course and altitude estimates never become qualifying performances.

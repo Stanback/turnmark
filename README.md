@@ -15,6 +15,7 @@ Available in the web app:
 - World Aquatics points from 70 published 2026 metric base times
 - Automatic, device-local conversion history with stroke filters, restore, remove, and clear
 - 904 published 2026 USMS Nationals targets for adults, with explicit SCY/LCM and age-group coverage
+- [2027 Futures, 2027 Junior Nationals and 2026–2027 NISCA All-America time thresholds](docs/NATIONAL_BENCHMARKS.md), with explicit course coverage and source editions
 - Optional USA Swimming / NCAA altitude policies, feet/meters input, and explicit sea-level comparisons
 - Shareable URL fragments, CSV export, and up to eight device-local saved comparisons
 - Automatic system light/dark mode with a saved appearance override

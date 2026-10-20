@@ -209,3 +209,9 @@ Available Colorado SCM↔SCY distance-freestyle results carry
 `caveat: "colorado-short-course-distance"`. The pinned rule uses a general
 multiplier for unequal-distance events; display that limitation with the result.
 See [the method comparison contract](../../docs/METHOD_COMPARISON.md).
+
+National benchmark programs (`futures`, `juniors`, `nisca`) share the original-swim
+`assessSwimBenchmark` API. Initialize the SDK, then call
+`getNationalStandardPrograms()` for labels, age choices and coverage notes.
+Futures uses `18 & under` / `19 & over`; Juniors and NISCA use `age: ""`.
+See [coverage and source editions](../../docs/NATIONAL_BENCHMARKS.md).

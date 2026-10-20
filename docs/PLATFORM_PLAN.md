@@ -407,16 +407,16 @@ Rust is the single calculation implementation, with canonical snapshots in
 The web UI, native UI and agent/publisher adapters retain their own platform
 state and controls. SDK consumers do not require Svelte.
 
-| Surface          | Current scope                                                                                                             | Details                                                                                         |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| SDK              | Published JavaScript 0.1.0; shared Rust/native bindings; benchmark assessment and Colorado method in unreleased SDK 0.2.0 | [Engine](SHARED_ENGINE.md), [SDK](../packages/sdk/README.md), [release status](SDK_RELEASES.md) |
-| Web              | Converter, standards/points, browser-local history, offline installation                                                  | [Live app](https://turnmark.app/)                                                               |
-| Publisher widget | Versioned isolated iframe, light/dark/device appearance and copyable setup                                                | [Setup](https://turnmark.app/embed/)                                                            |
-| Native apps      | SwiftUI/Compose converter, offline My times/import/export, Standards & points including B–AAAA, adaptive layouts          | [Native scope](NATIVE_APPS.md), [standards review](NATIVE_STANDARDS_REVIEW.md)                  |
-| MCP              | Published stdio 0.2.0 and hosted Streamable HTTP, six read-only tools, official Apps card with text/structured fallback   | [MCP](MCP.md), [Apps review](MCP_APPS_REVIEW.md)                                                |
-| WebMCP           | Planned, separate from the MCP Apps iframe extension                                                                      | [Agent interfaces](AGENT_INTERFACES.md)                                                         |
+| Surface          | Current scope                                                                                                                                           | Details                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| SDK              | Published JavaScript 0.1.0; shared Rust/native bindings; benchmark assessment and Colorado method in unreleased SDK 0.2.0                               | [Engine](SHARED_ENGINE.md), [SDK](../packages/sdk/README.md), [release status](SDK_RELEASES.md) |
+| Web              | Converter, standards/points, browser-local history, offline installation                                                                                | [Live app](https://turnmark.app/)                                                               |
+| Publisher widget | Versioned isolated iframe, light/dark/device appearance and copyable setup                                                                              | [Setup](https://turnmark.app/embed/)                                                            |
+| Native apps      | SwiftUI/Compose converter, offline My times/import/export, Standards & points including B–AAAA, adaptive layouts                                        | [Native scope](NATIVE_APPS.md), [standards review](NATIVE_STANDARDS_REVIEW.md)                  |
+| MCP              | Published stdio 0.2.0 and hosted Streamable HTTP, six published npm tools / seven source/hosted tools, official Apps card with text/structured fallback | [MCP](MCP.md), [Apps review](MCP_APPS_REVIEW.md)                                                |
+| WebMCP           | Planned, separate from the MCP Apps iframe extension                                                                                                    | [Agent interfaces](AGENT_INTERFACES.md)                                                         |
 
-The source has 80 portable fixtures and a 7,368-case cross-runtime corpus.
+The source has 117 portable fixtures and a 7,405-case cross-runtime corpus.
 Packed artifacts are tested outside the monorepo. The native apps remain
 development builds: physical devices, screen readers, signing/store metadata
 and beta/submission are release work. Standalone SwiftPM/Maven registry releases

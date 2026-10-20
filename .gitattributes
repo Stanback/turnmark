@@ -1,1 +1,2 @@
 *.pdf binary
+data/source-tables/*.csv text eol=lf

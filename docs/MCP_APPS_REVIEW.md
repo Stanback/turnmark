@@ -51,7 +51,7 @@ text, the clock fits one line and surrounding copy wraps normally:
   Only `convert_swim`
   advertises `_meta.ui.resourceUri`; the one static resource is registered
   independently of initialization capabilities for stateless HTTP compatibility.
-- Current source URI `ui://turnmark/conversion/0.3.0-r4.html`, MIME
+- Current source URI `ui://turnmark/conversion/0.3.0-r5.html`, MIME
   `text/html;profile=mcp-app`. Change the resource version for later view releases.
   The revised resource has a new URI to avoid reusing the previous view's cache
   key. The alternative-method release is not yet published to npm; published `0.2.0` keeps
@@ -59,7 +59,7 @@ text, the clock fits one line and surrounding copy wraps normally:
   Both list/read carry CSP with empty connect/resource/frame domain lists.
 - The card wordmark uses the shared accent token for its period in both themes.
 - One self-contained HTML asset, including the official bridge SDK: approximately
-  668 KB raw, under an enforced 750,000-byte build budget. No CDN,
+  about 669 KB raw, under an enforced 750,000-byte build budget. No CDN,
   font request, direct fetch, local storage, history access or nested iframe.
   Installed third-party license notices are derived from the bundle graph and
   included in both the HTML resource and npm archive.
@@ -83,7 +83,7 @@ text, the clock fits one line and surrounding copy wraps normally:
 
 - Packed stdio and local workerd Streamable HTTP, in both supported protocol
   modes, with and without Apps capabilities: eight combinations. Each checks
-  79 SDK-equal primary outcomes plus both method outcomes, eight malformed requests, all tools, cancellation,
+  97 SDK-equal primary outcomes plus both method outcomes, eight malformed requests, all tools, cancellation,
   resource discovery/read/unknown URI, MIME, immutable URI, CSP and text fallback.
 - Packed stdio runs outside the workspace with network disabled. Once SDK 0.2.0 is published, a second fresh installation against that exact
   registry version also runs both protocol modes, result fixtures and resource

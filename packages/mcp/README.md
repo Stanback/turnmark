@@ -71,14 +71,19 @@ for the Rust/Wasm build toolchain. Installed npm packages need no Rust toolchain
 
 ## Tools
 
-| Tool                  | Inputs                                                                 |
-| --------------------- | ---------------------------------------------------------------------- |
-| `convert_swim`        | Entered `swim`, destination `to`, category `table`, optional `method`. |
-| `adjust_altitude`     | Entered `swim`, `elevation` with value and feet/meters unit.           |
-| `get_youth_standards` | `event`, `table`, age-group key, optional `edition`.                   |
-| `get_masters_target`  | `event`, `table`, age-group key, optional `edition`.                   |
-| `get_world_points`    | Raw entered `swim`, `table`, optional `edition`.                       |
-| `get_sources`         | Empty object; returns engine version, editions and attribution.        |
+The table describes the current source/hosted adapter (0.3.0). Published npm
+0.2.0 retains its six original tools; `assess_swim_benchmark` requires this
+updated adapter. SDK 0.2.0 and MCP 0.3.0 have not been published to npm.
+
+| Tool                    | Inputs                                                                     |
+| ----------------------- | -------------------------------------------------------------------------- |
+| `convert_swim`          | Entered `swim`, destination `to`, category `table`, optional `method`.     |
+| `adjust_altitude`       | Entered `swim`, `elevation` with value and feet/meters unit.               |
+| `get_youth_standards`   | `event`, `table`, age-group key, optional `edition`.                       |
+| `get_masters_target`    | `event`, `table`, age-group key, optional `edition`.                       |
+| `get_world_points`      | Raw entered `swim`, `table`, optional `edition`.                           |
+| `assess_swim_benchmark` | Original `swim`, `table`, `system`, age when required, optional `edition`. |
+| `get_sources`           | Empty object; returns engine version, editions and attribution.            |
 
 A swim has a clock string `time` and an `event` with actual `distance`, full
 `stroke` name and `course` (`SCY`, `SCM`, `LCM`). `table` is `women` or `men`,
@@ -138,7 +143,7 @@ Clients without MCP Apps continue to receive the same text and structured
 results. There is no separate UI endpoint to configure: use the same stdio
 server or Streamable HTTP URL. Published package `0.2.0` uses immutable resource
 `ui://turnmark/conversion/0.2.0.html`. The current source prepares `0.3.0` with SDK `0.2.0`, shared glyphs and
-separate Course conversion and altitude controls under collapsed Calculation options at `ui://turnmark/conversion/0.3.0-r4.html`.
+separate Course conversion and altitude controls under collapsed Calculation options at `ui://turnmark/conversion/0.3.0-r5.html`.
 Omitting `method` retains NCAA; `colorado-teamunify-2026` selects documented
 Colorado Timing formulas. `get_sources` lists both editions. These npm versions
 are not yet published; SDK 0.2.0 must publish before MCP 0.3.0. Both use `text/html;profile=mcp-app`. Local Apps require package `0.2.0` or later;
@@ -149,3 +154,8 @@ tool calls over both stdio and local Workers Streamable HTTP.
 Specific versions of ChatGPT, Claude and VS Code have **not** been visually
 verified in this release; rendering depends on the client and surface. See the
 [implementation review](https://github.com/Stanback/turnmark/blob/main/docs/MCP_APPS_REVIEW.md).
+
+`assess_swim_benchmark` compares an explicit original swim with youth, Masters,
+2027 Futures, 2027 Junior Nationals or 2026–2027 NISCA time thresholds. It returns
+available/unavailable/invalid plus source provenance, and never confirms meet
+entry or an All-America award. No personal history is accessed.

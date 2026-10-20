@@ -23,14 +23,15 @@ mappings across adapters; keep semantic validation, formulas, datasets and
 provenance in Rust. Generate schemas from the core contract where practical,
 and verify any protocol-specific mapping against the portable fixtures.
 
-| MCP tool              | SDK responsibility                                                |
-| --------------------- | ----------------------------------------------------------------- |
-| `convert_swim`        | Convert an entered swim to an explicit target course.             |
-| `adjust_altitude`     | Adjust an entered swim at an explicit elevation/unit.             |
-| `get_youth_standards` | Published targets for the selected event, age group and category. |
-| `get_masters_target`  | Published USMS target or a precise missing-data result.           |
-| `get_world_points`    | Points and next milestone for the original metric swim.           |
-| `get_sources`         | Method/data editions, coverage and attribution from SDK metadata. |
+| MCP tool                | SDK responsibility                                                       |
+| ----------------------- | ------------------------------------------------------------------------ |
+| `convert_swim`          | Convert an entered swim to an explicit target course.                    |
+| `adjust_altitude`       | Adjust an entered swim at an explicit elevation/unit.                    |
+| `get_youth_standards`   | Published targets for the selected event, age group and category.        |
+| `get_masters_target`    | Published USMS target or a precise missing-data result.                  |
+| `get_world_points`      | Points and next milestone for the original metric swim.                  |
+| `assess_swim_benchmark` | Assess the original swim against a selected published benchmark program. |
+| `get_sources`           | Method/data editions, coverage and attribution from SDK metadata.        |
 
 Inputs retain the SDK's actual distances, clock strings, explicit categories,
 courses and editions. Results preserve `available` / `unavailable` / `invalid`,

@@ -162,6 +162,27 @@ class ConverterTest {
         capture("android-world-points")
     }
 
+    @Test fun nationalBenchmarksKeepOriginalSwimAndAgeTable() {
+        example()
+        compose.onNodeWithTag("openBenchmarks").performScrollTo().performClick()
+        compose.onNodeWithTag("choice-Standard system").performScrollTo().performClick()
+        compose.onNodeWithText("USA Swimming · Futures").performClick()
+        compose.onNodeWithTag("choice-Age group").performScrollTo().performClick()
+        compose.onNodeWithText("19 & over").performClick()
+        compose.onNodeWithTag("benchmarkNextTime").performScrollTo().assertTextEquals("49.79")
+        compose.onNodeWithTag("benchmarkOriginalTime").performScrollTo().assertTextEquals("58.32")
+        capture("android-futures-benchmark")
+        compose.onNodeWithTag("choice-Standard system").performScrollTo().performClick()
+        compose.onNodeWithText("USA Swimming · Junior Nationals").performClick()
+        compose.onNodeWithTag("benchmarkNextTime").performScrollTo().assertTextEquals("49.79")
+        compose.onNodeWithTag("choice-Standard system").performScrollTo().performClick()
+        compose.onNodeWithText("NISCA · All-America").performClick()
+        compose.onNodeWithTag("benchmark-level-Consideration").performScrollTo().assertExists()
+        compose.onNodeWithTag("benchmark-level-All-America time").assertExists()
+        compose.onNodeWithTag("choice-Age group").assertDoesNotExist()
+        capture("android-nisca-thresholds")
+    }
+
     @Test fun recordedBenchmarkKeepsActualCategoryAndTime() {
         example()
         compose.onNodeWithTag("timeInput").performScrollTo().performTextReplacement("1:00.25")
