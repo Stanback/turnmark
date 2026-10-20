@@ -142,7 +142,9 @@ or suggest an improvement. Report vulnerabilities privately as described in the
 ## Conversion methods and resources
 
 NCAA remains the default. Choose documented Colorado Timing formulas in the
-collapsed Conversion method setting; native apps put it in the overflow menu.
+collapsed **Calculation options** section, alongside a separate optional
+altitude policy. Choose **Course conversion** for NCAA / Colorado; choosing it
+does not change altitude policy.
 The choice changes course estimates, while standards and points use the original
 swim. Shared comparisons retain the selected method. See [methodology](docs/METHODOLOGY.md)
 for source editions, supported events and direction-specific formulas.

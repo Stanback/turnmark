@@ -19,8 +19,8 @@
   );
 </script>
 
-<details class="altitude-options">
-  <summary>Swam at altitude?</summary>
+<section class="altitude-controls" aria-label="Altitude adjustment">
+  <h3>Altitude adjustment</h3>
   <div class="body">
     <label class="enable"
       ><input
@@ -72,19 +72,18 @@
       </p>
     {/if}
   </div>
-</details>
+</section>
 
 <style>
-  details {
+  section {
     border-top: 1px solid var(--tm-color-border-subtle);
     margin-top: 1rem;
     padding-top: 1rem;
     color: var(--tm-color-text);
   }
-  summary {
-    cursor: pointer;
-    min-height: 2.75rem;
-    align-content: center;
+  h3 {
+    margin: 0;
+    font-size: 0.875rem;
   }
   .body {
     display: grid;
@@ -106,6 +105,11 @@
     border: 1px solid var(--tm-color-border-control);
     border-radius: var(--tm-radius-control);
     padding: 0.6rem 0.8rem;
+  }
+  input[type="checkbox"] {
+    accent-color: var(--tm-color-accent);
+    width: 1.125rem;
+    height: 1.125rem;
   }
   .enable {
     display: flex;

@@ -40,6 +40,12 @@ class ConverterTest {
         compose.waitUntil(5_000) { compose.onAllNodesWithTag("nav-My times").fetchSemanticsNodes().isNotEmpty() }
     }
 
+    private fun chooseCourseConversion(label: String, open: Boolean = true) {
+        if (open) compose.onNodeWithTag("calculationOptions").performScrollTo().performClick()
+        compose.onNodeWithTag("choice-Course conversion").performScrollTo().performClick()
+        compose.onNode(hasText(label) and hasClickAction()).performClick()
+    }
+
     @Test fun blankArrivalEntryAndResetKeepEntryFirst() {
         compose.onNodeWithTag("timeInput").assert(SemanticsMatcher.expectValue(androidx.compose.ui.semantics.SemanticsProperties.EditableText, androidx.compose.ui.text.AnnotatedString("")))
         compose.onNodeWithTag("invalidTime").assertDoesNotExist()
@@ -70,7 +76,7 @@ class ConverterTest {
 
     @Test fun altitudePoliciesKeepOriginalSwimAndPersist() {
         example()
-        compose.onNodeWithTag("altitudeOptions").performScrollTo().performClick()
+        compose.onNodeWithTag("calculationOptions").performScrollTo().performClick()
         compose.onNodeWithTag("altitudeEnabled").performScrollTo().performClick()
         compose.onNodeWithTag("poolElevation").performScrollTo().performTextReplacement("5000")
         compose.onNodeWithTag("poolElevation").performImeAction()
@@ -82,6 +88,7 @@ class ConverterTest {
         compose.onNodeWithTag("poolElevation").assertTextContains("5000")
         compose.onNodeWithTag("choice-Altitude policy").performScrollTo().performClick()
         compose.onNode(hasText("NCAA · 2026–27 Division I") and hasClickAction()).performClick()
+        capture("android-calculation-options")
         compose.onNodeWithTag("resultTime").performScrollTo().assertTextEquals("1:06.61")
         compose.onNodeWithTag("conversionDetails").performScrollTo().performClick()
         compose.onNodeWithTag("altitudeResult-ncaa-altitude-2026-27-d1").performScrollTo().assertTextEquals("−0.10s → 58.22")
@@ -107,8 +114,7 @@ class ConverterTest {
     @Test fun conversionMethodPersistsAndKeepsNcaaDefault() {
         example()
         compose.onNodeWithTag("resultTime").assertTextEquals("1:06.72")
-        compose.onNodeWithTag("converterMenu").performClick()
-        compose.onNodeWithTag("conversionMethod-colorado-teamunify-2026").performClick()
+        chooseCourseConversion("Colorado Timing")
         compose.onNodeWithTag("resultTime").assertTextEquals("1:06.33")
         capture("android-colorado-comparison")
         compose.activityRule.scenario.recreate()
@@ -117,8 +123,7 @@ class ConverterTest {
         compose.onNodeWithText("Time offset: 1.6 seconds").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("Edition: colorado-teamunify-2026").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("Done").assertIsDisplayed().performClick()
-        compose.onNodeWithTag("converterMenu").performClick()
-        compose.onNodeWithTag("conversionMethod-ncaa-2025-27").performClick()
+        chooseCourseConversion("NCAA (default)", open = false)
         compose.onNodeWithTag("resultTime").assertTextEquals("1:06.72")
     }
 

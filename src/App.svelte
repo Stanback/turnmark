@@ -60,7 +60,8 @@
   let toastTimer: ReturnType<typeof setTimeout>;
   let mounted = $state(false);
   let elevationUnit = $state<"ft" | "m">("ft");
-  let elevationOpen = $state(false);
+  let calculationOpen = $state(false);
+  let altitudeEnabled = $state(false);
   let resourcesOpen = $state(false);
   let methodologyOpen = $state(false);
   let historyOpen = $state(false);
@@ -75,7 +76,11 @@
   let activeSection = $state("converter");
   let standardMode = $state<"targets" | "points">("targets");
   $effect(() => {
-    if (form.altitude > 0) elevationOpen = true;
+    if (form.altitude > 0) {
+      calculationOpen = true;
+      altitudeEnabled = true;
+    }
+    if (form.method === coloradoMethod) calculationOpen = true;
   });
   $effect(() => {
     if (!mounted || !altitudeValid) return;
@@ -238,6 +243,7 @@
     form = window.location.hash.startsWith("#t=")
       ? readState(window.location.hash)
       : { ...defaultState, ...defaults, time: "" };
+    restoreCalculationOptions();
     try {
       const raw: unknown = JSON.parse(
         localStorage.getItem("turnmark-swimboard") ?? "[]",
@@ -305,6 +311,7 @@
     const hashChange = () => {
       if (window.location.hash.startsWith("#t=")) {
         form = readState(window.location.hash);
+        restoreCalculationOptions();
         standardMode = "targets";
       }
     };
@@ -366,6 +373,7 @@
   function restoreConversion(entry: HistoryEntry) {
     lastRecorded = `${stateHash(entry.form)}|${entry.target}`;
     form = { ...entry.form };
+    restoreCalculationOptions();
     focus = entry.target;
     go("converter");
     notify("Previous conversion restored.");
@@ -417,10 +425,15 @@
     if (!availableEvent(form.distance, form.course, form.stroke))
       form.course = "SCY";
   }
+  function restoreCalculationOptions() {
+    altitudeEnabled = form.altitude > 0;
+    calculationOpen = altitudeEnabled || form.method === coloradoMethod;
+  }
   function reset() {
     form = { ...defaultState, time: "" };
     focus = "LCM";
-    elevationOpen = false;
+    calculationOpen = false;
+    altitudeEnabled = false;
     elevationUnit = "ft";
     standardMode = "targets";
     history.replaceState(null, "", location.pathname + location.search);
@@ -473,7 +486,7 @@
       ["Entered time", form.time],
       ["Source course", form.course],
       ["Factor table", form.category],
-      ["Conversion method", selectedMethod.label],
+      ["Course conversion", selectedMethod.label],
       ["Standards system", form.standardSystem],
       [
         "Standards age group",
@@ -674,91 +687,103 @@
             ><Icon name="chevron" size={13} />
           </div>
         </div>
-        <details class="altitude-options" bind:open={elevationOpen}>
+        <details class="calculation-options" bind:open={calculationOpen}>
           <summary
-            ><span><Icon name="mountain" size={17} />Swam at altitude?</span
+            ><span><Icon name="settings" size={17} />Calculation options</span
             ><span class="summary-elevation"
-              >{altitudeValid && form.altitude > 0 ? elevationLabel : "+"}</span
+              >{form.method === coloradoMethod
+                ? "Colorado"
+                : "NCAA"}{#if altitudeValid && form.altitude > 0}
+                · {elevationLabel}{/if}</span
             ></summary
           >
-          <div class="altitude-body">
-            <div class="elevation-heading">
-              <label for="altitude">Pool elevation</label>
-              <div
-                class="elevation-units"
-                role="group"
-                aria-label="Elevation units"
+          <div class="calculation-body">
+            <div class="course-method-field">
+              <label class="field-label" for="conversion-method"
+                >Course conversion</label
               >
-                <button
-                  class:active={elevationUnit === "ft"}
-                  aria-pressed={elevationUnit === "ft"}
-                  onclick={() => (elevationUnit = "ft")}>ft</button
-                >
-                <button
-                  class:active={elevationUnit === "m"}
-                  aria-pressed={elevationUnit === "m"}
-                  onclick={() => (elevationUnit = "m")}>m</button
-                >
-              </div>
-            </div>
-            <div class="elevation-entry">
-              <input
-                type="number"
-                id="altitude"
-                min="0"
-                max={elevationUnit === "ft" ? 20000 : 6096}
-                step={elevationUnit === "ft" ? 1 : "any"}
-                bind:value={() => elevationInput, setElevation}
-                aria-invalid={!altitudeValid}
-                aria-describedby="elevation-help"
-              /><span>{elevationUnit} above sea level</span>
-            </div>
-            <div class="altitude-policy-field">
-              <label class="field-label" for="altitude-policy"
-                >Altitude policy</label
-              >
-              <span class="select-wrap"
-                ><select id="altitude-policy" bind:value={form.altitudePolicy}
-                  >{#each altitudePolicies as policy}<option value={policy.id}
-                      >{policy.label}</option
+              <div class="select-wrap">
+                <select id="conversion-method" bind:value={form.method}
+                  >{#each conversionMethods as method}<option value={method.id}
+                      >{method.label}</option
                     >{/each}</select
-                ><Icon name="chevron" size={16} /></span
+                ><Icon name="chevron" size={16} />
+              </div>
+              <p>Standards and points use your original swim.</p>
+            </div>
+            <section class="altitude-controls" aria-label="Altitude adjustment">
+              <h3>Altitude adjustment</h3>
+              <label class="altitude-toggle"
+                ><input
+                  type="checkbox"
+                  bind:checked={altitudeEnabled}
+                  onchange={(e) => {
+                    if (!e.currentTarget.checked) form.altitude = 0;
+                  }}
+                />Adjust for altitude</label
               >
-            </div>
-            <p id="elevation-help">
-              {#if altitudeValid}{elevationUnit === "ft"
-                  ? `${(form.altitude * 0.3048).toLocaleString(undefined, { maximumFractionDigits: 1 })} meters`
-                  : `${form.altitude.toLocaleString()} feet (rounded to the nearest foot)`}.{/if}
-              {#if adjustment}Altitude adjustment: −{adjustment.toFixed(2)}s
-                before course conversion.
-              {:else if altitudeValid && form.altitude > 0}{form.altitude < 3000
-                  ? "Below the 3,000 ft threshold; no adjustment applies."
-                  : "No altitude adjustment is published for this sprint event."}
-              {:else}Adjustments start at 3,000 ft (914.4 m) for published event
-                distances.{/if}
-            </p>
-          </div>
-        </details>
-        <details class="altitude-options conversion-options">
-          <summary
-            ><span><Icon name="settings" size={17} />Conversion method</span
-            ><span class="summary-elevation"
-              >{form.method === coloradoMethod ? "Colorado" : "NCAA"}</span
-            ></summary
-          >
-          <div class="altitude-body">
-            <label for="conversion-method">Method</label>
-            <div class="select-wrap">
-              <select id="conversion-method" bind:value={form.method}>
-                {#each conversionMethods as method}<option value={method.id}
-                    >{method.label}</option
-                  >{/each}
-              </select><Icon name="chevron" size={13} />
-            </div>
-            <p>
-              Changes course estimates only. Standards and points use your
-              original swim.
-            </p>
+              {#if altitudeEnabled}<div class="altitude-body">
+                  <div class="elevation-heading">
+                    <label for="altitude">Pool elevation</label>
+                    <div
+                      class="elevation-units"
+                      role="group"
+                      aria-label="Elevation units"
+                    >
+                      <button
+                        class:active={elevationUnit === "ft"}
+                        aria-pressed={elevationUnit === "ft"}
+                        onclick={() => (elevationUnit = "ft")}>ft</button
+                      >
+                      <button
+                        class:active={elevationUnit === "m"}
+                        aria-pressed={elevationUnit === "m"}
+                        onclick={() => (elevationUnit = "m")}>m</button
+                      >
+                    </div>
+                  </div>
+                  <div class="elevation-entry">
+                    <input
+                      type="number"
+                      id="altitude"
+                      min="0"
+                      max={elevationUnit === "ft" ? 20000 : 6096}
+                      step={elevationUnit === "ft" ? 1 : "any"}
+                      bind:value={() => elevationInput, setElevation}
+                      aria-invalid={!altitudeValid}
+                      aria-describedby="elevation-help"
+                    /><span>{elevationUnit} above sea level</span>
+                  </div>
+                  <div class="altitude-policy-field">
+                    <label class="field-label" for="altitude-policy"
+                      >Altitude policy</label
+                    >
+                    <span class="select-wrap"
+                      ><select
+                        id="altitude-policy"
+                        bind:value={form.altitudePolicy}
+                        >{#each altitudePolicies as policy}<option
+                            value={policy.id}>{policy.label}</option
+                          >{/each}</select
+                      ><Icon name="chevron" size={16} /></span
+                    >
+                  </div>
+                  <p id="elevation-help">
+                    {#if altitudeValid}{elevationUnit === "ft"
+                        ? `${(form.altitude * 0.3048).toLocaleString(undefined, { maximumFractionDigits: 1 })} meters`
+                        : `${form.altitude.toLocaleString()} feet (rounded to the nearest foot)`}.{/if}
+                    {#if adjustment}Altitude adjustment: −{adjustment.toFixed(
+                        2,
+                      )}s before course conversion.
+                    {:else if altitudeValid && form.altitude > 0}{form.altitude <
+                      3000
+                        ? "Below the 3,000 ft threshold; no adjustment applies."
+                        : "No altitude adjustment is published for this sprint event."}
+                    {:else}Adjustments start at 3,000 ft (914.4 m) for published
+                      event distances.{/if}
+                  </p>
+                </div>{/if}
+            </section>
           </div>
         </details>
         <div class="input-footnote">
@@ -1386,6 +1411,7 @@
               class="restore-swim"
               onclick={() => {
                 form = { ...swim.form };
+                restoreCalculationOptions();
                 go("converter");
               }}
               ><span
@@ -1462,7 +1488,7 @@
                 Reverse conversions and meter-to-meter comparisons use ratios of
                 those factors and are labeled as derived estimates. Unsupported
                 events stay unavailable. Colorado Timing formulas are available
-                under Conversion method in the converter.
+                under Calculation options in the converter.
               </p>
               <a href={conversionSource.url} target="_blank" rel="noreferrer"
                 >2025–27 NCAA rules · updated Oct 2026<Icon

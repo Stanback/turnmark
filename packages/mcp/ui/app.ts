@@ -345,6 +345,8 @@ app.ontoolinput = ({ arguments: args }) => {
     return;
   }
   original = structuredClone(args);
+  $<HTMLDetailsElement>("calculation-options").open =
+    !!args.elevation || args.method === "colorado-teamunify-2026";
   altitudeEnabled.checked = !!args.elevation;
   $("altitude-fields").hidden = !args.elevation;
   elevation.value = String(args.elevation?.value ?? 0);

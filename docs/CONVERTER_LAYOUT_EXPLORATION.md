@@ -124,7 +124,7 @@ The desktop capture uses Chromium at 1120×1450, device scale 1, reduced motion,
 and a crop of `#converter`. It excludes the hero deliberately so controls and
 results remain legible in the README. Light/dark use the same 100 freestyle,
 women/girls, age 15–16, SCY, 58.32 sample and NCAA default. The method supplement
-opens Conversion method and the calculation disclosure, then selects documented Colorado Timing, yielding
+opens Calculation options and the calculation disclosure, then selects documented Colorado Timing, yielding
 1:06.33 LCM; the AA gap remains 1.83s because it uses the original SCY swim.
 
 Mobile captures use 390×844 and ordinary viewport screenshots, with the input or

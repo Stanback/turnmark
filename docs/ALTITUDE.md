@@ -2,8 +2,9 @@
 
 Optional altitude adjustment is separate from course conversion. It is off on
 fresh arrival; web's existing remembered elevation preference still restores.
-**Swam at altitude?** opens elevation in feet/meters and an **Altitude policy**
-choice, with a compact selected-policy preview. The full two-policy comparison
+**Calculation options** groups **Course conversion** (NCAA / Colorado)
+and optional **Altitude adjustment** settings. Enable **Adjust for altitude**
+to reveal elevation in feet/meters and an **Altitude policy** choice, with a compact selected-policy preview. The full two-policy comparison
 is shown once in calculation details. USA Swimming remains the default; the NCAA alternative is explicitly
 pinned to the **2026–27 Division I** altitude table. Choosing NCAA or Colorado
 course formulas never changes altitude policy automatically.

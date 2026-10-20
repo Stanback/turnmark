@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Add optional, explicit altitude context to conversion tools/card and an independent USA Swimming / NCAA altitude policy. Both policies are compared without confidence claims; original inputs and altitude provenance remain separate. UI resource revision is `0.3.0-r3.html`.
+- Add optional, explicit altitude context to conversion tools/card and an independent USA Swimming / NCAA altitude policy. Both policies are compared without confidence claims; original inputs and altitude provenance remain separate. UI resource revision is `0.3.0-r4.html`.
   follow-up
 
 - `convert_swim` adds `methodComparison` (NCAA/Colorado outcomes with their own

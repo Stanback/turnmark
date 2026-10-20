@@ -124,10 +124,11 @@ active entry and the original swim behind a benchmark sheet survive layout
 changes. My times uses native single-column or list/detail navigation as space
 permits.
 
-[Duo · current expanded converter](screenshots/ios-current-duo-open.png) ·
-[Android · injected book fold](screenshots/android-current-book.png) ·
-[Android · injected tabletop fold](screenshots/android-current-tabletop.png)
+[Earlier Duo geometry baseline](screenshots/ios-current-duo-open.png) ·
+[Earlier Android book geometry baseline](screenshots/android-current-book.png) ·
+[Earlier Android tabletop geometry baseline](screenshots/android-current-tabletop.png)
 
+These earlier captures document adaptive geometry, not the current phone styling.
 Android’s fold pictures use injected WindowManager geometry on an emulator,
 not physical fold hardware. The Duo image uses its actual inner display;
 XCTest’s generic screenshot attachment is black on that simulator.
@@ -140,49 +141,16 @@ policy and unit changes, the Colorado distance caveat, original-swim benchmarks,
 logging, text scaling and adaptive geometry. Current run status is recorded in
 [the required checks](https://github.com/Stanback/turnmark/pull/31/checks).
 
-The complete passing local iOS UI baseline took 490 seconds, with a 22-second
+The complete passing local iOS UI baseline took 500 seconds, with a 21-second
 rotation/focus case. Focused checks cover subsequent harness corrections and
 visible restoration of enabled altitude settings. These are local measurements,
 not simulator timing guarantees. Physical-device and assistive-technology review
 remain release checks.
 
-## Earlier verification and limits
-
-- iPhone: 19 app cases (6 storage/unit and 13 UI), followed by focused final
-  header/menu, default action sizing, largest-text bounds, details, logging and
-  screenshot checks. Light/dark, missing targets and stroke menus were reviewed.
-- Duo/iOS 27.1: benchmark settings/points and rotation, continued typing and
-  keyboard dismissal pass. Earlier open/book/tabletop/outer-display behavior is
-  documented separately in the adaptive review.
-- Android API 36: all 22 instrumentation cases pass at 320 dp width, including
-  injected book/tabletop geometry. Final phone and expanded-fold capture cases
-  also pass. Test-only size, density, navigation and demo overrides are restored.
-- Generated tokens and vector exports are checked for drift. Web has 127
-  unit/design checks, 35 browser cases and 19 production-runtime cases; one
-  desktop-inapplicable browser case is skipped. The CI selector has 60 cases.
-  MCP packed/offline tools and official AppBridge checks pass over stdio and HTTP.
-- Physical-device ergonomics, VoiceOver/TalkBack, real fold transitions and store
-  signing/review remain release checks. No numerical snapshot, formula, cloud
-  sync or npm publication is part of this visual pass.
-
-## Earlier conversion-method verification — October 19
-
-The overflow menus now offer NCAA (default) and documented Colorado Timing.
-A changed method persists with the draft, appears in the comparison label and
-share link, and exposes its source and additive offset in Details. The original
-swim behind standards/points and logged performances stays unchanged.
-
-Both app suites pass after this addition: 20 iOS cases (6 storage/unit, 14 UI)
-and 23 Android instrumentation cases. The shared native SDK checks also pass.
-The new method test switches to Colorado, restarts/recreates the app, checks
-Details, and returns to NCAA. [iOS](screenshots/conversion-method-ios.png) and
-[Android](screenshots/conversion-method-android.png) captures use the same sample
-58.32 SCY 100 freestyle → 1:06.33 LCM. The preceding visual review’s counts and
-scope describe its earlier pass; this follow-up changes numerical support.
-
 ## Altitude parity follow-up
 
-The optional **Swam at altitude?** input now exposes feet/meters and a separate
+The optional **Calculation options** disclosure groups **Course conversion**
+with an altitude toggle, feet/meters and a separate
 USA Swimming / NCAA altitude policy on both apps. Restored enabled settings
 start expanded so their effect remains visible. Settings keep a compact
 selected-policy preview; calculation details show both deductions
@@ -190,6 +158,8 @@ and sea-level estimates; course conversion follows the selected deduction in
 Rust. Standards, points and logged performances retain the original swim.
 See [the common contract](ALTITUDE.md) for source editions and boundaries.
 
+[iOS Calculation options](screenshots/ios-calculation-options.png) ·
+[Android Calculation options](screenshots/android-calculation-options.png) ·
 [iOS altitude policies](screenshots/ios-altitude-policies.png) ·
 [Android altitude policies](screenshots/android-altitude-policies.png)
 
@@ -210,3 +180,7 @@ rule, not a change to its coefficients.
 
 [iOS distance caveat](screenshots/ios-distance-caveat.png) ·
 [Android distance caveat](screenshots/android-distance-caveat.png)
+
+Physical-device ergonomics, VoiceOver/TalkBack, real fold transitions and store
+signing/review remain release checks. No cloud sync or npm publication is part
+of this pass.

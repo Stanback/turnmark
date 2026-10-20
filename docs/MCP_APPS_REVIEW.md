@@ -9,7 +9,7 @@ The [research](MCP_APPS.md) records the protocol/host decisions and primary sour
 
 The card displays the destination event/course/category and returned time, its
 original performance, published/derived kind, and source edition. Time, target
-course and the collapsed conversion method are editable; an explicit Update comparison calls `convert_swim` through
+course and the separate course/altitude controls in collapsed Calculation options are editable; an explicit Update comparison calls `convert_swim` through
 the host. Original event/course/category stay fixed to the request. No factors,
 numerical tables or Wasm execute in the view. A 500 yd→400 m conversion uses the
 returned event. Other tools retain text/structured results.
@@ -51,7 +51,7 @@ text, the clock fits one line and surrounding copy wraps normally:
   Only `convert_swim`
   advertises `_meta.ui.resourceUri`; the one static resource is registered
   independently of initialization capabilities for stateless HTTP compatibility.
-- Current source URI `ui://turnmark/conversion/0.3.0-r3.html`, MIME
+- Current source URI `ui://turnmark/conversion/0.3.0-r4.html`, MIME
   `text/html;profile=mcp-app`. Change the resource version for later view releases.
   The revised resource has a new URI to avoid reusing the previous view's cache
   key. The alternative-method release is not yet published to npm; published `0.2.0` keeps

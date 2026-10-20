@@ -139,7 +139,7 @@ summary {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 16px;
 }
-.method-options {
+.calculation-options {
   grid-column: 1 / -1;
   margin-top: 0;
   padding-top: 4px;
@@ -317,4 +317,19 @@ footer {
   color: var(--tm-color-text-muted);
   font-size: 0.875rem;
   line-height: 1.6;
+}
+
+.altitude-controls {
+  border-top: 1px solid var(--tm-color-border-subtle);
+  margin-top: 20px;
+  padding-top: 16px;
+}
+.altitude-controls h3 {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  color: var(--tm-color-text);
+}
+
+.altitude-enable input {
+  accent-color: var(--tm-color-accent);
 }

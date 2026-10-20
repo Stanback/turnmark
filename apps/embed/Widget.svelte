@@ -131,11 +131,21 @@
       ></label
     >
   </div>
-  <AltitudeControls
-    swim={{ time, event: { distance, stroke, course } }}
-    bind:elevation
-    bind:policy={altitudePolicy}
-  />
+  <details class="calculation-options">
+    <summary>Calculation options · {selectedMethod.label}</summary>
+    <label
+      >Course conversion<select bind:value={method}
+        >{#each conversionMethods as item}<option value={item.id}
+            >{item.label}</option
+          >{/each}</select
+      ></label
+    >
+    <AltitudeControls
+      swim={{ time, event: { distance, stroke, course } }}
+      bind:elevation
+      bind:policy={altitudePolicy}
+    />
+  </details>
   <section
     class="results"
     aria-label="Course comparison"
@@ -176,14 +186,7 @@
     {/each}
   </section>
   <details class="method-options">
-    <summary>Conversion method · {selectedMethod.label}</summary>
-    <label
-      >Method<select bind:value={method}
-        >{#each conversionMethods as item}<option value={item.id}
-            >{item.label}</option
-          >{/each}</select
-      ></label
-    >
+    <summary>How this is calculated</summary>
     <label
       >Compare methods in<select bind:value={comparisonCourse}
         >{#each courses as target}<option>{target}</option>{/each}</select
@@ -253,15 +256,18 @@
     margin: auto;
     padding: 22px;
   }
-  .method-options {
+  .method-options,
+  .calculation-options {
     margin-top: 18px;
     color: var(--muted);
   }
-  .method-options summary {
+  .method-options summary,
+  .calculation-options summary {
     cursor: pointer;
     font-size: 0.875rem;
   }
-  .method-options label {
+  .method-options label,
+  .calculation-options > label {
     display: grid;
     gap: 8px;
     margin-top: 12px;

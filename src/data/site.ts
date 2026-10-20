@@ -9,7 +9,7 @@ export const faqs = [
   {
     question: "How do I convert swim times between yards and meters?",
     answer:
-      "Choose your stroke, distance, entered time, and the course you swam. Turnmark defaults to NCAA metric-to-yards factors for SCY, SCM, and LCM. You can choose documented Colorado Timing formulas in the collapsed Conversion method settings. Reverse conversions and meter-to-meter comparisons are derived from those published factors. Unsupported conversions stay unavailable.",
+      "Choose your stroke, distance, entered time, and the course you swam. Turnmark defaults to NCAA metric-to-yards factors for SCY, SCM, and LCM. You can choose documented Colorado Timing formulas under Course conversion in Calculation options. Reverse conversions and meter-to-meter comparisons are derived from those published factors. Unsupported conversions stay unavailable.",
     url: "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
     source: "NCAA conversion tables",
   },

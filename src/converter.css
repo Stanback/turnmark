@@ -471,10 +471,10 @@
   font-size: 14px;
   padding-block: 10px;
 }
-.altitude-options {
+.calculation-options {
   border-block: 1px solid var(--line);
 }
-.altitude-options summary {
+.calculation-options summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -483,7 +483,7 @@
   font-size: 14px;
   color: var(--muted);
 }
-.altitude-options summary > span:first-child {
+.calculation-options summary > span:first-child {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -956,12 +956,6 @@
 }
 .method-intro h2 {
   font-size: 30px;
-}
-.conversion-options {
-  border-top: 0;
-}
-.conversion-options .select-wrap {
-  margin-block: 8px;
 }
 .resources-section {
   margin-block: 0 40px;
@@ -1511,4 +1505,57 @@
   .history-heading h2 {
     font-size: 18px;
   }
+}
+
+.calculation-body {
+  display: grid;
+  gap: 20px;
+  padding-block: 8px 20px;
+}
+.course-method-field {
+  display: grid;
+  gap: 8px;
+}
+.course-method-field .field-label {
+  margin: 0;
+}
+.course-method-field select {
+  width: 100%;
+}
+.course-method-field p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.altitude-controls {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.altitude-controls h3 {
+  font-size: 14px;
+  margin: 0 0 8px;
+}
+.altitude-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.altitude-toggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--tm-color-accent);
+}
+
+.calculation-options summary {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+.calculation-options .summary-elevation {
+  margin-inline-start: auto;
+  text-align: right;
+  max-width: 100%;
 }

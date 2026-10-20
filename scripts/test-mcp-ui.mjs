@@ -54,7 +54,7 @@ if (mode === "HTTP") {
     }),
   );
 }
-const uri = "ui://turnmark/conversion/0.3.0-r3.html";
+const uri = "ui://turnmark/conversion/0.3.0-r4.html";
 const card = (await client.readResource({ uri })).contents[0].text;
 const host = await build({
   absWorkingDir: process.cwd(),
@@ -317,7 +317,7 @@ try {
   // through the official bridge; the SDK owns both multiplier and offset.
   await page.evaluate(() => (window.denyContext = false));
   await frame.locator("html").evaluate((el) => (el.style.fontSize = "100%"));
-  await frame.locator(".method-options summary").first().click();
+  await frame.locator(".calculation-options summary").click();
   await frame.locator("#method").selectOption("colorado-teamunify-2026");
   await frame.locator("#course").selectOption("LCM");
   await frame.locator("#update").click();
@@ -327,7 +327,6 @@ try {
     "colorado-teamunify-2026",
   );
   // Altitude stays explicit, uses the same Rust pipeline and retains raw input.
-  await frame.locator(".method-options summary").nth(1).click();
   await frame.locator("#altitude-enabled").check();
   await frame.locator("#elevation").fill("5000");
   await frame

@@ -42,7 +42,7 @@ final class TurnmarkUITests: XCTestCase {
         let app = launch(example: false)
         replace(app.textFields["timeInput"], with: "58.32", in: app)
         app.buttons["dismissConverterKeyboard"].tap()
-        let options = app.descendants(matching: .any)["altitudeOptions"].firstMatch
+        let options = app.descendants(matching: .any)["calculationOptions"].firstMatch
         reach(options, in: app); options.tap()
         let enabled = app.switches["altitudeEnabled"]
         reach(enabled, in: app); enabled.switches.firstMatch.tap()
@@ -56,6 +56,8 @@ final class TurnmarkUITests: XCTestCase {
         XCTAssertEqual(app.textFields["poolElevation"].value as? String, "5000")
         let policy = app.descendants(matching: .any)["altitudePolicy"].firstMatch
         reach(policy, in: app); policy.tap(); app.buttons["NCAA · 2026–27 Division I"].tap()
+        reach(options, in: app, earlier: true)
+        capture(app, "Native calculation options")
         reach(app.staticTexts["resultTime"], in: app)
         XCTAssertEqual(app.staticTexts["resultTime"].label, "1:06.61")
         reach(app.buttons["conversionDetails"], in: app); app.buttons["conversionDetails"].tap()
@@ -78,9 +80,7 @@ final class TurnmarkUITests: XCTestCase {
         let app = launch()
         reach(app.staticTexts["resultTime"], in: app)
         XCTAssertEqual(app.staticTexts["resultTime"].label, "1:06.72")
-        app.buttons["converterMenu"].tap()
-        app.buttons["conversionMethodMenu"].tap()
-        app.buttons["Colorado Timing"].tap()
+        chooseCourseConversion("Colorado Timing", in: app)
         reach(app.staticTexts["resultTime"], in: app)
         XCTAssertEqual(app.staticTexts["resultTime"].label, "1:06.33")
         capture(app, "Colorado comparison")
@@ -94,9 +94,7 @@ final class TurnmarkUITests: XCTestCase {
         reach(app.staticTexts["Edition: colorado-teamunify-2026"], in: app)
         XCTAssertTrue(app.staticTexts["Edition: colorado-teamunify-2026"].exists)
         app.buttons["Done"].firstMatch.tap()
-        app.buttons["converterMenu"].tap()
-        app.buttons["conversionMethodMenu"].tap()
-        app.buttons["NCAA (default)"].tap()
+        chooseCourseConversion("NCAA (default)", in: app, open: false)
         reach(app.staticTexts["resultTime"], in: app)
         XCTAssertEqual(app.staticTexts["resultTime"].label, "1:06.72")
     }
@@ -107,7 +105,7 @@ final class TurnmarkUITests: XCTestCase {
         let course = app.segmentedControls["inputCourse"].buttons["SCM"]
         reach(course, in: app); course.tap()
         app.buttons["distancePicker"].tap(); app.buttons["400 m"].tap()
-        app.buttons["converterMenu"].tap(); app.buttons["conversionMethodMenu"].tap(); app.buttons["Colorado Timing"].tap()
+        chooseCourseConversion("Colorado Timing", in: app)
         let scy = app.buttons["equivalent-SCY"]
         reach(scy, in: app); scy.tap()
         XCTAssertEqual(app.staticTexts["resultTime"].label, "3:46.45")
@@ -187,7 +185,20 @@ final class TurnmarkUITests: XCTestCase {
         guard XCTWaiter.wait(for: [settled], timeout: 5) == .completed else {
             XCTFail("App viewport must settle before scrolling"); return
         }
-        let visibleTop = viewport.minY + 80
+        var visibleTop = viewport.minY + (earlier ? min(120, viewport.height / 4) : 80)
+        if earlier {
+            let navigation = app.navigationBars.firstMatch
+            if navigation.exists {
+                let bar = navigation.frame
+                // Use coherent main-window chrome when available, but never
+                // let a dismissed sheet's offscreen frame block the search.
+                if bar.minY.isFinite, bar.maxY.isFinite,
+                   bar.minY >= viewport.minY, bar.minY < viewport.minY + viewport.height * 0.15,
+                   bar.maxY > bar.minY, bar.maxY + 12 < viewport.midY {
+                    visibleTop = bar.maxY + 12
+                }
+            }
+        }
         let tabBottom = earlier ? viewport.maxY - 100 : viewport.maxY
         let nativeList = app.collectionViews.element(boundBy: max(app.collectionViews.count - 1, 0))
         let editor = app.descendants(matching: .any)["swimEditorForm"].firstMatch
@@ -259,6 +270,15 @@ final class TurnmarkUITests: XCTestCase {
         }
         let done = app.buttons["dismissSwimKeyboard"]
         if done.exists && done.isHittable { done.tap() }
+    }
+    @MainActor private func chooseCourseConversion(_ label: String, in app: XCUIApplication, open: Bool = true) {
+        if open {
+            let options = app.descendants(matching: .any)["calculationOptions"].firstMatch
+            reach(options, in: app, earlier: true); options.tap()
+        }
+        let picker = app.descendants(matching: .any)["courseConversion"].firstMatch
+        reach(picker, in: app, earlier: true); picker.tap()
+        app.buttons[label].tap()
     }
     @MainActor private func tab(_ title: String, in app: XCUIApplication) {
         let button = app.buttons[title].firstMatch

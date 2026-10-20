@@ -125,7 +125,7 @@ private struct TurnmarkView: View {
     @State private var lastLogDay = SwimRecord.day(Date())
     @State private var lastDate = SwimRecord.day(Date())
     @State private var showingMethod = false
-    @State private var altitudeExpanded = false
+    @State private var calculationOptionsExpanded = false
     @AppStorage("savedSwim") private var savedJSON = ""
     @FocusState private var editingTime: Bool
     @FocusState private var editingElevation: Bool
@@ -149,7 +149,7 @@ private struct TurnmarkView: View {
         #endif
         let restored = Draft.decode(UserDefaults.standard.string(forKey: "draft")) ?? Draft()
         _draft = State(initialValue: restored)
-        _altitudeExpanded = State(initialValue: restored.altitudeText != nil)
+        _calculationOptionsExpanded = State(initialValue: restored.altitudeText != nil || restored.method == .colorado)
     }
 
     var body: some View {
@@ -196,13 +196,6 @@ private struct TurnmarkView: View {
                     ToolbarItem(placement: .principal) { Color.clear.frame(width: 0, height: 0).accessibilityHidden(true) }
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
-                            Menu {
-                                Picker("Method", selection: Binding(get: { draft.methodID ?? "ncaa-2025-27" }, set: { draft.methodID = $0 })) {
-                                    Text("NCAA (default)").tag("ncaa-2025-27")
-                                    Text("Colorado Timing").tag("colorado-teamunify-2026")
-                                }
-                            } label: { Label("Conversion method", systemImage: "slider.horizontal.3") }
-                                .accessibilityIdentifier("conversionMethodMenu")
                             Button { dismissTimeEntry(); showingMethod = true } label: { Label("About Turnmark", systemImage: "info.circle") }
                                 .accessibilityIdentifier("converterAbout")
                             Link(destination: URL(string: "https://turnmark.app/#method")!) {
@@ -386,7 +379,11 @@ private struct TurnmarkView: View {
                     Text("Women").tag(0); Text("Men").tag(1)
                 }.pickerStyle(.segmented).accessibilityIdentifier("category")
             }
-            DisclosureGroup(isExpanded: $altitudeExpanded) {
+            DisclosureGroup(isExpanded: $calculationOptionsExpanded) {
+                Picker("Course conversion", selection: Binding(get: { draft.methodID ?? "ncaa-2025-27" }, set: { draft.methodID = $0 })) {
+                    Text("NCAA (default)").tag("ncaa-2025-27")
+                    Text("Colorado Timing").tag("colorado-teamunify-2026")
+                }.pickerStyle(.menu).accessibilityIdentifier("courseConversion")
                 Toggle("Adjust for altitude", isOn: Binding(get: { draft.altitudeText != nil }, set: { draft.altitudeText = $0 ? "0" : nil }))
                     .accessibilityIdentifier("altitudeEnabled")
                 if draft.altitudeText != nil {
@@ -404,7 +401,7 @@ private struct TurnmarkView: View {
                             .font(.footnote).foregroundStyle(TurnmarkPalette.textMuted)
                     }
                 }
-            } label: { Label("Swam at altitude?", systemImage: "mountain.2").accessibilityIdentifier("altitudeOptions") }
+            } label: { Label("Calculation options", systemImage: "slider.horizontal.3").accessibilityIdentifier("calculationOptions") }
         } header: {
             HStack {
                 Text("Your swim").font(.title3.bold()).foregroundStyle(TurnmarkPalette.text)
@@ -649,7 +646,7 @@ struct MethodScreen: View {
         NavigationStack {
             List {
                 Section("How comparisons work") {
-                    Text("NCAA factors are the default. Colorado Timing formulas are available under Conversion method in the overflow menu. Reverse and cross-metric NCAA conversions are derived estimates. The original time stays separate.")
+                    Text("NCAA factors are the default. Colorado Timing formulas and optional altitude settings are available under Calculation options. Reverse and cross-metric NCAA conversions are derived estimates. The original time stays separate.")
                     Text("A converted time is not an official swim or confirmation of meet-entry eligibility.")
                     Link("Methodology and coverage", destination: URL(string: "https://turnmark.app/#method")!)
                     Link("Swimming resources", destination: URL(string: "https://turnmark.app/#resources")!)

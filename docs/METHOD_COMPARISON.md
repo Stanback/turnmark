@@ -1,6 +1,10 @@
 # Comparing published conversion methods
 
-NCAA remains the default. A selected alternative drives the main result; the
+NCAA remains the default. **Calculation options** contains separate **Course
+conversion** and optional altitude controls across all converter interfaces.
+The course selection does not silently change altitude policy.
+
+A selected alternative drives the main result; the
 comparison in calculation details evaluates NCAA and documented Colorado Timing
 for the same entered event, category and destination. Native layouts adapt to
 SwiftUI/Compose, web and widget share a small presentation component, and MCP

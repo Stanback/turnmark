@@ -9,6 +9,16 @@ async function openExample(page: Page, url: string) {
     await page.locator("#swim-time").fill("58.32");
 }
 
+async function openCalculationOptions(page: Page) {
+  const panel = page.locator(".calculation-options");
+  if ((await panel.getAttribute("open")) === null)
+    await panel.locator("summary").click();
+}
+async function enableAltitude(page: Page) {
+  await openCalculationOptions(page);
+  await page.getByLabel("Adjust for altitude", { exact: true }).check();
+}
+
 test("arrival is blank, typing keeps focus and reset clears results", async ({
   page,
 }) => {
@@ -49,7 +59,7 @@ test("conversion method is optional, persists and round-trips through comparison
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await openExample(page, "/");
   await expect(page.getByTestId("result-LCM")).toHaveText("1:06.72");
-  const options = page.locator(".conversion-options");
+  const options = page.locator(".calculation-options");
   await expect(options).not.toHaveAttribute("open");
   await options.locator("summary").click();
   await page
@@ -206,9 +216,7 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
     .click();
   await page.locator("#standards-system").selectOption("masters");
   await page.locator("#masters-age").selectOption("40-44");
-  await page
-    .locator(".altitude-options:not(.conversion-options) summary")
-    .click();
+  await enableAltitude(page);
   const units = page.getByRole("group", { name: "Elevation units" });
   await units.getByRole("button", { name: "m", exact: true }).click();
   await expect(page.locator("#altitude")).toBeVisible();
@@ -246,9 +254,10 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
       .getByRole("group", { name: "Swum in" })
       .getByRole("button", { name: "LCM" }),
   ).toHaveAttribute("aria-pressed", "true");
-  await expect(
-    page.locator(".altitude-options:not(.conversion-options)"),
-  ).toHaveAttribute("open", "");
+  await expect(page.locator(".calculation-options")).toHaveAttribute(
+    "open",
+    "",
+  );
   await expect(
     units.getByRole("button", { name: "m", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
@@ -269,7 +278,10 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
       .getByRole("group", { name: "Swum in" })
       .getByRole("button", { name: "SCM" }),
   ).toHaveAttribute("aria-pressed", "true");
-  await expect(page.locator("#altitude")).toHaveValue("0");
+  await openCalculationOptions(page);
+  await expect(
+    page.getByLabel("Adjust for altitude", { exact: true }),
+  ).not.toBeChecked();
   await expect(page.locator(".altitude-conversion")).toHaveCount(0);
   await page.getByRole("button", { name: "Reset", exact: true }).click();
   await page.reload();
@@ -280,9 +292,9 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
       .getByRole("group", { name: "Swum in" })
       .getByRole("button", { name: "SCY" }),
   ).toHaveAttribute("aria-pressed", "true");
-  await expect(
-    page.locator(".altitude-options:not(.conversion-options)"),
-  ).not.toHaveAttribute("open");
+  await expect(page.locator(".calculation-options")).not.toHaveAttribute(
+    "open",
+  );
 });
 
 test("dark standards keep long badges inside their circles and the swim marker visible", async ({
@@ -429,7 +441,7 @@ test("standards, altitude, local saves, restore and remove", async ({
   await expect(page.locator(".saved-card")).toHaveCount(0);
   await page.locator("#event").selectOption("FR:200");
   await page.locator("#swim-time").fill("2:00");
-  await page.getByText("Swam at altitude?", { exact: true }).click();
+  await enableAltitude(page);
   await page.locator("#altitude").fill("5280");
   await expect(page.getByTestId("result-SCY")).toHaveText("1:58.80");
 });
@@ -480,7 +492,7 @@ test("long times and expanded elevation fit narrow layouts", async ({
     await openExample(page, "./");
     await page.locator("#swim-time").fill("60:00.00");
     if (!(await page.locator("#altitude").isVisible()))
-      await page.getByText("Swam at altitude?", { exact: true }).click();
+      await enableAltitude(page);
     await page.locator("#altitude").fill("5280");
     for (const time of await page
       .locator(".result-time, .focused-time, .elevation-entry")
@@ -846,7 +858,7 @@ test("altitude policy stays separate from course method and original benchmarks"
   await expect(page.getByTestId("altitude-original")).toHaveText("58.32");
   await expect(page.getByTestId("altitude-corrected")).toHaveText("58.22");
   await expect(page.locator(".standard-achievement")).toContainText("1.83s");
-  await page.locator(".conversion-options summary").click();
+  await openCalculationOptions(page);
   await page
     .locator("#conversion-method")
     .selectOption("colorado-teamunify-2026");
@@ -874,7 +886,7 @@ test("distance freestyle keeps destination context and labels the legacy Colorad
   await expect(page.getByTestId("focused-time")).toHaveText("4:47.30");
   await expect(page.locator(".focused-context")).toContainText("500");
   await expect(page.getByTestId("distance-caveat")).toHaveCount(0);
-  await page.locator(".conversion-options summary").click();
+  await openCalculationOptions(page);
   await page
     .locator("#conversion-method")
     .selectOption("colorado-teamunify-2026");

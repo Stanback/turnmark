@@ -232,14 +232,6 @@ private fun share(context: Context, draft: Draft) {
                                         Icon(Icons.Default.MoreVert, contentDescription = "More options")
                                     }
                                     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                                        Text("Conversion method", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), style = MaterialTheme.typography.labelMedium)
-                                        listOf("NCAA (default)" to "ncaa-2025-27", "Colorado Timing" to "colorado-teamunify-2026").forEach { (label, method) ->
-                                            DropdownMenuItem(text = { Text(label) }, onClick = {
-                                                expanded = false; focus.clearFocus(); keyboard?.hide(); update(draft.copy(methodId = method))
-                                            }, leadingIcon = { RadioButton(selected = draft.methodId == method, onClick = null) },
-                                                modifier = Modifier.testTag("conversionMethod-$method"))
-                                        }
-                                        HorizontalDivider()
                                         DropdownMenuItem(text = { Text("About Turnmark") }, onClick = {
                                             expanded = false; focus.clearFocus(); keyboard?.hide(); showingMethod = true
                                         }, leadingIcon = { Icon(Icons.Default.Info, null) }, modifier = Modifier.testTag("converterAbout"))
@@ -419,11 +411,14 @@ private fun share(context: Context, draft: Draft) {
                     }
                 }
             }
-            var altitudeExpanded by rememberSaveable { mutableStateOf(draft.altitudeText != null) }
-            TextButton(onClick = { altitudeExpanded = !altitudeExpanded }, modifier = Modifier.testTag("altitudeOptions")) {
-                Text("Swam at altitude?"); Spacer(Modifier.width(8.dp)); Icon(Icons.Default.KeyboardArrowDown, null)
+            var calculationExpanded by rememberSaveable { mutableStateOf(draft.altitudeText != null || draft.methodId == "colorado-teamunify-2026") }
+            TextButton(onClick = { calculationExpanded = !calculationExpanded }, modifier = Modifier.testTag("calculationOptions")) {
+                Text("Calculation options"); Spacer(Modifier.width(8.dp)); Icon(Icons.Default.KeyboardArrowDown, null)
             }
-            if (altitudeExpanded) {
+            if (calculationExpanded) {
+                Choice("Course conversion", if (draft.methodId == "colorado-teamunify-2026") "Colorado Timing" else "NCAA (default)", listOf("NCAA (default)", "Colorado Timing"), Modifier.fillMaxWidth()) {
+                    update(draft.copy(methodId = if (it == 1) "colorado-teamunify-2026" else "ncaa-2025-27"))
+                }
                 Row(Modifier.fillMaxWidth(), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                     Text("Adjust for altitude", modifier = Modifier.weight(1f))
                     Switch(checked = draft.altitudeText != null, onCheckedChange = { update(draft.copy(altitudeText = if (it) "0" else null)) }, modifier = Modifier.testTag("altitudeEnabled"))

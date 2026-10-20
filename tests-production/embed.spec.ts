@@ -16,6 +16,7 @@ test("widget keeps NCAA default and offers Colorado offline without changing the
   await expect(scy).toContainText("52.44");
   await expect(page.locator(".method-options")).not.toHaveAttribute("open", "");
   await context.setOffline(true);
+  await page.locator(".calculation-options summary").click();
   await page.locator(".method-options summary").click();
   const methods = page.getByRole("region", { name: "Compare methods in SCY" });
   await expect(methods.locator('[data-method="ncaa-2025-27"]')).toContainText(
@@ -27,7 +28,7 @@ test("widget keeps NCAA default and offers Colorado offline without changing the
   await expect(methods).toContainText("Method difference: 0.17s");
 
   await page
-    .getByRole("combobox", { name: "Method", exact: true })
+    .getByRole("combobox", { name: "Course conversion", exact: true })
     .selectOption("colorado-teamunify-2026");
   await expect(scy).toContainText("52.61");
   await expect(lcm).toContainText("1:00.00");
@@ -38,7 +39,7 @@ test("widget keeps NCAA default and offers Colorado offline without changing the
       .getByRole("link", { name: "Colorado Timing source" }),
   ).toHaveAttribute("href", /sportsengine/);
   await page
-    .getByRole("combobox", { name: "Method", exact: true })
+    .getByRole("combobox", { name: "Course conversion", exact: true })
     .selectOption("ncaa-2025-27");
   await expect(scy).toContainText("52.44");
 });
@@ -464,7 +465,7 @@ test("widget applies altitude before conversion offline and keeps raw input", as
     .getByRole("combobox", { name: "Entered course", exact: true })
     .selectOption("SCY");
   await context.setOffline(true);
-  await page.getByText("Swam at altitude?", { exact: true }).click();
+  await page.locator(".calculation-options summary").click();
   await page.getByLabel("Adjust for altitude").check();
   await page.getByLabel("Pool elevation", { exact: true }).fill("5000");
   await page
