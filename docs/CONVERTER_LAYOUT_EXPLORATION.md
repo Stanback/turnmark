@@ -180,6 +180,9 @@ change which swim is assessed.
 Calculation options retains the divider above its summary and omits the
 redundant bottom rule. The default desktop and phone input captures were
 refreshed with that lighter treatment.
+The [FAQ list](screenshots/web-faq-desktop-dark.png) likewise keeps separators
+between questions and omits the final bottom rule, whether the last answer is
+open or closed.
 
 [Web altitude settings](screenshots/web-altitude-settings.png) ·
 [Widget altitude settings](screenshots/widget-altitude-settings-dark.png)

@@ -1465,6 +1465,9 @@
   padding-top: 0;
   border-top: 0;
 }
+.faq-list details:last-child {
+  border-bottom: 0;
+}
 .method-section {
   display: block;
   padding-block: 12px;

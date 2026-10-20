@@ -200,6 +200,23 @@
       "notes": [
         "Actual Vite screenshots: benchmark panels at 1120px, converter at 1120×1450 and 390×844. Both benchmark themes additionally reviewed at 390px without overflow. Masters/points fill the desktop panel; Calculation options retains only its top divider. Other captures retain their original source provenance."
       ]
+    },
+    {
+      "capturedAt": "2026-10-20T06:16:10.025182+00:00",
+      "branch": "fix/benchmark-panel-width",
+      "sourceBase": "f2842ac3b811c8f17760104ffbde0d3b8389c487",
+      "sourceHashes": {
+        "src/converter.css": "4f3f5f32cde34b057ba3629b3002edd13f94887c5d92f93cb706a1e16e8006e1"
+      },
+      "captures": [
+        {
+          "file": "web-faq-desktop-dark.png",
+          "sha256": "63283712c91852674c8124fa828471dc3a160ebe7722377a25a4ea51189b5dc7"
+        }
+      ],
+      "notes": [
+        "FAQ separators remain between questions; the last item has no bottom rule, open or closed. Verified at 1120px and 390px in both themes with no horizontal overflow."
+      ]
     }
   ]
 }
