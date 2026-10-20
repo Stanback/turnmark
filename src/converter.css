@@ -1323,10 +1323,6 @@
   .standards-title-row .standards-controls {
     width: auto;
   }
-  .masters-panel,
-  .points-panel {
-    max-width: 920px;
-  }
 }
 @media (max-width: 900px) {
   .history-list {

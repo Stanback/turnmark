@@ -178,5 +178,28 @@
     "Collapsed Recent conversions centers its heading, count and chevron with equal top/bottom space at phone and desktop widths. National native captures include the final compact single-target layout.",
     "Calculation details state NCAA age/category scope, distinguish shared short-course factors, and exclude individual swimming ability. Detail captures use the paired native method checks; browser and MCP captures use the same explanatory copy.",
     "Time-entry checks wait for the complete expected field value after one typing action, allowing hosted keyboard events to finish; they do not retry or repair input."
+  ],
+  "followups": [
+    {
+      "capturedAt": "2026-10-20T06:05:58.390952+00:00",
+      "branch": "fix/benchmark-panel-width",
+      "sourceBase": "f2842ac3b811c8f17760104ffbde0d3b8389c487",
+      "sourceHashes": {
+        "src/converter.css": "0a65eb7914d034b06c9b1b22f910c282d414c0fdfe7e28a870d96e08dbbb4dd3"
+      },
+      "captures": [
+        {
+          "file": "web-points-desktop-dark.png",
+          "sha256": "6bb9a57c9533a69703e87d2dcccf645c7ebdde811147fc1258cfebaa2ecdc3bc"
+        },
+        {
+          "file": "web-masters-desktop-light.png",
+          "sha256": "7ffc161b624f9b5e9be6270fa5eb7d8d4bdcdae8175058162ac8aeac1ddcfbac"
+        }
+      ],
+      "notes": [
+        "Actual Vite screenshots at 1120px; both themes additionally reviewed at 390px without overflow. Only the desktop Masters/points width cap changed. Existing captures retain their original source provenance."
+      ]
+    }
   ]
 }
