@@ -118,6 +118,12 @@ MCP release and then skipping its replacement. Live verification checks all seve
 tools and the current versioned Apps resource; a healthy root alone does not
 confirm that the intended update deployed.
 
+The deployment condition explicitly checks the MCP job and selected-check gate
+with `!cancelled()`, so skipped, unchanged native ancestors do not suppress a
+successful main deployment. Failed or canceled checks still prevent publishing.
+Live verification reads the resource URI from the checked-out server metadata
+instead of maintaining another revision suffix in the workflow.
+
 The private IaC repository manages the zone's Free-plan edge rules: a
 path-only `/mcp` limit of 30 requests per 10 seconds per IP/location, with a
 10-second block, and hostname-specific route filtering. A disabled emergency
