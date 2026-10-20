@@ -244,3 +244,12 @@ did not reproduce the local parallelism gain. Hosted CI therefore explicitly use
 `--workers 1`, preserving all 27 app tests and their assertions. Local full runs
 still default to two workers. Do not raise hosted concurrency again without
 repeatable hosted timing and reliability evidence. Build caching remains enabled.
+
+The first serial hosted run passed 26/27 app tests in about 21 minutes of test
+execution. The remaining recorded-benchmark failure was the keyboard-dismissal
+predicate's five-second deadline: hosted accessibility queries consumed the
+budget, while the diagnostic immediately afterward showed no keyboard and the
+rest of the recorded-swim flow passed. That predicate now has a 15-second
+budget, still requiring both visible keyboard content and the entry toolbar to
+be gone. It completes as soon as those conditions hold; no sleep, retry or
+assertion removal is introduced.

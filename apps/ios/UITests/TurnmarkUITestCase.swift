@@ -37,7 +37,11 @@ class TurnmarkUITestCase: XCTestCase {
             let done = app.buttons["dismissConverterKeyboard"]
             return self.visibleKeyboard(in: app) == nil && !(done.exists && done.isHittable)
         }, object: nil)
-        let result = XCTWaiter.wait(for: [dismissed], timeout: 5)
+        // A hosted AX query can itself take several seconds while UIKit
+        // removes its keyboard node. Keep the same dismissal predicate, but
+        // allow another observation after that slow snapshot. This completes
+        // immediately when ready; it adds neither sleep nor a test retry.
+        let result = XCTWaiter.wait(for: [dismissed], timeout: 15)
         if result != .completed {
             let keyboard = app.keyboards.firstMatch
             print("Dismissal observation: exists=\(keyboard.exists), frame=\(keyboard.exists ? keyboard.frame : .zero), keys=\(keyboard.keys.count)")
