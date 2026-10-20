@@ -1,0 +1,28 @@
+{
+  "configurations": [
+    {
+      "id": "EE814DC3-4EC3-4885-B764-1F23920B8D37",
+      "name": "Default",
+      "options": {}
+    }
+  ],
+  "defaultOptions": {},
+  "testTargets": [
+    {
+      "target": {
+        "containerPath": "container:Turnmark.xcodeproj",
+        "identifier": "648E5243C199F970A0C092FC",
+        "name": "TurnmarkTests"
+      }
+    },
+    {
+      "target": {
+        "containerPath": "container:Turnmark.xcodeproj",
+        "identifier": "02BAF3338D10184D273E7B13",
+        "name": "TurnmarkUITests"
+      },
+      "parallelizable": true
+    }
+  ],
+  "version": 1
+}

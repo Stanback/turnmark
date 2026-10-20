@@ -17,6 +17,16 @@ android {
     }
     sourceSets.getByName("androidTest").assets.srcDir("../history")
     buildFeatures { compose = true }
+    testOptions.animationsDisabled = true
+    testOptions.managedDevices.localDevices.create("turnmarkPhone") {
+        device = "Pixel 2"
+        sdkVersion = 37
+        systemImageSource = "google"
+        require64Bit = true
+        // API 37's software-rendered 16 KB image has allocator stalls. Keep
+        // this fast UI lane on 4 KB; 16 KB runtime remains a release check.
+        pageAlignment = com.android.build.api.dsl.ManagedVirtualDevice.PageAlignment.FORCE_4KB_PAGES
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -36,6 +46,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    // Compose's transitive Espresso 3.5 uses reflection removed on Android 17.
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
     androidTestImplementation("androidx.test:runner:1.7.0")
     androidTestImplementation("androidx.window:window-testing:1.5.1")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")

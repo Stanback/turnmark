@@ -46,6 +46,7 @@ class ConverterTest {
         compose.onNode(hasText(label) and hasClickAction()).performClick()
     }
 
+    @SmokeTest
     @Test fun blankArrivalEntryAndResetKeepEntryFirst() {
         compose.onNodeWithTag("timeInput").assert(SemanticsMatcher.expectValue(androidx.compose.ui.semantics.SemanticsProperties.EditableText, androidx.compose.ui.text.AnnotatedString("")))
         compose.onNodeWithTag("invalidTime").assertDoesNotExist()
@@ -134,6 +135,7 @@ class ConverterTest {
         compose.onNodeWithTag("resultTime").assertTextEquals("1:06.72")
     }
 
+    @SmokeTest
     @Test fun benchmarkPreviewScoresEstimateAndKeepsOriginal() {
         example()
         chooseCourseConversion("Colorado Timing")
@@ -362,6 +364,7 @@ class ConverterTest {
         compose.onNodeWithText("No logged swims").assertExists()
     }
 
+    @SmokeTest
     @Test fun actualTimeCanBeRecordedDirectlyFromMyTimes() {
         example()
         compose.onNodeWithTag("nav-My times").performClick()
@@ -542,6 +545,7 @@ class ConverterTest {
         compose.onNodeWithTag("resultTime").assertDoesNotExist()
     }
 
+    @SmokeTest
     @Test fun unsupportedComparisonStaysUnavailable() {
         example()
         compose.onNodeWithTag("choice-Stroke").performScrollTo().performClick()

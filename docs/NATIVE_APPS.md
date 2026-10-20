@@ -71,7 +71,7 @@ npm run build:native:ios
 xcodebuild -project apps/ios/Turnmark.xcodeproj -scheme Turnmark \
   -sdk iphonesimulator -configuration Debug -derivedDataPath target/ios-app \
   build CODE_SIGNING_ALLOWED=NO
-node scripts/test-ios.mjs app
+node scripts/test-ios.mjs app --device SIMULATOR_UUID
 ```
 
 Open `apps/ios/Turnmark.xcodeproj` in Xcode, select an iPhone simulator, and Run.
@@ -94,8 +94,8 @@ stable Compose BOM 2026.09.00. Set `JAVA_HOME`, `ANDROID_HOME` and
 ```sh
 npm run build:native:android
 ./gradlew :app-android:assembleDebug :app-android:assembleDebugAndroidTest
-# Boot an emulator fully or attach a development device first:
-node scripts/test-android.mjs app
+# Gradle provisions and boots the shared test-device profile:
+node scripts/test-android.mjs app --managed
 ```
 
 Open the repository's Gradle project in Android Studio, select `app-android`,
@@ -105,7 +105,7 @@ The app bundles arm64-v8a and x86_64 native libraries. New SDK platforms use a
 minor-version package name (`platforms;android-37.0`), not `android-37`.
 
 The test wrapper removes stale reports, checks the runner's result when
-available, and requires fresh JUnit test cases with no failures/errors/skips.
+available, and requires exactly the selected JUnit test cases with no failures/errors/skips.
 This catches a real observed AGP failure mode: the Gradle task exited successfully
 after the test APK could not install on a still-booting emulator.
 
@@ -126,9 +126,11 @@ default six hours. The existing website deployment remains a main-branch-only
 job with its own permissions; do not use `pull_request_target` to execute PR code.
 
 The iOS wrapper disables bulk simulator diagnostic collection: Xcode was observed
-remaining in the test step after all five UI cases passed. Test exit status,
-xcresult results and screenshot attachments are still retained. Local app checks
-use the same option, so CI does not need a different test-success criterion.
+remaining in the test step after all UI cases passed. Test exit status, fresh
+xcresult results and automatic failure diagnostics remain available. Successful
+review screenshots are opt-in. Both wrappers report phase/per-test timings;
+[native feedback loops](CI.md#native-feedback-loops) documents the full, smoke,
+direct-test and focused commands. CI keeps the full affected-platform suites.
 
 When releases are added, put signed builds and TestFlight/Play uploads in a
 separate trusted release workflow with a protected environment. Keep release
@@ -146,8 +148,9 @@ and old comparison bookmarks remaining separate across restart. The shared
 history suites validate portable imports, atomic rejection and matching bests.
 SDK conformance fixtures test numerical behavior independently of the UI.
 
-For iOS, the result bundle retains screenshot attachments. Select a runtime with
-`TURNMARK_IOS_RUNTIME=27.1 node scripts/test-ios.mjs app`. For Android opt-in captures, install the built app and test APKs, then run
+For iOS review attachments, use `node scripts/test-ios.mjs app --device SIMULATOR_UUID --screenshots`.
+Select a runtime with `TURNMARK_IOS_RUNTIME=27.1`; pin a local simulator using
+`TURNMARK_IOS_DEVICE` or `--device`. For Android opt-in captures, install the built app and test APKs, then run
 `adb shell am instrument -w -e turnmarkScreenshots true net.stanback.turnmark.test/androidx.test.runner.AndroidJUnitRunner`.
 PNG files are written to the debug app's private directory and can be read with
 `adb exec-out run-as net.stanback.turnmark cat files/<name>.png`. Capture code

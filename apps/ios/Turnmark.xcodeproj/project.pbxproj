@@ -7,17 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0A7945AEF04A892E43ACE1DE /* TurnmarkUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D16C21D7F1C9E54F75FE74B /* TurnmarkUITests.swift */; };
+		0CCC36721381B6F85AA408C8 /* TurnmarkUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A4AA5FDF968C75939FC55E /* TurnmarkUITestCase.swift */; };
+		1918EFE29AD16E9EE6A07121 /* ConversionUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81F9578EC41592AB27932083 /* ConversionUITests.swift */; };
 		25BDD3DCDCDC02D649F37AD0 /* import-cases.json in Resources */ = {isa = PBXBuildFile; fileRef = CB0DF0E31571F26A4B0E2671 /* import-cases.json */; };
 		4CDD2D179685C31920B99F4F /* TurnmarkPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4330F1AAB25C28325F81C32B /* TurnmarkPalette.swift */; };
 		63E8CB2D3A1891F1C44EAFA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 649B64D9001836B5F659593C /* Assets.xcassets */; };
 		7021B17D569A7726FF765633 /* contract-v1.json in Resources */ = {isa = PBXBuildFile; fileRef = B83CCAF94B8A0F40C92CD669 /* contract-v1.json */; };
 		8EABCD3053B0E6F3B623BCAA /* HistoryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39394660EEDE87180EF55D8A /* HistoryViews.swift */; };
+		8FEF5606E38F1DD6B08F878A /* BenchmarkUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82AEF202AE3C30699FBDD8F5 /* BenchmarkUITests.swift */; };
 		95DC7EBE8CEEAC85CA154B94 /* TurnmarkApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C2633BB30C9B5BFAEAFF94 /* TurnmarkApp.swift */; };
 		B5D2A47327957535D825CC89 /* HistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D34D981B4636FA064FA99CDF /* HistoryTests.swift */; };
+		E74EA169CFC8F293848297CD /* HistoryUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E776698DC403B9E3483BBD98 /* HistoryUITests.swift */; };
 		F7BC59FAA031291CB5C7A3FE /* SwimHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0038E97C8B1BEAAE94D8DCBA /* SwimHistory.swift */; };
 		F9E714761791D987572ED9C1 /* BenchmarkViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E139AF57C0F2B07B0B4AF88 /* BenchmarkViews.swift */; };
 		FA5150614CE151801FF7E62F /* TurnmarkCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0B509BAFE31A5ED85B9E5812 /* TurnmarkCore */; };
+		FD0623C5F7E6619D1C9E30D3 /* InputUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9583DCB1211DEC4CD1C4704E /* InputUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,19 +43,23 @@
 
 /* Begin PBXFileReference section */
 		0038E97C8B1BEAAE94D8DCBA /* SwimHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwimHistory.swift; sourceTree = "<group>"; };
+		05A4AA5FDF968C75939FC55E /* TurnmarkUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnmarkUITestCase.swift; sourceTree = "<group>"; };
 		39394660EEDE87180EF55D8A /* HistoryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViews.swift; sourceTree = "<group>"; };
 		4330F1AAB25C28325F81C32B /* TurnmarkPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnmarkPalette.swift; sourceTree = "<group>"; };
 		4E139AF57C0F2B07B0B4AF88 /* BenchmarkViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenchmarkViews.swift; sourceTree = "<group>"; };
 		649B64D9001836B5F659593C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6A0409D9F50C35CC7B2C84C6 /* Turnmark.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Turnmark.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		77652A273CB3E0E5519B5E11 /* TurnmarkUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TurnmarkUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		81F9578EC41592AB27932083 /* ConversionUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionUITests.swift; sourceTree = "<group>"; };
+		82AEF202AE3C30699FBDD8F5 /* BenchmarkUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenchmarkUITests.swift; sourceTree = "<group>"; };
 		89C2633BB30C9B5BFAEAFF94 /* TurnmarkApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnmarkApp.swift; sourceTree = "<group>"; };
-		8D16C21D7F1C9E54F75FE74B /* TurnmarkUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurnmarkUITests.swift; sourceTree = "<group>"; };
+		9583DCB1211DEC4CD1C4704E /* InputUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputUITests.swift; sourceTree = "<group>"; };
 		B83CCAF94B8A0F40C92CD669 /* contract-v1.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "contract-v1.json"; sourceTree = "<group>"; };
 		CA823D0CAEABAC2DC08AA70E /* swift */ = {isa = PBXFileReference; lastKnownFileType = folder; name = swift; path = ../../packages/swift; sourceTree = SOURCE_ROOT; };
 		CB0DF0E31571F26A4B0E2671 /* import-cases.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "import-cases.json"; sourceTree = "<group>"; };
 		D34D981B4636FA064FA99CDF /* HistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTests.swift; sourceTree = "<group>"; };
 		D3A3CBBB88D4B2EC6C468AC6 /* TurnmarkTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TurnmarkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E776698DC403B9E3483BBD98 /* HistoryUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryUITests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,7 +115,11 @@
 		C5307ADF10C9CC112DFB04B5 /* UITests */ = {
 			isa = PBXGroup;
 			children = (
-				8D16C21D7F1C9E54F75FE74B /* TurnmarkUITests.swift */,
+				82AEF202AE3C30699FBDD8F5 /* BenchmarkUITests.swift */,
+				81F9578EC41592AB27932083 /* ConversionUITests.swift */,
+				E776698DC403B9E3483BBD98 /* HistoryUITests.swift */,
+				9583DCB1211DEC4CD1C4704E /* InputUITests.swift */,
+				05A4AA5FDF968C75939FC55E /* TurnmarkUITestCase.swift */,
 			);
 			path = UITests;
 			sourceTree = "<group>";
@@ -278,7 +290,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A7945AEF04A892E43ACE1DE /* TurnmarkUITests.swift in Sources */,
+				8FEF5606E38F1DD6B08F878A /* BenchmarkUITests.swift in Sources */,
+				1918EFE29AD16E9EE6A07121 /* ConversionUITests.swift in Sources */,
+				E74EA169CFC8F293848297CD /* HistoryUITests.swift in Sources */,
+				FD0623C5F7E6619D1C9E30D3 /* InputUITests.swift in Sources */,
+				0CCC36721381B6F85AA408C8 /* TurnmarkUITestCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
