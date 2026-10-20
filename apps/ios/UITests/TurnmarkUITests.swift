@@ -260,9 +260,10 @@ final class TurnmarkUITests: XCTestCase {
     @MainActor private func assertTimeValue(_ text: String, in field: XCUIElement,
         file: StaticString = #filePath, line: UInt = #line) {
         // Hosted XCTest can return before the final keyboard events reach
-        // SwiftUI. Require the entire value, without retrying the input.
+        // SwiftUI, and a cold accessibility read can itself take several seconds.
+        // Allow that read to finish; require the exact value without retyping.
         let entered = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", text), object: field)
-        XCTAssertEqual(XCTWaiter.wait(for: [entered], timeout: 5), .completed,
+        XCTAssertEqual(XCTWaiter.wait(for: [entered], timeout: 20), .completed,
             "The full time must arrive; observed \(field.value as? String ?? "<no value>")", file: file, line: line)
     }
     @MainActor private func replace(_ field: XCUIElement, with text: String, in app: XCUIApplication, earlier: Bool = false) {
