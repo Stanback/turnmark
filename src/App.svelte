@@ -690,7 +690,7 @@
             aria-invalid={!!error && !emptyTime}
             aria-describedby={error && !emptyTime ? "time-error" : "time-help"}
             placeholder="0:00.00"
-            inputmode="decimal"
+            inputmode="text"
             autocomplete="off"
             spellcheck="false"
             maxlength="9"
@@ -1239,13 +1239,11 @@
                       ? "Check your time"
                       : "No published standard for this selection."}
                 </h3>
-                <p>
-                  {emptyTime
-                    ? "See how your swim compares with the published thresholds."
-                    : benchmarkTime === null
+                {#if !emptyTime}<p>
+                    {benchmarkTime === null
                       ? "Use a time like 58.32 or 1:02.45 in Your swim above."
                       : "Try another age group or event. We leave missing data empty."}
-                </p>
+                  </p>{/if}
               </div>{/if}
           </div>
         {/if}

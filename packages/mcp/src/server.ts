@@ -27,7 +27,7 @@ import {
   pointsValidity,
 } from "@turnmark/sdk/points";
 
-export const conversionResourceUri = "ui://turnmark/conversion/0.3.0-r5.html";
+export const conversionResourceUri = "ui://turnmark/conversion/0.3.0-r6.html";
 const uiMeta = {
   ui: {
     csp: { connectDomains: [], resourceDomains: [], frameDomains: [] },
