@@ -83,9 +83,12 @@ instructions here.
   `npm run test:engine`. Run relevant native fixture checks when the shared
   contract or bindings change; commands are in the engine guide.
 - Native UI: build the affected apps and run `node scripts/test-ios.mjs app`
-  and/or `node scripts/test-android.mjs app`. Android needs a fully booted
-  emulator/device. The wrappers reject missing or stale test results. A paired
-  feature needs both platforms checked.
+  and/or `node scripts/test-android.mjs app --managed`. Set `TURNMARK_IOS_DEVICE`
+  for a local workspace with multiple simulators. Android can also use a fully
+  booted connected device with `--serial`. Smoke/focused suites speed local
+  iteration; full affected-platform runs remain required before merging.
+  The wrappers reject missing, stale or partial test results and report timings.
+  A paired feature needs both platforms checked. See [native feedback loops](docs/CI.md#native-feedback-loops).
 - Inspect screenshots for visible changes, including dark appearance and text
   wrapping. Use sample data. Automated simulator tests do not replace release
   checks on physical devices or with VoiceOver/TalkBack.

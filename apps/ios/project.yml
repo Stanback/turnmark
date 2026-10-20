@@ -62,4 +62,7 @@ schemes:
       targets:
         Turnmark: all
     test:
-      targets: [TurnmarkTests, TurnmarkUITests]
+      testPlans:
+        - path: Full.xctestplan
+          defaultPlan: true
+        - path: Smoke.xctestplan

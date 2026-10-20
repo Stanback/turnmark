@@ -260,6 +260,8 @@ for (const [path, expected] of [
   ["apps/history/contract-v1.json", flags("ios", "android")],
   ["apps/history/import-cases.json", flags("ios", "android")],
   ["scripts/test-ios.mjs", flags("ios")],
+  ["scripts/native-test-support.mjs", flags("ios", "android")],
+  ["scripts/native-test-support.test.mjs", flags("ios", "android")],
   ["packages/swift/Package.swift", flags("ios")],
   [
     "apps/android/src/main/java/net/stanback/turnmark/MainActivity.kt",
