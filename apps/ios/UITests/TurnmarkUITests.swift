@@ -257,6 +257,14 @@ final class TurnmarkUITests: XCTestCase {
         if earlier { XCTFail("Element must remain reachable inside the content viewport: \(element)") }
         else { XCTAssertTrue(element.exists && element.isHittable, "Element must remain reachable: \(element)") }
     }
+    @MainActor private func assertTimeValue(_ text: String, in field: XCUIElement,
+        file: StaticString = #filePath, line: UInt = #line) {
+        // Hosted XCTest can return before the final keyboard events reach
+        // SwiftUI. Require the entire value, without retrying the input.
+        let entered = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", text), object: field)
+        XCTAssertEqual(XCTWaiter.wait(for: [entered], timeout: 5), .completed,
+            "The full time must arrive; observed \(field.value as? String ?? "<no value>")", file: file, line: line)
+    }
     @MainActor private func replace(_ field: XCUIElement, with text: String, in app: XCUIApplication, earlier: Bool = false) {
         reach(field, in: app, earlier: earlier)
         if field.identifier == "timeInput" {
@@ -266,11 +274,7 @@ final class TurnmarkUITests: XCTestCase {
             if clear.exists { reach(clear, in: app); clear.tap() }
             else { field.tap() }
             field.typeText(text)
-            // Hosted XCTest can return before the final keyboard events reach
-            // SwiftUI. Wait for the entire value, without retrying the input.
-            let entered = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", text), object: field)
-            XCTAssertEqual(XCTWaiter.wait(for: [entered], timeout: 5), .completed,
-                "The full time must arrive; observed \(field.value as? String ?? "<no value>")")
+            assertTimeValue(text, in: field)
         } else {
             field.tap()
             field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: (field.value as? String ?? "").count) + text)
@@ -581,10 +585,10 @@ final class TurnmarkUITests: XCTestCase {
         XCUIDevice.shared.orientation = .landscapeLeft
         // Type into the existing responder, without tapping/refocusing the field.
         app.typeText(".25")
-        XCTAssertEqual(field.value as? String, "1:00.25")
+        assertTimeValue("1:00.25", in: field)
         XCUIDevice.shared.orientation = .portrait
         app.typeText(XCUIKeyboardKey.delete.rawValue)
-        XCTAssertEqual(field.value as? String, "1:00.2")
+        assertTimeValue("1:00.2", in: field)
         let done = app.buttons["dismissConverterKeyboard"]
         XCTAssertTrue(done.waitForExistence(timeout: 5)); XCTAssertNotNil(visibleKeyboard(in: app)); done.tap()
         assertConverterKeyboardDismissed(in: app)
