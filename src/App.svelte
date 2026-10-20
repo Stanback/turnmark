@@ -723,36 +723,38 @@
                 />Adjust for altitude</label
               >
               {#if altitudeEnabled}<div class="altitude-body">
-                  <div class="elevation-heading">
-                    <label for="altitude">Pool elevation</label>
-                    <div
-                      class="elevation-units"
-                      role="group"
-                      aria-label="Elevation units"
-                    >
-                      <button
-                        class:active={elevationUnit === "ft"}
-                        aria-pressed={elevationUnit === "ft"}
-                        onclick={() => (elevationUnit = "ft")}>ft</button
+                  <div class="elevation-field">
+                    <div class="elevation-heading">
+                      <label for="altitude">Pool elevation</label>
+                      <div
+                        class="elevation-units"
+                        role="group"
+                        aria-label="Elevation units"
                       >
-                      <button
-                        class:active={elevationUnit === "m"}
-                        aria-pressed={elevationUnit === "m"}
-                        onclick={() => (elevationUnit = "m")}>m</button
-                      >
+                        <button
+                          class:active={elevationUnit === "ft"}
+                          aria-pressed={elevationUnit === "ft"}
+                          onclick={() => (elevationUnit = "ft")}>ft</button
+                        >
+                        <button
+                          class:active={elevationUnit === "m"}
+                          aria-pressed={elevationUnit === "m"}
+                          onclick={() => (elevationUnit = "m")}>m</button
+                        >
+                      </div>
                     </div>
-                  </div>
-                  <div class="elevation-entry">
-                    <input
-                      type="number"
-                      id="altitude"
-                      min="0"
-                      max={elevationUnit === "ft" ? 20000 : 6096}
-                      step={elevationUnit === "ft" ? 1 : "any"}
-                      bind:value={() => elevationInput, setElevation}
-                      aria-invalid={!altitudeValid}
-                      aria-describedby="elevation-help"
-                    /><span>{elevationUnit} above sea level</span>
+                    <div class="elevation-entry">
+                      <input
+                        type="number"
+                        id="altitude"
+                        min="0"
+                        max={elevationUnit === "ft" ? 20000 : 6096}
+                        step={elevationUnit === "ft" ? 1 : "any"}
+                        bind:value={() => elevationInput, setElevation}
+                        aria-invalid={!altitudeValid}
+                        aria-describedby="elevation-help"
+                      /><span>{elevationUnit} above sea level</span>
+                    </div>
                   </div>
                   <div class="altitude-policy-field">
                     <label class="field-label" for="altitude-policy"
@@ -769,9 +771,6 @@
                     >
                   </div>
                   <p id="elevation-help">
-                    {#if altitudeValid}{elevationUnit === "ft"
-                        ? `${(form.altitude * 0.3048).toLocaleString(undefined, { maximumFractionDigits: 1 })} meters`
-                        : `${form.altitude.toLocaleString()} feet (rounded to the nearest foot)`}.{/if}
                     {#if adjustment}Altitude adjustment: −{adjustment.toFixed(
                         2,
                       )}s before course conversion.
@@ -786,11 +785,6 @@
             </section>
           </div>
         </details>
-        <div class="input-footnote">
-          <Icon name="info" size={14} /><span
-            >Estimates for perspective. Meet rules decide entry eligibility.</span
-          >
-        </div>
         <button
           class="primary-button mobile-results-jump"
           disabled={!!error}
@@ -947,6 +941,9 @@
             </button>
           {/each}
         </div>
+        {#if time !== null && !error}<p class="result-note">
+            Converted times are estimates. Check your meet’s entry rules.
+          </p>{/if}
         <details class="result-method">
           <summary>
             <span><Icon name="info" size={15} />How this is calculated</span>

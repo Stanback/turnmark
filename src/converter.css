@@ -493,6 +493,13 @@
   gap: 16px;
   padding-block: 8px 20px;
 }
+.altitude-body .elevation-field {
+  display: grid;
+  gap: var(--tm-space-8);
+}
+.altitude-body .elevation-heading {
+  margin-bottom: 0;
+}
 .altitude-policy-field {
   display: grid;
   gap: 8px;
@@ -528,16 +535,11 @@
   margin: 0;
   color: var(--muted);
 }
-.input-footnote {
-  display: flex;
-  gap: 8px;
+.result-note {
   margin-top: 18px;
   font-size: 13px;
   line-height: 1.6;
   color: var(--muted);
-}
-.input-footnote svg {
-  margin-top: 3px;
 }
 .results-heading {
   display: flex;
