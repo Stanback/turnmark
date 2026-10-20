@@ -16,6 +16,7 @@
     distance,
     stroke,
     time,
+    preview = false,
   }: {
     age?: string;
     course: Course;
@@ -23,6 +24,7 @@
     distance: number;
     stroke: Stroke;
     time: number | null;
+    preview?: boolean;
   } = $props();
   const entry = $derived(
     getMastersEntry(age, category, course, distance, stroke),
@@ -64,7 +66,8 @@
   {#if target !== null && time !== null}
     <div class="masters-comparison">
       <div>
-        <span>Your entered swim</span><strong>{formatTime(time)}</strong>
+        <span>{preview ? "Converted estimate" : "Your entered swim"}</span
+        ><strong>{formatTime(time)}</strong>
       </div>
       <Icon name="arrow" size={18} />
       <div>
@@ -83,7 +86,7 @@
         >
         <p>
           {gap === 0
-            ? "Your entered time matches the published target."
+            ? "This comparison time matches the published target."
             : `${Math.abs(gap!).toFixed(2)}s ${gap! < 0 ? "faster than the published target." : "to reach the published target."}`}
         </p>
       </div>
@@ -103,7 +106,7 @@
       </h3>
       <p>
         {course === "SCM"
-          ? "These USMS tables cover SCY and LCM. Select the course you actually swam; converted estimates aren’t used for this comparison."
+          ? "These USMS tables cover SCY and LCM. Missing source coverage remains unavailable for this comparison."
           : age === "85+"
             ? "USMS does not set National Qualifying Times for age groups 85 and older."
             : entry === null
@@ -112,9 +115,11 @@
       </p>
     </div>{/if}
   <p class="masters-note">
-    Compared with your entered time. Course and altitude estimates are not used.
-    This is a 2026 benchmark, not confirmation of entry eligibility;
-    meet-specific rules and exceptions apply.
+    {preview
+      ? "Preview using a converted estimate, not a recorded performance."
+      : "Compared with your entered time. Course and altitude estimates are not used."}
+    This is a 2026 benchmark, not confirmation of entry eligibility; meet-specific
+    rules and exceptions apply.
   </p>
   <a
     class="points-source"

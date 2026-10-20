@@ -38,7 +38,11 @@ import uniffi.turnmark_core.*
     val program = programs.firstOrNull { it.system == system }
     val age = when(system) { StandardSystem.MASTERS -> mastersAge; StandardSystem.FUTURES -> futuresAge; StandardSystem.YOUTH -> youthAge; else -> "" }
     val provider = program?.let { "${it.title} · ${it.scope}" } ?: if (system == StandardSystem.MASTERS) "USMS · 2026" else "USA Swimming · 2024–28"
-    val swim = Swim(draft.time, SwimEvent(draft.distance, strokes[draft.strokeIndex], courses[draft.courseIndex]))
+    var preview by rememberSaveable { mutableStateOf(false) }
+    val originalSwim = Swim(draft.time, SwimEvent(draft.distance, strokes[draft.strokeIndex], courses[draft.courseIndex]))
+    val conversion = if (preview) draft.outcome as? ConversionOutcome.Available else null
+    val swim = if (!preview) originalSwim else conversion?.value?.let { Swim(it.time, it.event) }
+    val comparisonCourse = if (preview) courses[draft.targetIndex] else courses[draft.courseIndex]
     val table = if (draft.categoryIndex == 0) Category.WOMEN else Category.MEN
     val c = LocalTurnmarkColors.current
     fun save(key: String, value: String) { preferences.edit().putString(key, value).putBoolean("benchmarkConfigured", true).apply() }
@@ -52,7 +56,19 @@ import uniffi.turnmark_core.*
                 Text(if (isRecorded) "Recorded swim" else "Entered swim", style = MaterialTheme.typography.labelLarge, modifier = Modifier.testTag("benchmarkOriginLabel"))
                 BenchmarkClock(draft.time, Modifier.testTag("benchmarkOriginalTime"))
                 Text(draft.label, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.testTag("benchmarkContext"))
-                Text("Original swim only; no course or altitude estimates.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
+                Text(if (preview) "The original performance stays unchanged." else "Original swim only; no course or altitude estimates.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
+            }
+            BenchmarkGroup {
+                Choice("Compare using", if (preview) "Converted estimate · ${courses[draft.targetIndex]}" else "Entered swim",
+                    listOf("Entered swim", "Converted estimate · ${courses[draft.targetIndex]}"), Modifier.fillMaxWidth().testTag("benchmarkBasis")) { preview = it == 1 }
+                if (preview) {
+                    conversion?.value?.let { value ->
+                        BenchmarkClock(value.time, Modifier.testTag("benchmarkEstimateTime"))
+                        Text(draft.resultLabel(value.event), modifier = Modifier.testTag("benchmarkEstimateContext"))
+                    }
+                    Text(draft.methodLabel + if (draft.altitudeText == null) "" else " · " + if (draft.altitudePolicy == AltitudePolicy.NCAA) "NCAA altitude policy" else "USA Swimming altitude policy", style = MaterialTheme.typography.bodySmall)
+                    Text("Estimate only; not a recorded performance or proof of entry eligibility.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
+                }
             }
             SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
                 listOf("standards" to "Standards", "points" to "Points").forEachIndexed { index, (value, label) ->
@@ -60,21 +76,26 @@ import uniffi.turnmark_core.*
                     shape = SegmentedButtonDefaults.itemShape(index, 2), modifier = Modifier.testTag("benchmarkMode-$value")) { Text(label) }
                 }
             }
-            if (mode == "points") {
+            if (swim == null) {
+                BenchmarkGroup {
+                    Text("Conversion unavailable", modifier = Modifier.testTag("benchmarkPreviewUnavailable"), fontWeight = FontWeight.Bold)
+                    Text("Choose another destination in the converter or compare the entered swim. No entered-time fallback is used.")
+                }
+            } else if (mode == "points") {
                 when (val result = getWorldPoints(PointsRequest(swim, table))) {
                     is PointsOutcome.Available -> {
                         val value = result.value
                         NativeResultSurface(compact = true) {
                             Text("World Aquatics · 2026", style = MaterialTheme.typography.labelLarge, color = TurnmarkTokens.dark.textMuted)
                             Text("${value.points} points", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold, color = TurnmarkTokens.dark.text, modifier = Modifier.testTag("benchmarkPoints"))
-                            Text("Points for your original ${courses[draft.courseIndex]} swim")
+                            Text(if (preview) "Preview points · converted $comparisonCourse estimate" else "Points for your original $comparisonCourse swim")
                             TargetLine("1,000-point reference", value.baseTime)
                             TargetLine("Next ${value.nextMilestone.points} points", value.nextMilestone.time)
                             Text("${"%.2f".format(java.util.Locale.ROOT, value.nextMilestone.gapSeconds)}s to the next 100-point step. This is a suggested goal, not a qualifying time.", style = MaterialTheme.typography.bodySmall, color = TurnmarkTokens.dark.textMuted)
                         }
                         BenchmarkSource(result.provenance, "${value.validity}. Scores use the fixed published world-record reference, are not age-adjusted, and may lag newer records.")
                     }
-                    is PointsOutcome.Unavailable -> { BenchmarkUnavailable(result.reason, true); BenchmarkSource(result.provenance, "Converted estimates are not scored as actual swims.") }
+                    is PointsOutcome.Unavailable -> { BenchmarkUnavailable(result.reason, true); BenchmarkSource(result.provenance, "Preview points describe an estimate, not an actual performance.") }
                     is PointsOutcome.Invalid -> Text("Check the original swim", modifier = Modifier.testTag("benchmarkInvalid"))
                 }
             } else {
@@ -83,14 +104,14 @@ import uniffi.turnmark_core.*
                         val value = result.value
                         NativeResultSurface(compact = true) {
                             Text(provider, style = MaterialTheme.typography.labelLarge, color = TurnmarkTokens.dark.textMuted)
-                            Text(if (system == StandardSystem.YOUTH) value.achievedLevel?.let { "$it standard" } ?: "Next target: B"
+                            Text(if (preview) value.achievedLevel?.let { "$it threshold in preview" } ?: "Next preview target" else if (system == StandardSystem.YOUTH) value.achievedLevel?.let { "$it standard" } ?: "Next target: B"
                                 else if (system == StandardSystem.MASTERS) { if (value.achievedLevel != null) "NQT target met" else "NQT benchmark" } else value.achievedLevel?.let { "$it threshold met" } ?: "Next published target",
                                 style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = TurnmarkTokens.dark.text, modifier = Modifier.testTag("benchmarkSummary"))
-                            Text(listOf(benchmarkAgeLabel(age), draft.category, courses[draft.courseIndex].name).filter { it.isNotEmpty() }.joinToString(" · "), style = MaterialTheme.typography.bodyMedium)
+                            Text(listOf(benchmarkAgeLabel(age), draft.category, comparisonCourse.name).filter { it.isNotEmpty() }.joinToString(" · "), style = MaterialTheme.typography.bodyMedium)
                             value.nextTarget?.let { next ->
                                 BenchmarkClock(next.time, Modifier.testTag("benchmarkNextTime"), highlight = true)
                                 Text("${"%.2f".format(java.util.Locale.ROOT, next.gapSeconds)}s to ${next.label}")
-                            } ?: Text(if (system == StandardSystem.YOUTH) "You meet the top published standard for this selection." else "Your entered time meets this published benchmark.")
+                            } ?: Text(if (preview) "The estimate reaches the published threshold for this selection." else if (system == StandardSystem.YOUTH) "You meet the top published standard for this selection." else "Your entered time meets this published benchmark.")
                         }
                         if (program == null || value.targets.size > 1 || value.nextTarget == null) BenchmarkGroup {
                             Text(if (system == StandardSystem.MASTERS) "National qualifying benchmark" else "Published time thresholds", style = MaterialTheme.typography.titleMedium)
@@ -152,7 +173,7 @@ private fun benchmarkAgeLabel(age: String) = if (age == "10u") "10 & under" else
 
 @Composable private fun BenchmarkUnavailable(reason: CoverageReason, points: Boolean, programNote: String? = null) {
     val message = when (reason) {
-        CoverageReason.COURSE_NOT_SUPPORTED -> if (points) "World Aquatics points need an original SCM or LCM swim. SCY swims aren’t scored." else programNote ?: "USMS publishes 2026 NQTs for SCY and LCM, not SCM."
+        CoverageReason.COURSE_NOT_SUPPORTED -> if (points) "World Aquatics points need SCM or LCM. Enter a metric swim, or choose a metric destination and preview its converted estimate. SCY itself isn’t scored." else programNote ?: "USMS publishes 2026 NQTs for SCY and LCM, not SCM."
         CoverageReason.AGE_GROUP_NOT_PUBLISHED -> "No NQT is published for this age group in the bundled 2026 table. Meet-specific rules and exceptions apply."
         CoverageReason.NO_TIME_PUBLISHED -> "This event has no NQT in the published table for this age group. Check the meet’s entry guidance."
         else -> "This event has no published ${if (points) "base time" else "target"} in the selected table. Missing source data stays unavailable."

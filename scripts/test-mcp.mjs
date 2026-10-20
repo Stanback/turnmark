@@ -189,6 +189,72 @@ async function verify(transport, mode, label, ui = false) {
         semantic++;
       }
     }
+    const original = {
+      time: "58.32",
+      event: { distance: 100, stroke: "freestyle", course: "SCY" },
+    };
+    for (const name of ["get_world_points", "assess_swim_benchmark"]) {
+      const args = {
+        swim: original,
+        table: "women",
+        ...(name === "assess_swim_benchmark"
+          ? { system: "futures", age: "18 & under" }
+          : {}),
+      };
+      const preview = {
+        to: "LCM",
+        method: "colorado-teamunify-2026",
+        elevation: { value: 5000, unit: "feet" },
+        altitudePolicy: "ncaa-altitude-2026-27-d1",
+      };
+      const r = await client.callTool({
+        name,
+        arguments: { ...args, preview },
+      });
+      assert.equal(r.isError, undefined);
+      assert.equal(r.structuredContent.status, "available");
+      const context = r.structuredContent.assessmentContext;
+      assert.equal(context.basis, "converted-estimate");
+      assert.deepEqual(context.originalSwim, original);
+      const converted = engine.convert({
+        swim: original,
+        table: "women",
+        ...preview,
+      });
+      assert.deepEqual(context.assessedSwim, {
+        time: converted.value.time,
+        event: converted.value.event,
+      });
+      assert.deepEqual(context.conversion, converted);
+      const { assessmentContext, ...assessment } = r.structuredContent;
+      assert.deepEqual(
+        assessment,
+        name === "get_world_points"
+          ? engine.points({ swim: context.assessedSwim, table: "women" })
+          : engine.benchmark({ ...args, swim: context.assessedSwim }),
+      );
+      const unsupported = await client.callTool({
+        name,
+        arguments: {
+          ...args,
+          swim: {
+            time: "58.32",
+            event: {
+              distance: 100,
+              stroke: "individual-medley",
+              course: "SCY",
+            },
+          },
+          preview: { to: "LCM" },
+        },
+      });
+      assert.equal(unsupported.structuredContent.status, "unavailable");
+      assert.equal(
+        unsupported.structuredContent.assessmentContext.assessedSwim,
+        null,
+      );
+      assert.equal(unsupported.structuredContent.value, undefined);
+    }
     const source = await client.callTool({
       name: "get_sources",
       arguments: {},

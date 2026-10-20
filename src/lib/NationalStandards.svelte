@@ -10,7 +10,13 @@
     system,
     age = $bindable("18 & under"),
     form,
-  }: { system: StandardSystem; age?: string; form: SwimState } = $props();
+    preview = false,
+  }: {
+    system: StandardSystem;
+    age?: string;
+    form: SwimState;
+    preview?: boolean;
+  } = $props();
   const program = $derived(
     getNationalStandardPrograms().find((p) => p.system === system)!,
   );
@@ -43,7 +49,7 @@
     {eventLabel(form.distance, form.course, form.stroke)} · {form.course} · {form.category ===
     "women"
       ? "Women / girls"
-      : "Men / boys"} · Your entered swim
+      : "Men / boys"} · {preview ? "Converted estimate" : "Your entered swim"}
   </p>
   {#if outcome.status === "available"}
     <div class="targets" aria-label="Published time thresholds">
@@ -55,7 +61,9 @@
           <span
             ><strong>{target.label}</strong><small
               >{target.met
-                ? "Time threshold met"
+                ? preview
+                  ? "Threshold reached in preview"
+                  : "Time threshold met"
                 : `${target.gapSeconds.toFixed(2)}s to this threshold`}</small
             ></span
           >
@@ -71,8 +79,8 @@
     <p class="empty" role="status">
       No published target for this {outcome.reason === "course-not-supported"
         ? "course"
-        : "event"}. Select the course you actually swam; converted estimates
-      aren’t used.
+        : "event"}. Missing source coverage remains unavailable for this
+      comparison.
     </p>
   {:else}<p class="empty">
       Enter a valid swim time to compare with these thresholds.

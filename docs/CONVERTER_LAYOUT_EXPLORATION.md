@@ -186,3 +186,23 @@ open or closed.
 
 [Web altitude settings](screenshots/web-altitude-settings.png) ·
 [Widget altitude settings](screenshots/widget-altitude-settings-dark.png)
+
+## Entered swim and converted preview
+
+Standards and points default to the entered performance. **Compare using** can
+opt into a **Converted estimate · selected course** preview using the current
+course-conversion method and enabled altitude policy. The engine's destination
+event and clock drive every lookup, including unequal-distance freestyle. The
+original input remains visible; unsupported conversion never falls back to it.
+Reset and a fresh visit return to entered-swim comparisons. Neither preview
+points nor reached thresholds imply a recorded performance or entry eligibility.
+
+The same opt-in is available in native Standards & points. Native screens retain
+the entered/recorded source and use native menu controls. The widget remains a
+converter. MCP benchmark/points previews require explicit read-only inputs,
+documented in [the MCP contract](MCP.md#explicit-benchmark-previews).
+
+Actual local web captures: [desktop preview](screenshots/web-benchmark-preview-dark.png),
+[phone preview](screenshots/web-benchmark-preview-mobile.png), and
+[blank standards](screenshots/web-benchmark-empty-dark.png). The blank state now
+asks for a time without implying an invalid entry, and uses less vertical space.

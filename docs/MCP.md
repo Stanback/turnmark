@@ -132,6 +132,36 @@ Sources: [official TypeScript SDK](https://github.com/modelcontextprotocol/types
 [Workers Wasm](https://developers.cloudflare.com/workers/runtime-apis/webassembly/),
 [rate limiting](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/).
 
+## Explicit benchmark previews
+
+`assess_swim_benchmark` and `get_world_points` default to their original-swim
+behavior. An optional `preview` object explicitly requests a destination course,
+method and altitude policy before the lookup:
+
+```json
+{
+  "swim": {
+    "time": "58.32",
+    "event": { "distance": 100, "stroke": "freestyle", "course": "SCY" }
+  },
+  "table": "women",
+  "preview": { "to": "LCM", "method": "ncaa-2025-27" }
+}
+```
+
+This is a `get_world_points` example; standards also need `system` and any
+applicable `age`. Optional `preview.elevation` and `preview.altitudePolicy`
+use the same contract as `convert_swim`. Conversion happens once through the
+shared engine; lookups use its returned destination event and clock.
+`assessmentContext` retains `basis: "converted-estimate"`, `originalSwim`,
+`assessedSwim`, the complete conversion outcome/provenance and the requested
+preview options. A failed conversion returns its invalid/unavailable outcome,
+with `assessedSwim: null`; it never assesses the original silently.
+
+Hosts must display preview points/thresholds as estimates, not actual
+performances, personal bests or proof of qualification. No history is read or
+changed. The widget and MCP Apps card remain conversion-only.
+
 ## MCP Apps conversion UI
 
 The source adapter/server version is `0.3.0`, using SDK `0.2.0`.

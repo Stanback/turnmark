@@ -105,3 +105,17 @@ geometry only when an app-owned entry-dismissal toolbar is visible, and reuse
 that geometry within each scroll attempt. The dedicated dismissal assertions
 still inspect actual keyboard geometry/key content; no workflow assertions are
 removed. This correction changes test observation only.
+
+## Converted-estimate preview follow-up
+
+The earlier captures above show the original-swim default. An optional native
+**Compare using** menu now previews the converter's selected destination, course
+method and enabled altitude policy. The source time/event remain visible, with
+a separate estimate context and eligibility note. A new sheet starts on the
+entered/recorded performance. Unsupported conversions display an unavailable
+state and never reuse the original silently. Existing original-swim comparisons
+and recorded-history semantics remain unchanged.
+
+The [Android preview capture](screenshots/android-benchmark-estimate-preview.png)
+shows Colorado Timing on the same original 58.32 SCY swim. Source-only points
+remain unavailable for SCY; the optional metric preview is labeled separately.
