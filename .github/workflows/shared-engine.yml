@@ -13,8 +13,24 @@ concurrency:
 jobs:
   changes:
     uses: ./.github/workflows/changes.yml
-  core-and-web:
+  core:
     needs: changes
+    if: needs.changes.outputs.core == 'true'
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install pinned Rust toolchain
+        run: rustup show active-toolchain
+      - name: Verify reviewed national benchmark snapshot
+        run: python3 scripts/import-national-standards.py --check
+      - run: cargo fmt --all --check
+      - run: cargo clippy --locked --workspace --all-targets --features turnmark-core/native -- -D warnings
+      - run: cargo test --locked --workspace --features turnmark-core/native
+  core-and-web:
+    needs: [changes, core]
     if: needs.changes.outputs.core == 'true'
     timeout-minutes: 15
     runs-on: ubuntu-latest
@@ -26,13 +42,6 @@ jobs:
         with:
           node-version: 24
           cache: npm
-      - name: Install pinned Rust toolchain
-        run: rustup show active-toolchain
-      - name: Verify reviewed national benchmark snapshot
-        run: python3 scripts/import-national-standards.py --check
-      - run: cargo fmt --all --check
-      - run: cargo clippy --locked --workspace --all-targets --features turnmark-core/native -- -D warnings
-      - run: cargo test --locked --workspace --features turnmark-core/native
       - run: cargo install wasm-bindgen-cli --version 0.2.129 --locked
       - run: npm ci
       - run: npx playwright install --with-deps chromium
@@ -45,8 +54,9 @@ jobs:
           path: target/engine-metrics.json
           retention-days: 7
   ios:
-    needs: changes
-    if: needs.changes.outputs.ios == 'true'
+    needs: [changes, core]
+    # A native-only edit intentionally skips core; a selected core must pass.
+    if: ${{ !cancelled() && needs.changes.result == 'success' && needs.changes.outputs.ios == 'true' && (needs.core.result == 'success' || (needs.core.result == 'skipped' && needs.changes.outputs.core == 'false')) }}
     timeout-minutes: 45
     runs-on: xcode-27
     env:
@@ -109,8 +119,8 @@ jobs:
             target/ios-*-metrics.json
           retention-days: 7
   android:
-    needs: changes
-    if: needs.changes.outputs.android == 'true'
+    needs: [changes, core]
+    if: ${{ !cancelled() && needs.changes.result == 'success' && needs.changes.outputs.android == 'true' && (needs.core.result == 'success' || (needs.core.result == 'skipped' && needs.changes.outputs.core == 'false')) }}
     timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
@@ -192,7 +202,7 @@ jobs:
             target/android-*-metrics.json
           retention-days: 7
   mcp:
-    needs: changes
+    needs: [changes, core]
     if: needs.changes.outputs.core == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -341,7 +351,7 @@ jobs:
           JS
   engine-ci:
     if: always()
-    needs: [changes, core-and-web, ios, android, mcp]
+    needs: [changes, core, core-and-web, ios, android, mcp]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -351,8 +361,11 @@ jobs:
         run: |
           node --input-type=module <<'JS'
           const jobs = JSON.parse(process.env.RESULTS);
-          if (jobs.changes.result !== 'success' ||
-              Object.values(jobs).some(({ result }) => !['success', 'skipped'].includes(result))) {
+          const selected = jobs.changes.outputs;
+          const consumers = { core: 'core', 'core-and-web': 'core', mcp: 'core', ios: 'ios', android: 'android' };
+          if (jobs.changes.result !== 'success' || Object.entries(consumers).some(([job, flag]) =>
+              !['true', 'false'].includes(selected?.[flag]) ||
+              jobs[job]?.result !== (selected[flag] === 'true' ? 'success' : 'skipped'))) {
             process.exit(1);
           }
           JS

@@ -33,6 +33,21 @@ themselves selects all checks.
 Core/Wasm checks also build and test the MCP package and local Worker. Web-only
 edits skip those checks. SDK changes exercise their MCP consumer.
 
+Shared changes run a fast `core` job first: source snapshot validation, Rust
+formatting, Clippy and direct Rust tests. Once it passes, `core-and-web` (Wasm/JS
+SDK), MCP, iOS and Android fan out in parallel. A broken shared calculation
+therefore stops the expensive consumer jobs before they acquire runners. Native
+jobs do not wait for the unrelated browser/JS test suite. Native-only UI edits
+intentionally skip the core job and run their selected platform directly; a
+failed, cancelled or unexpectedly skipped selected core cannot unlock them.
+This uses GitHub's [job dependencies](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idneeds).
+
+The shared result gates downstream execution; a Linux core build is not an iOS
+or Android binary. Each consumer still generates/compiles its actual target
+libraries from the same checkout, using its platform-specific build cache.
+The final `engine-ci` gate requires every selected job to succeed and only
+accepts skips for jobs explicitly not selected.
+
 Website hosting configuration (`wrangler.jsonc`) and isolated deployment tooling
 under `deployment/` select web checks only. Workflow changes still select all.
 
