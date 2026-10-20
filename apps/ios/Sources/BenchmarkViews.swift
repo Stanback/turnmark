@@ -13,12 +13,17 @@ struct BenchmarkScreen: View {
     @AppStorage("benchmarkConfigured") private var configured = false
     @State private var settingsExpanded = false
     @State private var sourceExpanded = false
-    private var system: StandardSystem { systemName == "masters" ? .masters : .youth }
-    private var age: String { system == .masters ? mastersAge : youthAge }
+    private let programs = getNationalStandardPrograms()
+    private var program: StandardProgram? { programs.first { $0.system == system } }
+    @AppStorage("benchmarkFuturesAge") private var futuresAge = "18 & under"
+    private var system: StandardSystem {
+        switch systemName { case "masters": .masters; case "futures": .futures; case "juniors": .juniors; case "nisca": .nisca; default: .youth }
+    }
+    private var age: String { system == .masters ? mastersAge : system == .futures ? futuresAge : system == .youth ? youthAge : "" }
     private var swim: Swim { Swim(time: input.time, event: SwimEvent(distance: input.distance, stroke: strokes[input.strokeIndex], course: courses[input.courseIndex])) }
     private var table: TurnmarkCore.Category { input.categoryIndex == 0 ? .women : .men }
     private var assessment: BenchmarkOutcome { assessSwimBenchmark(request: BenchmarkRequest(swim: swim, table: table, age: age, system: system)) }
-    private var provider: String { system == .masters ? "USMS · 2026" : "USA Swimming · 2024–28" }
+    private var provider: String { program.map { "\($0.title) · \($0.scope)" } ?? (system == .masters ? "USMS · 2026" : "USA Swimming · 2024–28") }
 
     var body: some View {
         NavigationStack {
@@ -42,18 +47,19 @@ struct BenchmarkScreen: View {
                         DisclosureGroup(isExpanded: $settingsExpanded) {
                             Picker("Standard system", selection: $systemName) {
                                 Text("USA Swimming · Youth").tag("youth"); Text("USMS · Masters").tag("masters")
+                                ForEach(programs, id: \.system) { Text($0.label).tag(String(describing: $0.system)) }
                             }.pickerStyle(.menu).accessibilityIdentifier("benchmarkSystem")
-                            Picker("Age group", selection: Binding(get: { age }, set: {
-                                if system == .masters { mastersAge = $0 } else { youthAge = $0 }
+                            if !getStandardAgeGroups(system: system).isEmpty { Picker("Age group", selection: Binding(get: { age }, set: {
+                                if system == .masters { mastersAge = $0 } else if system == .futures { futuresAge = $0 } else { youthAge = $0 }
                             })) {
                                 ForEach(getStandardAgeGroups(system: system), id: \.self) { Text(ageLabel($0)).tag($0) }
-                            }.pickerStyle(.menu).accessibilityIdentifier("benchmarkAge")
+                            }.pickerStyle(.menu).accessibilityIdentifier("benchmarkAge") }
                             Text("Category follows the original swim. Change it in the converter or edit the recorded swim.")
                                 .font(.footnote).foregroundStyle(TurnmarkPalette.textMuted)
                         } label: {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Comparison settings").accessibilityIdentifier("benchmarkSettings")
-                                Text("\(provider) · \(ageLabel(age)) · \(input.category)").font(.footnote).foregroundStyle(TurnmarkPalette.textMuted)
+                                Text([provider, ageLabel(age), input.category].filter { !$0.isEmpty }.joined(separator: " · ")).font(.footnote).foregroundStyle(TurnmarkPalette.textMuted)
                             }
                         }
                     }.listRowBackground(TurnmarkPalette.surface)
@@ -64,9 +70,10 @@ struct BenchmarkScreen: View {
                 .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() }.accessibilityIdentifier("closeBenchmarks") } }
         }.onAppear {
             if !["standards", "points"].contains(mode) { mode = "standards" }
-            if !["youth", "masters"].contains(systemName) { systemName = "youth" }
+            if !["youth", "masters", "futures", "juniors", "nisca"].contains(systemName) { systemName = "youth" }
             if !getStandardAgeGroups(system: .youth).contains(youthAge) { youthAge = "15-16" }
             if !getStandardAgeGroups(system: .masters).contains(mastersAge) { mastersAge = "18-24" }
+            if !getStandardAgeGroups(system: .futures).contains(futuresAge) { futuresAge = "18 & under" }
             settingsExpanded = !configured
         }.onChange(of: mode) { _, _ in configured = true }
             .onChange(of: systemName) { _, _ in configured = true }
@@ -80,17 +87,17 @@ struct BenchmarkScreen: View {
             Section {
                 VStack(alignment: .leading, spacing: 12) {
                     Text(provider).font(.caption.weight(.semibold)).foregroundStyle(TurnmarkResultPalette.textMuted)
-                    Text(system == .youth ? value.achievedLevel.map { "\($0) standard" } ?? "Next target: B" : value.achievedLevel == nil ? "NQT benchmark" : "NQT target met")
+                    Text(system == .youth ? value.achievedLevel.map { "\($0) standard" } ?? "Next target: B" : system == .masters ? (value.achievedLevel == nil ? "NQT benchmark" : "NQT target met") : value.achievedLevel.map { "\($0) threshold met" } ?? "Next published target")
                         .font(.title2.bold()).accessibilityIdentifier("benchmarkSummary")
-                    Text("\(ageLabel(value.age)) · \(input.category) · \(courseNames[input.courseIndex])").font(.subheadline)
+                    Text([ageLabel(value.age), input.category, courseNames[input.courseIndex]].filter { !$0.isEmpty }.joined(separator: " · ")).font(.subheadline)
                     if let next = value.nextTarget {
-                        Text(next.time).font(.largeTitle.bold()).monospacedDigit().foregroundStyle(TurnmarkResultPalette.resultHighlight)
+                        Text(next.time).font(.largeTitle.bold()).monospacedDigit().foregroundStyle(TurnmarkResultPalette.resultHighlight).accessibilityIdentifier("benchmarkNextTime")
                         Text("\(next.gapSeconds, specifier: "%.2f")s to \(next.label)").font(.subheadline)
                     } else { Text(system == .youth ? "You meet the top published standard for this selection." : "Your entered time meets this published benchmark.").font(.subheadline) }
                 }.frame(maxWidth: .infinity, alignment: .leading).padding(20)
                     .foregroundStyle(TurnmarkResultPalette.text).background(NativeResultSurface())
             }.listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
-            Section(system == .youth ? "Published targets" : "National qualifying benchmark") {
+            if program == nil || value.targets.count > 1 || value.nextTarget == nil { Section(system == .masters ? "National qualifying benchmark" : "Published time thresholds") {
                 ForEach(value.targets, id: \.label) { target in
                     HStack {
                         Text(target.label).fontWeight(.semibold)
@@ -99,8 +106,8 @@ struct BenchmarkScreen: View {
                         Text(target.time).font(.headline).monospacedDigit()
                     }.accessibilityElement(children: .combine).accessibilityIdentifier("benchmark-level-\(target.label)")
                 }
-            }.listRowBackground(TurnmarkPalette.surface)
-            source(provenance, note: "Benchmarks do not confirm meet-entry eligibility. Meet rules, age dates, qualifying windows and exceptions still apply.")
+            }.listRowBackground(TurnmarkPalette.surface) }
+            source(provenance, note: program?.note ?? "Benchmarks do not confirm meet-entry eligibility. Meet rules, age dates, qualifying windows and exceptions still apply.")
         case let .unavailable(reason, provenance):
             unavailable(reason, points: false)
             source(provenance, note: "No fallback target is substituted. Check the published meet guidance and entry rules.")
@@ -140,7 +147,7 @@ struct BenchmarkScreen: View {
     }
     private func coverageMessage(_ reason: CoverageReason, points: Bool) -> String {
         switch reason {
-        case .courseNotSupported: return points ? "World Aquatics points need an original SCM or LCM swim. SCY swims aren’t scored." : "USMS publishes 2026 NQTs for SCY and LCM, not SCM."
+        case .courseNotSupported: return points ? "World Aquatics points need an original SCM or LCM swim. SCY swims aren’t scored." : program?.note ?? "USMS publishes 2026 NQTs for SCY and LCM, not SCM."
         case .ageGroupNotPublished: return "No NQT is published for this age group in the bundled 2026 table. Meet-specific rules and exceptions apply."
         case .noTimePublished: return "This event has no NQT in the published table for this age group. Check the meet’s entry guidance."
         default: return "This event has no published \(points ? "base time" : "target") in the selected table. Missing source data stays unavailable."

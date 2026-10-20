@@ -120,6 +120,8 @@ class ConverterTest {
         compose.activityRule.scenario.recreate()
         compose.onNodeWithTag("resultTime").assertTextEquals("1:06.33")
         compose.onNodeWithTag("conversionDetails").performScrollTo().performClick()
+        compose.onNodeWithText("Factors vary by event and course, not age.", substring = true).performScrollTo()
+        capture("android-method-explanations")
         compose.onNodeWithText("Time offset: 1.6 seconds").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("Edition: colorado-teamunify-2026").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("Done").assertIsDisplayed().performClick()
@@ -160,6 +162,27 @@ class ConverterTest {
         compose.onNodeWithTag("openBenchmarks").performScrollTo().performClick()
         compose.onNodeWithTag("benchmarkPoints").assertTextEquals("697 points")
         capture("android-world-points")
+    }
+
+    @Test fun nationalBenchmarksKeepOriginalSwimAndAgeTable() {
+        example()
+        compose.onNodeWithTag("openBenchmarks").performScrollTo().performClick()
+        compose.onNodeWithTag("choice-Standard system").performScrollTo().performClick()
+        compose.onNodeWithText("USA Swimming · Futures").performClick()
+        compose.onNodeWithTag("choice-Age group").performScrollTo().performClick()
+        compose.onNodeWithText("19 & over").performClick()
+        compose.onNodeWithTag("benchmarkNextTime").performScrollTo().assertTextEquals("49.79")
+        compose.onNodeWithTag("benchmarkOriginalTime").performScrollTo().assertTextEquals("58.32")
+        capture("android-futures-benchmark")
+        compose.onNodeWithTag("choice-Standard system").performScrollTo().performClick()
+        compose.onNodeWithText("USA Swimming · Junior Nationals").performClick()
+        compose.onNodeWithTag("benchmarkNextTime").performScrollTo().assertTextEquals("49.79")
+        compose.onNodeWithTag("choice-Standard system").performScrollTo().performClick()
+        compose.onNodeWithText("NISCA · All-America").performClick()
+        compose.onNodeWithTag("benchmark-level-Consideration").performScrollTo().assertExists()
+        compose.onNodeWithTag("benchmark-level-All-America time").assertExists()
+        compose.onNodeWithTag("choice-Age group").assertDoesNotExist()
+        capture("android-nisca-thresholds")
     }
 
     @Test fun recordedBenchmarkKeepsActualCategoryAndTime() {

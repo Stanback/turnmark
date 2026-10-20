@@ -6,7 +6,7 @@ import {
 import { conversionHtml } from "./generated/ui.js";
 
 import { z } from "zod";
-import type { Engine } from "@turnmark/sdk";
+import { getNationalStandardPrograms, type Engine } from "@turnmark/sdk";
 import {
   conversionMethods,
   altitudePolicies,
@@ -26,7 +26,7 @@ import {
   pointsValidity,
 } from "@turnmark/sdk/points";
 
-export const conversionResourceUri = "ui://turnmark/conversion/0.3.0-r4.html";
+export const conversionResourceUri = "ui://turnmark/conversion/0.3.0-r5.html";
 const uiMeta = {
   ui: {
     csp: { connectDomains: [], resourceDomains: [], frameDomains: [] },
@@ -287,10 +287,27 @@ export function createServer(engine: Engine) {
       ),
   );
   server.registerTool(
+    "assess_swim_benchmark",
+    {
+      description:
+        "Compare the original entered swim with youth, Masters, 2027 Futures, 2027 Junior Nationals (main standards, not bonus) or 2026–27 NISCA All-America time thresholds. Futures age is '18 & under' or '19 & over'; omit age for Juniors/NISCA. NISCA only covers original SCY/SCM interscholastic benchmarks; a time is not an award and an eligible application is required. Never use course or altitude estimates as recorded performances or proof of eligibility.",
+      inputSchema: z.strictObject({
+        swim,
+        table,
+        system: z.enum(["youth", "masters", "futures", "juniors", "nisca"]),
+        age: z.string().default(""),
+        edition: z.string().optional(),
+      }),
+      outputSchema: outcome,
+      annotations,
+    },
+    (input) => result(engine.benchmark(input)),
+  );
+  server.registerTool(
     "get_world_points",
     {
       description:
-        "Calculate World Aquatics points for the raw entered metric swim, with base time, validity and a derived next 100-point milestone. No SCY or age-adjusted points.",
+        "Calculate World Aquatics points for the raw entered metric swim, with base time, validity and a derived next 100-point milestone. This is not USA Swimming/Hy-Tek Power Points. No SCY or age-adjusted points.",
       inputSchema: z.strictObject({
         swim,
         table,
@@ -322,12 +339,14 @@ export function createServer(engine: Engine) {
         youth: z.unknown(),
         masters: z.unknown(),
         points: z.unknown(),
+        nationalPrograms: z.unknown(),
       }),
       annotations,
     },
     () =>
       result({
         engineVersion: engine.version,
+        nationalPrograms: getNationalStandardPrograms(),
         conversion: conversionProvenance,
         conversionMethods,
         altitude: altitudeProvenance,

@@ -8,7 +8,8 @@ permissions:
   contents: read
 concurrency:
   group: shared-engine-${{ github.ref }}
-  cancel-in-progress: true
+  # Superseded PR checks can stop; main must finish its tested MCP deployment.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   changes:
     uses: ./.github/workflows/changes.yml
@@ -27,6 +28,8 @@ jobs:
           cache: npm
       - name: Install pinned Rust toolchain
         run: rustup show active-toolchain
+      - name: Verify reviewed national benchmark snapshot
+        run: python3 scripts/import-national-standards.py --check
       - run: cargo fmt --all --check
       - run: cargo clippy --locked --workspace --all-targets --features turnmark-core/native -- -D warnings
       - run: cargo test --locked --workspace --features turnmark-core/native
@@ -214,9 +217,9 @@ jobs:
           import { readFileSync } from 'node:fs';
           const raw = readFileSync(process.env.RUNNER_TEMP + '/mcp-tools.json', 'utf8').trim();
           const body = JSON.parse(raw.startsWith('{') ? raw : raw.split(/\r?\n/).filter(line => line.startsWith('data: ')).map(line => line.slice(6)).join('\n'));
-          assert.deepEqual(body.result.tools.map(t => t.name).sort(), ['adjust_altitude','convert_swim','get_masters_target','get_sources','get_world_points','get_youth_standards']);
+          assert.deepEqual(body.result.tools.map(t => t.name).sort(), ['adjust_altitude','assess_swim_benchmark','convert_swim','get_masters_target','get_sources','get_world_points','get_youth_standards']);
           const { version } = JSON.parse(readFileSync('packages/mcp/package.json', 'utf8'));
-          const uri = `ui://turnmark/conversion/${version}.html`;
+          const uri = `ui://turnmark/conversion/${version}-r5.html`;
           assert.equal(body.result.tools.find(t => t.name === 'convert_swim')._meta.ui.resourceUri, uri);
           async function rpc(method, params) {
             const response = await fetch('https://mcp.turnmark.app/mcp', {

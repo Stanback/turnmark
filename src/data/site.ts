@@ -21,14 +21,14 @@ export const faqs = [
   {
     question: "Can I adjust a swim time for altitude?",
     answer:
-      "Yes. Enter the pool elevation in feet or meters. For eligible events of 200 or longer at 3,000 ft (914.4 m) or above, Turnmark subtracts the USA Swimming altitude adjustment before converting courses. The result is labeled as a sea-level estimate. Your actual swim and the deduction remain visible. Meet rules determine whether an adjustment is accepted.",
+      "Yes. Enable altitude adjustment under Calculation options, enter the pool elevation in feet or meters, and choose USA Swimming (the default) or NCAA policy. For published event distances at 3,000 ft (914.4 m) or above, Turnmark subtracts the selected adjustment before converting courses. Your actual swim and the deduction remain visible alongside the sea-level estimate. Meet rules determine whether an adjustment is accepted.",
     url: "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
     source: "USA Swimming altitude policy",
   },
   {
     question: "Which swim time standards can I compare against?",
     answer:
-      "The standards selector includes USA Swimming’s 2024–2028 youth motivational ladder and the published 2026 U.S. Masters Swimming National Qualifying Times for adults. USMS targets cover SCY and LCM, with age groups from 18–24 through 80–84; USMS does not set NQTs for ages 85+. Missing targets are left blank. These two datasets serve different purposes; the adult view does not invent B–AAAA levels.",
+      "Compare your original swim with USA Swimming’s 2024–2028 youth motivational standards, 2026 U.S. Masters Swimming National Qualifying Times, 2027 Futures and Junior Nationals main standards, or 2026–2027 NISCA All-America time thresholds. Futures has separate 18 & under and 19 & over tables. Each program keeps its published age, course and event coverage; missing targets stay unavailable. Converted estimates aren’t used, and meeting a time does not confirm meet entry or award eligibility.",
     url: "https://www.usms.org/events/national-championships/pool-national-championships/national-qualifying-times",
     source: "USMS national qualifying times",
   },

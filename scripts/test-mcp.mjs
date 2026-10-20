@@ -32,6 +32,7 @@ const tools = {
   youth: "get_youth_standards",
   masters: "get_masters_target",
   points: "get_world_points",
+  benchmark: "assess_swim_benchmark",
 };
 const operations = {
   convert: engine.convert,
@@ -39,6 +40,7 @@ const operations = {
   youth: engine.youth,
   masters: engine.masters,
   points: engine.points,
+  benchmark: engine.benchmark,
 };
 const fixtures = JSON.parse(
   await readFile(join(root, "fixtures/sdk-conformance.json"), "utf8"),
@@ -80,7 +82,7 @@ async function verify(transport, mode, label, ui = false) {
       listed.map((t) => t.name).sort(),
       [...Object.values(tools), "get_sources"].sort(),
     );
-    const uri = "ui://turnmark/conversion/0.3.0-r4.html";
+    const uri = "ui://turnmark/conversion/0.3.0-r5.html";
     assert.equal(
       listed.find((t) => t.name === "convert_swim")._meta.ui.resourceUri,
       uri,

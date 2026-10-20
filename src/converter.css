@@ -1277,6 +1277,7 @@
 }
 .history-heading {
   min-height: 44px;
+  align-items: center;
 }
 .history-heading > svg {
   color: var(--muted);

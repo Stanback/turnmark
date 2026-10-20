@@ -1,16 +1,16 @@
 # Methodology
 
-Source review: October 19, 2026 (Colorado formulas); October 16, 2026 (other datasets). Turnmark provides perspective for training and planning. Meet organizers determine accepted entry times and conversion methods.
+Source review: October 19, 2026 (Colorado formulas, NCAA altitude and national benchmarks); October 16, 2026 (other datasets). Turnmark provides perspective for training and planning. Meet organizers determine accepted entry times and conversion methods.
 
 ## Course conversion
 
-**NCAA is the default conversion method.** The collapsed Conversion method control offers Colorado Timing as an alternative. Native apps place it in the overflow menu; widget and MCP cards keep it in a collapsed section. The selection changes estimates, never the original swim used for standards or points. Web preferences, history and links retain the method; older links and records default to NCAA.
+**NCAA is the default conversion method.** Calculation options groups separate Course conversion and optional Altitude policy controls on web, native apps, widget and MCP cards. Course conversion offers Colorado Timing as an alternative. The selection changes estimates, never the original swim used for standards or points. Web preferences, history and links retain the method; older links and records default to NCAA.
 
 ### NCAA
 
 Factors are transcribed from **Appendix C, printed page 120** of the [NCAA 2025–26 and 2026–27 Swimming and Diving Rules Book](https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125), updated October 1, 2026. Source metadata and SHA-256 are recorded in `data/sources.json`; factors live in `data/conversions.json`.
 
-NCAA publishes metric-to-short-course-yards factors. Long-course factors vary by event and published men/women table. Short-course factors are shared between categories. Turnmark applies the same published table labels; these are calculation categories, not a determination of athlete eligibility.
+NCAA publishes metric-to-short-course-yards factors. Long-course factors vary by event and published men/women table. Short-course factors are shared between categories. Neither uses age or models individual development, starts, underwater skill, technique or endurance. Turnmark applies the same published table labels; these are calculation categories, not a determination of athlete eligibility.
 
 | Direction        | Calculation                                                 | Label                |
 | ---------------- | ----------------------------------------------------------- | -------------------- |
@@ -64,6 +64,13 @@ The [official USMS National Qualifying Times page](https://www.usms.org/events/n
 
 Adult comparisons use the raw entered swim, not NCAA course estimates or USA Swimming altitude-adjusted times. The UI reports seconds above/below the published NQT and labels the year. Meeting a displayed benchmark does not confirm entry eligibility: the qualifying window, meet rules, distance exceptions, and any additional conditions must be checked with USMS. This dataset is not an adult motivational ladder. Youth and adult standards selection, including the adult age group, round-trip through shared links and saved/history entries.
 
+## National meet and high-school benchmarks
+
+The [national benchmark guide](NATIONAL_BENCHMARKS.md) documents the editioned
+2027 Futures and Junior Nationals tables and 2026–2027 NISCA All-America time
+thresholds. These comparisons use only the original swim, preserve each table's
+course/event coverage, and do not establish meet entry or award eligibility.
+
 ## World Aquatics points
 
 Points are a separate way of comparing performances across events, using [World Aquatics’ cubic formula](https://www.worldaquatics.com/swimming/points): `floor(1000 × (base / enteredTime)^3)`. A floating-point epsilon of 1e-9 corrects representation at exact integer boundaries. Scores may exceed 1,000; they are not capped or interpreted as age-group rankings.
@@ -74,9 +81,9 @@ Points use the entered metric course and raw time, without altitude correction. 
 
 ## Altitude
 
-Optional corrections follow [USA Swimming’s Times and Recognition Policy Manual §4.7](https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7), verified October 16, 2026.
+The default policy follows [USA Swimming’s Times and Recognition Policy Manual §4.7](https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7), verified October 16, 2026. NCAA's 2026–27 Division I policy is also available; the [altitude guide](ALTITUDE.md) compares the published deductions and sources. Course conversion and altitude policy are separate selections.
 
-For eligible individual-event distances of 200, 400/500, 800/1000, and 1500/1650, subtract the published band adjustment from the original time before course conversion. Elevation bands are 3,000–4,250 ft, 4,251–6,500 ft, and above 6,500 ft. Feet are the default elevation unit. Meters use exactly 0.3048 m per foot and are rounded to the nearest whole foot on entry to select the published elevation band. Switching display units preserves the stored feet value, so repeated switches cannot move an elevation into another band. Links, saved swims, history, and CSV exports continue to use canonical feet. Altitude at 6,500 ft remains in the middle band. No adjustment is applied below 3,000 ft or to sprint events. Source-course results and standards comparisons are labeled as altitude-adjusted when a correction is applied. These adjustments are not for record or recognition purposes; verify the entry process with the meet.
+Subtract the selected policy's published adjustment before course conversion. USA Swimming covers individual distances of 200, 400/500, 800/1000 and 1500/1650; NCAA also has deductions for 100 at higher bands. Elevation bands are 3,000–4,250 ft, 4,251–6,500 ft, and above 6,500 ft. Feet are the default elevation unit. Meters use exactly 0.3048 m per foot and are rounded to the nearest whole foot on entry to select the published elevation band. Switching display units preserves the stored feet value, so repeated switches cannot move an elevation into another band. Links, saved swims, history, and CSV exports continue to use canonical feet. Altitude at 6,500 ft remains in the middle band. No adjustment is applied below 3,000 ft or where the selected table has no deduction. Sea-level estimates are labeled separately; standards, points and logged performances retain the original swim. These adjustments are not for record or recognition purposes; verify the entry process with the meet.
 
 ## Privacy
 

@@ -5,6 +5,9 @@
   import Icon from "./lib/Icon.svelte";
   import HeroCurrent from "./lib/HeroCurrent.svelte";
   import Masters from "./lib/Masters.svelte";
+  import NationalStandards from "./lib/NationalStandards.svelte";
+  import { getNationalStandardPrograms } from "@turnmark/sdk";
+  const nationalPrograms = getNationalStandardPrograms();
   import Install from "./lib/Install.svelte";
   import Theme from "./lib/Theme.svelte";
   import { site, faqs } from "./data/site";
@@ -87,6 +90,7 @@
     const preferences: SwimPreferences = {
       age: form.age,
       mastersAge: form.mastersAge,
+      futuresAge: form.futuresAge,
       standardSystem: form.standardSystem,
       category: form.category,
       course: form.course,
@@ -490,7 +494,13 @@
       ["Standards system", form.standardSystem],
       [
         "Standards age group",
-        form.standardSystem === "masters" ? form.mastersAge : form.age,
+        form.standardSystem === "masters"
+          ? form.mastersAge
+          : form.standardSystem === "futures"
+            ? form.futuresAge
+            : form.standardSystem === "youth"
+              ? form.age
+              : "Not age-grouped",
       ],
       ["Altitude ft", form.altitude],
       ["Altitude correction seconds", adjustment],
@@ -1032,7 +1042,9 @@
             ><select id="standards-system" bind:value={form.standardSystem}
               ><option value="youth">USA Swimming · Youth</option><option
                 value="masters">U.S. Masters Swimming · Adults</option
-              ></select
+              >{#each nationalPrograms as program}<option value={program.system}
+                  >{program.label}</option
+                >{/each}</select
             ><Icon name="chevron" size={16} /></span
           ></label
         >
@@ -1044,6 +1056,12 @@
             distance={form.distance}
             stroke={form.stroke}
             {time}
+          />
+        {:else if form.standardSystem !== "youth"}
+          <NationalStandards
+            system={form.standardSystem}
+            bind:age={form.futuresAge}
+            {form}
           />
         {:else}
           <div class="standards-title-row">
@@ -1601,7 +1619,7 @@
     </nav>
     <div class="footer-meta">
       <span>No account. No uploads.</span><span
-        >Sources checked October 16, 2026</span
+        >Sources checked October 16–19, 2026</span
       >
     </div>
   </div>

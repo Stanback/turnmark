@@ -104,7 +104,16 @@ estimate. Separate youth/Masters ages and comparison mode persist locally. Sourc
 editions and meet-entry limits remain visible. The converter has one Standards &
 points entry point; it does not repeat the sheet’s next-standard assessment in
 another nearby card. More coverage and validation notes
-are in [the standards review](NATIVE_STANDARDS_REVIEW.md).
+are in [the standards review](NATIVE_STANDARDS_REVIEW.md). The selector also
+includes the editioned [Futures, Junior Nationals and NISCA benchmarks](NATIONAL_BENCHMARKS.md).
+
+The calculation explanation distinguishes NCAA's category-specific long-course
+factors from its shared short-course factors. Neither NCAA nor Colorado uses age
+or models individual swimming ability. The method gap is not a confidence interval.
+
+| iOS · method explanation                                                                                                                        | Android · method explanation                                                                                                                        |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="screenshots/ios-method-comparison-light.png" width="300" alt="iOS grouped calculation explanation with NCAA age and category limits"> | <img src="screenshots/android-method-comparison-light.png" width="300" alt="Android calculation explanation with the same age and category limits"> |
 
 ## Text scaling and adaptive layouts
 
@@ -135,13 +144,13 @@ XCTest’s generic screenshot attachment is black on that simulator.
 
 ## Current verification
 
-The regression suites cover 24 iOS cases (7 storage/unit and 17 UI) and 27
+The regression suites cover 25 iOS cases (7 storage/unit and 18 UI) and 28
 Android instrumentation cases: direct entry/reset, method comparison, altitude
 policy and unit changes, the Colorado distance caveat, original-swim benchmarks,
 logging, text scaling and adaptive geometry. Current run status is recorded in
-[the required checks](https://github.com/Stanback/turnmark/pull/31/checks).
+[the required checks](https://github.com/Stanback/turnmark/actions/workflows/shared-engine.yml).
 
-The complete passing local iOS UI baseline took 500 seconds, with a 21-second
+The complete passing local iOS UI baseline took 525 seconds, with a 22-second
 rotation/focus case. Focused checks cover subsequent harness corrections and
 visible restoration of enabled altitude settings. These are local measurements,
 not simulator timing guarantees. Physical-device and assistive-technology review

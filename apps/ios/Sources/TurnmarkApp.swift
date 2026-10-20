@@ -137,7 +137,7 @@ private struct TurnmarkView: View {
         if ProcessInfo.processInfo.arguments.contains("-uitesting-reset") {
             UserDefaults.standard.removeObject(forKey: "draft")
             UserDefaults.standard.removeObject(forKey: "savedSwim")
-            for key in ["benchmarkMode", "benchmarkSystem", "benchmarkYouthAge", "benchmarkMastersAge", "benchmarkConfigured"] { UserDefaults.standard.removeObject(forKey: key) }
+            for key in ["benchmarkMode", "benchmarkSystem", "benchmarkYouthAge", "benchmarkMastersAge", "benchmarkFuturesAge", "benchmarkConfigured"] { UserDefaults.standard.removeObject(forKey: key) }
             if let store = try? SwimHistoryStore() { for swim in store.swims { try? store.remove(swim.id) } }
         }
         if ProcessInfo.processInfo.arguments.contains("-uitesting-example") {
@@ -409,7 +409,7 @@ private struct TurnmarkView: View {
                 Button { dismissTimeEntry(); draft.time = ""; logNotice = nil } label: { Label("Reset", systemImage: "arrow.counterclockwise") }
                     .font(.subheadline).accessibilityIdentifier("resetConverter")
             }.textCase(nil)
-        } footer: { Text("Estimates for perspective. Meet rules decide entry eligibility.") }
+        }
             .listRowBackground(TurnmarkPalette.surface)
     }
     private func coursePicker(_ title: String, selection: Binding<Int>, id: String) -> some View {
@@ -504,6 +504,7 @@ struct ConversionResult: View {
                 Divider().overlay(TurnmarkResultPalette.borderSubtle)
                 Text("Select a course to focus").font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted)
                 courseRows
+                Text("Converted times are estimates. Check your meet’s entry rules.").font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted)
                 Button { showingDetails = true } label: {
                     Label("How this is calculated", systemImage: "info.circle").font(.subheadline)
                 }.buttonStyle(.plain).foregroundStyle(TurnmarkResultPalette.accent)
@@ -732,16 +733,16 @@ private struct ConversionDetails: View {
                         }
                     }
                 } footer: {
-                    Text("Two conversion rules, not a prediction range. Use the method required by your meet.")
+                    Text("Two conversion rules, not a prediction range or confidence interval. Use the method required by your meet.")
                 }
                 var colorado: Draft { var copy = input; copy.methodID = "colorado-teamunify-2026"; return copy }
                 if case let .available(value, _) = colorado.outcome, value.caveat != nil {
                     Section { Text(coloradoDistanceCaveat).font(.footnote).foregroundStyle(.secondary) }
                 }
                 Section("Why the times differ") {
-                    detail("NCAA", "Published factors vary by event and category. Metric-to-yards values are direct; reverse and SCM/LCM comparisons use ratios.")
+                    detail("NCAA", "Factors vary by event and course, not age. Long-course factors use separate men’s and women’s tables; short-course meters-to-yards factors are shared. NCAA publishes metric-to-yards factors; reverse and SCM/LCM conversions are derived.")
                     detail("Colorado Timing", "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.")
-                    detail("Pool length", "Shorter pools add turns and push-offs. These rules do not measure your technique, endurance or individual development.")
+                    detail("Pool length", "Shorter pools mean more turns and push-offs. These rules do not adjust for your starts, underwater skill, technique, endurance or individual development.")
                     detail("Distance events", "500, 1000 and 1650 yards map to 400, 800 and 1500 meters.")
                 }
                 if case let .available(value, source) = input.outcome {

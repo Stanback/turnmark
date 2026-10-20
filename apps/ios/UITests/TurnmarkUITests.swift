@@ -89,6 +89,9 @@ final class TurnmarkUITests: XCTestCase {
         XCTAssertEqual(app.staticTexts["resultTime"].label, "1:06.33")
         let details = app.buttons["conversionDetails"]
         reach(details, in: app); details.tap()
+        let explanation = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Factors vary by event and course, not age.")).firstMatch
+        reach(explanation, in: app)
+        capture(app, "Conversion method explanations")
         reach(app.staticTexts["Time offset: 1.6 seconds"], in: app)
         XCTAssertTrue(app.staticTexts["Time offset: 1.6 seconds"].exists)
         reach(app.staticTexts["Edition: colorado-teamunify-2026"], in: app)
@@ -254,6 +257,15 @@ final class TurnmarkUITests: XCTestCase {
         if earlier { XCTFail("Element must remain reachable inside the content viewport: \(element)") }
         else { XCTAssertTrue(element.exists && element.isHittable, "Element must remain reachable: \(element)") }
     }
+    @MainActor private func assertTimeValue(_ text: String, in field: XCUIElement,
+        file: StaticString = #filePath, line: UInt = #line) {
+        // Hosted XCTest can return before the final keyboard events reach
+        // SwiftUI, and a cold accessibility read can itself take several seconds.
+        // Allow that read to finish; require the exact value without retyping.
+        let entered = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", text), object: field)
+        XCTAssertEqual(XCTWaiter.wait(for: [entered], timeout: 20), .completed,
+            "The full time must arrive; observed \(field.value as? String ?? "<no value>")", file: file, line: line)
+    }
     @MainActor private func replace(_ field: XCUIElement, with text: String, in app: XCUIApplication, earlier: Bool = false) {
         reach(field, in: app, earlier: earlier)
         if field.identifier == "timeInput" {
@@ -263,7 +275,7 @@ final class TurnmarkUITests: XCTestCase {
             if clear.exists { reach(clear, in: app); clear.tap() }
             else { field.tap() }
             field.typeText(text)
-            XCTAssertEqual(field.value as? String, text)
+            assertTimeValue(text, in: field)
         } else {
             field.tap()
             field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: (field.value as? String ?? "").count) + text)
@@ -361,6 +373,34 @@ final class TurnmarkUITests: XCTestCase {
         capture(app, "Recorded swim standards")
         app.buttons["closeBenchmarks"].tap()
         XCTAssertTrue(app.staticTexts["Manually logged performance"].exists)
+    }
+
+    @MainActor func testNationalBenchmarksKeepOriginalSwimAndAgeTable() {
+        let app = launch()
+        let open = app.buttons["openBenchmarks"]
+        reach(open, in: app); open.tap()
+        let system = app.descendants(matching: .any)["benchmarkSystem"].firstMatch
+        reach(system, in: app); system.tap(); app.buttons["USA Swimming · Futures"].tap()
+        let age = app.descendants(matching: .any)["benchmarkAge"].firstMatch
+        reach(age, in: app); age.tap(); app.buttons["19 & over"].tap()
+        let target = app.staticTexts["benchmarkNextTime"]
+        reach(target, in: app, earlier: true)
+        XCTAssertTrue(app.staticTexts["49.79"].firstMatch.exists)
+        let original = app.staticTexts["benchmarkOriginalTime"]
+        reach(original, in: app, earlier: true)
+        XCTAssertEqual(original.label, "58.32")
+        reach(target, in: app)
+        capture(app, "Futures original swim benchmark")
+        reach(system, in: app, earlier: true); system.tap(); app.buttons["USA Swimming · Junior Nationals"].tap()
+        let junior = app.staticTexts["benchmarkNextTime"]
+        reach(junior, in: app, earlier: true); XCTAssertEqual(junior.label, "49.79")
+        reach(system, in: app, earlier: true); system.tap(); app.buttons["NISCA · All-America"].tap()
+        let consideration = app.descendants(matching: .any)["benchmark-level-Consideration"].firstMatch
+        reach(consideration, in: app, earlier: true); XCTAssertTrue(consideration.exists)
+        XCTAssertTrue(app.descendants(matching: .any)["benchmark-level-All-America time"].firstMatch.exists)
+        XCTAssertFalse(age.exists)
+        capture(app, "NISCA original swim thresholds")
+        app.buttons["closeBenchmarks"].tap()
     }
 
     @MainActor func testBenchmarkMissingTargetAtAccessibilityTextSize() {
@@ -546,10 +586,10 @@ final class TurnmarkUITests: XCTestCase {
         XCUIDevice.shared.orientation = .landscapeLeft
         // Type into the existing responder, without tapping/refocusing the field.
         app.typeText(".25")
-        XCTAssertEqual(field.value as? String, "1:00.25")
+        assertTimeValue("1:00.25", in: field)
         XCUIDevice.shared.orientation = .portrait
         app.typeText(XCUIKeyboardKey.delete.rawValue)
-        XCTAssertEqual(field.value as? String, "1:00.2")
+        assertTimeValue("1:00.2", in: field)
         let done = app.buttons["dismissConverterKeyboard"]
         XCTAssertTrue(done.waitForExistence(timeout: 5)); XCTAssertNotNil(visibleKeyboard(in: app)); done.tap()
         assertConverterKeyboardDismissed(in: app)

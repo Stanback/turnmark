@@ -15,6 +15,8 @@ static YOUTH: LazyLock<Value> =
     LazyLock::new(|| snapshot(include_str!("../../../data/standards.json")));
 static MASTERS: LazyLock<Value> =
     LazyLock::new(|| snapshot(include_str!("../../../data/masters.json")));
+static NATIONAL: LazyLock<Value> =
+    LazyLock::new(|| snapshot(include_str!("../../../data/national-standards.json")));
 static POINTS: LazyLock<Value> =
     LazyLock::new(|| snapshot(include_str!("../../../data/points.json")));
 
@@ -664,7 +666,103 @@ pub(crate) fn standard_age_groups(system: StandardSystem) -> Vec<String> {
             .map(text)
             .chain(std::iter::once("85+".to_owned()))
             .collect(),
+        StandardSystem::Futures | StandardSystem::Juniors | StandardSystem::Nisca => {
+            national_program(system)["ages"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(text)
+                .collect()
+        }
     }
+}
+
+fn national_program(system: StandardSystem) -> &'static Value {
+    let id = serde_json::to_value(system).unwrap();
+    NATIONAL["programs"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|p| p["id"] == id)
+        .unwrap()
+}
+
+pub(crate) fn national_programs() -> Vec<StandardProgram> {
+    NATIONAL["programs"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|p| StandardProgram {
+            system: serde_json::from_value(p["id"].clone()).unwrap(),
+            label: text(&p["label"]),
+            title: text(&p["title"]),
+            scope: text(&p["scope"]),
+            ages: p["ages"].as_array().unwrap().iter().map(text).collect(),
+            note: text(&p["note"]),
+        })
+        .collect()
+}
+
+fn national_targets(
+    input: &Value,
+    event: &SwimEvent,
+    system: StandardSystem,
+) -> Result<(String, Vec<String>, Vec<f64>, Provenance), Failure> {
+    let program = national_program(system);
+    edition(input, program["edition"].as_str().unwrap())?;
+    let table = category(&input["table"])?;
+    let ages = standard_age_groups(system);
+    let age = if ages.is_empty() {
+        ""
+    } else {
+        input["age"]
+            .as_str()
+            .filter(|age| ages.iter().any(|a| a == age))
+            .ok_or_else(|| invalid("age", ValidationReason::InvalidAgeGroup))?
+    };
+    let source = program["sourceByCourse"]
+        .get(course_key(event.course))
+        .unwrap_or(&program["source"]);
+    let provenance = provenance(
+        &json!({"source": source}),
+        program["edition"].as_str().unwrap(),
+        "title",
+        "revision",
+    );
+    if !(if system == StandardSystem::Nisca {
+        [Course::SCY, Course::SCM]
+    } else {
+        [Course::SCY, Course::LCM]
+    })
+    .contains(&event.course)
+    {
+        return Err(unavailable(CoverageReason::CourseNotSupported, provenance));
+    }
+    let row = NATIONAL["records"].as_array().unwrap().iter().find(|r| {
+        r["program"] == program["id"]
+            && r["age"] == age
+            && r["category"] == category_key(table)
+            && matches(r, event)
+    });
+    let Some(row) = row else {
+        return Err(unavailable(CoverageReason::EventNotPublished, provenance));
+    };
+    Ok((
+        age.to_owned(),
+        program["levels"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(text)
+            .collect(),
+        row["times"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|v| v.as_f64().unwrap())
+            .collect(),
+        provenance,
+    ))
 }
 
 pub(crate) fn achieved_standard(time: f64, times: &[f64]) -> Option<usize> {
@@ -677,6 +775,9 @@ pub(crate) fn benchmark(input: &Value) -> Calculation<BenchmarkValue> {
     let system = match input["system"].as_str() {
         Some("youth") => StandardSystem::Youth,
         Some("masters") => StandardSystem::Masters,
+        Some("futures") => StandardSystem::Futures,
+        Some("juniors") => StandardSystem::Juniors,
+        Some("nisca") => StandardSystem::Nisca,
         _ => return Err(invalid("system", ValidationReason::UnsupportedDataset)),
     };
     let (event, _, seconds) = swim(&input["swim"])?;
@@ -697,6 +798,9 @@ pub(crate) fn benchmark(input: &Value) -> Calculation<BenchmarkValue> {
                 vec![value.seconds],
                 provenance,
             )
+        }
+        StandardSystem::Futures | StandardSystem::Juniors | StandardSystem::Nisca => {
+            national_targets(input, &event, system)?
         }
     };
     let achieved = achieved_standard(seconds, &times);

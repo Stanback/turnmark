@@ -115,6 +115,12 @@ pub fn get_standard_age_groups(system: StandardSystem) -> Vec<String> {
     engine::standard_age_groups(system)
 }
 
+/// Versioned national meet and high-school benchmark labels and coverage notes.
+#[cfg_attr(feature = "native", uniffi::export)]
+pub fn get_national_standard_programs() -> Vec<StandardProgram> {
+    engine::national_programs()
+}
+
 /// Invalid requests return structured outcomes. Malformed JSON and unknown
 /// operation names are transport errors, rather than calculation results.
 #[cfg_attr(feature = "native", uniffi::export)]
@@ -132,6 +138,7 @@ pub fn evaluate(operation: String, request_json: String) -> Result<String, Engin
         "masters" => json!(MastersOutcome::from(engine::masters(&request))),
         "points" => json!(PointsOutcome::from(engine::points(&request))),
         "benchmark" => json!(BenchmarkOutcome::from(engine::benchmark(&request))),
+        "national-programs" => json!(engine::national_programs()),
         _ => return Err(EngineError::UnknownOperation { operation }),
     };
     Ok(result.to_string())

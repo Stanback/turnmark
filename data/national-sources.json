@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "checked": "2026-10-19",
+  "programs": [
+    {
+      "id": "futures",
+      "edition": "usa-swimming-futures-2027",
+      "label": "USA Swimming · Futures",
+      "title": "Futures Championships",
+      "scope": "2027 · Individual events",
+      "ages": ["18 & under", "19 & over"],
+      "levels": ["Futures"],
+      "source": {
+        "title": "2027 TYR Futures Championships",
+        "url": "https://www.usaswimming.org/docs/default-source/timesdocuments/time-standards/2027/13240385687_2027_events_tyrfutureschampionships_timestandards.pdf",
+        "revision": "2027",
+        "verified": "2026-10-19",
+        "sha256": "19ddd6f8fb571e23aaa65bfe3b4a08492ef8b68f6a96c4422d1a2ffb2f9cd3f9"
+      },
+      "note": "Compare the original swim with the selected 2027 age table. Qualifying windows, age dates and meet entry rules still apply. Relays are not included."
+    },
+    {
+      "id": "juniors",
+      "edition": "usa-swimming-juniors-2027",
+      "label": "USA Swimming · Junior Nationals",
+      "title": "Junior National Championships",
+      "scope": "2027 · Individual events",
+      "ages": [],
+      "levels": ["Junior Nationals"],
+      "source": {
+        "title": "2027 Speedo Junior National Championships",
+        "url": "https://www.usaswimming.org/docs/default-source/timesdocuments/time-standards/2027/13240385687_2027_events_speedojuniornationalchampionships_timestandards.pdf",
+        "revision": "2027",
+        "verified": "2026-10-19",
+        "sha256": "9030b0d5cc93b97203160a865fe8c61bc3380010f6b6410058d81e9241846bbd"
+      },
+      "note": "The main 2027 individual-event standard, excluding bonus and relay standards. Meeting a time does not confirm meet entry eligibility; check age dates, qualifying windows and the meet announcement."
+    },
+    {
+      "id": "nisca",
+      "edition": "nisca-all-america-2026-27",
+      "label": "NISCA · All-America",
+      "title": "NISCA All-America time standards",
+      "scope": "2026–2027 · High school · SCY / SCM",
+      "ages": [],
+      "levels": ["Consideration", "All-America time"],
+      "source": {
+        "title": "2026–2027 NISCA Swimming All-America · Yards",
+        "url": "https://niscaonline.org/images/Documents/AllAmerica/Swimming/2027_Yards.pdf",
+        "revision": "2026–2027",
+        "verified": "2026-10-19",
+        "sha256": "ddcb0c6685d9f4f96b72d73265eb246865233996c23dd66c727262be4c4bc4ec"
+      },
+      "sourceByCourse": {
+        "SCY": {
+          "title": "2026–2027 NISCA Swimming All-America · Yards",
+          "url": "https://niscaonline.org/images/Documents/AllAmerica/Swimming/2027_Yards.pdf",
+          "revision": "2026–2027",
+          "verified": "2026-10-19",
+          "sha256": "ddcb0c6685d9f4f96b72d73265eb246865233996c23dd66c727262be4c4bc4ec"
+        },
+        "SCM": {
+          "title": "2026–2027 NISCA Swimming All-America · Meters",
+          "url": "https://niscaonline.org/images/Documents/AllAmerica/Swimming/2027_Meters.pdf",
+          "revision": "2026–2027",
+          "verified": "2026-10-19",
+          "sha256": "5e0aa072c82400b4db6912756820187304ab955ae8fd64c033c7d2fe6705fac6"
+        }
+      },
+      "note": "Time thresholds only, not an All-America award. A completed application, eligible interscholastic performance and other NISCA requirements apply. Only original 25-yard or 25-meter swims; no LCM or relay comparison.",
+      "rules": {
+        "title": "NISCA Swimming All America rules",
+        "url": "https://niscaonline.org/images/Documents/AllAmerica/Swimming/AASwimRules.pdf",
+        "revision": "Checked 2026-10-19",
+        "verified": "2026-10-19",
+        "sha256": "2cfba95d9cffc8e3cb18df6a4a3744059b6052065d66ff95982b3ad7f1187de1"
+      }
+    }
+  ]
+}

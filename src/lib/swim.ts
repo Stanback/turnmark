@@ -1,4 +1,5 @@
 // Web-only labels, share links, and display helpers stay outside the SDK.
+import type { StandardSystem } from "@turnmark/sdk";
 import {
   availableEvent,
   courses,
@@ -77,7 +78,8 @@ export interface SwimState {
   category: Category;
   age: Age;
   altitude: number;
-  standardSystem: "youth" | "masters";
+  standardSystem: StandardSystem;
+  futuresAge: string;
   mastersAge: string;
   method: ConversionMethod;
   altitudePolicy: AltitudePolicy;
@@ -92,6 +94,7 @@ export const defaultState: SwimState = {
   altitude: 0,
   standardSystem: "youth",
   mastersAge: "18-24",
+  futuresAge: "18 & under",
   method: conversionMethod,
   altitudePolicy: "usa-swimming-altitude-2026",
 };
@@ -114,7 +117,10 @@ export function readState(hash: string): SwimState {
   const altitude = Number(p.get("h"));
   if (Number.isFinite(altitude) && altitude >= 0 && altitude <= 20000)
     state.altitude = altitude;
-  if (p.get("b") === "masters") state.standardSystem = "masters";
+  if (["masters", "futures", "juniors", "nisca"].includes(p.get("b") ?? ""))
+    state.standardSystem = p.get("b") as StandardSystem;
+  if (["18 & under", "19 & over"].includes(p.get("fa") ?? ""))
+    state.futuresAge = p.get("fa")!;
   if (mastersAges.includes(p.get("ma") ?? "")) state.mastersAge = p.get("ma")!;
   if (p.get("m") === coloradoMethod) state.method = coloradoMethod;
   if (p.get("ap") === "ncaa-altitude-2026-27-d1")
@@ -136,7 +142,14 @@ export function stateHash(state: SwimState) {
     ...(state.method === coloradoMethod ? { m: state.method } : {}),
     ...(state.standardSystem === "masters"
       ? { b: "masters", ma: state.mastersAge }
-      : {}),
+      : state.standardSystem !== "youth"
+        ? {
+            b: state.standardSystem,
+            ...(state.standardSystem === "futures"
+              ? { fa: state.futuresAge ?? "18 & under" }
+              : {}),
+          }
+        : {}),
   }).toString();
 }
 export function csvCell(value: string | number) {

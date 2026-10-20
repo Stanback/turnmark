@@ -23,7 +23,7 @@ available integrations and does not implement WebMCP or expose personal data.
 
 ## One calculation engine
 
-`packages/mcp` registers six read-only tools around `@turnmark/sdk`.
+`packages/mcp` registers seven read-only tools in the current source adapter around `@turnmark/sdk`.
 `packages/mcp-worker` supplies stateless Streamable HTTP using the same server
 factory. Node loads the packaged Wasm bytes; Workers imports a bundled,
 precompiled `WebAssembly.Module`. Each HTTP request gets a fresh protocol server;
@@ -112,6 +112,12 @@ SDK/core edits test their MCP consumer. There is no automatic npm publication
 of `@turnmark/mcp`; it depends on a released SDK and separate package release
 setup. WebMCP and publisher embeds have independent adapters and scopes.
 
+Superseded PR checks may be canceled, but main-branch engine runs finish before
+the next run can deploy. This prevents a web-only merge from canceling a pending
+MCP release and then skipping its replacement. Live verification checks all seven
+tools and the current versioned Apps resource; a healthy root alone does not
+confirm that the intended update deployed.
+
 The private IaC repository manages the zone's Free-plan edge rules: a
 path-only `/mcp` limit of 30 requests per 10 seconds per IP/location, with a
 10-second block, and hostname-specific route filtering. A disabled emergency
@@ -130,7 +136,9 @@ Sources: [official TypeScript SDK](https://github.com/modelcontextprotocol/types
 
 The source adapter/server version is `0.3.0`, using SDK `0.2.0`.
 The official Apps extension adds metadata/resource discovery to `convert_swim`;
-all six tool names and text/structured fallback remain. `convert_swim` accepts
+the six original tool names and text/structured fallback remain. The source
+adapter also adds `assess_swim_benchmark` for original-swim standards, including
+Futures, Junior Nationals and NISCA; published npm 0.2.0 still has six tools. `convert_swim` accepts
 the optional method; `get_sources` additionally lists conversion methods.
 Registration is static: a fresh per-request stateless server cannot reliably
 infer initialized UI capabilities during construction. Hosts choose whether to

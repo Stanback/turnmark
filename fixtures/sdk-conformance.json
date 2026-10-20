@@ -2614,6 +2614,360 @@
           }
         }
       }
+    },
+    {
+      "id": "national-futures-youth",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "58.32",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "table": "women",
+        "age": "18 & under",
+        "system": "futures"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "enteredTime": "58.32",
+          "targets": [
+            {
+              "label": "Futures",
+              "time": "51.89",
+              "seconds": 51.89,
+              "met": false,
+              "gapSeconds": 6.43
+            }
+          ]
+        },
+        "provenance": {
+          "id": "usa-swimming-futures-2027"
+        }
+      },
+      "source": "data/national-sources.json",
+      "rationale": "Independent published table sample. Original swim only; thresholds do not award eligibility or All-America status."
+    },
+    {
+      "id": "national-futures-adult",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "58.32",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "table": "women",
+        "age": "19 & over",
+        "system": "futures"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "targets": [
+            {
+              "label": "Futures",
+              "time": "49.79",
+              "seconds": 49.79,
+              "met": false,
+              "gapSeconds": 8.53
+            }
+          ]
+        }
+      },
+      "source": "data/national-sources.json",
+      "rationale": "Independent published table sample. Original swim only; thresholds do not award eligibility or All-America status."
+    },
+    {
+      "id": "national-futures-boundary",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "51.89",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "table": "women",
+        "age": "18 & under",
+        "system": "futures"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "achievedLevel": "Futures",
+          "nextTarget": null,
+          "targets": [
+            {
+              "label": "Futures",
+              "time": "51.89",
+              "seconds": 51.89,
+              "met": true,
+              "gapSeconds": 0
+            }
+          ]
+        }
+      },
+      "source": "data/national-sources.json",
+      "rationale": "Independent published table sample. Original swim only; thresholds do not award eligibility or All-America status."
+    },
+    {
+      "id": "national-futures-missing-age",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "58.32",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "table": "women",
+        "age": "",
+        "system": "futures"
+      },
+      "expected": {
+        "status": "invalid",
+        "field": "age",
+        "reason": "invalid-age-group"
+      },
+      "source": "data/national-sources.json",
+      "rationale": "Independent published table sample. Original swim only; thresholds do not award eligibility or All-America status."
+    },
+    {
+      "id": "national-futures-no-scm",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "58.32",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCM"
+          }
+        },
+        "table": "women",
+        "age": "18 & under",
+        "system": "futures"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "course-not-supported"
+      },
+      "source": "data/national-sources.json",
+      "rationale": "Independent published table sample. Original swim only; thresholds do not award eligibility or All-America status."
+    },
+    {
+      "id": "national-juniors-lcm",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "1:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "LCM"
+          }
+        },
+        "table": "women",
+        "age": "",
+        "system": "juniors"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "targets": [
+            {
+              "label": "Junior Nationals",
+              "time": "57.59",
+              "seconds": 57.59,
+              "met": false,
+              "gapSeconds": 2.41
+            }
+          ]
+        },
+        "provenance": {
+          "id": "usa-swimming-juniors-2027"
+        }
+      },
+      "source": "data/national-sources.json",
+      "rationale": "Independent published table sample. Original swim only; thresholds do not award eligibility or All-America status."
+    },
+    {
+      "id": "national-juniors-distance",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "5:00",
+          "event": {
+            "distance": 500,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "table": "women",
+        "age": "",
+        "system": "juniors"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "event": {
+            "distance": 500
+          },
+          "targets": [
+            {
+              "label": "Junior Nationals",
+              "time": "4:49.99",
+              "seconds": 289.99,
+              "met": false,
+              "gapSeconds": 10.01
+            }
+          ]
+        }
+      },
+      "source": "data/national-sources.json",
+      "rationale": "Independent published table sample. Original swim only; thresholds do not award eligibility or All-America status."
+    },
+    {
+      "id": "national-nisca-consideration",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "50.50",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "table": "women",
+        "age": "",
+        "system": "nisca"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "achievedLevel": "Consideration",
+          "targets": [
+            {
+              "label": "Consideration",
+              "time": "51.03",
+              "seconds": 51.03,
+              "met": true,
+              "gapSeconds": 0
+            },
+            {
+              "label": "All-America time",
+              "time": "50.17",
+              "seconds": 50.17,
+              "met": false,
+              "gapSeconds": 0.33
+            }
+          ]
+        }
+      },
+      "source": "data/national-sources.json",
+      "rationale": "Independent published table sample. Original swim only; thresholds do not award eligibility or All-America status."
+    },
+    {
+      "id": "national-nisca-metric-distance",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "4:20",
+          "event": {
+            "distance": 400,
+            "stroke": "freestyle",
+            "course": "SCM"
+          }
+        },
+        "table": "women",
+        "age": "",
+        "system": "nisca"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "targets": [
+            {
+              "label": "Consideration",
+              "time": "4:21.03",
+              "seconds": 261.03,
+              "met": true,
+              "gapSeconds": 0
+            },
+            {
+              "label": "All-America time",
+              "time": "4:16.51",
+              "seconds": 256.51,
+              "met": false,
+              "gapSeconds": 3.49
+            }
+          ]
+        },
+        "provenance": {
+          "url": "https://niscaonline.org/images/Documents/AllAmerica/Swimming/2027_Meters.pdf"
+        }
+      },
+      "source": "data/national-sources.json",
+      "rationale": "Independent published table sample. Original swim only; thresholds do not award eligibility or All-America status."
+    },
+    {
+      "id": "national-nisca-no-lcm",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "58.32",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "LCM"
+          }
+        },
+        "table": "women",
+        "age": "",
+        "system": "nisca"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "course-not-supported"
+      },
+      "source": "data/national-sources.json",
+      "rationale": "Independent published table sample. Original swim only; thresholds do not award eligibility or All-America status."
+    },
+    {
+      "id": "national-nisca-no-200-back",
+      "operation": "benchmark",
+      "input": {
+        "swim": {
+          "time": "58.32",
+          "event": {
+            "distance": 200,
+            "stroke": "backstroke",
+            "course": "SCY"
+          }
+        },
+        "table": "women",
+        "age": "",
+        "system": "nisca"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "event-not-published"
+      },
+      "source": "data/national-sources.json",
+      "rationale": "Independent published table sample. Original swim only; thresholds do not award eligibility or All-America status."
     }
   ]
 }

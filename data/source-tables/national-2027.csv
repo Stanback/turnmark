@@ -1,0 +1,237 @@
+program,age,course,category,distance,stroke,consideration,standard
+futures,18 & under,SCY,women,50,FR,,23.89
+futures,18 & under,LCM,women,50,FR,,27.39
+futures,18 & under,LCM,men,50,FR,,24.59
+futures,18 & under,SCY,men,50,FR,,21.29
+futures,18 & under,SCY,women,100,FR,,51.89
+futures,18 & under,LCM,women,100,FR,,59.29
+futures,18 & under,LCM,men,100,FR,,53.59
+futures,18 & under,SCY,men,100,FR,,46.39
+futures,18 & under,SCY,women,200,FR,,1:52.29
+futures,18 & under,LCM,women,200,FR,,2:07.79
+futures,18 & under,LCM,men,200,FR,,1:57.79
+futures,18 & under,SCY,men,200,FR,,1:41.59
+futures,18 & under,SCY,women,500,FR,,5:02.59
+futures,18 & under,LCM,women,400,FR,,4:28.79
+futures,18 & under,LCM,men,400,FR,,4:09.99
+futures,18 & under,SCY,men,500,FR,,4:37.09
+futures,18 & under,SCY,women,1000,FR,,10:20.49
+futures,18 & under,LCM,women,800,FR,,9:13.79
+futures,18 & under,LCM,men,800,FR,,8:40.69
+futures,18 & under,SCY,men,1000,FR,,9:34.29
+futures,18 & under,SCY,women,1650,FR,,17:14.39
+futures,18 & under,LCM,women,1500,FR,,17:40.19
+futures,18 & under,LCM,men,1500,FR,,16:38.99
+futures,18 & under,SCY,men,1650,FR,,16:05.49
+futures,18 & under,SCY,women,50,BK,,26.29
+futures,18 & under,LCM,women,50,BK,,30.89
+futures,18 & under,LCM,men,50,BK,,27.89
+futures,18 & under,SCY,men,50,BK,,23.69
+futures,18 & under,SCY,women,100,BK,,57.09
+futures,18 & under,LCM,women,100,BK,,1:06.79
+futures,18 & under,LCM,men,100,BK,,1:00.59
+futures,18 & under,SCY,men,100,BK,,51.49
+futures,18 & under,SCY,women,200,BK,,2:04.19
+futures,18 & under,LCM,women,200,BK,,2:23.99
+futures,18 & under,LCM,men,200,BK,,2:11.89
+futures,18 & under,SCY,men,200,BK,,1:52.79
+futures,18 & under,SCY,women,50,BR,,29.79
+futures,18 & under,LCM,women,50,BR,,34.79
+futures,18 & under,LCM,men,50,BR,,30.89
+futures,18 & under,SCY,men,50,BR,,26.29
+futures,18 & under,SCY,women,100,BR,,1:05.49
+futures,18 & under,LCM,women,100,BR,,1:15.99
+futures,18 & under,LCM,men,100,BR,,1:08.19
+futures,18 & under,SCY,men,100,BR,,57.99
+futures,18 & under,SCY,women,200,BR,,2:22.69
+futures,18 & under,LCM,women,200,BR,,2:43.39
+futures,18 & under,LCM,men,200,BR,,2:29.09
+futures,18 & under,SCY,men,200,BR,,2:07.99
+futures,18 & under,SCY,women,50,FL,,25.69
+futures,18 & under,LCM,women,50,FL,,29.49
+futures,18 & under,LCM,men,50,FL,,26.29
+futures,18 & under,SCY,men,50,FL,,22.89
+futures,18 & under,SCY,women,100,FL,,56.59
+futures,18 & under,LCM,women,100,FL,,1:04.69
+futures,18 & under,LCM,men,100,FL,,57.99
+futures,18 & under,SCY,men,100,FL,,50.59
+futures,18 & under,SCY,women,200,FL,,2:05.39
+futures,18 & under,LCM,women,200,FL,,2:21.89
+futures,18 & under,LCM,men,200,FL,,2:10.19
+futures,18 & under,SCY,men,200,FL,,1:53.69
+futures,18 & under,SCY,women,200,IM,,2:06.39
+futures,18 & under,LCM,women,200,IM,,2:26.19
+futures,18 & under,LCM,men,200,IM,,2:12.79
+futures,18 & under,SCY,men,200,IM,,1:53.89
+futures,18 & under,SCY,women,400,IM,,4:30.69
+futures,18 & under,LCM,women,400,IM,,5:07.29
+futures,18 & under,LCM,men,400,IM,,4:42.39
+futures,18 & under,SCY,men,400,IM,,4:06.99
+futures,19 & over,SCY,women,50,FR,,22.89
+futures,19 & over,LCM,women,50,FR,,26.59
+futures,19 & over,LCM,men,50,FR,,23.79
+futures,19 & over,SCY,men,50,FR,,20.19
+futures,19 & over,SCY,women,100,FR,,49.79
+futures,19 & over,LCM,women,100,FR,,57.59
+futures,19 & over,LCM,men,100,FR,,51.89
+futures,19 & over,SCY,men,100,FR,,44.29
+futures,19 & over,SCY,women,200,FR,,1:47.89
+futures,19 & over,LCM,women,200,FR,,2:04.99
+futures,19 & over,LCM,men,200,FR,,1:53.89
+futures,19 & over,SCY,men,200,FR,,1:37.19
+futures,19 & over,SCY,women,500,FR,,4:49.99
+futures,19 & over,LCM,women,400,FR,,4:23.59
+futures,19 & over,LCM,men,400,FR,,4:02.19
+futures,19 & over,SCY,men,500,FR,,4:25.39
+futures,19 & over,SCY,women,1000,FR,,10:03.79
+futures,19 & over,LCM,women,800,FR,,9:06.79
+futures,19 & over,LCM,men,800,FR,,8:23.09
+futures,19 & over,SCY,men,1000,FR,,9:13.19
+futures,19 & over,SCY,women,1650,FR,,16:50.19
+futures,19 & over,LCM,women,1500,FR,,17:26.79
+futures,19 & over,LCM,men,1500,FR,,16:05.09
+futures,19 & over,SCY,men,1650,FR,,15:30.99
+futures,19 & over,SCY,women,50,BK,,25.19
+futures,19 & over,LCM,women,50,BK,,29.79
+futures,19 & over,LCM,men,50,BK,,26.69
+futures,19 & over,SCY,men,50,BK,,22.49
+futures,19 & over,SCY,women,100,BK,,54.09
+futures,19 & over,LCM,women,100,BK,,1:04.29
+futures,19 & over,LCM,men,100,BK,,58.09
+futures,19 & over,SCY,men,100,BK,,48.39
+futures,19 & over,SCY,women,200,BK,,1:57.49
+futures,19 & over,LCM,women,200,BK,,2:18.99
+futures,19 & over,LCM,men,200,BK,,2:06.79
+futures,19 & over,SCY,men,200,BK,,1:46.09
+futures,19 & over,SCY,women,50,BR,,28.79
+futures,19 & over,LCM,women,50,BR,,33.49
+futures,19 & over,LCM,men,50,BR,,29.59
+futures,19 & over,SCY,men,50,BR,,25.29
+futures,19 & over,SCY,women,100,BR,,1:02.19
+futures,19 & over,LCM,women,100,BR,,1:13.09
+futures,19 & over,LCM,men,100,BR,,1:04.79
+futures,19 & over,SCY,men,100,BR,,54.79
+futures,19 & over,SCY,women,200,BR,,2:14.89
+futures,19 & over,LCM,women,200,BR,,2:38.29
+futures,19 & over,LCM,men,200,BR,,2:21.99
+futures,19 & over,SCY,men,200,BR,,1:59.69
+futures,19 & over,SCY,women,50,FL,,24.69
+futures,19 & over,LCM,women,50,FL,,28.09
+futures,19 & over,LCM,men,50,FL,,25.29
+futures,19 & over,SCY,men,50,FL,,21.99
+futures,19 & over,SCY,women,100,FL,,53.79
+futures,19 & over,LCM,women,100,FL,,1:02.39
+futures,19 & over,LCM,men,100,FL,,55.79
+futures,19 & over,SCY,men,100,FL,,47.99
+futures,19 & over,SCY,women,200,FL,,2:00.09
+futures,19 & over,LCM,women,200,FL,,2:18.39
+futures,19 & over,LCM,men,200,FL,,2:05.09
+futures,19 & over,SCY,men,200,FL,,1:47.49
+futures,19 & over,SCY,women,200,IM,,2:00.59
+futures,19 & over,LCM,women,200,IM,,2:21.19
+futures,19 & over,LCM,men,200,IM,,2:07.79
+futures,19 & over,SCY,men,200,IM,,1:47.99
+futures,19 & over,SCY,women,400,IM,,4:18.09
+futures,19 & over,LCM,women,400,IM,,5:00.29
+futures,19 & over,LCM,men,400,IM,,4:33.09
+futures,19 & over,SCY,men,400,IM,,3:52.69
+juniors,,SCY,women,50,FR,,22.89
+juniors,,LCM,women,50,FR,,26.59
+juniors,,LCM,men,50,FR,,23.79
+juniors,,SCY,men,50,FR,,20.19
+juniors,,SCY,women,100,FR,,49.79
+juniors,,LCM,women,100,FR,,57.59
+juniors,,LCM,men,100,FR,,51.89
+juniors,,SCY,men,100,FR,,44.29
+juniors,,SCY,women,200,FR,,1:47.89
+juniors,,LCM,women,200,FR,,2:04.99
+juniors,,LCM,men,200,FR,,1:53.89
+juniors,,SCY,men,200,FR,,1:37.19
+juniors,,SCY,women,500,FR,,4:49.99
+juniors,,LCM,women,400,FR,,4:23.59
+juniors,,LCM,men,400,FR,,4:02.19
+juniors,,SCY,men,500,FR,,4:25.39
+juniors,,SCY,women,1000,FR,,10:03.79
+juniors,,LCM,women,800,FR,,9:06.79
+juniors,,LCM,men,800,FR,,8:23.09
+juniors,,SCY,men,1000,FR,,9:13.19
+juniors,,SCY,women,1650,FR,,16:50.19
+juniors,,LCM,women,1500,FR,,17:26.79
+juniors,,LCM,men,1500,FR,,16:05.09
+juniors,,SCY,men,1650,FR,,15:30.99
+juniors,,SCY,women,50,BK,,25.19
+juniors,,LCM,women,50,BK,,29.79
+juniors,,LCM,men,50,BK,,26.69
+juniors,,SCY,men,50,BK,,22.49
+juniors,,SCY,women,100,BK,,54.09
+juniors,,LCM,women,100,BK,,1:04.29
+juniors,,LCM,men,100,BK,,58.09
+juniors,,SCY,men,100,BK,,48.39
+juniors,,SCY,women,200,BK,,1:57.49
+juniors,,LCM,women,200,BK,,2:18.99
+juniors,,LCM,men,200,BK,,2:06.79
+juniors,,SCY,men,200,BK,,1:46.09
+juniors,,SCY,women,50,BR,,28.79
+juniors,,LCM,women,50,BR,,33.49
+juniors,,LCM,men,50,BR,,29.59
+juniors,,SCY,men,50,BR,,25.29
+juniors,,SCY,women,100,BR,,1:02.19
+juniors,,LCM,women,100,BR,,1:13.09
+juniors,,LCM,men,100,BR,,1:04.79
+juniors,,SCY,men,100,BR,,54.79
+juniors,,SCY,women,200,BR,,2:14.89
+juniors,,LCM,women,200,BR,,2:38.29
+juniors,,LCM,men,200,BR,,2:21.99
+juniors,,SCY,men,200,BR,,1:59.69
+juniors,,SCY,women,50,FL,,24.69
+juniors,,LCM,women,50,FL,,28.09
+juniors,,LCM,men,50,FL,,25.29
+juniors,,SCY,men,50,FL,,21.99
+juniors,,SCY,women,100,FL,,53.79
+juniors,,LCM,women,100,FL,,1:02.39
+juniors,,LCM,men,100,FL,,55.79
+juniors,,SCY,men,100,FL,,47.99
+juniors,,SCY,women,200,FL,,2:00.09
+juniors,,LCM,women,200,FL,,2:18.39
+juniors,,LCM,men,200,FL,,2:05.09
+juniors,,SCY,men,200,FL,,1:47.49
+juniors,,SCY,women,200,IM,,2:00.59
+juniors,,LCM,women,200,IM,,2:21.19
+juniors,,LCM,men,200,IM,,2:07.79
+juniors,,SCY,men,200,IM,,1:47.99
+juniors,,SCY,women,400,IM,,4:18.09
+juniors,,LCM,women,400,IM,,5:00.29
+juniors,,LCM,men,400,IM,,4:33.09
+juniors,,SCY,men,400,IM,,3:52.69
+nisca,,SCY,men,200,FR,1:39.36,1:37.78
+nisca,,SCY,women,200,FR,1:50.62,1:48.77
+nisca,,SCY,men,200,IM,1:50.77,1:48.84
+nisca,,SCY,women,200,IM,2:03.71,2:01.55
+nisca,,SCY,men,50,FR,20.71,20.34
+nisca,,SCY,women,50,FR,23.48,23.07
+nisca,,SCY,men,100,FL,49.37,48.29
+nisca,,SCY,women,100,FL,55.48,54.22
+nisca,,SCY,men,100,FR,45.30,44.60
+nisca,,SCY,women,100,FR,51.03,50.17
+nisca,,SCY,men,500,FR,4:32.84,4:27.72
+nisca,,SCY,women,500,FR,4:57.57,4:52.42
+nisca,,SCY,men,100,BK,50.07,48.77
+nisca,,SCY,women,100,BK,55.82,54.70
+nisca,,SCY,men,100,BR,56.15,54.99
+nisca,,SCY,women,100,BR,1:03.85,1:02.59
+nisca,,SCM,men,200,FR,1:50.09,1:48.34
+nisca,,SCM,women,200,FR,2:02.57,2:00.52
+nisca,,SCM,men,200,IM,2:03.07,2:00.92
+nisca,,SCM,women,200,IM,2:17.32,2:14.92
+nisca,,SCM,men,50,FR,23.17,22.76
+nisca,,SCM,women,50,FR,26.18,25.72
+nisca,,SCM,men,100,FL,55.00,53.80
+nisca,,SCM,women,100,FL,1:01.64,1:00.24
+nisca,,SCM,men,100,FR,50.33,49.55
+nisca,,SCM,women,100,FR,56.75,55.79
+nisca,,SCM,men,400,FR,3:59.55,3:55.06
+nisca,,SCM,women,400,FR,4:21.03,4:16.51
+nisca,,SCM,men,100,BK,55.63,54.18
+nisca,,SCM,women,100,BK,1:02.02,1:00.77
+nisca,,SCM,men,100,BR,1:02.33,1:01.04
+nisca,,SCM,women,100,BR,1:11.00,1:09.60
