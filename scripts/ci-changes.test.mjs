@@ -31,14 +31,14 @@ const engineJob = (name) =>
   engineWorkflow.split(`\n  ${name}:\n`)[1].split(/\n  [\w-]+:\n/)[0];
 
 test("consumer jobs depend on the fast core gate, not the browser suite", () => {
-  for (const job of ["core-and-web", "mcp", "ios", "android"]) {
+  for (const job of ["web-sdk", "mcp", "ios", "android"]) {
     assert.match(engineJob(job), /needs: \[changes, core\]/);
   }
   assert.match(engineJob("core"), /cargo test --locked --workspace/);
   assert.doesNotMatch(engineJob("core"), /playwright|test-ios|test-android/);
   assert.match(
     engineJob("engine-ci"),
-    /needs: \[changes, core, core-and-web, ios, android, mcp\]/,
+    /needs: \[changes, core, web-sdk, ios, android, mcp\]/,
   );
 });
 
@@ -112,7 +112,7 @@ test("engine summary rejects unexpected skips, missing results and failed select
           ...Object.fromEntries(
             Object.entries({
               core,
-              "core-and-web": core,
+              "web-sdk": core,
               mcp: core,
               ios,
               android,
@@ -123,7 +123,7 @@ test("engine summary rejects unexpected skips, missing results and failed select
           ),
         };
         assert.equal(gate(jobs), 0);
-        for (const job of ["core", "core-and-web", "mcp", "ios", "android"]) {
+        for (const job of ["core", "web-sdk", "mcp", "ios", "android"]) {
           const changed = structuredClone(jobs);
           changed[job].result =
             jobs[job].result === "success" ? "skipped" : "success";

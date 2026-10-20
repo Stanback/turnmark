@@ -34,7 +34,7 @@ Core/Wasm checks also build and test the MCP package and local Worker. Web-only
 edits skip those checks. SDK changes exercise their MCP consumer.
 
 Shared changes run a fast `core` job first: source snapshot validation, Rust
-formatting, Clippy and direct Rust tests. Once it passes, `core-and-web` (Wasm/JS
+formatting, Clippy and direct Rust tests. Once it passes, `web-sdk` (Wasm/JS
 SDK), MCP, iOS and Android fan out in parallel. A broken shared calculation
 therefore stops the expensive consumer jobs before they acquire runners. Native
 jobs do not wait for the unrelated browser/JS test suite. Native-only UI edits
