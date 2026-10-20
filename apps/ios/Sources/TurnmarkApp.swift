@@ -2,6 +2,8 @@ import SwiftUI
 import UIKit
 import TurnmarkCore
 
+private let coloradoDistanceCaveat = "Distance caveat: this documented Colorado rule uses a general SCM/SCY multiplier for unequal-distance freestyle events. Check the meet’s required conversion."
+
 let courseNames = ["SCY", "SCM", "LCM"]
 let courses: [Course] = [.scy, .scm, .lcm]
 let strokeNames = ["Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual medley"]
@@ -17,6 +19,13 @@ struct Draft: Codable, Equatable {
     var categoryIndex = 0
     var targetIndex = 2
     // Optional for decoding drafts saved before method selection existed.
+    var altitudeText: String?
+    var elevationUnitIndex: Int?
+    var altitudePolicyID: String?
+    var altitudePolicy: AltitudePolicy { altitudePolicyID == "ncaa-altitude-2026-27-d1" ? .ncaa : .usaSwimming }
+    var elevation: Elevation { Elevation(value: Double(altitudeText ?? "") ?? .nan, unit: elevationUnitIndex == 1 ? .meters : .feet) }
+    var altitudeOutcome: AltitudeOutcome { adjustAltitudeWithPolicy(request: AltitudeRequest(swim: swim, elevation: elevation), policy: altitudePolicy) }
+    var swim: Swim { Swim(time: time, event: SwimEvent(distance: distance, stroke: strokes[strokeIndex], course: courses[courseIndex])) }
     var methodID: String?
     var method: ConversionMethod { methodID == "colorado-teamunify-2026" ? .colorado : .ncaa }
     var methodLabel: String { method == .colorado ? "Colorado Timing" : "NCAA" }
@@ -24,9 +33,8 @@ struct Draft: Codable, Equatable {
     var methodDifference: String? {
         var ncaa = self; ncaa.methodID = "ncaa-2025-27"
         var colorado = self; colorado.methodID = "colorado-teamunify-2026"
-        guard case let .available(a, _) = ncaa.outcome, case let .available(b, _) = colorado.outcome,
-              let first = parseTime(input: a.time), let second = parseTime(input: b.time) else { return nil }
-        return String(format: "%.2fs", abs(first - second))
+        guard case let .available(a, _) = ncaa.outcome, case let .available(b, _) = colorado.outcome else { return nil }
+        return String(format: "%.2fs", abs(Double(a.hundredths) - Double(b.hundredths)) / 100)
     }
 
     static func decode(_ text: String?) -> Draft? {
@@ -42,9 +50,11 @@ struct Draft: Codable, Equatable {
     var encoded: String { String(data: try! JSONEncoder().encode(self), encoding: .utf8)! }
     var options: [EventOption] { getEventOptions(course: courses[courseIndex], stroke: strokes[strokeIndex]) }
     var outcome: ConversionOutcome {
-        convertSwimWithMethod(request: ConversionRequest(
-            swim: Swim(time: time, event: SwimEvent(distance: distance, stroke: strokes[strokeIndex], course: courses[courseIndex])),
-            to: courses[targetIndex], table: categoryIndex == 0 ? .women : .men), method: method)
+        let request = ConversionRequest(swim: swim, to: courses[targetIndex], table: categoryIndex == 0 ? .women : .men)
+        if altitudeText != nil {
+            return convertSwimAtAltitude(request: request, method: method, elevation: elevation, policy: altitudePolicy)
+        }
+        return convertSwimWithMethod(request: request, method: method)
     }
     var available: Bool { if case .available = outcome { return true }; return false }
     mutating func reconcile() {
@@ -58,6 +68,16 @@ struct Draft: Codable, Equatable {
         let course = courseNames[courses.firstIndex(of: event.course)!]
         return "\(event.distance) \(event.course == .scy ? "yd" : "m") \(stroke) · \(course) · \(category)"
     }
+    mutating func setElevationUnit(_ unit: Int) {
+        if let text = altitudeText, let value = Double(text), value.isFinite, value >= 0, unit != (elevationUnitIndex ?? 0) {
+            altitudeText = unit == 1 ? String(format: "%.1f", value * 0.3048) : String(format: "%.0f", (value / 0.3048).rounded())
+        }
+        elevationUnitIndex = unit
+    }
+    var altitudeFeet: String {
+        if case let .available(value, _) = altitudeOutcome { return String(value.elevationFeet) }
+        return "0"
+    }
     var shareURL: URL {
         var query = URLComponents()
         query.queryItems = [
@@ -65,7 +85,8 @@ struct Draft: Codable, Equatable {
             URLQueryItem(name: "d", value: String(options.first(where: { $0.event.distance == distance })?.canonicalDistance ?? distance)),
             URLQueryItem(name: "c", value: courseNames[courseIndex]),
             URLQueryItem(name: "g", value: categoryIndex == 0 ? "women" : "men"),
-            URLQueryItem(name: "h", value: "0")]
+            URLQueryItem(name: "h", value: altitudeText == nil ? "0" : altitudeFeet)]
+        if altitudeText != nil && altitudePolicy == .ncaa { query.queryItems?.append(URLQueryItem(name: "ap", value: "ncaa-altitude-2026-27-d1")) }
         if method == .colorado { query.queryItems?.append(URLQueryItem(name: "m", value: "colorado-teamunify-2026")) }
         var url = URLComponents(string: "https://turnmark.app/")!
         url.percentEncodedFragment = query.percentEncodedQuery
@@ -75,7 +96,21 @@ struct Draft: Codable, Equatable {
 
 @main
 struct TurnmarkApp: App {
-    var body: some Scene { WindowGroup { TurnmarkView() } }
+    private var testingWithoutAnimations: Bool {
+        #if DEBUG
+        ProcessInfo.processInfo.environment["TURNMARK_UI_TESTS"] == "1"
+        #else
+        false
+        #endif
+    }
+    init() {
+        #if DEBUG
+        if ProcessInfo.processInfo.environment["TURNMARK_UI_TESTS"] == "1" { UIView.setAnimationsEnabled(false) }
+        #endif
+    }
+    var body: some Scene {
+        WindowGroup { TurnmarkView().transaction { if testingWithoutAnimations { $0.disablesAnimations = true } } }
+    }
 }
 
 private struct TurnmarkView: View {
@@ -90,8 +125,10 @@ private struct TurnmarkView: View {
     @State private var lastLogDay = SwimRecord.day(Date())
     @State private var lastDate = SwimRecord.day(Date())
     @State private var showingMethod = false
+    @State private var altitudeExpanded = false
     @AppStorage("savedSwim") private var savedJSON = ""
     @FocusState private var editingTime: Bool
+    @FocusState private var editingElevation: Bool
     @State private var focusDismissal = 0
     @ScaledMetric(relativeTo: .largeTitle) private var entrySize = 42
 
@@ -172,7 +209,7 @@ private struct TurnmarkView: View {
                         } label: { Image(systemName: "ellipsis") }
                             .accessibilityLabel("More options").accessibilityIdentifier("converterMenu")
                     }
-                    if editingTime {
+                    if editingTime || editingElevation {
                         ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("Done", action: dismissTimeEntry).accessibilityIdentifier("dismissConverterKeyboard") }
                     }
                 }
@@ -237,6 +274,7 @@ private struct TurnmarkView: View {
         // waiting on the main actor, including on a busy simulator/device.
         focusDismissal &+= 1
         editingTime = false
+        editingElevation = false
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 
@@ -330,10 +368,7 @@ private struct TurnmarkView: View {
                 }.padding(.vertical, 4)
                 Text(draft.time.isEmpty ? "Enter seconds or a time like 1:02.45" : "Results update as you type")
                     .font(.footnote).foregroundStyle(TurnmarkPalette.textMuted)
-                if draft.time.isEmpty {
-                    Button("Try an example") { dismissTimeEntry(); draft = .example }
-                        .font(.subheadline).accessibilityIdentifier("tryExample")
-                }
+
             }
             if typeSize.isAccessibilitySize { strokePicker; distancePicker }
             else {
@@ -349,9 +384,28 @@ private struct TurnmarkView: View {
                     Text("Women").tag(0); Text("Men").tag(1)
                 }.pickerStyle(.segmented).accessibilityIdentifier("category")
             }
+            DisclosureGroup(isExpanded: $altitudeExpanded) {
+                Toggle("Adjust for altitude", isOn: Binding(get: { draft.altitudeText != nil }, set: { draft.altitudeText = $0 ? "0" : nil }))
+                    .accessibilityIdentifier("altitudeEnabled")
+                if draft.altitudeText != nil {
+                    TextField("Pool elevation", text: Binding(get: { draft.altitudeText ?? "" }, set: { draft.altitudeText = $0 }))
+                        .keyboardType(.numbersAndPunctuation).focused($editingElevation).submitLabel(.done).onSubmit(dismissTimeEntry).accessibilityIdentifier("poolElevation")
+                    Picker("Elevation unit", selection: Binding(get: { draft.elevationUnitIndex ?? 0 }, set: { draft.setElevationUnit($0) })) {
+                        Text("Feet").tag(0); Text("Meters").tag(1)
+                    }.accessibilityIdentifier("elevationUnit")
+                    Picker("Altitude policy", selection: Binding(get: { draft.altitudePolicyID ?? "usa-swimming-altitude-2026" }, set: { draft.altitudePolicyID = $0 })) {
+                        Text("USA Swimming (default)").tag("usa-swimming-altitude-2026")
+                        Text("NCAA · 2026–27 Division I").tag("ncaa-altitude-2026-27-d1")
+                    }.accessibilityIdentifier("altitudePolicy")
+                    if case let .available(value, _) = draft.altitudeOutcome {
+                        Text("Altitude deduction: −\(String(format: "%.2f", value.adjustmentSeconds))s. Sea-level estimate: \(value.adjustedTime). Applied before course conversion.")
+                            .font(.footnote).foregroundStyle(TurnmarkPalette.textMuted)
+                    }
+                }
+            } label: { Label("Swam at altitude?", systemImage: "mountain.2").accessibilityIdentifier("altitudeOptions") }
         } header: {
             HStack {
-                Text("Convert your swim").font(.title3.bold()).foregroundStyle(TurnmarkPalette.text)
+                Text("Your swim").font(.title3.bold()).foregroundStyle(TurnmarkPalette.text)
                 Spacer()
                 Button { dismissTimeEntry(); draft.time = ""; logNotice = nil } label: { Label("Reset", systemImage: "arrow.counterclockwise") }
                     .font(.subheadline).accessibilityIdentifier("resetConverter")
@@ -434,13 +488,14 @@ struct ConversionResult: View {
                 Text(input.resultLabel(value.event)).font(.subheadline)
                     .foregroundStyle(TurnmarkResultPalette.textMuted).accessibilityIdentifier("resultContext")
                 timeLabel(value.time)
-                Text(kindLabel(value.kind) + (value.kind != .swum && input.method == .colorado ? " · Colorado Timing" : "")).font(.footnote.weight(.semibold)).foregroundStyle(TurnmarkResultPalette.textMuted)
+                Text(((value.altitude?.value.adjustmentSeconds ?? 0) > 0 && value.kind == .swum ? "Sea-level estimate" : kindLabel(value.kind)) + (value.kind != .swum && input.method == .colorado ? " · Colorado Timing" : "")).font(.footnote.weight(.semibold)).foregroundStyle(TurnmarkResultPalette.textMuted)
+                if value.caveat != nil { Text(coloradoDistanceCaveat).font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted).accessibilityIdentifier("distanceCaveat") }
                 if value.kind != .swum {
                     Text("From \(input.time) · \(input.distance) \(input.unit) \(courseNames[input.courseIndex])")
                         .font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted)
                 }
             case .invalid:
-                Text("Check your time").font(.headline).accessibilityIdentifier("invalidTime")
+                Text("Check your time or elevation").font(.headline).accessibilityIdentifier("invalidTime")
                 Text("Try 58.32 or 1:02.45, up to 60 minutes.").font(.subheadline).foregroundStyle(TurnmarkResultPalette.textMuted)
             case .unavailable:
                 Text("No published conversion").font(.headline).accessibilityIdentifier("unavailableConversion")
@@ -524,7 +579,7 @@ struct ConversionResult: View {
     private func destination(_ index: Int) -> (time: String, context: String) {
         var value = input; value.targetIndex = index
         switch value.outcome {
-        case let .available(result, _): return (result.time, "\(value.resultLabel(result.event)) · \(kindLabel(result.kind))")
+        case let .available(result, _): return (result.time, "\(value.resultLabel(result.event)) · \((result.altitude?.value.adjustmentSeconds ?? 0) > 0 && result.kind == .swum ? "Sea-level estimate" : kindLabel(result.kind))")
         case .unavailable: return ("Unavailable", "No published conversion")
         case .invalid: return ("—", "Check your time")
         }
@@ -606,6 +661,28 @@ struct MethodScreen: View {
     }
 }
 
+private struct AltitudeDetails: View {
+    let input: Draft
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Entered swim: \(input.time)").font(.subheadline).monospacedDigit()
+            ForEach(["usa-swimming-altitude-2026", "ncaa-altitude-2026-27-d1"], id: \.self) { policy in
+                var copy: Draft { var value = input; value.altitudePolicyID = policy; return value }
+                if case let .available(value, source) = copy.altitudeOutcome {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(policy == "usa-swimming-altitude-2026" ? "USA Swimming" : "NCAA · 2026–27 Division I").font(.subheadline.weight(.semibold))
+                        Text("−\(String(format: "%.2f", value.adjustmentSeconds))s → \(value.adjustedTime)").monospacedDigit()
+                            .accessibilityIdentifier("altitudeResult-\(policy)")
+                        if let url = URL(string: source.url) { Link("Published altitude policy", destination: url).font(.footnote) }
+                    }
+                } else { Text("Enter a valid time and pool elevation.").font(.footnote) }
+            }
+            Text("Altitude is deducted before course conversion. Below 3,000 ft, or where the table has no deduction, the time stays unchanged. Meters are rounded to the nearest foot. Use the policy required by your meet.")
+                .font(.footnote).foregroundStyle(.secondary)
+        }
+    }
+}
+
 private struct ConversionDetails: View {
     let input: Draft
     @Environment(\.dismiss) private var dismiss
@@ -627,7 +704,7 @@ private struct ConversionDetails: View {
             Text(value.time).font(.title3.weight(.semibold)).monospacedDigit()
                 .accessibilityIdentifier("methodResult-\(comparison.methodLabel)")
         case .unavailable: Text("Unavailable").foregroundStyle(.secondary)
-        case .invalid: Text("Check your time").foregroundStyle(.secondary)
+        case .invalid: Text("Check your time or elevation").foregroundStyle(.secondary)
         }
     }
     var body: some View {
@@ -658,6 +735,10 @@ private struct ConversionDetails: View {
                 } footer: {
                     Text("Two conversion rules, not a prediction range. Use the method required by your meet.")
                 }
+                var colorado: Draft { var copy = input; copy.methodID = "colorado-teamunify-2026"; return copy }
+                if case let .available(value, _) = colorado.outcome, value.caveat != nil {
+                    Section { Text(coloradoDistanceCaveat).font(.footnote).foregroundStyle(.secondary) }
+                }
                 Section("Why the times differ") {
                     detail("NCAA", "Published factors vary by event and category. Metric-to-yards values are direct; reverse and SCM/LCM comparisons use ratios.")
                     detail("Colorado Timing", "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.")
@@ -665,6 +746,7 @@ private struct ConversionDetails: View {
                     detail("Distance events", "500, 1000 and 1650 yards map to 400, 800 and 1500 meters.")
                 }
                 if case let .available(value, source) = input.outcome {
+                    if input.altitudeText != nil { Section("Altitude adjustment") { AltitudeDetails(input: input) } }
                     Section("Entered swim") {
                         Text(input.time).font(.title3.weight(.semibold)).monospacedDigit()
                         Text(input.label).font(.subheadline).foregroundStyle(.secondary)
@@ -672,11 +754,11 @@ private struct ConversionDetails: View {
                     Section(value.kind == .swum ? "Same course" : "Selected calculation · \(input.methodLabel)") {
                         Text(value.time).font(.title3.weight(.semibold)).monospacedDigit()
                         Text(input.resultLabel(value.event)).font(.subheadline).foregroundStyle(.secondary)
-                        if value.kind == .swum { Text("The entered time is unchanged.") }
+                        if value.kind == .swum { Text((value.altitude?.value.adjustmentSeconds ?? 0) > 0 ? "Altitude is deducted first; the course is unchanged." : "The entered time is unchanged.") }
                         else {
                             LabeledContent("Time multiplier", value: String(format: "%.5f", value.factor)).monospacedDigit()
                             if value.offsetSeconds != 0 { Text("Time offset: \(String(value.offsetSeconds)) seconds").monospacedDigit() }
-                            Text("Multiply the entered seconds, add any offset, then truncate to hundredths. The factor is rounded here for display.")
+                            Text("After any altitude deduction, multiply the seconds, add any offset, then truncate to hundredths. The factor is rounded here for display.")
                                 .font(.footnote).foregroundStyle(.secondary)
                         }
                     }
@@ -692,7 +774,7 @@ private struct ConversionDetails: View {
                     }
                 }
                 Section {
-                    Text("Standards and points assess your original swim. No altitude adjustment is applied here.")
+                    Text("Standards, points and logged performances use your original swim, before altitude or course conversion.")
                     Text("A converted time is not a recorded performance or confirmation of meet-entry eligibility.")
                     Text("Calculations and source metadata work offline. Source links need a connection.")
                 }.font(.footnote).foregroundStyle(.secondary)

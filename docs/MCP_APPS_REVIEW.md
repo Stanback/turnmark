@@ -28,6 +28,11 @@ uncertainty. The form follows the host light/dark appearance.
 
 [Expanded comparison and calculation detail](screenshots/mcp-methods-light.png).
 
+Optional altitude settings use the same independent USA Swimming / NCAA policy
+and feet/meters controls. Calculation details compare both deductions and
+sea-level estimates after an explicit update. The Rust tool applies
+altitude before course conversion. [Dark altitude comparison](screenshots/mcp-altitude-dark.png).
+
 The shared generated colors and canonical wave give it Turnmark's identity.
 All palette roles come from `design/turnmark.tokens.json` through the generated
 CSS bundled into the resource. Keep future UI states on that contract; the host
@@ -42,11 +47,11 @@ text, the clock fits one line and surrounding copy wraps normally:
 ## Boundaries
 
 - Six existing read-only tools stay intact. `convert_swim` adds comparison fields
-  while preserving its primary outcome; the other output schemas are unchanged.
+  while preserving its primary outcome; `adjust_altitude` accepts an optional policy and `get_sources` includes the policy metadata.
   Only `convert_swim`
   advertises `_meta.ui.resourceUri`; the one static resource is registered
   independently of initialization capabilities for stateless HTTP compatibility.
-- Current source URI `ui://turnmark/conversion/0.3.0-r2.html`, MIME
+- Current source URI `ui://turnmark/conversion/0.3.0-r3.html`, MIME
   `text/html;profile=mcp-app`. Change the resource version for later view releases.
   The revised resource has a new URI to avoid reusing the previous view's cache
   key. The alternative-method release is not yet published to npm; published `0.2.0` keeps
@@ -54,7 +59,7 @@ text, the clock fits one line and surrounding copy wraps normally:
   Both list/read carry CSP with empty connect/resource/frame domain lists.
 - The card wordmark uses the shared accent token for its period in both themes.
 - One self-contained HTML asset, including the official bridge SDK: approximately
-  664 KB raw, under an enforced 750,000-byte build budget. No CDN,
+  668 KB raw, under an enforced 750,000-byte build budget. No CDN,
   font request, direct fetch, local storage, history access or nested iframe.
   Installed third-party license notices are derived from the bundle graph and
   included in both the HTML resource and npm archive.
@@ -78,7 +83,7 @@ text, the clock fits one line and surrounding copy wraps normally:
 
 - Packed stdio and local workerd Streamable HTTP, in both supported protocol
   modes, with and without Apps capabilities: eight combinations. Each checks
-  53 SDK-equal primary outcomes plus both method outcomes, eight malformed requests, all tools, cancellation,
+  79 SDK-equal primary outcomes plus both method outcomes, eight malformed requests, all tools, cancellation,
   resource discovery/read/unknown URI, MIME, immutable URI, CSP and text fallback.
 - Packed stdio runs outside the workspace with network disabled. Once SDK 0.2.0 is published, a second fresh installation against that exact
   registry version also runs both protocol modes, result fixtures and resource
@@ -93,7 +98,7 @@ text, the clock fits one line and surrounding copy wraps normally:
   denied tool/context/link calls, malformed/invalid/unavailable outcomes, hostile strings,
   mapped destination event and independent card instances. Axe reports no
   violations or untested-frame finding. No external requests or page errors.
-- Svelte/TypeScript checks, web unit tests, 19 production-runtime tests and
+- Svelte/TypeScript checks, web unit tests, 21 production-runtime tests and
   affected-check selection tests pass. UI/build/harness edits select MCP/core;
   shared tokens also select web; ordinary card edits do not rebuild native apps.
 

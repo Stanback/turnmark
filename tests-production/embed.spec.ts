@@ -453,3 +453,32 @@ test("widget setup has pre-rendered instructions, its own route and accessible r
   }
   expect(errors).toEqual([]);
 });
+
+test("widget applies altitude before conversion offline and keeps raw input", async ({
+  page,
+  context,
+}) => {
+  await page.goto("./embed/v1/?theme=light");
+  await page.getByLabel("Entered time").fill("58.32");
+  await page
+    .getByRole("combobox", { name: "Entered course", exact: true })
+    .selectOption("SCY");
+  await context.setOffline(true);
+  await page.getByText("Swam at altitude?", { exact: true }).click();
+  await page.getByLabel("Adjust for altitude").check();
+  await page.getByLabel("Pool elevation", { exact: true }).fill("5000");
+  await page
+    .getByRole("combobox", { name: "Altitude policy", exact: true })
+    .selectOption("ncaa-altitude-2026-27-d1");
+  const lcm = page
+    .locator("article")
+    .filter({ hasText: "100 Freestyle · LCM" });
+  await expect(lcm).toContainText("1:06.61");
+  await expect(page.getByLabel("Entered time")).toHaveValue("58.32");
+  await page.locator(".method-options summary").click();
+  await expect(
+    page.getByRole("region", { name: "Compare altitude policies" }),
+  ).toContainText("58.22");
+  await page.getByLabel("Adjust for altitude").uncheck();
+  await expect(lcm).toContainText("1:06.72");
+});

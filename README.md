@@ -9,13 +9,13 @@ Your offline swim companion: convert across pool courses, compare your times wit
 Available in the web app:
 
 - Live SCY / SCM / LCM comparisons with event-specific distance mapping
-- Published NCAA metric-to-yards factors, with explicitly labeled derived reverse conversions
+- NCAA conversions by default, with a quiet documented Colorado Timing alternative and method comparison
 - 2,892 published USA Swimming 2024–2028 motivational times, revised October 10, 2025
 - Original-course standards ladder with the next level and time gap
 - World Aquatics points from 70 published 2026 metric base times
 - Automatic, device-local conversion history with stroke filters, restore, remove, and clear
 - 904 published 2026 USMS Nationals targets for adults, with explicit SCY/LCM and age-group coverage
-- Optional USA Swimming altitude adjustments with feet/meters input and an explicit sea-level comparison
+- Optional USA Swimming / NCAA altitude policies, feet/meters input, and explicit sea-level comparisons
 - Shareable URL fragments, CSV export, and up to eight device-local saved comparisons
 - Automatic system light/dark mode with a saved appearance override
 - Installable desktop/mobile app with offline calculations and bundled tables
@@ -31,19 +31,22 @@ The web app is live. The native screens below are development previews, not stor
 The web converter starts with a blank time. This example shows 58.32 in SCY,
 and its NCAA course equivalents. Published standards and points follow in their own section.
 
-![Turnmark web converter with editable inputs, SCY SCM LCM comparisons and an original-course next standard](docs/screenshots/web-converter-comparison-dark.png)
+![Turnmark web converter with editable inputs and SCY SCM LCM equivalents](docs/screenshots/web-converter-comparison-dark.png)
 
 [Light appearance](docs/screenshots/web-converter-comparison-light.png) ·
 [Colorado Timing example](docs/screenshots/web-converter-method-dark.png) ·
 [Layout review and mobile flow](docs/CONVERTER_LAYOUT_EXPLORATION.md)
 
-Fresh native installs start with a blank time and an explicit **Try an example**.
+Fresh native installs start with a blank time and direct entry.
 These development captures show that example in the editable inputs; equivalents
 follow below. Logging an actual swim remains an explicit action.
 
-| iOS · Converter                                                                                                                            | Android · Converter                                                                                                              |
-| ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
-| <img src="docs/screenshots/ios-home-light.png" width="280" alt="iPhone converter with editable swim inputs first and an explicit example"> | <img src="docs/screenshots/android-home-light.png" width="280" alt="Android converter with the same editable swim inputs first"> |
+| iOS · Converter                                                                                                                      | Android · Converter                                                                                                              |
+| ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="docs/screenshots/ios-home-light.png" width="280" alt="iPhone converter with editable swim inputs first and a sample time"> | <img src="docs/screenshots/android-home-light.png" width="280" alt="Android converter with the same editable swim inputs first"> |
+
+[iOS equivalents](docs/screenshots/ios-native-result-light.png) ·
+[Android equivalents](docs/screenshots/android-current-result-light.png)
 
 [Embed the widget](https://turnmark.app/embed/) · [Connect MCP](https://turnmark.app/mcp/) · [Native review and more screenshots](docs/NATIVE_VISUAL_REVIEW.md)
 
@@ -151,7 +154,7 @@ records the current scope and separate model-research follow-up.
 
 ## Install and offline use
 
-Your conversion method, age groups, standards selection, category, swum-in course, elevation, and ft/m choice are remembered in this browser. Restored elevations stay visible in the expanded elevation panel. A shared conversion link overrides remembered swim settings, including altitude. Race time starts blank, and stroke/distance start fresh; conversion history keeps past comparisons. Try an example explicitly loads the sample swim and default settings without adding a history entry. Reset clears the time, restores the app defaults, and updates remembered preferences. Preferences stay on this device and work without an account.
+Your conversion method, age groups, standards selection, category, swum-in course, elevation, altitude policy, and ft/m choice are remembered in this browser. Restored elevations stay visible in the expanded elevation panel. A shared conversion link overrides remembered swim settings, including altitude. Race time starts blank, and stroke/distance start fresh; conversion history keeps past comparisons. Reset clears the time, restores the app defaults, and updates remembered preferences. Preferences stay on this device and work without an account.
 
 Chrome and Edge can install Turnmark from the address bar/browser menu; the app’s Install button invokes the native prompt when available and otherwise shows instructions. Safari on iPhone/iPad supports Share → Add to Home Screen. Icons include 192px/512px PNGs, a maskable icon, and an Apple touch icon. The manifest and service worker are scoped to `/` on `turnmark.app`.
 

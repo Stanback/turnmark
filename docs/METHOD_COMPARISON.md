@@ -10,12 +10,12 @@ A **method difference** is the absolute gap between the two displayed clocks.
 It is not a prediction interval, confidence score, accuracy ranking or evidence
 that the swimmer will achieve either time. Both values come from the shared Rust
 engine. Unsupported results retain their state; missing comparisons do not
-become zero-second gaps. Same-course results remain the original swim.
+become zero-second gaps. Same-course results remain original unless an explicit altitude deduction creates a labeled sea-level estimate.
 
-On web, if altitude is enabled, both course methods receive the same sea-level
-estimate after the current USA Swimming deduction. The original time and
-deduction remain visible. This change does not introduce a second altitude
-policy, native/widget altitude input, or a predictive model.
+If altitude is enabled, both course methods receive the same sea-level
+estimate after the selected altitude policy’s deduction. The original time and
+deduction remain visible. The [altitude follow-up](ALTITUDE.md) adds an independent policy selector and
+shared adjustment order to every converter. No predictive model is implied.
 
 The optional UI explains category/event NCAA factors, Colorado multipliers and
 fixed offsets, yard/metric distance mapping and the physical relevance of turns
@@ -35,3 +35,18 @@ Verification covers method switching/persistence, destination changes,
 unsupported/invalid states, unchanged entered swims, iframe offline behavior,
 MCP stdio/HTTP parity and its sandbox, cancellation and accessibility boundaries.
 See [methodology](METHODOLOGY.md) for source editions and calculation rules.
+
+## Distance-event limitation of the documented Colorado rule
+
+For SCM↔SCY distance freestyle the pinned TeamUnify USA-team formula uses the
+general ×1.11 / ÷1.11 rule, despite mapping unequal-distance events. Turnmark
+preserves that rule but marks the result with the engine-owned
+`colorado-short-course-distance` caveat. Every converter shows the caveat;
+NCAA remains the default. Do not silently replace the documented result with a
+new formula under the same method ID.
+
+A regression example: **4:11.36 for 400 m SCM → 500 yd SCY** returns **4:47.30**
+with NCAA (×1.143, truncated), versus the legacy Colorado **3:46.45**
+(÷1.11, truncated). The latter is a documented-rule limitation, not a useful
+comparison of matched event distances. Model evaluation must report this cohort
+separately; a large gap here is not a calibrated prediction interval.

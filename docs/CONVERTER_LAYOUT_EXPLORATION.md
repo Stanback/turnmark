@@ -37,9 +37,8 @@ compare course equivalents → explore targets or methods**. On a narrow screen,
 editable inputs come before the result. Preserve the desktop side-by-side
 comparison; do not shrink that entire composition into a phone.
 
-Arrival and Reset now use a blank time and a recognizable placeholder. “Try an
-example” explicitly loads the default 58.32 SCY swim and settings without adding
-a history entry. Remembered swimmer preferences retain their existing contract;
+Arrival and Reset use a blank time and a recognizable placeholder. Direct
+entry is the only starting action; an example button is unnecessary. Remembered swimmer preferences retain their existing contract;
 race time starts fresh. Shared URLs and restored saved/recent comparisons still
 open their explicit swim. Empty input is a neutral state; malformed nonempty
 input shows validation, with no stale result or enabled save/share action.
@@ -98,9 +97,9 @@ and test evidence. Widget and MCP captures are maintained in their reviews.
 | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | ![Editable swim and three course equivalents](screenshots/web-converter-comparison-dark.png) | ![Matching light converter](screenshots/web-converter-comparison-light.png) |
 
-| Phone arrival                                                                                                                | Explicit example inputs                                                                                              | Comparison below the inputs                                                                                                              |
-| ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| <img src="screenshots/web-converter-empty-mobile.png" width="250" alt="Blank time with Try an example and neutral controls"> | <img src="screenshots/web-converter-comparison-mobile.png" width="250" alt="Example swim inputs before the results"> | <img src="screenshots/web-converter-results-mobile.png" width="250" alt="Course equivalents reached by scrolling below the input panel"> |
+| Phone arrival                                                                                                                    | Entered sample inputs                                                                                                | Comparison below the inputs                                                                                                              |
+| -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="screenshots/web-converter-empty-mobile.png" width="250" alt="Blank time with sample placeholder and neutral controls"> | <img src="screenshots/web-converter-comparison-mobile.png" width="250" alt="Example swim inputs before the results"> | <img src="screenshots/web-converter-results-mobile.png" width="250" alt="Course equivalents reached by scrolling below the input panel"> |
 
 [Colorado method and unchanged entered swim](screenshots/web-converter-method-dark.png) ·
 [320px long-time and enlarged-root-text content review](screenshots/web-converter-large-text.png)
@@ -162,3 +161,12 @@ widget and MCP; native alignment is reviewed separately.
   Exercise widget/MCP or native consumers only if this study changes them.
 - Inspect the replacement README images at their rendered GitHub size and verify
   their relative links. Do not mark this draft ready with stale screenshots.
+
+The altitude follow-up groups elevation/unit and policy fields with consistent
+label spacing. It keeps the selected adjustment compact in the input panel and
+places the complete USA Swimming / NCAA comparison once in calculation details.
+About has breathing room after history; Sources and Swimming resources share a
+compact disclosure treatment with one divider.
+
+[Web altitude settings](screenshots/web-altitude-settings.png) ·
+[Widget altitude settings](screenshots/widget-altitude-settings-dark.png)

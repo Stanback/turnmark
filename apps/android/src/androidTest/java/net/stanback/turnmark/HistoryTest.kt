@@ -13,6 +13,9 @@ import java.util.UUID
 
 @RunWith(AndroidJUnit4::class)
 class HistoryTest {
+    @Test fun longConvertedClocksRetainMethodDifference() {
+        assertEquals("121.39s", Draft.example.copy(time = "60:00").methodDifference)
+    }
     private fun fixture(name: String) = InstrumentationRegistry.getInstrumentation().context.assets.open(name).use { it.readBytes() }
     private fun records() = HistoryArchive.preview(fixture("contract-v1.json"), emptyList()).records
     @Test fun portableArchiveRoundTripAndDuplicatePolicy() {

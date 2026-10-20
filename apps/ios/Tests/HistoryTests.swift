@@ -2,6 +2,10 @@ import XCTest
 @testable import Turnmark
 
 @MainActor final class HistoryTests: XCTestCase {
+    func testLongConvertedClocksRetainMethodDifference() {
+        var input = Draft.example; input.time = "60:00"
+        XCTAssertEqual(input.methodDifference, "121.39s")
+    }
     private func fixture(_ name: String) throws -> Data {
         try Data(contentsOf: XCTUnwrap(Bundle(for: Self.self).url(forResource: name, withExtension: "json")))
     }

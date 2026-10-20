@@ -36,7 +36,7 @@ The generated `data/standards.json` records the source URL, revision, retrieval 
 
 ## Altitude
 
-Check USA Swimming’s official Times and Recognition Policy Manual §4.7. Review band boundaries and eligible events, then update the source metadata, numeric table, documentation, and boundary tests together.
+Check USA Swimming’s Times & Recognition Policy Manual §4.7 and the pinned NCAA 2026–27 Division I qualifying document, page 3. The [altitude contract](ALTITUDE.md) records editions, individual-event scope, ranges, boundaries and calculation order. Review source metadata, both numeric tables and cross-runtime boundary/composition fixtures together. Never change course factors merely because an altitude edition changed.
 
 Run `npm run check`, `npm test`, `npm run test:browser`, and `npm run build` before publishing a data change.
 

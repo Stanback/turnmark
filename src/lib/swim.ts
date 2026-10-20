@@ -14,6 +14,9 @@ import {
   conversionMethod,
   coloradoMethod,
   type ConversionMethod,
+  type AltitudePolicy,
+  convertSwim,
+  adjustAltitude,
 } from "@turnmark/sdk/conversion";
 export {
   availableEvent,
@@ -77,6 +80,7 @@ export interface SwimState {
   standardSystem: "youth" | "masters";
   mastersAge: string;
   method: ConversionMethod;
+  altitudePolicy: AltitudePolicy;
 }
 export const defaultState: SwimState = {
   time: "58.32",
@@ -89,6 +93,7 @@ export const defaultState: SwimState = {
   standardSystem: "youth",
   mastersAge: "18-24",
   method: conversionMethod,
+  altitudePolicy: "usa-swimming-altitude-2026",
 };
 export function readState(hash: string): SwimState {
   const p = new URLSearchParams(hash.replace(/^#/, ""));
@@ -112,6 +117,8 @@ export function readState(hash: string): SwimState {
   if (p.get("b") === "masters") state.standardSystem = "masters";
   if (mastersAges.includes(p.get("ma") ?? "")) state.mastersAge = p.get("ma")!;
   if (p.get("m") === coloradoMethod) state.method = coloradoMethod;
+  if (p.get("ap") === "ncaa-altitude-2026-27-d1")
+    state.altitudePolicy = "ncaa-altitude-2026-27-d1";
   return state;
 }
 export function stateHash(state: SwimState) {
@@ -123,6 +130,9 @@ export function stateHash(state: SwimState) {
     g: state.category,
     a: state.age,
     h: String(state.altitude),
+    ...(state.altitudePolicy === "ncaa-altitude-2026-27-d1"
+      ? { ap: state.altitudePolicy }
+      : {}),
     ...(state.method === coloradoMethod ? { m: state.method } : {}),
     ...(state.standardSystem === "masters"
       ? { b: "masters", ma: state.mastersAge }
@@ -142,4 +152,58 @@ export function ladderPosition(time: number, times: number[]): number {
       return i * 20 + ((times[i] - time) / (times[i] - times[i + 1])) * 20;
   }
   return 0;
+}
+
+const sdkStrokes = {
+  FR: "freestyle",
+  BK: "backstroke",
+  BR: "breaststroke",
+  FL: "butterfly",
+  IM: "individual-medley",
+} as const;
+export function swimRequest(state: SwimState) {
+  return {
+    time: state.time,
+    event: {
+      distance: eventDistance(state.distance, state.course, state.stroke),
+      stroke: sdkStrokes[state.stroke],
+      course: state.course,
+    },
+  };
+}
+export function stateAltitude(state: SwimState) {
+  return adjustAltitude({
+    swim: swimRequest(state),
+    elevation: { value: state.altitude, unit: "feet" },
+    policy: state.altitudePolicy,
+  });
+}
+export function convertState(state: SwimState, to: Course) {
+  const result = convertSwim({
+    swim: swimRequest(state),
+    to,
+    table: state.category,
+    method: state.method,
+    ...(state.altitude !== 0
+      ? {
+          elevation: { value: state.altitude, unit: "feet" as const },
+          altitudePolicy: state.altitudePolicy,
+        }
+      : {}),
+  });
+  return result.status === "available"
+    ? {
+        time: result.value.seconds,
+        factor: result.value.factor,
+        offsetSeconds: result.value.offsetSeconds,
+        caveat: result.value.caveat,
+        kind: result.value.kind,
+      }
+    : {
+        time: null,
+        factor: null,
+        kind: "unavailable" as const,
+        reason: result.reason,
+        caveat: undefined,
+      };
 }

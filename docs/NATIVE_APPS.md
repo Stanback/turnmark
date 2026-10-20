@@ -39,7 +39,7 @@ offline on first launch, and use the same source editions and outcomes.
   platform behavior and appearance. iOS uses Liquid Glass actions on iOS 26+;
   older systems use standard bordered controls. Android maps complete Material 3
   foreground/background roles.
-- Blank, input-first phone arrival with an explicit example action, followed
+- Blank, input-first phone arrival with direct time entry, followed
   by all three course equivalents. A scroll shortcut reaches valid results;
   typing never jumps the viewport. Expanded workspaces keep independent input/
   result panes.
@@ -49,8 +49,7 @@ offline on first launch, and use the same source editions and outcomes.
   navigation. Native keyboard Done, scalable text and system sharing remain.
   [Adaptive layout notes](ADAPTIVE_LAYOUT.md) track verification and limits.
 
-This is the first converter workflow, not full web feature parity. Native altitude entry,
-layered iOS icon/store artwork, verified app links and final release targets remain later
+This is the first converter workflow, not full web feature parity. Layered iOS icon/store artwork, verified app links and final release targets remain later
 work. Physical-device, VoiceOver/TalkBack, large-text and 16 KB Android runtime
 checks are release gates; automated simulator tests do not establish those.
 Bundle/application ID `net.stanback.turnmark`, iOS 17 minimum and Android API 26

@@ -1,50 +1,105 @@
 {
-  "capturedAt": "2026-10-19T22:53:10.366140+00:00",
-  "branch": "feat/method-comparison",
-  "sourceBase": "a2c69729245c67f406a58e30f20de6129dff22ad",
+  "capturedAt": "2026-10-20T00:14:20.199133+00:00",
+  "branch": "feat/altitude-ui-parity",
+  "sourceBase": "01155bd63c871065a1117dda02478492a45d74a2",
   "sourceHashes": {
-    "src/App.svelte": "0da2a82a62c5c42c369e69e240be357a94d2e531f76b116ded2d9a1ac8f6e252",
-    "src/converter.css": "40d567a6d482276083010d2258f96f04173397f67b875bfd689eaf284592e6ee",
+    "src/App.svelte": "e35d4c34eb4f3dd212df39ea95ae48b381b076d047791c4eb01af9ee02c997c0",
+    "src/converter.css": "d55d9724287ec45b398b1e85c7bc858772caf98a3cbd8859438fbdffb53ef9be",
     "src/app.css": "76f7065b58be4f721825dbf92434b1a9eb21e3d923ef57648502c6cbf3e79bf1",
     "design/turnmark.tokens.json": "aeaddebc1caadbbd96ba58e1d26bd0073b02ee78f4537f41c554a60c5b0d7634",
-    "public/images/water-ribbons.webp": "00c268a88616c4bf1402ef8153547966821e95ebc5bedf83a7f80e6a4ebbb447"
+    "public/images/water-ribbons.webp": "00c268a88616c4bf1402ef8153547966821e95ebc5bedf83a7f80e6a4ebbb447",
+    "src/lib/MethodComparison.svelte": "d43a0d4ca89516d4b8c2ed44ff4d07b11e539b45724bde330c7d5c04a012c19a",
+    "src/lib/AltitudeComparison.svelte": "c1d1213e45f58f6209ca47173ae4a442477877da94ca2a6efc70ff8acb46dd06",
+    "src/lib/AltitudeControls.svelte": "bb5dd9b4c10ce0bf45a76fac97ebb01f3660be6da2047aa102ec327af3a913ad",
+    "apps/embed/Widget.svelte": "219fe682bf058035690c971485eda6e5fddaa6fc1f04efaa52eaeddc35af7a4d",
+    "packages/mcp/ui/app.ts": "43d118bd76107593f2a09f78f1b2ed42bd2ce97ad54cf15eea5d352363dc2c0e",
+    "apps/ios/Sources/TurnmarkApp.swift": "ab28dc2ad8f282696604e6ffe05cdd6f16846a72f6545e4004d3d3682ba601e2",
+    "apps/android/src/main/java/net/stanback/turnmark/MainActivity.kt": "3fb6e7d51fe08f1d06060d6845ad5df4c4c847bef65a31708b23061aa30b6dbb"
   },
   "captures": [
     {
       "file": "web-converter-comparison-dark.png",
-      "sha256": "3528af972214defa14a93c02db8d7d622f025f5630c6e803cc731908b03f85f2"
+      "sha256": "2b9baf48893e6e284d9054751125691b9347559c7fe54ab6407f3db2ec8732c5"
     },
     {
       "file": "web-converter-desktop-layout-dark.png",
-      "sha256": "14c6729118c65bf1f85074107076abd73dd835e3d31e48b9a7c9761da297982b"
+      "sha256": "e4892d29ebb9239b33ddbc1a9b954517ea4b46bd504fa8cddeedc48c207d4095"
     },
     {
       "file": "web-converter-method-dark.png",
-      "sha256": "449c3d3e97eba58b25888060a3f87295cb3e30c12f0ea2149661f0980024d2d2"
+      "sha256": "1dce65d5a8a331b535ad4f9cc4de8094b648db9b87d3d20a95698379fbee7a21"
     },
     {
       "file": "web-converter-comparison-light.png",
-      "sha256": "9e50e0f6bb07cacde511627c3e0ae3169340307749c3495f29cb51f485ae8eff"
+      "sha256": "0d596a4dbedc4f1b55976dd67423034f5fe2c505ba1ba36269d7d9ab0647480f"
     },
     {
       "file": "web-converter-empty-mobile.png",
-      "sha256": "ef6b912d971efe304f6dd68712b96b20924fa5ab77eac72773aac6546e49d7c8"
+      "sha256": "c11a54debe2d9f975a469d8c0ca6af02224e7b59b97f64f59c7b620cec6efb38"
     },
     {
       "file": "web-converter-comparison-mobile.png",
-      "sha256": "565e2b4f864d1687d711eb92092bda5b1b503c1217d4b05473e63aa7f0f52f33"
+      "sha256": "6b43dfa3965e5369d7f4e41d7273530750f28f94d9beea7a4d7d9252394f6d51"
     },
     {
       "file": "web-converter-results-mobile.png",
-      "sha256": "1d7ff89e344b11a20ae36b9c71053cb7a4eee15da135e10fb5b9df77a9070369"
+      "sha256": "29f2d8fc925b5af4800e3824cbc6d2c10b75a901b198c48e4ee00e737a275a45"
     },
     {
       "file": "web-converter-method-mobile.png",
-      "sha256": "9fe2e2f2e812f0d29f6b4f84a84c14425c7971a79b8478db8fd6dfde99d12141"
+      "sha256": "078b93ef901fe366d1be75063d760e44a6d777f7a6c8266daf70c1c0bd2ae79f"
     },
     {
       "file": "web-converter-large-text.png",
-      "sha256": "dfc92d4a333110f7cc62fb970117c67d376b813f10383d5df56414e918958909"
+      "sha256": "ab9bed15a2d541a24888c03b55d1cae608d6356eeb1e6dd920b238f8539f691b"
+    },
+    {
+      "file": "web-altitude-settings.png",
+      "sha256": "97236a7acd95f6352a029b3ca720f5559f9ec681216eeeafaff3c1b28093bff8"
+    },
+    {
+      "file": "widget-altitude-settings-dark.png",
+      "sha256": "56e3f4ab89f6ff8771d7cb8b6d6d66afda307b92caf88c37d7e55bf1e5b4df76"
+    },
+    {
+      "file": "ios-home-light.png",
+      "sha256": "fd8689370c051f02d0af12f25481532fa1e420af41f21536f1d61283b09d72f2"
+    },
+    {
+      "file": "android-home-light.png",
+      "sha256": "f51a016c4a528a3043f9c21e0eb6542a372502a07064e4b3cbb83d3c5e915683"
+    },
+    {
+      "file": "ios-native-result-light.png",
+      "sha256": "7bd7d4a3426c59785d8e71172089cf03e14e7b2945b73bfa05123b8bd3956dda"
+    },
+    {
+      "file": "ios-native-result-dark.png",
+      "sha256": "b874d720ca2ba873809dc0be13f5f035e004ee64ec293c9fbc90273efc2d3aca"
+    },
+    {
+      "file": "android-current-result-light.png",
+      "sha256": "54a8c148b61873660b37d6fcc1699e39999cc7e673c8def2036aca5dccd3060c"
+    },
+    {
+      "file": "android-current-result-dark.png",
+      "sha256": "c224470fe4018c2107b21cf0778d08b9d2d1f4c27484e58bdd95711d875f9e1e"
+    },
+    {
+      "file": "ios-altitude-policies.png",
+      "sha256": "9d3b673443755fa9a59efe20a0e2907b26d9af983f34fe5aa6f74b9d4a121f27"
+    },
+    {
+      "file": "android-altitude-policies.png",
+      "sha256": "6f3e8493bd6b991a2c1e02d56f4f16a55b814b0e5b8a59be38d7a76dd20bc085"
+    },
+    {
+      "file": "mcp-card-light.png",
+      "sha256": "807f8429ebe0b00da9830e9075cf06082da92adb5e79489c283464514608b793"
+    },
+    {
+      "file": "mcp-altitude-dark.png",
+      "sha256": "50f999c2b0249950233a5700b12ad0c8390433dd86df2acd2116342033f0e897"
     }
   ],
   "sample": {
@@ -57,10 +112,12 @@
     "supplementMethod": "Colorado Timing"
   },
   "notes": [
-    "Actual local Vite build; sample data only. Desktop 1120\u00d71450, phone 390\u00d7844.",
-    "Default NCAA: 58.32 SCY 100 freestyle, women, age 15\u201316; optional Colorado supplement.",
-    "Long-time content check: 320\u00d7900, 150% root font, 59:59.99.",
+    "Actual local Vite build; sample data only. Desktop 1120×1450, phone 390×844.",
+    "Default NCAA: 58.32 SCY 100 freestyle, women, age 15–16; optional Colorado supplement.",
+    "Long-time content check: 320×900, 150% root font, 59:59.99.",
     "Native captures and validation are maintained in the paired native review.",
-    "Long calculation-disclosure content crop omits fixed mobile navigation and transient toast; regular phone captures retain navigation."
+    "Long calculation-disclosure content crop omits fixed mobile navigation and transient toast; regular phone captures retain navigation.",
+    "Altitude policy settings are compact; full USA Swimming/NCAA comparison appears once in calculation details.",
+    "Native screenshots come from the 24-case iOS and 27-case Android builds; UI animation is disabled only by the DEBUG test harness."
   ]
 }

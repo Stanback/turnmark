@@ -4,6 +4,7 @@ import {
   conversionSource,
   altitudeSource,
   coloradoSource,
+  ncaaAltitudeSource,
 } from "./data/conversions.js";
 import type {
   Swim,
@@ -13,7 +14,7 @@ import type {
   Provenance,
   Result,
 } from "./contracts.js";
-export { conversionSource, altitudeSource, coloradoSource };
+export { conversionSource, altitudeSource, coloradoSource, ncaaAltitudeSource };
 export type {
   Course,
   Category,
@@ -41,11 +42,30 @@ export const altitudeProvenance: Readonly<Provenance> = Object.freeze({
   url: altitudeSource.url,
   revision: altitudeSource.verified,
 });
+export const altitudePolicies = [
+  {
+    id: "usa-swimming-altitude-2026",
+    label: "USA Swimming (default)",
+    source: altitudeSource,
+  },
+  {
+    id: "ncaa-altitude-2026-27-d1",
+    label: "NCAA · 2026–27 Division I",
+    source: ncaaAltitudeSource,
+  },
+] as const;
+export type AltitudePolicy = (typeof altitudePolicies)[number]["id"];
+export interface Elevation {
+  value: number;
+  unit: "feet" | "meters";
+}
 export interface ConversionRequest {
   swim: Swim;
   to: Course;
   table: Category;
   method?: ConversionMethod;
+  elevation?: Elevation;
+  altitudePolicy?: AltitudePolicy;
 }
 export interface ConversionValue {
   time: string;
@@ -56,6 +76,8 @@ export interface ConversionValue {
   offsetSeconds?: number;
   kind: "swum" | "published" | "derived";
   event: SwimEvent;
+  altitude?: { value: AltitudeValue; provenance: Provenance };
+  caveat?: "colorado-short-course-distance";
 }
 export function convertSwim(
   request: ConversionRequest,
@@ -66,7 +88,8 @@ export function convertSwim(request: unknown): Result<ConversionValue> {
 
 export interface AltitudeRequest {
   swim: Swim;
-  elevation: { value: number; unit: "feet" | "meters" };
+  elevation: Elevation;
+  policy?: AltitudePolicy;
 }
 export interface AltitudeValue {
   rawTime: string;

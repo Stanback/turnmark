@@ -24,9 +24,8 @@ Do not lead with “swim logger”: conversion and standards remain the primary 
 and actual performance logging is currently a native feature. “Offline-first”
 is useful in developer documentation; “works offline” is clearer in the UI.
 The web needs an initial online visit to cache its app files; installed native
-apps work offline on first launch. Do not imply altitude input in native,
-widget or the MCP conversion card until they implement it. The separate MCP
-altitude tool already provides the current USA Swimming adjustment.
+apps work offline on first launch. Optional altitude input uses an independent USA Swimming / NCAA policy across
+web, native, widget and the MCP conversion card. See [the altitude contract](ALTITUDE.md).
 
 ## What the companion helps with
 

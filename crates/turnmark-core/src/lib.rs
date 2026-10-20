@@ -69,6 +69,29 @@ pub fn convert_swim_with_method(
 pub fn adjust_altitude(request: AltitudeRequest) -> AltitudeOutcome {
     engine::altitude(&json!(request)).into()
 }
+/// Altitude is deducted from the original event before course conversion.
+#[cfg_attr(feature = "native", uniffi::export)]
+pub fn convert_swim_at_altitude(
+    request: ConversionRequest,
+    method: ConversionMethod,
+    elevation: Elevation,
+    policy: AltitudePolicy,
+) -> ConversionOutcome {
+    let mut input = json!(request);
+    input["method"] = json!(method);
+    input["elevation"] = json!(elevation);
+    input["altitudePolicy"] = json!(policy);
+    engine::convert(&input).into()
+}
+#[cfg_attr(feature = "native", uniffi::export)]
+pub fn adjust_altitude_with_policy(
+    request: AltitudeRequest,
+    policy: AltitudePolicy,
+) -> AltitudeOutcome {
+    let mut input = json!(request);
+    input["policy"] = json!(policy);
+    engine::altitude(&input).into()
+}
 #[cfg_attr(feature = "native", uniffi::export)]
 pub fn get_youth_standards(request: StandardsRequest) -> YouthOutcome {
     engine::youth(&json!(request)).into()

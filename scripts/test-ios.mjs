@@ -66,6 +66,12 @@ const result = spawnSync(
     // Keep xcresult test results/attachments without the bulk diagnostic dump.
     "-collect-test-diagnostics",
     "never",
+    "-test-timeouts-enabled",
+    "YES",
+    "-default-test-execution-time-allowance",
+    "240",
+    "-maximum-test-execution-time-allowance",
+    "300",
     "CODE_SIGNING_ALLOWED=NO",
   ],
   { cwd: application ? "." : "packages/swift", stdio: "inherit" },

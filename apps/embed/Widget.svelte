@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { coloradoDistanceCaveat } from "../../src/lib/calculation-copy";
+  import AltitudeControls from "../../src/lib/AltitudeControls.svelte";
   import MethodComparison from "../../src/lib/MethodComparison.svelte";
   import Icon from "../../src/lib/Icon.svelte";
   import {
@@ -11,6 +13,8 @@
     conversionMethod,
     conversionMethods,
     type ConversionMethod,
+    type Elevation,
+    type AltitudePolicy,
   } from "@turnmark/sdk/conversion";
   const courses: Course[] = ["SCY", "SCM", "LCM"];
   const strokes: { value: Stroke; label: string }[] = [
@@ -27,6 +31,8 @@
   let table = $state<Category>("women");
   let comparisonCourse = $state<Course>("SCY");
   let method = $state<ConversionMethod>(conversionMethod);
+  let elevation = $state<Elevation>();
+  let altitudePolicy = $state<AltitudePolicy>("usa-swimming-altitude-2026");
   const selectedMethod = $derived(
     conversionMethods.find((item) => item.id === method)!,
   );
@@ -51,6 +57,7 @@
         to,
         table,
         method,
+        ...(elevation ? { elevation, altitudePolicy } : {}),
       }),
     })),
   );
@@ -124,6 +131,11 @@
       ></label
     >
   </div>
+  <AltitudeControls
+    swim={{ time, event: { distance, stroke, course } }}
+    bind:elevation
+    bind:policy={altitudePolicy}
+  />
   <section
     class="results"
     aria-label="Course comparison"
@@ -138,9 +150,17 @@
               {result.value.event.distance}
               {strokeLabel} · {result.value.event.course}
             </h2>
-            <p>{kind[result.value.kind]}</p>
+            <p>
+              {result.value.kind === "swum" &&
+              (result.value.altitude?.value.adjustmentSeconds ?? 0) > 0
+                ? "Sea-level estimate"
+                : kind[result.value.kind]}
+            </p>
           </div>
           <strong>{result.value.time}</strong>
+          {#if result.value.caveat}<p class="distance-caveat">
+              {coloradoDistanceCaveat}
+            </p>{/if}
         {:else}
           <div>
             <h2>{to}</h2>
@@ -175,6 +195,7 @@
         swim: { time, event: { distance, stroke, course } },
         to: comparisonCourse,
         table,
+        ...(elevation ? { elevation, altitudePolicy } : {}),
       }}
     />
   </details>
@@ -196,6 +217,12 @@
 </div>
 
 <style>
+  .distance-caveat {
+    grid-column: 1 / -1;
+    font-size: 0.875rem;
+    color: var(--tm-color-text-muted);
+    line-height: 1.6;
+  }
   :global(:root) {
     font-family: "DM Sans Variable", system-ui, sans-serif;
     color-scheme: light dark;

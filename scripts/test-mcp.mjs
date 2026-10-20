@@ -80,7 +80,7 @@ async function verify(transport, mode, label, ui = false) {
       listed.map((t) => t.name).sort(),
       [...Object.values(tools), "get_sources"].sort(),
     );
-    const uri = "ui://turnmark/conversion/0.3.0-r2.html";
+    const uri = "ui://turnmark/conversion/0.3.0-r3.html";
     assert.equal(
       listed.find((t) => t.name === "convert_swim")._meta.ui.resourceUri,
       uri,
@@ -134,13 +134,33 @@ async function verify(transport, mode, label, ui = false) {
       } else {
         assert.ifError(error);
         assert.ok(!result.isError, `${label}: ${f.id}`);
-        const { methodComparison, methodDifferenceSeconds, ...primary } =
-          result.structuredContent;
+        const {
+          methodComparison,
+          methodDifferenceSeconds,
+          altitudeComparison,
+          ...primary
+        } = result.structuredContent;
         assert.deepEqual(
           primary,
           operations[f.operation](f.input),
           `${label}: ${f.id}`,
         );
+        if (
+          f.operation === "convert" &&
+          f.input.elevation &&
+          primary.status !== "invalid"
+        ) {
+          assert.equal(altitudeComparison.length, 2);
+          for (const item of altitudeComparison)
+            assert.deepEqual(
+              item.result,
+              engine.adjustAltitude({
+                swim: f.input.swim,
+                elevation: f.input.elevation,
+                policy: item.policy,
+              }),
+            );
+        } else assert.equal(altitudeComparison, undefined);
         if (f.operation === "convert" && primary.status !== "invalid") {
           assert.equal(methodComparison.length, 2);
           assert.deepEqual(

@@ -9,7 +9,7 @@ and [Adaptive Layout](ADAPTIVE_LAYOUT.md).
 ## Default phone views
 
 Both phone apps put editable inputs before results. Fresh installs start with a
-blank time and **Try an example**; the README captures show that explicit sample:
+blank time and direct entry; the README captures show this entered sample:
 women’s 100 freestyle, 58.32 in SCY. A valid swim reveals **See your results** as
 a scroll shortcut, without moving the form while someone types. Stored drafts
 still restore on relaunch. Reset clears the clock and results while retaining
@@ -134,13 +134,15 @@ XCTest’s generic screenshot attachment is black on that simulator.
 
 ## Current verification
 
-All 21 iOS cases (6 storage/unit and 15 UI) and 24 Android instrumentation
-cases pass, including input-first arrival, example/reset, method comparison,
-logging, text scaling and adaptive geometry. The iOS UI suite completes in
-557 seconds; settling rotation geometry before scrolling removes repeated
-animation waits, reducing the rotation case from 452 seconds to about 25 seconds. Light/dark phone captures above come
-from the actual updated builds. Physical-device and assistive-technology
-review remain release checks.
+All 24 iOS cases (7 storage/unit and 17 UI) and 27 Android instrumentation
+cases pass, including direct entry/reset, method comparison, altitude policy and
+unit changes, the Colorado distance caveat, original-swim benchmarks, logging,
+text scaling and adaptive geometry. The latest local iOS UI suite completed in
+490 seconds; its rotation/focus case took 22 seconds. Test-only animation and
+scroll-helper changes remove unnecessary automation waits without changing
+production animation behavior. Light/dark phone captures above come from the
+updated builds. Physical-device and assistive-technology review remain release
+checks.
 
 ## Earlier verification and limits
 
@@ -175,3 +177,30 @@ Details, and returns to NCAA. [iOS](screenshots/conversion-method-ios.png) and
 [Android](screenshots/conversion-method-android.png) captures use the same sample
 58.32 SCY 100 freestyle → 1:06.33 LCM. The preceding visual review’s counts and
 scope describe its earlier pass; this follow-up changes numerical support.
+
+## Altitude parity follow-up
+
+The optional **Swam at altitude?** input now exposes feet/meters and a separate
+USA Swimming / NCAA altitude policy on both apps. Settings keep a compact
+selected-policy preview; calculation details show both deductions
+and sea-level estimates; course conversion follows the selected deduction in
+Rust. Standards, points and logged performances retain the original swim.
+See [the common contract](ALTITUDE.md) for source editions and boundaries.
+
+[iOS altitude policies](screenshots/ios-altitude-policies.png) ·
+[Android altitude policies](screenshots/android-altitude-policies.png)
+
+UI automation disables app animations only in DEBUG when the test harness sets
+`TURNMARK_UI_TESTS=1`. Production animation behavior is unchanged. Focus, rotation,
+keyboard, persistence and source assertions remain; animation timing is not an
+automated claim. Per-test execution is bounded to prevent simulator idle waits
+from consuming an entire CI job.
+
+The documented Colorado SCM/SCY distance-freestyle rule carries an explicit
+caveat beside the result and in method details. The 4:11.36 SCM 400 free
+regression retains the documented 3:46.45 result with its correct 500 yd event
+context; NCAA gives 4:47.30. This is a known limitation of the documented Colorado
+rule, not a change to its coefficients.
+
+[iOS distance caveat](screenshots/ios-distance-caveat.png) ·
+[Android distance caveat](screenshots/android-distance-caveat.png)

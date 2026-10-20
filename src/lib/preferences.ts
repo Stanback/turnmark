@@ -14,6 +14,7 @@ export type SwimPreferences = Pick<
   | "category"
   | "course"
   | "altitude"
+  | "altitudePolicy"
   | "method"
 > & {
   elevationUnit: "ft" | "m";
@@ -29,6 +30,7 @@ export function readPreferences(value: unknown): SwimPreferences {
     category: defaultState.category,
     course: defaultState.course,
     altitude: defaultState.altitude,
+    altitudePolicy: defaultState.altitudePolicy,
     method: defaultState.method,
     elevationUnit: "ft",
     standardMode: "targets",
@@ -36,6 +38,8 @@ export function readPreferences(value: unknown): SwimPreferences {
   if (!value || typeof value !== "object" || Array.isArray(value))
     return preferences;
   const raw = value as Record<string, unknown>;
+  if (raw.altitudePolicy === "ncaa-altitude-2026-27-d1")
+    preferences.altitudePolicy = raw.altitudePolicy;
   if (raw.method === "ncaa-2025-27" || raw.method === "colorado-teamunify-2026")
     preferences.method = raw.method;
   if (ages.some((age) => age.id === raw.age))

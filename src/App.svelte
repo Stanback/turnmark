@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { coloradoDistanceCaveat } from "./lib/calculation-copy";
   import MethodComparison from "./lib/MethodComparison.svelte";
   import { onMount, tick } from "svelte";
   import Icon from "./lib/Icon.svelte";
@@ -8,7 +9,11 @@
   import Theme from "./lib/Theme.svelte";
   import { site, faqs } from "./data/site";
   import { resources } from "./data/resources";
-  import { conversionMethods, coloradoMethod } from "@turnmark/sdk/conversion";
+  import {
+    conversionMethods,
+    coloradoMethod,
+    altitudePolicies,
+  } from "@turnmark/sdk/conversion";
   import { readPreferences, type SwimPreferences } from "./lib/preferences";
   import {
     worldPoints,
@@ -27,7 +32,9 @@
     defaultState,
     parseTime,
     formatTime,
-    convert,
+    convertState,
+    stateAltitude,
+    swimRequest,
     eventDistances,
     eventDistance,
     eventLabel,
@@ -79,6 +86,7 @@
       category: form.category,
       course: form.course,
       altitude: form.altitude,
+      altitudePolicy: form.altitudePolicy,
       method: form.method,
       elevationUnit,
       standardMode,
@@ -143,25 +151,19 @@
     else if (value > 6096) form.altitude = 20001;
     else form.altitude = Math.round(value / 0.3048);
   }
+  const altitudeResult = $derived(stateAltitude(form));
   const adjustment = $derived(
-    altitudeValid ? altitudeAdjustment(form.distance, form.altitude) : 0,
+    altitudeResult.status === "available"
+      ? altitudeResult.value.adjustmentSeconds
+      : 0,
   );
   const correctedTime = $derived(
-    adjustedTime(time, form.distance, form.altitude),
+    altitudeResult.status === "available"
+      ? altitudeResult.value.adjustedSeconds
+      : null,
   );
   const results = $derived(
-    courses.map((course) => ({
-      course,
-      ...convert(
-        correctedTime ?? 0,
-        form.stroke,
-        form.distance,
-        form.course,
-        course,
-        form.category,
-        form.method,
-      ),
-    })),
+    courses.map((course) => ({ course, ...convertState(form, course) })),
   );
   const focused = $derived(results.find((x) => x.course === focus)!);
   const selectedMethod = $derived(
@@ -177,9 +179,7 @@
     ),
   );
   const standing = $derived(
-    thresholds && correctedTime !== null
-      ? standardStatus(correctedTime, thresholds)
-      : null,
+    thresholds && time !== null ? standardStatus(time, thresholds) : null,
   );
   const nextTime = $derived(
     thresholds && standing?.next !== null && standing?.next !== undefined
@@ -187,13 +187,11 @@
       : null,
   );
   const nextGap = $derived(
-    nextTime !== null && correctedTime !== null
-      ? Math.max(0, correctedTime - nextTime)
-      : null,
+    nextTime !== null && time !== null ? Math.max(0, time - nextTime) : null,
   );
   const marker = $derived(
-    thresholds && correctedTime !== null
-      ? Math.max(2, Math.min(98, ladderPosition(correctedTime, thresholds)))
+    thresholds && time !== null
+      ? Math.max(2, Math.min(98, ladderPosition(time, thresholds)))
       : 0,
   );
   const sourceDistance = $derived(
@@ -206,7 +204,7 @@
         ? elevationUnit === "ft"
           ? "Enter an elevation in whole feet, between 0 and 20,000."
           : "Enter an elevation between 0 and 6,096 meters."
-        : time <= adjustment
+        : altitudeResult.status === "invalid" && altitudeValid && time !== null
           ? "The time must be longer than the altitude adjustment."
           : "",
   );
@@ -373,21 +371,7 @@
     notify("Previous conversion restored.");
   }
   function historyResult(entry: HistoryEntry) {
-    const seconds = parseTime(entry.form.time);
-    const adjusted =
-      seconds === null
-        ? 0
-        : seconds -
-          altitudeAdjustment(entry.form.distance, entry.form.altitude);
-    return convert(
-      adjusted,
-      entry.form.stroke,
-      entry.form.distance,
-      entry.form.course,
-      entry.target,
-      entry.form.category,
-      entry.form.method,
-    ).time;
+    return convertState(entry.form, entry.target).time;
   }
   function dateLabel(timestamp: number) {
     const date = new Date(timestamp);
@@ -441,16 +425,6 @@
     standardMode = "targets";
     history.replaceState(null, "", location.pathname + location.search);
     notify("Inputs reset.");
-  }
-  function useExample() {
-    form = { ...defaultState };
-    focus = "LCM";
-    elevationOpen = false;
-    elevationUnit = "ft";
-    standardMode = "targets";
-    // Demonstration alone should not manufacture a recent comparison.
-    lastRecorded = `${stateHash(form)}|${focus}`;
-    history.replaceState(null, "", location.pathname + location.search);
   }
   async function share() {
     if (error) return;
@@ -507,8 +481,16 @@
       ],
       ["Altitude ft", form.altitude],
       ["Altitude correction seconds", adjustment],
+      [
+        "Altitude policy",
+        altitudePolicies.find((p) => p.id === form.altitudePolicy)!.label,
+      ],
+      [
+        "Altitude source",
+        altitudePolicies.find((p) => p.id === form.altitudePolicy)!.source.url,
+      ],
       [],
-      ["Course", "Event", "Time", "Method"],
+      ["Course", "Event", "Time", "Method", "Caveat"],
       ...results.map((x) => [
         x.course,
         eventLabel(form.distance, x.course, form.stroke),
@@ -522,6 +504,7 @@
             : x.kind === "derived"
               ? `Derived estimate · ${selectedMethod.label}`
               : (x.reason ?? "Unavailable"),
+        x.caveat ? coloradoDistanceCaveat : "",
       ]),
       [],
       ["Conversion source", selectedMethod.source.url],
@@ -606,7 +589,7 @@
           >Reset <Icon name="reset" size={14} /></button
         >
         <div class="panel-title">
-          <h2>Convert your swim</h2>
+          <h2>Your swim</h2>
           <p>Enter a swim. Compare every course.</p>
         </div>
         <label class="field-label" for="event"
@@ -664,10 +647,7 @@
           >
             {error}
           </p>{:else}<div class="time-help" id="time-help">
-            {#if emptyTime}<span>Seconds or mm:ss.hh</span><button
-                class="text-button example-button"
-                onclick={useExample}>Try an example</button
-              >{:else}Results update as you type{/if}
+            {emptyTime ? "Seconds or mm:ss.hh" : "Results update as you type"}
           </div>{/if}
         <div class="field-label course-label" id="course-label">
           Swum in <span>course length</span>
@@ -733,6 +713,18 @@
                 aria-describedby="elevation-help"
               /><span>{elevationUnit} above sea level</span>
             </div>
+            <div class="altitude-policy-field">
+              <label class="field-label" for="altitude-policy"
+                >Altitude policy</label
+              >
+              <span class="select-wrap"
+                ><select id="altitude-policy" bind:value={form.altitudePolicy}
+                  >{#each altitudePolicies as policy}<option value={policy.id}
+                      >{policy.label}</option
+                    >{/each}</select
+                ><Icon name="chevron" size={16} /></span
+              >
+            </div>
             <p id="elevation-help">
               {#if altitudeValid}{elevationUnit === "ft"
                   ? `${(form.altitude * 0.3048).toLocaleString(undefined, { maximumFractionDigits: 1 })} meters`
@@ -742,8 +734,8 @@
               {:else if altitudeValid && form.altitude > 0}{form.altitude < 3000
                   ? "Below the 3,000 ft threshold; no adjustment applies."
                   : "No altitude adjustment is published for this sprint event."}
-              {:else}Adjustments start at 3,000 ft (914.4 m) for events of 200
-                or longer.{/if}
+              {:else}Adjustments start at 3,000 ft (914.4 m) for published event
+                distances.{/if}
             </p>
           </div>
         </details>
@@ -826,6 +818,12 @@
                 : "Men / boys"}{/if}
           </p>
         </div>
+        {#if !error && focused.caveat}<p
+            class="altitude-method-note"
+            data-testid="distance-caveat"
+          >
+            {coloradoDistanceCaveat}
+          </p>{/if}
         {#if adjustment > 0 && correctedTime !== null}
           <section
             class="altitude-conversion"
@@ -858,8 +856,13 @@
             </div>
             <p>
               Adjusted in {form.course} before course conversion.
-              <a href={altitudeSource.url} target="_blank" rel="noreferrer"
-                >USA Swimming §4.7<Icon name="external" size={10} /></a
+              <a
+                href={altitudePolicies.find(
+                  (p) => p.id === form.altitudePolicy,
+                )!.source.url}
+                target="_blank"
+                rel="noreferrer"
+                >Published altitude policy<Icon name="external" size={10} /></a
               >
             </p>
           </section>
@@ -932,24 +935,18 @@
               adjusted={adjustment > 0}
               selected={form.method}
               request={{
-                swim: {
-                  time: correctedTime!.toFixed(2),
-                  event: {
-                    distance: sourceDistance,
-                    stroke: (
-                      {
-                        FR: "freestyle",
-                        BK: "backstroke",
-                        BR: "breaststroke",
-                        FL: "butterfly",
-                        IM: "individual-medley",
-                      } as const
-                    )[form.stroke],
-                    course: form.course,
-                  },
-                },
+                swim: swimRequest(form),
                 to: focus,
                 table: form.category,
+                ...(form.altitude > 0
+                  ? {
+                      elevation: {
+                        value: form.altitude,
+                        unit: "feet" as const,
+                      },
+                      altitudePolicy: form.altitudePolicy,
+                    }
+                  : {}),
               }}
             />
             {#if adjustment}<p class="altitude-method-note">
@@ -1053,9 +1050,7 @@
                 >{form.category === "women" ? "Girls" : "Boys"} · {ages.find(
                   (a) => a.id === form.age,
                 )?.label} <span class="context-divider">/</span>
-                {adjustment
-                  ? "Altitude-adjusted input"
-                  : "Your entered course"}</span
+                Your entered course</span
               ><a href={standardsSource.url} target="_blank" rel="noreferrer"
                 >Official table<Icon name="external" size={12} /></a
               >
@@ -1101,7 +1096,7 @@
                 <div class="ladder-track">
                   <div class="ladder-progress" style={`width:${marker}%`}></div>
                   <span class="swim-marker"
-                    ><span>{formatTime(correctedTime)}</span></span
+                    ><span>{formatTime(time)}</span></span
                   >
                 </div>
                 <div class="ladder-levels">
@@ -1120,9 +1115,8 @@
                 </div>
               </div>
               <p class="standards-note">
-                {#if adjustment}Altitude-adjusted comparison; confirm
-                  eligibility with your meet.{:else}Compared using your entered {form.course}
-                  time. Course estimates above don’t count as official swims.{/if}
+                Compared using your entered {form.course} time, before altitude or
+                course conversion. Estimates above don’t count as official swims.
               </p>
             {:else}<div class="standards-empty">
                 <Icon name="info" size={22} />

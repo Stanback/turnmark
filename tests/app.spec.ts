@@ -1,17 +1,15 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-// Most feature cases use the explicit demonstration; first-launch behavior is
+// Most feature cases enter the same sample swim; first-launch behavior is
 // tested separately below without manufacturing a shared URL or storage state.
 async function openExample(page: Page, url: string) {
   await page.goto(url);
   if (!(await page.locator("#swim-time").inputValue()))
-    await page
-      .getByRole("button", { name: "Try an example", exact: true })
-      .click();
+    await page.locator("#swim-time").fill("58.32");
 }
 
-test("arrival is blank, example is explicit, typing keeps focus and reset clears results", async ({
+test("arrival is blank, typing keeps focus and reset clears results", async ({
   page,
 }) => {
   await page.clock.install();
@@ -25,13 +23,11 @@ test("arrival is blank, example is explicit, typing keeps focus and reset clears
   await expect(
     page.getByRole("button", { name: "Copy link", exact: true }),
   ).toBeDisabled();
-  await page
-    .getByRole("button", { name: "Try an example", exact: true })
-    .click();
+  await page.locator("#swim-time").fill("58.32");
   await expect(input).toHaveValue("58.32");
   await expect(page.getByTestId("result-LCM")).toHaveText("1:06.72");
   await page.clock.runFor(1600);
-  await expect(page.locator(".history-row")).toHaveCount(0);
+  await expect(page.locator(".history-row")).toHaveCount(1);
   await input.focus();
   const scroll = await page.evaluate(() => scrollY);
   await input.fill("59.32");
@@ -836,4 +832,54 @@ test("points explain the reference and next milestone; swimboard remove buttons 
     .getByRole("button", { name: "Compare with age-group time standards" })
     .click();
   await expect(page.locator("#standards-system")).toBeVisible();
+});
+
+test("altitude policy stays separate from course method and original benchmarks", async ({
+  page,
+}) => {
+  await page.goto("./#t=58.32&s=FR&d=100&c=SCY&g=women&a=15-16&h=5000");
+  await expect(page.getByTestId("result-LCM")).toHaveText("1:06.72");
+  await page
+    .locator("#altitude-policy")
+    .selectOption("ncaa-altitude-2026-27-d1");
+  await expect(page.getByTestId("result-LCM")).toHaveText("1:06.61");
+  await expect(page.getByTestId("altitude-original")).toHaveText("58.32");
+  await expect(page.getByTestId("altitude-corrected")).toHaveText("58.22");
+  await expect(page.locator(".standard-achievement")).toContainText("1.83s");
+  await page.locator(".conversion-options summary").click();
+  await page
+    .locator("#conversion-method")
+    .selectOption("colorado-teamunify-2026");
+  await expect(page.getByTestId("result-LCM")).toHaveText("1:06.22");
+  await page.locator(".result-method summary").click();
+  await expect(
+    page.getByRole("region", { name: "Compare methods in LCM" }),
+  ).toContainText("1:06.61");
+  await page.goto("./");
+  await expect(page.locator("#altitude-policy")).toHaveValue(
+    "ncaa-altitude-2026-27-d1",
+  );
+  await expect(page.locator("#swim-time")).toHaveValue("");
+  await page.goto(
+    "./#t=58.32&s=FR&d=100&c=SCY&g=women&h=5000&ap=ncaa-altitude-2026-27-d1",
+  );
+  await expect(page.getByTestId("result-LCM")).toHaveText("1:06.61");
+});
+
+test("distance freestyle keeps destination context and labels the legacy Colorado caveat", async ({
+  page,
+}) => {
+  await page.goto("./#t=4%3A11.36&s=FR&d=400&c=SCM&g=women&h=0");
+  await page.getByTestId("result-SCY").click();
+  await expect(page.getByTestId("focused-time")).toHaveText("4:47.30");
+  await expect(page.locator(".focused-context")).toContainText("500");
+  await expect(page.getByTestId("distance-caveat")).toHaveCount(0);
+  await page.locator(".conversion-options summary").click();
+  await page
+    .locator("#conversion-method")
+    .selectOption("colorado-teamunify-2026");
+  await expect(page.getByTestId("focused-time")).toHaveText("3:46.45");
+  await expect(page.getByTestId("distance-caveat")).toContainText(
+    "unequal-distance freestyle",
+  );
 });

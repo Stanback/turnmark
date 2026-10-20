@@ -54,7 +54,7 @@ if (mode === "HTTP") {
     }),
   );
 }
-const uri = "ui://turnmark/conversion/0.3.0-r2.html";
+const uri = "ui://turnmark/conversion/0.3.0-r3.html";
 const card = (await client.readResource({ uri })).contents[0].text;
 const host = await build({
   absWorkingDir: process.cwd(),
@@ -317,7 +317,7 @@ try {
   // through the official bridge; the SDK owns both multiplier and offset.
   await page.evaluate(() => (window.denyContext = false));
   await frame.locator("html").evaluate((el) => (el.style.fontSize = "100%"));
-  await frame.locator(".method-options summary").click();
+  await frame.locator(".method-options summary").first().click();
   await frame.locator("#method").selectOption("colorado-teamunify-2026");
   await frame.locator("#course").selectOption("LCM");
   await frame.locator("#update").click();
@@ -326,6 +326,24 @@ try {
     await page.evaluate(() => window.calls.at(-1).arguments.method),
     "colorado-teamunify-2026",
   );
+  // Altitude stays explicit, uses the same Rust pipeline and retains raw input.
+  await frame.locator(".method-options summary").nth(1).click();
+  await frame.locator("#altitude-enabled").check();
+  await frame.locator("#elevation").fill("5000");
+  await frame
+    .locator("#altitude-policy")
+    .selectOption("ncaa-altitude-2026-27-d1");
+  await frame.locator("#update").click();
+  await frame.locator(".clock").getByText("1:06.22", { exact: true }).waitFor();
+  assert.equal(
+    (await page.evaluate(() => window.calls.at(-1).arguments)).swim.time,
+    "58.32",
+  );
+  await frame.locator("#result summary").click();
+  assert.match(await frame.locator("#result").textContent(), /58.22/);
+  await frame
+    .locator("body")
+    .screenshot({ path: `${shots}/mcp-altitude-light.png` });
   console.log(
     `MCP Apps: official AppBridge + real ${mode} tools; opaque sandbox/CSP, keyboard, theme, narrow/large text, cancellation, denied calls/context, invalid/unavailable, destination context and card isolation passed.`,
   );

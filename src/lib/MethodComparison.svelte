@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { coloradoDistanceCaveat } from "./calculation-copy";
+  import AltitudeComparison from "./AltitudeComparison.svelte";
   import {
     convertSwim,
     conversionMethods,
@@ -62,6 +64,11 @@
       </div>
     {/each}
   </dl>
+  {#if comparisons.some((item) => item.result.status === "available" && item.result.value.caveat)}<p
+      class="distance-caveat"
+    >
+      {coloradoDistanceCaveat}
+    </p>{/if}
   {#if difference !== null}<p class="method-gap">
       Method difference: <strong>{difference}s</strong>
     </p>{/if}
@@ -69,6 +76,11 @@
     Two conversion rules, not a prediction range or confidence interval. Use the
     method required by your meet.
   </p>
+  {#if request.elevation}<AltitudeComparison
+      swim={request.swim}
+      elevation={request.elevation}
+      selected={request.altitudePolicy ?? "usa-swimming-altitude-2026"}
+    />{/if}
   <h3>Why the times differ</h3>
   <div class="explanations">
     <div>
@@ -98,15 +110,16 @@
     </div>
   </div>
   <p>
-    Benchmarks are separate from course estimates. Altitude-adjusted standards
-    comparisons are labeled.
+    Standards and points use the entered swim, before altitude or course
+    conversion.
   </p>
   <h3>Selected calculation · {chosen.label.replace(" (default)", "")}</h3>
   <div class="result-explanation">
     {#if chosen.result.status === "available"}
       {#if chosen.result.value.kind === "swum"}
         <p>
-          {adjusted
+          {adjusted ||
+          (chosen.result.value.altitude?.value.adjustmentSeconds ?? 0) > 0
             ? `Your sea-level estimate in ${request.to}.`
             : "Your entered swim, exactly as timed."}
         </p>

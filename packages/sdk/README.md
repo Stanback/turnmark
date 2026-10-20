@@ -195,3 +195,17 @@ and source metadata. Results carry the selected provenance and optional
 unsupported formulas remain unavailable. Swift/Kotlin use
 `convertSwimWithMethod(request, method)`; the existing `convertSwim` stays NCAA.
 See the methodology for the exact source scope and distance-event exceptions.
+
+### Optional altitude context
+
+`convertSwim` accepts `elevation: {value, unit: "feet" | "meters"}` and an
+independent `altitudePolicy`: `usa-swimming-altitude-2026` (default) or
+`ncaa-altitude-2026-27-d1`. Rust deducts altitude from the original event before
+course conversion and returns its own provenance under `value.altitude`.
+`adjustAltitude` accepts the same choice as `policy`. Existing omitted-altitude
+results are unchanged. See [the altitude contract](../../docs/ALTITUDE.md).
+
+Available Colorado SCM↔SCY distance-freestyle results carry
+`caveat: "colorado-short-course-distance"`. The pinned rule uses a general
+multiplier for unequal-distance events; display that limitation with the result.
+See [the method comparison contract](../../docs/METHOD_COMPARISON.md).

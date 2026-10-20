@@ -1,5 +1,6 @@
 package net.stanback.turnmark
 
+import kotlin.math.roundToInt
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -65,23 +66,31 @@ val strokeNames = listOf("Freestyle", "Backstroke", "Breaststroke", "Butterfly",
 val strokeImages = listOf(R.drawable.ic_swim_freestyle, R.drawable.ic_swim_backstroke, R.drawable.ic_swim_breaststroke, R.drawable.ic_swim_butterfly, R.drawable.ic_swim_individual_medley)
 val strokeCodes = listOf("FR", "BK", "BR", "FL", "IM")
 
+private const val coloradoDistanceCaveat = "Distance caveat: this documented Colorado rule uses a general SCM/SCY multiplier for unequal-distance freestyle events. Check the meet’s required conversion."
+
 data class Draft(
     val time: String = "", val strokeIndex: Int = 0, val distance: UInt = 100u,
     val courseIndex: Int = 0, val categoryIndex: Int = 0, val targetIndex: Int = 2,
     val methodId: String = "ncaa-2025-27",
+    val altitudeText: String? = null, val elevationUnitIndex: Int = 0,
+    val altitudePolicyId: String = "usa-swimming-altitude-2026",
 ) {
     val method get() = if (methodId == "colorado-teamunify-2026") ConversionMethod.COLORADO else ConversionMethod.NCAA
     val methodLabel get() = if (method == ConversionMethod.COLORADO) "Colorado Timing" else "NCAA"
     val options get() = getEventOptions(courses[courseIndex], strokes[strokeIndex])
-    val outcome get() = convertSwimWithMethod(ConversionRequest(
-        Swim(time, SwimEvent(distance, strokes[strokeIndex], courses[courseIndex])),
-        courses[targetIndex], if (categoryIndex == 0) Category.WOMEN else Category.MEN), method)
+    val altitudePolicy get() = if (altitudePolicyId == "ncaa-altitude-2026-27-d1") AltitudePolicy.NCAA else AltitudePolicy.USA_SWIMMING
+    val swim get() = Swim(time, SwimEvent(distance, strokes[strokeIndex], courses[courseIndex]))
+    val elevation get() = Elevation(altitudeText?.toDoubleOrNull() ?: Double.NaN, if (elevationUnitIndex == 1) ElevationUnit.METERS else ElevationUnit.FEET)
+    val altitudeOutcome get() = adjustAltitudeWithPolicy(AltitudeRequest(swim, elevation), altitudePolicy)
+    val outcome get(): ConversionOutcome {
+        val request = ConversionRequest(swim, courses[targetIndex], if (categoryIndex == 0) Category.WOMEN else Category.MEN)
+        return if (altitudeText == null) convertSwimWithMethod(request, method)
+            else convertSwimAtAltitude(request, method, elevation, altitudePolicy)
+    }
     val methodDifference: String? get() {
         val ncaa = copy(methodId = "ncaa-2025-27").outcome as? ConversionOutcome.Available ?: return null
         val colorado = copy(methodId = "colorado-teamunify-2026").outcome as? ConversionOutcome.Available ?: return null
-        val first = parseTime(ncaa.value.time) ?: return null
-        val second = parseTime(colorado.value.time) ?: return null
-        return String.format(java.util.Locale.ROOT, "%.2fs", kotlin.math.abs(first - second))
+        return String.format(java.util.Locale.ROOT, "%.2fs", kotlin.math.abs(ncaa.value.hundredths.toDouble() - colorado.value.hundredths.toDouble()) / 100)
     }
     val available get() = outcome is ConversionOutcome.Available
     val category get() = if (categoryIndex == 0) "Women" else "Men"
@@ -91,16 +100,26 @@ data class Draft(
         "${event.distance} ${if (event.course == Course.SCY) "yd" else "m"} ${strokeNames[strokes.indexOf(event.stroke)]} · ${event.course} · $category"
     fun reconcile(): Draft = if (options.any { it.event.distance == distance }) this
         else copy(distance = options.first().event.distance)
+    fun withElevationUnit(unit: Int): Draft {
+        val value = altitudeText?.toDoubleOrNull()
+        val text = if (value != null && value.isFinite() && value >= 0 && unit != elevationUnitIndex)
+            if (unit == 1) String.format(java.util.Locale.ROOT, "%.1f", value * .3048)
+            else String.format(java.util.Locale.ROOT, "%.0f", (value / .3048).roundToInt().toDouble())
+            else altitudeText
+        return copy(altitudeText = text, elevationUnitIndex = unit)
+    }
     fun encode(): String = JSONObject().put("time", time).put("stroke", strokeIndex)
         .put("distance", distance.toLong()).put("course", courseIndex)
-        .put("category", categoryIndex).put("target", targetIndex).put("method", methodId).toString()
+        .put("category", categoryIndex).put("target", targetIndex).put("method", methodId).put("altitude", altitudeText ?: JSONObject.NULL)
+        .put("elevationUnit", elevationUnitIndex).put("altitudePolicy", altitudePolicyId).toString()
     val shareUrl: String get() {
         val query = Uri.Builder().appendQueryParameter("t", time)
             .appendQueryParameter("s", strokeCodes[strokeIndex])
             .appendQueryParameter("d", options.first { it.event.distance == distance }.canonicalDistance.toString())
             .appendQueryParameter("c", courses[courseIndex].name)
             .appendQueryParameter("g", if (categoryIndex == 0) "women" else "men")
-            .appendQueryParameter("h", "0").apply {
+            .appendQueryParameter("h", if (altitudeText == null) "0" else (altitudeOutcome as? AltitudeOutcome.Available)?.value?.elevationFeet?.toString() ?: "0").apply {
+                if (altitudeText != null && altitudePolicy == AltitudePolicy.NCAA) appendQueryParameter("ap", altitudePolicyId)
                 if (method == ConversionMethod.COLORADO) appendQueryParameter("m", methodId)
             }.build().encodedQuery
         return Uri.parse("https://turnmark.app/").buildUpon().encodedFragment(query).build().toString()
@@ -113,7 +132,9 @@ data class Draft(
             require(distance in 1..UInt.MAX_VALUE.toLong())
             val draft = Draft(json.getString("time"), json.getInt("stroke"), distance.toUInt(),
                 json.getInt("course"), json.getInt("category"), json.getInt("target"),
-                json.optString("method", "ncaa-2025-27"))
+                json.optString("method", "ncaa-2025-27"),
+                if (json.has("altitude") && !json.isNull("altitude")) json.getString("altitude") else null,
+                json.optInt("elevationUnit", 0), json.optString("altitudePolicy", "usa-swimming-altitude-2026"))
             require(draft.strokeIndex in strokes.indices && draft.courseIndex in courses.indices &&
                 draft.targetIndex in courses.indices && draft.categoryIndex in 0..1)
             require(draft.options.any { it.event.distance == draft.distance })
@@ -339,7 +360,7 @@ private fun share(context: Context, draft: Draft) {
         Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                Text("Convert your swim", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                Text("Your swim", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
                 TextButton(onClick = { focus.clearFocus(); keyboard?.hide(); update(draft.copy(time = "")) }, modifier = Modifier.testTag("resetConverter")) {
                     Text("Reset"); Spacer(Modifier.width(6.dp)); Icon(Icons.Default.Refresh, null, Modifier.size(16.dp))
                 }
@@ -360,9 +381,7 @@ private fun share(context: Context, draft: Draft) {
                 keyboardActions = KeyboardActions(onDone = {
                     focus.clearFocus(); keyboard?.hide()
                 }))
-            if (draft.time.isEmpty()) TextButton(onClick = { focus.clearFocus(); keyboard?.hide(); update(Draft.example) }, modifier = Modifier.testTag("tryExample")) {
-                Text("Try an example")
-            }
+
             @Composable fun StrokeChoice(modifier: Modifier) {
                 Choice("Stroke", if (draft.strokeIndex == 4) "IM" else strokeNames[draft.strokeIndex], strokeNames,
                     modifier.semantics { stateDescription = strokeNames[draft.strokeIndex] },
@@ -398,6 +417,32 @@ private fun share(context: Context, draft: Draft) {
                                 shape = SegmentedButtonDefaults.itemShape(index, 2)) { Text(label) }
                         }
                     }
+                }
+            }
+            var altitudeExpanded by rememberSaveable { mutableStateOf(draft.altitudeText != null) }
+            TextButton(onClick = { altitudeExpanded = !altitudeExpanded }, modifier = Modifier.testTag("altitudeOptions")) {
+                Text("Swam at altitude?"); Spacer(Modifier.width(8.dp)); Icon(Icons.Default.KeyboardArrowDown, null)
+            }
+            if (altitudeExpanded) {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                    Text("Adjust for altitude", modifier = Modifier.weight(1f))
+                    Switch(checked = draft.altitudeText != null, onCheckedChange = { update(draft.copy(altitudeText = if (it) "0" else null)) }, modifier = Modifier.testTag("altitudeEnabled"))
+                }
+                if (draft.altitudeText != null) {
+                    OutlinedTextField(value = draft.altitudeText, onValueChange = { update(draft.copy(altitudeText = it)) },
+                        label = { Text("Pool elevation") }, singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = { focus.clearFocus(); keyboard?.hide() }),
+                        modifier = Modifier.fillMaxWidth().testTag("poolElevation"))
+                    Choice("Elevation unit", if (draft.elevationUnitIndex == 1) "Meters" else "Feet", listOf("Feet", "Meters"), Modifier.fillMaxWidth()) {
+                        update(draft.withElevationUnit(it))
+                    }
+                    Choice("Altitude policy", if (draft.altitudePolicy == AltitudePolicy.NCAA) "NCAA · 2026–27 Division I" else "USA Swimming (default)",
+                        listOf("USA Swimming (default)", "NCAA · 2026–27 Division I"), Modifier.fillMaxWidth()) {
+                        update(draft.copy(altitudePolicyId = if (it == 1) "ncaa-altitude-2026-27-d1" else "usa-swimming-altitude-2026"))
+                    }
+                    val preview = draft.altitudeOutcome
+                    if (preview is AltitudeOutcome.Available) Text("Altitude deduction: −${String.format(java.util.Locale.ROOT, "%.2f", preview.value.adjustmentSeconds)}s. Sea-level estimate: ${preview.value.adjustedTime}. Applied before course conversion.",
+                        style = MaterialTheme.typography.bodySmall, color = c.textMuted)
                 }
             }
             Text("Estimates for perspective. Meet rules decide entry eligibility.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
@@ -492,14 +537,15 @@ private fun share(context: Context, draft: Draft) {
                 Text(draft.resultLabel(result.value.event), color = c.textMuted, style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.testTag("resultContext"))
                 ResultTime(result.value.time, compact)
-                Text(kindLabel(result.value.kind) + if (result.value.kind != ConversionKind.SWUM && draft.method == ConversionMethod.COLORADO) " · Colorado Timing" else "", color = c.textMuted, style = MaterialTheme.typography.labelMedium)
+                Text((if ((result.value.altitude?.value?.adjustmentSeconds ?: 0.0) > 0 && result.value.kind == ConversionKind.SWUM) "Sea-level estimate" else kindLabel(result.value.kind)) + if (result.value.kind != ConversionKind.SWUM && draft.method == ConversionMethod.COLORADO) " · Colorado Timing" else "", color = c.textMuted, style = MaterialTheme.typography.labelMedium)
+                if (result.value.caveat != null) Text(coloradoDistanceCaveat, style = MaterialTheme.typography.bodySmall, color = c.textMuted, modifier = Modifier.testTag("distanceCaveat"))
                 if (result.value.kind != ConversionKind.SWUM) Text("From ${draft.time} · ${draft.distance} ${draft.unit} ${courses[draft.courseIndex]}",
                     color = c.textMuted, style = MaterialTheme.typography.bodySmall)
 
             }
             is ConversionOutcome.Invalid -> {
-                Text("Check your time", color = c.text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.testTag("invalidTime"))
-                Text("Try 58.32 or 1:02.45, up to 60 minutes.", color = c.textMuted, style = MaterialTheme.typography.bodyMedium)
+                Text("Check your time or elevation", color = c.text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.testTag("invalidTime"))
+                Text("Try 58.32 or 1:02.45, up to 60 minutes. Elevation must be 0–20,000 whole feet or 0–6,096 meters.", color = c.textMuted, style = MaterialTheme.typography.bodyMedium)
             }
             is ConversionOutcome.Unavailable -> {
                 Text("No published conversion", color = c.text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.testTag("unavailableConversion"))
@@ -530,7 +576,7 @@ private fun share(context: Context, draft: Draft) {
                             if (!large) Text(time, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                         }
                         if (large) Text(time, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                        Text(if (row is ConversionOutcome.Available) "${draft.resultLabel(row.value.event)} · ${kindLabel(row.value.kind)}" else "No published conversion",
+                        Text(if (row is ConversionOutcome.Available) "${draft.resultLabel(row.value.event)} · ${if ((row.value.altitude?.value?.adjustmentSeconds ?: 0.0) > 0 && row.value.kind == ConversionKind.SWUM) "Sea-level estimate" else kindLabel(row.value.kind)}" else "No published conversion",
                             style = MaterialTheme.typography.bodySmall, color = c.textMuted)
                     }
                 }
@@ -595,6 +641,23 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
     }
 }
 
+@Composable private fun AltitudeDetails(draft: Draft) {
+    val context = LocalContext.current
+    val c = LocalTurnmarkColors.current
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Text("Entered swim: ${draft.time}", style = MaterialTheme.typography.bodyMedium)
+        listOf("usa-swimming-altitude-2026", "ncaa-altitude-2026-27-d1").forEach { policy ->
+            val row = draft.copy(altitudePolicyId = policy).altitudeOutcome
+            if (row is AltitudeOutcome.Available) {
+                Text(if (policy == "usa-swimming-altitude-2026") "USA Swimming" else "NCAA · 2026–27 Division I", style = MaterialTheme.typography.titleSmall)
+                Text("−${String.format(java.util.Locale.ROOT, "%.2f", row.value.adjustmentSeconds)}s → ${row.value.adjustedTime}", modifier = Modifier.testTag("altitudeResult-$policy"))
+                TextButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(row.provenance.url))) }) { Text("Published altitude policy") }
+            } else Text("Enter a valid time and pool elevation.", style = MaterialTheme.typography.bodySmall)
+        }
+        Text("Altitude is deducted before course conversion. Below 3,000 ft, or where the table has no deduction, the time stays unchanged. Meters are rounded to the nearest foot. Use the policy required by your meet.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
+    }
+}
+
 @Composable private fun ConversionDetails(draft: Draft, result: ConversionOutcome, onClose: () -> Unit) {
     val context = LocalContext.current
     val c = LocalTurnmarkColors.current
@@ -645,6 +708,9 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
             }
             Text("Two conversion rules, not a prediction range. Use the method required by your meet.",
                 style = MaterialTheme.typography.bodySmall, color = c.textMuted)
+            if (comparisons.any { (it.outcome as? ConversionOutcome.Available)?.value?.caveat != null })
+                Text(coloradoDistanceCaveat, style = MaterialTheme.typography.bodySmall, color = c.textMuted)
+            if (draft.altitudeText != null) { Text("Altitude adjustment", style = MaterialTheme.typography.titleMedium); AltitudeDetails(draft) }
             Text("Why the times differ", style = MaterialTheme.typography.titleMedium)
             CalculationExplanation("NCAA", "Published factors vary by event and category. Metric-to-yards values are direct; reverse and SCM/LCM comparisons use ratios.")
             CalculationExplanation("Colorado Timing", "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.")
@@ -655,13 +721,13 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
                 Text("Selected calculation · ${draft.methodLabel}", style = MaterialTheme.typography.titleMedium)
                 CalculationExplanation("Entered swim · ${draft.time}", draft.label)
                 CalculationExplanation("Comparison · ${result.value.time}", draft.resultLabel(result.value.event))
-                if (result.value.kind == ConversionKind.SWUM) Text("The entered time is unchanged.", style = MaterialTheme.typography.bodyMedium)
+                if (result.value.kind == ConversionKind.SWUM) Text("The course is unchanged; any selected altitude deduction is applied first.", style = MaterialTheme.typography.bodyMedium)
                 else {
                     Surface(shape = RoundedCornerShape(TurnmarkTokens.radiusControl), color = c.surfaceRaised) {
                         Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text("Time multiplier: ${String.format(java.util.Locale.ROOT, "%.5f", result.value.factor)}", style = MaterialTheme.typography.bodyMedium)
                             if (result.value.offsetSeconds != 0.0) Text("Time offset: ${result.value.offsetSeconds} seconds", style = MaterialTheme.typography.bodyMedium)
-                            Text("Multiply the entered seconds, add any offset, then truncate to hundredths. The factor is rounded here for display.",
+                            Text("After any altitude deduction, multiply the seconds, add any offset, then truncate to hundredths. The factor is rounded here for display.",
                                 style = MaterialTheme.typography.bodySmall, color = c.textMuted)
                         }
                     }
@@ -679,7 +745,7 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
                 }
             }
             HorizontalDivider(color = c.borderSubtle)
-            Text("Standards and points assess your original swim. No altitude adjustment is applied here.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
+            Text("Standards, points and logged performances use your original swim, before altitude or course conversion.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
             Text("A converted time is not a recorded performance or confirmation of meet-entry eligibility.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
             Text("Calculations and source metadata work offline. Source links need a connection.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
         }

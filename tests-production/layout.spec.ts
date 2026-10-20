@@ -19,9 +19,7 @@ test("standards lead their own row and history expands on demand", async ({
     );
   });
   await page.goto("./");
-  await page
-    .getByRole("button", { name: "Try an example", exact: true })
-    .click();
+  await page.locator("#swim-time").fill("58.32");
   await expect(page.locator(".history-row")).toHaveCount(50);
   const history = page.locator(".history-panel");
   const standards = page.locator(".standards-section");
@@ -103,10 +101,20 @@ test("setup pages share branded content bounds in both appearances", async ({
     }
   }
   await page.goto("./");
-  await page
-    .getByRole("button", { name: "Try an example", exact: true })
-    .click();
+  await page.locator("#swim-time").fill("58.32");
   await page.setViewportSize({ width: 1440, height: 1000 });
+  const history = (await page.locator("#history").boundingBox())!;
+  const about = (await page.locator(".faq-section").boundingBox())!;
+  expect(about.y - history.y - history.height).toBeGreaterThanOrEqual(32);
+  await expect(page.locator(".faq-section")).toHaveCSS(
+    "border-top-width",
+    "0px",
+  );
+  await expect(page.locator("#method")).toHaveCSS("border-top-width", "0px");
+  await expect(page.locator(".resources-section")).toHaveCSS(
+    "border-bottom-width",
+    "0px",
+  );
   await expect(page.locator("#method details")).not.toHaveAttribute("open");
   await page.locator("#method summary").focus();
   await page.keyboard.press("Enter");
@@ -131,9 +139,7 @@ test("mobile comparison modes stay compact and navigation paints the bottom inse
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
   await page.goto("./");
-  await page
-    .getByRole("button", { name: "Try an example", exact: true })
-    .click();
+  await page.locator("#swim-time").fill("58.32");
   // Browser emulation does not supply a hardware home-indicator inset. Exercise
   // the layout with an explicit 34px inset as well as the default browser value.
   await page.evaluate(() =>

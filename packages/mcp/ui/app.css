@@ -297,3 +297,24 @@ footer {
 .calculation-explanation p {
   margin: 0;
 }
+
+.altitude-enable {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+}
+.altitude-enable input {
+  width: 20px;
+  min-height: 20px;
+}
+#altitude-fields:not([hidden]) {
+  display: grid;
+  gap: 1rem;
+}
+#altitude-fields p {
+  color: var(--tm-color-text-muted);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}

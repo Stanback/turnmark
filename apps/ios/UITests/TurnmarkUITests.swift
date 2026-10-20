@@ -1,14 +1,15 @@
 import XCTest
 
 final class TurnmarkUITests: XCTestCase {
-    @MainActor func testBlankArrivalExampleAndResetKeepEntryFirst() {
+    @MainActor func testBlankArrivalEntryAndResetKeepEntryFirst() {
         let app = launch(example: false)
         let field = app.textFields["timeInput"]
-        XCTAssertTrue(app.buttons["tryExample"].exists, "Fresh arrival offers an explicit sample without a prefilled time")
+        XCTAssertFalse(app.buttons["tryExample"].exists, "Fresh arrival starts with direct time entry")
         XCTAssertFalse(app.staticTexts["resultTime"].exists)
         XCTAssertFalse(app.staticTexts["invalidTime"].exists)
         capture(app, "Native arrival light")
-        app.buttons["tryExample"].tap()
+        replace(field, with: "58.32", in: app)
+        app.buttons["dismissConverterKeyboard"].tap()
         XCTAssertEqual(field.value as? String, "58.32")
         capture(app, "Native input first light")
         if !app.descendants(matching: .any)["expandedConverter"].firstMatch.exists {
@@ -31,10 +32,43 @@ final class TurnmarkUITests: XCTestCase {
         capture(app, "Native method comparison")
         app.buttons["Done"].firstMatch.tap()
         reach(app.buttons["resetConverter"], in: app, earlier: true); app.buttons["resetConverter"].tap()
-        XCTAssertTrue(app.buttons["tryExample"].exists)
+        XCTAssertEqual(field.placeholderValue, "58.32")
         XCTAssertFalse(app.staticTexts["resultTime"].exists)
         tab("My times", in: app)
         XCTAssertTrue(app.staticTexts["No logged swims"].exists)
+    }
+
+    @MainActor func testAltitudePoliciesKeepOriginalSwimAndPersist() {
+        let app = launch(example: false)
+        replace(app.textFields["timeInput"], with: "58.32", in: app)
+        app.buttons["dismissConverterKeyboard"].tap()
+        let options = app.descendants(matching: .any)["altitudeOptions"].firstMatch
+        reach(options, in: app); options.tap()
+        let enabled = app.switches["altitudeEnabled"]
+        reach(enabled, in: app); enabled.switches.firstMatch.tap()
+        XCTAssertEqual(enabled.value as? String, "1")
+        replace(app.textFields["poolElevation"], with: "5000", in: app)
+        app.buttons["dismissConverterKeyboard"].tap()
+        let unit = app.descendants(matching: .any)["elevationUnit"].firstMatch
+        reach(unit, in: app); unit.tap(); app.buttons["Meters"].tap()
+        XCTAssertEqual(app.textFields["poolElevation"].value as? String, "1524.0")
+        unit.tap(); app.buttons["Feet"].tap()
+        XCTAssertEqual(app.textFields["poolElevation"].value as? String, "5000")
+        let policy = app.descendants(matching: .any)["altitudePolicy"].firstMatch
+        reach(policy, in: app); policy.tap(); app.buttons["NCAA · 2026–27 Division I"].tap()
+        reach(app.staticTexts["resultTime"], in: app)
+        XCTAssertEqual(app.staticTexts["resultTime"].label, "1:06.61")
+        reach(app.buttons["conversionDetails"], in: app); app.buttons["conversionDetails"].tap()
+        let ncaa = app.staticTexts["altitudeResult-ncaa-altitude-2026-27-d1"]
+        reach(ncaa, in: app); XCTAssertEqual(ncaa.label, "−0.10s → 58.22")
+        capture(app, "Native altitude policies")
+        app.buttons["Done"].firstMatch.tap()
+        reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
+        XCTAssertEqual(app.staticTexts["benchmarkOriginalTime"].label, "58.32")
+        app.buttons["closeBenchmarks"].tap()
+        app.terminate(); app.launchArguments = []; app.launch()
+        reach(app.staticTexts["resultTime"], in: app)
+        XCTAssertEqual(app.staticTexts["resultTime"].label, "1:06.61")
     }
 
     @MainActor func testConversionMethodPersistsAndKeepsNcaaDefault() {
@@ -63,13 +97,31 @@ final class TurnmarkUITests: XCTestCase {
         reach(app.staticTexts["resultTime"], in: app)
         XCTAssertEqual(app.staticTexts["resultTime"].label, "1:06.72")
     }
+    @MainActor func testDistanceColoradoCaveatUsesCorrectEventContext() {
+        let app = launch(example: false)
+        replace(app.textFields["timeInput"], with: "4:11.36", in: app)
+        app.buttons["dismissConverterKeyboard"].tap()
+        let course = app.segmentedControls["inputCourse"].buttons["SCM"]
+        reach(course, in: app); course.tap()
+        app.buttons["distancePicker"].tap(); app.buttons["400 m"].tap()
+        app.buttons["converterMenu"].tap(); app.buttons["conversionMethodMenu"].tap(); app.buttons["Colorado Timing"].tap()
+        let scy = app.buttons["equivalent-SCY"]
+        reach(scy, in: app); scy.tap()
+        XCTAssertEqual(app.staticTexts["resultTime"].label, "3:46.45")
+        XCTAssertTrue(app.staticTexts["resultContext"].label.contains("500 yd"))
+        let note = app.staticTexts["distanceCaveat"]
+        reach(note, in: app); XCTAssertTrue(note.label.contains("unequal-distance freestyle"))
+        capture(app, "Native distance caveat")
+    }
+
     @MainActor private func launch(_ extra: [String] = [], example: Bool = true) -> XCUIApplication {
         let app = XCUIApplication()
+        app.launchEnvironment["TURNMARK_UI_TESTS"] = "1"
         app.launchArguments = ["-uitesting-reset"] + (example ? ["-uitesting-example"] : []) + extra
         app.launch()
         if example {
             // Workflow cases use a deterministic debug-only fixture. The
-            // dedicated arrival case exercises the real Try an example action.
+            // dedicated arrival case exercises real typing from a blank field.
             let results = app.buttons["seeResults"]
             if !app.descendants(matching: .any)["expandedConverter"].firstMatch.exists { reach(results, in: app); results.tap() }
         }
@@ -113,6 +165,9 @@ final class TurnmarkUITests: XCTestCase {
         return visibleKeyboard(in: app)
     }
     @MainActor private func reach(_ element: XCUIElement, in app: XCUIApplication, earlier: Bool = false) {
+        // A hittable element already owns its native touch geometry. Avoid
+        // repeatedly snapshotting navigation chrome during sheet transitions.
+        if !earlier && element.exists && element.isHittable { return }
         // Rotation can briefly expose interpolated, even negative, AX frames.
         // Wait for coherent chrome once, then cache it for the scroll search.
         // A stale tab frame used to trigger wrong-direction swipes and repeated
