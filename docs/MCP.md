@@ -112,6 +112,12 @@ SDK/core edits test their MCP consumer. There is no automatic npm publication
 of `@turnmark/mcp`; it depends on a released SDK and separate package release
 setup. WebMCP and publisher embeds have independent adapters and scopes.
 
+Superseded PR checks may be canceled, but main-branch engine runs finish before
+the next run can deploy. This prevents a web-only merge from canceling a pending
+MCP release and then skipping its replacement. Live verification checks all seven
+tools and the current versioned Apps resource; a healthy root alone does not
+confirm that the intended update deployed.
+
 The private IaC repository manages the zone's Free-plan edge rules: a
 path-only `/mcp` limit of 30 requests per 10 seconds per IP/location, with a
 10-second block, and hostname-specific route filtering. A disabled emergency
