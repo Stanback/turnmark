@@ -134,15 +134,17 @@ XCTest’s generic screenshot attachment is black on that simulator.
 
 ## Current verification
 
-All 24 iOS cases (7 storage/unit and 17 UI) and 27 Android instrumentation
-cases pass, including direct entry/reset, method comparison, altitude policy and
-unit changes, the Colorado distance caveat, original-swim benchmarks, logging,
-text scaling and adaptive geometry. The latest local iOS UI suite completed in
-490 seconds; its rotation/focus case took 22 seconds. Test-only animation and
-scroll-helper changes remove unnecessary automation waits without changing
-production animation behavior. Light/dark phone captures above come from the
-updated builds. Physical-device and assistive-technology review remain release
-checks.
+The regression suites cover 24 iOS cases (7 storage/unit and 17 UI) and 27
+Android instrumentation cases: direct entry/reset, method comparison, altitude
+policy and unit changes, the Colorado distance caveat, original-swim benchmarks,
+logging, text scaling and adaptive geometry. Current run status is recorded in
+[the required checks](https://github.com/Stanback/turnmark/pull/31/checks).
+
+The complete passing local iOS UI baseline took 490 seconds, with a 22-second
+rotation/focus case. Focused checks cover subsequent harness corrections and
+visible restoration of enabled altitude settings. These are local measurements,
+not simulator timing guarantees. Physical-device and assistive-technology review
+remain release checks.
 
 ## Earlier verification and limits
 
@@ -191,11 +193,14 @@ See [the common contract](ALTITUDE.md) for source editions and boundaries.
 [iOS altitude policies](screenshots/ios-altitude-policies.png) ·
 [Android altitude policies](screenshots/android-altitude-policies.png)
 
-UI automation disables app animations only in DEBUG when the test harness sets
-`TURNMARK_UI_TESTS=1`. Production animation behavior is unchanged. Focus, rotation,
-keyboard, persistence and source assertions remain; animation timing is not an
-automated claim. Per-test execution is bounded to prevent simulator idle waits
-from consuming an entire CI job.
+UI automation disables app animations only in DEBUG when the harness sets
+`TURNMARK_UI_TESTS=1`; production animation behavior is unchanged. Scroll searches
+use the stable app viewport rather than a dismissed sheet's stale navigation/tab
+accessibility frames. Targets still need to be hittable within content bounds.
+Time-entry setup uses the real Clear time action and checks the replacement,
+without assuming a center tap leaves the caret after existing digits. Rotation
+still types into the current responder without tapping or refocusing it.
+Per-test execution is bounded so simulator idle waits cannot consume a whole job.
 
 The documented Colorado SCM/SCY distance-freestyle rule carries an explicit
 caveat beside the result and in method details. The 4:11.36 SCM 400 free
@@ -205,9 +210,3 @@ rule, not a change to its coefficients.
 
 [iOS distance caveat](screenshots/ios-distance-caveat.png) ·
 [Android distance caveat](screenshots/android-distance-caveat.png)
-
-The hosted reset-flow failure was isolated to the scroll helper waiting for
-SwiftUI navigation/tab accessibility frames after a sheet closed. The helper
-now searches the stable app viewport, keeping the target's hittability and
-content-center checks. It does not use a sheet's stale chrome bounds as a
-prerequisite for scrolling.

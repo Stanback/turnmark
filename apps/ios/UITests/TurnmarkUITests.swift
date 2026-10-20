@@ -244,8 +244,19 @@ final class TurnmarkUITests: XCTestCase {
         else { XCTAssertTrue(element.exists && element.isHittable, "Element must remain reachable: \(element)") }
     }
     @MainActor private func replace(_ field: XCUIElement, with text: String, in app: XCUIApplication, earlier: Bool = false) {
-        reach(field, in: app, earlier: earlier); field.tap()
-        field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: (field.value as? String ?? "").count) + text)
+        reach(field, in: app, earlier: earlier)
+        if field.identifier == "timeInput" {
+            // A center tap can place the caret before existing digits. Exercise
+            // the app's real clear action instead of assuming an end caret.
+            let clear = app.buttons["clearConverterTime"]
+            if clear.exists { reach(clear, in: app); clear.tap() }
+            else { field.tap() }
+            field.typeText(text)
+            XCTAssertEqual(field.value as? String, text)
+        } else {
+            field.tap()
+            field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: (field.value as? String ?? "").count) + text)
+        }
         let done = app.buttons["dismissSwimKeyboard"]
         if done.exists && done.isHittable { done.tap() }
     }
