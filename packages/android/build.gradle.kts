@@ -1,6 +1,14 @@
 plugins { id("com.android.library") }
 
 android {
+    testOptions.animationsDisabled = true
+    testOptions.managedDevices.localDevices.create("turnmarkPhone") {
+        device = "Pixel 2"
+        sdkVersion = 37
+        systemImageSource = "google"
+        require64Bit = true
+        pageAlignment = com.android.build.api.dsl.ManagedVirtualDevice.PageAlignment.FORCE_4KB_PAGES
+    }
     namespace = "org.turnmark.sdk"
     compileSdk = 36
     ndkVersion = "30.0.16248370"

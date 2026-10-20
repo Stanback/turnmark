@@ -23,6 +23,123 @@ const flags = (...selected) =>
   );
 const all = flags("web", "core", "ios", "android");
 
+const engineWorkflow = readFileSync(
+  new URL("../.github/workflows/shared-engine.yml", import.meta.url),
+  "utf8",
+);
+const engineJob = (name) =>
+  engineWorkflow.split(`\n  ${name}:\n`)[1].split(/\n  [\w-]+:\n/)[0];
+
+test("consumer jobs depend on the fast core gate, not the browser suite", () => {
+  for (const job of ["web-sdk", "mcp", "ios", "android"]) {
+    assert.match(engineJob(job), /needs: \[changes, core\]/);
+  }
+  assert.match(engineJob("core"), /cargo test --locked --workspace/);
+  assert.doesNotMatch(engineJob("core"), /playwright|test-ios|test-android/);
+  assert.match(
+    engineJob("engine-ci"),
+    /needs: \[changes, core, web-sdk, ios, android, mcp\]/,
+  );
+});
+
+test("native dependency conditions allow intentional core skips and block broken shared checks", () => {
+  for (const platform of ["ios", "android"]) {
+    // This workflow expression uses the shared JS/GitHub boolean subset.
+    // Exercise the actual condition, including its explicit status check.
+    const expression = engineJob(platform).match(/if: \$\{\{ (.*?) \}\}/)[1];
+    const evaluate = new Function(
+      "needs",
+      "cancelled",
+      `return (${expression})`,
+    );
+    const needs = (coreSelected, coreResult, selected = "true") => ({
+      changes: {
+        result: "success",
+        outputs: { core: coreSelected, [platform]: selected },
+      },
+      core: { result: coreResult },
+    });
+    assert.equal(
+      evaluate(needs("true", "success"), () => false),
+      true,
+    );
+    assert.equal(
+      evaluate(needs("false", "skipped"), () => false),
+      true,
+    );
+    for (const result of ["failure", "cancelled", "skipped"]) {
+      assert.equal(
+        evaluate(needs("true", result), () => false),
+        false,
+      );
+    }
+    assert.equal(
+      evaluate(needs("true", "success", "false"), () => false),
+      false,
+    );
+    assert.equal(
+      evaluate(needs("true", "success"), () => true),
+      false,
+    );
+    const brokenSelection = needs("false", "skipped");
+    brokenSelection.changes.result = "failure";
+    assert.equal(
+      evaluate(brokenSelection, () => false),
+      false,
+    );
+  }
+});
+
+test("engine summary rejects unexpected skips, missing results and failed selected jobs", () => {
+  const script = engineJob("engine-ci")
+    .split("node --input-type=module <<'JS'\n")[1]
+    .split("\n          JS")[0];
+  const run = new Function("process", script);
+  const gate = (jobs) => {
+    let code = 0;
+    run({
+      env: { RESULTS: JSON.stringify(jobs) },
+      exit: (value) => (code = value),
+    });
+    return code;
+  };
+  for (const core of ["true", "false"]) {
+    for (const ios of ["true", "false"]) {
+      for (const android of ["true", "false"]) {
+        const selected = { core, ios, android };
+        const jobs = {
+          changes: { result: "success", outputs: selected },
+          ...Object.fromEntries(
+            Object.entries({
+              core,
+              "web-sdk": core,
+              mcp: core,
+              ios,
+              android,
+            }).map(([job, enabled]) => [
+              job,
+              { result: enabled === "true" ? "success" : "skipped" },
+            ]),
+          ),
+        };
+        assert.equal(gate(jobs), 0);
+        for (const job of ["core", "web-sdk", "mcp", "ios", "android"]) {
+          const changed = structuredClone(jobs);
+          changed[job].result =
+            jobs[job].result === "success" ? "skipped" : "success";
+          assert.equal(gate(changed), 1, `${job}: unexpected skip/run`);
+          for (const result of ["failure", "cancelled", undefined]) {
+            changed[job].result = result;
+            assert.equal(gate(changed), 1, `${job}: ${result}`);
+          }
+        }
+        jobs.changes.result = "failure";
+        assert.equal(gate(jobs), 1);
+      }
+    }
+  }
+});
+
 function mcpLiveVerifier({ staleLists = 0, wrongPreview = false } = {}) {
   const workflow = readFileSync(
     new URL("../.github/workflows/shared-engine.yml", import.meta.url),
@@ -260,6 +377,8 @@ for (const [path, expected] of [
   ["apps/history/contract-v1.json", flags("ios", "android")],
   ["apps/history/import-cases.json", flags("ios", "android")],
   ["scripts/test-ios.mjs", flags("ios")],
+  ["scripts/native-test-support.mjs", flags("ios", "android")],
+  ["scripts/native-test-support.test.mjs", flags("ios", "android")],
   ["packages/swift/Package.swift", flags("ios")],
   [
     "apps/android/src/main/java/net/stanback/turnmark/MainActivity.kt",

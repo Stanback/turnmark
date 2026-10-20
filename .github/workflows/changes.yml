@@ -30,7 +30,7 @@ jobs:
         with:
           node-version: 24
       - name: Test selection rules
-        run: node --test scripts/ci-changes.test.mjs
+        run: node --test scripts/ci-changes.test.mjs scripts/native-test-support.test.mjs
       - name: Select affected platforms
         id: select
         run: node scripts/ci-changes.mjs

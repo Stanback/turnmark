@@ -13,8 +13,24 @@ concurrency:
 jobs:
   changes:
     uses: ./.github/workflows/changes.yml
-  core-and-web:
+  core:
     needs: changes
+    if: needs.changes.outputs.core == 'true'
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install pinned Rust toolchain
+        run: rustup show active-toolchain
+      - name: Verify reviewed national benchmark snapshot
+        run: python3 scripts/import-national-standards.py --check
+      - run: cargo fmt --all --check
+      - run: cargo clippy --locked --workspace --all-targets --features turnmark-core/native -- -D warnings
+      - run: cargo test --locked --workspace --features turnmark-core/native
+  web-sdk:
+    needs: [changes, core]
     if: needs.changes.outputs.core == 'true'
     timeout-minutes: 15
     runs-on: ubuntu-latest
@@ -26,13 +42,6 @@ jobs:
         with:
           node-version: 24
           cache: npm
-      - name: Install pinned Rust toolchain
-        run: rustup show active-toolchain
-      - name: Verify reviewed national benchmark snapshot
-        run: python3 scripts/import-national-standards.py --check
-      - run: cargo fmt --all --check
-      - run: cargo clippy --locked --workspace --all-targets --features turnmark-core/native -- -D warnings
-      - run: cargo test --locked --workspace --features turnmark-core/native
       - run: cargo install wasm-bindgen-cli --version 0.2.129 --locked
       - run: npm ci
       - run: npx playwright install --with-deps chromium
@@ -45,8 +54,9 @@ jobs:
           path: target/engine-metrics.json
           retention-days: 7
   ios:
-    needs: changes
-    if: needs.changes.outputs.ios == 'true'
+    needs: [changes, core]
+    # A native-only edit intentionally skips core; a selected core must pass.
+    if: ${{ !cancelled() && needs.changes.result == 'success' && needs.changes.outputs.ios == 'true' && (needs.core.result == 'success' || (needs.core.result == 'skipped' && needs.changes.outputs.core == 'false')) }}
     timeout-minutes: 45
     runs-on: xcode-27
     env:
@@ -64,11 +74,43 @@ jobs:
           xcodebuild -version
           test "$(xcrun --sdk iphoneos --show-sdk-version)" = '27.1'
       - run: rustup target add aarch64-apple-ios aarch64-apple-ios-sim x86_64-apple-ios
+      - name: Restore iOS Rust and compiler caches
+        id: native-cache
+        uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          # Explicit build directories: never cache simulator state or test results.
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target/debug
+            !target/debug/incremental
+            target/aarch64-apple-ios/release
+            target/aarch64-apple-ios-sim/release
+            target/x86_64-apple-ios/release
+            target/xcode-compilation-cache
+          key: native-ios-v1-${{ runner.os }}-${{ runner.arch }}-xcode27.1-${{ hashFiles('rust-toolchain.toml', 'Cargo.lock', '**/Cargo.toml', '.cargo/config.toml') }}-${{ github.sha }}
+          restore-keys: native-ios-v1-${{ runner.os }}-${{ runner.arch }}-xcode27.1-${{ hashFiles('rust-toolchain.toml', 'Cargo.lock', '**/Cargo.toml', '.cargo/config.toml') }}-
       - run: node scripts/package-ios.mjs
       - run: node scripts/test-native-host.mjs swift
       - run: node scripts/test-ios.mjs
       - name: Test unsigned native iOS app
-        run: node scripts/test-ios.mjs app
+        # The hosted runner's two-clone run was slower and hit UI timing failures.
+        # Keep all cases; reserve two workers for measured local iterations.
+        run: node scripts/test-ios.mjs app --workers 1
+      - name: Save successful iOS build caches
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && steps.native-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target/debug
+            !target/debug/incremental
+            target/aarch64-apple-ios/release
+            target/aarch64-apple-ios-sim/release
+            target/x86_64-apple-ios/release
+            target/xcode-compilation-cache
+          key: ${{ steps.native-cache.outputs.cache-primary-key }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -76,10 +118,11 @@ jobs:
           path: |
             target/ios-tests.xcresult
             target/ios-app-tests.xcresult
+            target/ios-*-metrics.json
           retention-days: 7
   android:
-    needs: changes
-    if: needs.changes.outputs.android == 'true'
+    needs: [changes, core]
+    if: ${{ !cancelled() && needs.changes.result == 'success' && needs.changes.outputs.android == 'true' && (needs.core.result == 'success' || (needs.core.result == 'skipped' && needs.changes.outputs.core == 'false')) }}
     timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
@@ -93,12 +136,34 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+      - name: Set up Gradle build caching
+        uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6
+        with:
+          # The explicit GitHub cache below refreshes task outputs on main.
+          # No paid cache provider, configuration cache or Build Scan publication.
+          cache-provider: external
       - uses: android-actions/setup-android@v3
         with:
           packages: platform-tools
           log-accepted-android-sdk-licenses: false
-      - run: sdkmanager 'ndk;30.0.16248370' 'platforms;android-36' 'platforms;android-37.0' 'build-tools;36.0.0'
+      - run: sdkmanager 'ndk;30.0.16248370' 'platforms;android-37.0' 'build-tools;36.0.0' 'emulator' 'system-images;android-37.0;google_apis;x86_64'
       - run: rustup target add aarch64-linux-android x86_64-linux-android
+      - name: Restore Android Rust and Gradle build caches
+        id: native-cache
+        uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.gradle/caches
+            !~/.gradle/caches/keyrings
+            ~/.gradle/wrapper
+            target/debug
+            !target/debug/incremental
+            target/aarch64-linux-android/release
+            target/x86_64-linux-android/release
+          key: native-android-v1-${{ runner.os }}-${{ runner.arch }}-jdk21-ndk30.0.16248370-${{ hashFiles('rust-toolchain.toml', 'Cargo.lock', '**/Cargo.toml', '.cargo/config.toml', '**/*.gradle.kts', 'gradle.properties', 'gradle/wrapper/gradle-wrapper.properties') }}-${{ github.sha }}
+          restore-keys: native-android-v1-${{ runner.os }}-${{ runner.arch }}-jdk21-ndk30.0.16248370-${{ hashFiles('rust-toolchain.toml', 'Cargo.lock', '**/Cargo.toml', '.cargo/config.toml', '**/*.gradle.kts', 'gradle.properties', 'gradle/wrapper/gradle-wrapper.properties') }}-
       - name: Generate Kotlin and Android native libraries
         run: ANDROID_NDK_HOME="$ANDROID_HOME/ndk/30.0.16248370" node scripts/package-android.mjs
       - run: ./gradlew :sdk-android:assembleDebug :sdk-android:assembleDebugAndroidTest :app-android:assembleDebug :app-android:assembleDebugAndroidTest
@@ -108,13 +173,25 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - uses: reactivecircus/android-emulator-runner@v2
+      - name: Test Android SDK on the managed Pixel 2 API 37
+        run: node scripts/test-android.mjs sdk --managed
+      - name: Test Android app on the managed Pixel 2 API 37
+        run: node scripts/test-android.mjs app --managed
+      - name: Save successful Android build caches
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && steps.native-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
-          api-level: 36
-          target: default
-          arch: x86_64
-          disable-animations: true
-          script: node scripts/test-android.mjs sdk && node scripts/test-android.mjs app
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.gradle/caches
+            !~/.gradle/caches/keyrings
+            ~/.gradle/wrapper
+            target/debug
+            !target/debug/incremental
+            target/aarch64-linux-android/release
+            target/x86_64-linux-android/release
+          key: ${{ steps.native-cache.outputs.cache-primary-key }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -124,9 +201,10 @@ jobs:
             packages/android/build/outputs/androidTest-results/
             apps/android/build/reports/androidTests/
             apps/android/build/outputs/androidTest-results/
+            target/android-*-metrics.json
           retention-days: 7
   mcp:
-    needs: changes
+    needs: [changes, core]
     if: needs.changes.outputs.core == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -275,7 +353,7 @@ jobs:
           JS
   engine-ci:
     if: always()
-    needs: [changes, core-and-web, ios, android, mcp]
+    needs: [changes, core, web-sdk, ios, android, mcp]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -285,8 +363,11 @@ jobs:
         run: |
           node --input-type=module <<'JS'
           const jobs = JSON.parse(process.env.RESULTS);
-          if (jobs.changes.result !== 'success' ||
-              Object.values(jobs).some(({ result }) => !['success', 'skipped'].includes(result))) {
+          const selected = jobs.changes.outputs;
+          const consumers = { core: 'core', 'web-sdk': 'core', mcp: 'core', ios: 'ios', android: 'android' };
+          if (jobs.changes.result !== 'success' || Object.entries(consumers).some(([job, flag]) =>
+              !['true', 'false'].includes(selected?.[flag]) ||
+              jobs[job]?.result !== (selected[flag] === 'true' ? 'success' : 'skipped'))) {
             process.exit(1);
           }
           JS
