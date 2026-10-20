@@ -65,6 +65,7 @@ final class TurnmarkUITests: XCTestCase {
     }
     @MainActor private func launch(_ extra: [String] = [], example: Bool = true) -> XCUIApplication {
         let app = XCUIApplication()
+        app.launchEnvironment["TURNMARK_UI_TESTS"] = "1"
         app.launchArguments = ["-uitesting-reset"] + (example ? ["-uitesting-example"] : []) + extra
         app.launch()
         if example {
@@ -113,6 +114,9 @@ final class TurnmarkUITests: XCTestCase {
         return visibleKeyboard(in: app)
     }
     @MainActor private func reach(_ element: XCUIElement, in app: XCUIApplication, earlier: Bool = false) {
+        // A hittable element already owns its native touch geometry. Avoid
+        // repeatedly snapshotting navigation chrome during sheet transitions.
+        if !earlier && element.exists && element.isHittable { return }
         // Rotation can briefly expose interpolated, even negative, AX frames.
         // Wait for coherent chrome once, then cache it for the scroll search.
         // A stale tab frame used to trigger wrong-direction swipes and repeated

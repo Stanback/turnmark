@@ -75,7 +75,21 @@ struct Draft: Codable, Equatable {
 
 @main
 struct TurnmarkApp: App {
-    var body: some Scene { WindowGroup { TurnmarkView() } }
+    private var testingWithoutAnimations: Bool {
+        #if DEBUG
+        ProcessInfo.processInfo.environment["TURNMARK_UI_TESTS"] == "1"
+        #else
+        false
+        #endif
+    }
+    init() {
+        #if DEBUG
+        if ProcessInfo.processInfo.environment["TURNMARK_UI_TESTS"] == "1" { UIView.setAnimationsEnabled(false) }
+        #endif
+    }
+    var body: some Scene {
+        WindowGroup { TurnmarkView().transaction { if testingWithoutAnimations { $0.disablesAnimations = true } } }
+    }
 }
 
 private struct TurnmarkView: View {
