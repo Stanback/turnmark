@@ -28,10 +28,6 @@
   },
   "captures": [
     {
-      "file": "web-converter-comparison-dark.png",
-      "sha256": "05ab75ee64e54fe4b698b91f89eba049ae70e168bc0521fd3239790ee3b00873"
-    },
-    {
       "file": "web-converter-desktop-layout-dark.png",
       "sha256": "ed2b31811007586333f7a9bccfc82862005d7d937d00b4fb9da281ecc9c65060"
     },
@@ -40,16 +36,8 @@
       "sha256": "057a6788b762efe6b4b5cd1d2cb0878957f5b2624ee73c1c402aced0b987e03d"
     },
     {
-      "file": "web-converter-comparison-light.png",
-      "sha256": "f941ace3b9d0edd9584eb2f36bf2de8e51a9bf1469ab90a9e291ef0ceb1e576d"
-    },
-    {
       "file": "web-converter-empty-mobile.png",
       "sha256": "42e59c3eb2f626bad937c2301c9e69aa858c2c4621b29b0c4eb8c69e263622b8"
-    },
-    {
-      "file": "web-converter-comparison-mobile.png",
-      "sha256": "e8d555bad03900b345d81a7715ea106875e548a123030e8afa1bc4fd76bc1618"
     },
     {
       "file": "web-converter-results-mobile.png",
@@ -181,11 +169,11 @@
   ],
   "followups": [
     {
-      "capturedAt": "2026-10-20T06:05:58.390952+00:00",
+      "capturedAt": "2026-10-20T06:10:52.959644+00:00",
       "branch": "fix/benchmark-panel-width",
       "sourceBase": "f2842ac3b811c8f17760104ffbde0d3b8389c487",
       "sourceHashes": {
-        "src/converter.css": "0a65eb7914d034b06c9b1b22f910c282d414c0fdfe7e28a870d96e08dbbb4dd3"
+        "src/converter.css": "0bc3fe25be60a4da12744b1567755b95e7d8b535a1adb81e6958738a91a756c2"
       },
       "captures": [
         {
@@ -195,10 +183,22 @@
         {
           "file": "web-masters-desktop-light.png",
           "sha256": "7ffc161b624f9b5e9be6270fa5eb7d8d4bdcdae8175058162ac8aeac1ddcfbac"
+        },
+        {
+          "file": "web-converter-comparison-dark.png",
+          "sha256": "59cf9a914cfea1786765150ddadd0e8adc9b6b22a99d2e72f04ad3350d0259e9"
+        },
+        {
+          "file": "web-converter-comparison-light.png",
+          "sha256": "dbc465493a899123e849ec3779fab0d1f646fd006fa6ebfb7efba855cf107dd8"
+        },
+        {
+          "file": "web-converter-comparison-mobile.png",
+          "sha256": "fd55e8a77e77b71d41543bc652484c3fc487b2b70d3307dba7fceb41587588d0"
         }
       ],
       "notes": [
-        "Actual Vite screenshots at 1120px; both themes additionally reviewed at 390px without overflow. Only the desktop Masters/points width cap changed. Existing captures retain their original source provenance."
+        "Actual Vite screenshots: benchmark panels at 1120px, converter at 1120×1450 and 390×844. Both benchmark themes additionally reviewed at 390px without overflow. Masters/points fill the desktop panel; Calculation options retains only its top divider. Other captures retain their original source provenance."
       ]
     }
   ]

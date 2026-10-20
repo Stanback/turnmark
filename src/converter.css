@@ -472,7 +472,7 @@
   padding-block: 10px;
 }
 .calculation-options {
-  border-block: 1px solid var(--line);
+  border-top: 1px solid var(--line);
 }
 .calculation-options summary {
   display: flex;
