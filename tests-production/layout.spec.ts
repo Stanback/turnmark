@@ -50,14 +50,12 @@ test("standards lead their own row and history expands on demand", async ({
   await history.scrollIntoViewIfNeeded();
   await page.screenshot({ path: testInfo.outputPath("desktop-grid-dark.png") });
   await page
-    .getByRole("button", { name: "World Aquatics points", exact: true })
-    .click();
+    .getByRole("combobox", { name: "Compare against", exact: true })
+    .selectOption("world-points");
   await stacked();
   await page
-    .getByRole("group", { name: "Performance comparison" })
-    .getByRole("button", { name: "Time standards", exact: true })
-    .click();
-  await page.locator("#standards-system").selectOption("masters");
+    .getByRole("combobox", { name: "Compare against", exact: true })
+    .selectOption("masters");
   await stacked();
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(list).toHaveCSS("overflow-y", "visible");
@@ -133,7 +131,7 @@ test("setup pages share branded content bounds in both appearances", async ({
   });
 });
 
-test("mobile comparison modes stay compact and navigation paints the bottom inset", async ({
+test("mobile benchmark selector follows the swim choice and navigation paints the bottom inset", async ({
   page,
 }, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -155,14 +153,18 @@ test("mobile comparison modes stay compact and navigation paints the bottom inse
   const standards = (await page.locator("#standards").boundingBox())!;
   const history = (await page.locator("#history").boundingBox())!;
   expect(standards.y).toBeLessThan(history.y);
-  const modes = page.getByRole("group", { name: "Performance comparison" });
-  const buttons = modes.getByRole("button");
-  await expect(buttons).toHaveText(["Standards", "Points"]);
-  const first = (await buttons.nth(0).boundingBox())!;
-  const second = (await buttons.nth(1).boundingBox())!;
-  expect(first.y).toBe(second.y);
-  expect(first.height).toBe(second.height);
-  expect(first.height).toBeGreaterThanOrEqual(44);
+  const selector = page.getByRole("combobox", {
+    name: "Compare against",
+    exact: true,
+  });
+  await expect(selector).toHaveCount(1);
+  await expect(selector.locator("option")).toHaveCount(6);
+  const basis = (await page
+    .getByRole("group", { name: "Compare using", exact: true })
+    .boundingBox())!;
+  const picker = (await selector.boundingBox())!;
+  expect(picker.y).toBeGreaterThanOrEqual(basis.y + basis.height);
+  expect(picker.height).toBeGreaterThanOrEqual(44);
   const bar = (await nav.boundingBox())!;
   expect(bar.y + bar.height).toBe(844);
   const tab = (await nav.getByRole("button").last().boundingBox())!;
@@ -170,9 +172,7 @@ test("mobile comparison modes stay compact and navigation paints the bottom inse
   await page.screenshot({
     path: testInfo.outputPath("mobile-standards-dark.png"),
   });
-  await modes
-    .getByRole("button", { name: "World Aquatics points", exact: true })
-    .click();
+  await selector.selectOption("world-points");
   await expect(page.getByTestId("points-score")).toHaveCount(0);
   await expect(
     page.getByRole("heading", { name: "SCY isn’t scored" }),

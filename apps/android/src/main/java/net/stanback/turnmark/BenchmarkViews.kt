@@ -75,11 +75,18 @@ import uniffi.turnmark_core.*
                     Text("Estimate only; not a recorded performance or proof of entry eligibility.", style = MaterialTheme.typography.bodySmall, color = c.textMuted)
                 }
             }
-            SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
-                listOf("standards" to "Standards", "points" to "Points").forEachIndexed { index, (value, label) ->
-                    SegmentedButton(selected = mode == value, onClick = { mode = value; save("benchmarkMode", value) },
-                    shape = SegmentedButtonDefaults.itemShape(index, 2), modifier = Modifier.testTag("benchmarkMode-$value")) { Text(label) }
+            val benchmarkLabels = systemLabels + "World Aquatics points"
+            val benchmarkIndex = if (mode == "points") systemLabels.size else systemIds.indexOf(systemName)
+            Choice("Compare against", benchmarkLabels[benchmarkIndex], benchmarkLabels,
+                Modifier.fillMaxWidth().testTag("benchmarkTarget"), maxLines = 2,
+                optionGroupLabels = mapOf(0 to "Time standards", systemLabels.size to "Points")) { index ->
+                if (index == systemLabels.size) mode = "points"
+                else {
+                    systemName = systemIds[index]
+                    mode = "standards"
                 }
+                preferences.edit().putString("benchmarkMode", mode).putString("benchmarkSystem", systemName)
+                    .putBoolean("benchmarkConfigured", true).apply()
             }
             if (swim == null) {
                 BenchmarkGroup {
@@ -142,9 +149,6 @@ import uniffi.turnmark_core.*
                         Text(if (settingsExpanded) "Hide" else "Change")
                     }
                     if (settingsExpanded) {
-                        Choice("Standard system", systemLabels[systemIds.indexOf(systemName)], systemLabels, Modifier.fillMaxWidth().testTag("benchmarkSystem")) {
-                            systemName = systemIds[it]; save("benchmarkSystem", systemName)
-                        }
                         val ages = getStandardAgeGroups(system)
                         if (ages.isNotEmpty()) Choice("Age group", benchmarkAgeLabel(age), ages.map(::benchmarkAgeLabel), Modifier.fillMaxWidth().testTag("benchmarkAge")) {
                             if (system == StandardSystem.MASTERS) { mastersAge = ages[it]; save("benchmarkMastersAge", mastersAge) }

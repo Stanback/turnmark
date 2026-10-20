@@ -46,6 +46,14 @@ if (!device)
     `Install an iOS ${requiredRuntime ?? ""} simulator in Xcode first`,
   );
 console.log(`Testing on ${device.name} (${device.udid})`);
+// Let CoreSimulator finish booting before XCTest connects to its service hub.
+// Cold hosted runners have hung at that handshake before running any tests.
+const ready = spawnSync("xcrun", ["simctl", "bootstatus", device.udid, "-b"], {
+  stdio: "inherit",
+  timeout: 180_000,
+});
+if (ready.error) throw ready.error;
+if (ready.status !== 0) process.exit(ready.status ?? 1);
 await rm(`target/${output}.xcresult`, { recursive: true, force: true });
 const result = spawnSync(
   "xcodebuild",

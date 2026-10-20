@@ -1,17 +1,23 @@
 # Native Standards & points review
 
-Captured October 18, 2026 from real simulator/emulator builds. Sample swims only.
+Current benchmark captures are refreshed for the October 20 unified selector;
+the dated verification and fold notes below record earlier checks. Sample swims only.
 The view opens from Convert and from a recorded performance in My times. It
-compares the original time/event/course/category, never a converted estimate.
+defaults to the original time/event/course/category. Converted estimates are
+available only through the explicit comparison-source choice described below.
 
 | iOS 27 · compact, light                                                                             | Android API 36 · phone, light                                                                                       |
 | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | <img src="screenshots/ios-standards-light.png" width="300" alt="iOS A standard and next AA target"> | <img src="screenshots/android-youth-standards-summary.png" width="300" alt="Android A standard and next AA target"> |
 
 Both use generated palettes, a navy gradient and lime next-target time, while
-retaining native segmented controls, sheets, lists and pickers. Age/provider
-settings start expanded and can subsequently be disclosed. Separate youth and
-Masters ages and comparison mode persist locally; category follows the swim.
+retaining native sheets, lists and pickers. **Compare using** precedes one
+**Compare against** picker. Its menu groups time standards and World Aquatics
+points; there is no separate mode switch or provider setting. iOS uses native
+menu sections and Android uses a Material exposed dropdown with section labels.
+Age settings start expanded and can subsequently be disclosed. Separate youth
+and Masters ages and the selected benchmark persist locally; category follows
+the swim. Choosing points does not erase the previously chosen standard or age.
 
 The current captures use the same numerical surface as Convert, including its
 quiet static ribbon. iOS keeps grouped Form sections; Android groups the
@@ -31,7 +37,25 @@ The lookups, comparisons and settings work offline; source links need a network.
 | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | <img src="screenshots/ios-standards-missing-large-text.png" width="300" alt="Missing Masters target at largest iOS accessibility text size"> | <img src="screenshots/android-benchmarks-large-text-dark.png" width="300" alt="Missing Masters target at large Android text size in dark appearance"> |
 
-## Verification
+## Unified benchmark selector verification
+
+The grouped selector replaces the old Standards/Points tabs and the separate
+provider setting on web, iOS and Android. Existing stored preferences remain
+compatible. Switching from Masters to points and back preserves the chosen age;
+preview/entered choices and unavailable states keep their existing semantics.
+
+| iOS · native menu sections                                                                                                           | Android · grouped exposed dropdown                                                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| <img src="screenshots/ios-benchmark-choices.png" width="300" alt="iOS Compare against menu with Time standards and Points sections"> | <img src="screenshots/android-benchmark-choices.png" width="300" alt="Android Compare against dropdown with Time standards and Points headings"> |
+
+Local verification: 27 iOS app tests and 30 Android instrumentation tests passed,
+plus focused benchmark/selection persistence captures on both platforms and the
+iOS SDK suite. Web checks passed with 178 unit tests, 55 browser cases and one
+existing conditional skip; Svelte/TypeScript reported no errors or warnings.
+The refreshed phone screenshots show the current selector. The earlier Duo
+checks below are historical, not a new fold-device review.
+
+## Earlier verification (October 18)
 
 - Rust tests check every published youth cutoff, exact and 0.01s slower, and
   Masters equality/gaps. The same assessment API is exposed to JS/Swift/Kotlin.
@@ -56,14 +80,11 @@ published SDK 0.1.0 archive is unchanged.
 
 ## iPhone Duo and keyboard follow-up
 
-The original-swim/settings/points test also passes on the iPhone Duo with iOS
-27.1. These actual inner-display captures use simctl display 3; XCTest's generic
-screenshot attachment is black on that simulator. Only local screenshot timing
-was paused to capture the display; application code was unchanged.
-
-| Duo · Standards                                                                                                                      | Duo · Points                                                                                                                 |
-| ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
-| <img src="screenshots/ios-duo-standards-light.png" width="430" alt="Standards and published youth targets on the Duo inner display"> | <img src="screenshots/ios-duo-points-light.png" width="430" alt="World Aquatics points and source on the Duo inner display"> |
+The earlier original-swim/settings/points test passed on iPhone Duo with iOS
+27.1. That check predates the unified benchmark picker. The superseded sheet
+screenshots have been removed; the current selector review uses the phone
+simulator/emulator captures above. Duo-specific behavior has not been rechecked
+for this selector change.
 
 The first CI pass exposed a keyboard focus issue in the existing adaptive
 converter: raw GeometryReader height changes restarted focus restoration during
@@ -126,4 +147,4 @@ uses a vector in the option and selected dropdown field. The
 [Android altitude preview](screenshots/android-benchmark-altitude-preview.png)
 and [iOS altitude preview](screenshots/ios-benchmark-altitude-preview.png)
 show the original 58.32 SCY alongside the 1:06.61 LCM estimate under the NCAA
-altitude policy at 5,000 ft. The comparison mode stays on its own later row.
+altitude policy at 5,000 ft. The unified benchmark picker stays on its own later row.
