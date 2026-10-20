@@ -11,6 +11,8 @@ import type {
   AltitudeRequest,
   AltitudeValue,
 } from "./conversion.js";
+export type { ConversionMethod, AltitudePolicy } from "./conversion-methods.js";
+export type { Elevation } from "./conversion.js";
 export type {
   EngineOptions,
   ConversionRequest,

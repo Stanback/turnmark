@@ -249,3 +249,14 @@ National benchmark programs (`futures`, `juniors`, `nisca`) share the original-s
 `getNationalStandardPrograms()` for labels, age choices and coverage notes.
 Futures uses `18 & under` / `19 & over`; Juniors and NISCA use `age: ""`.
 See [coverage and source editions](../../docs/NATIONAL_BENCHMARKS.md).
+
+### Consumer boundaries
+
+The hosted publisher widget uses `createConverter` and `converter.wasm`, including
+its shared method comparison and altitude controls. The full web app continues
+to use `createEngine` because it also provides standards and points.
+
+MCP uses the full engine on its server for the complete read-only tool set. Its
+Apps card runs no Wasm: explicit edits call the server through the official host
+bridge. Adding the converter to that card would increase its payload without
+replacing the server’s standards/points engine.

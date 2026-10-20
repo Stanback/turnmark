@@ -14,6 +14,8 @@
   import { site, faqs } from "./data/site";
   import { resources } from "./data/resources";
   import {
+    convertSwim,
+    adjustAltitude,
     conversionMethods,
     coloradoMethod,
     altitudePolicies,
@@ -1001,6 +1003,7 @@
             </div>{/if}
           {#if !error}
             <MethodComparison
+              converter={{ convert: convertSwim, adjustAltitude }}
               adjusted={adjustment > 0}
               selected={form.method}
               request={{

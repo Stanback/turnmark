@@ -4,18 +4,19 @@
   import MethodComparison from "../../src/lib/MethodComparison.svelte";
   import Icon from "../../src/lib/Icon.svelte";
   import {
-    convertSwim,
+    type Converter,
     type Course,
     type Category,
     type Stroke,
-  } from "@turnmark/sdk";
+  } from "@turnmark/sdk/converter";
   import {
     conversionMethod,
     conversionMethods,
     type ConversionMethod,
     type Elevation,
     type AltitudePolicy,
-  } from "@turnmark/sdk/conversion";
+  } from "@turnmark/sdk/converter";
+  const { converter }: { converter: Converter } = $props();
   const courses: Course[] = ["SCY", "SCM", "LCM"];
   const strokes: { value: Stroke; label: string }[] = [
     { value: "freestyle", label: "Freestyle" },
@@ -52,7 +53,7 @@
   const results = $derived(
     courses.map((to) => ({
       to,
-      result: convertSwim({
+      result: converter.convert({
         swim: { time, event: { distance, stroke, course } },
         to,
         table,
@@ -141,6 +142,7 @@
       ></label
     >
     <AltitudeControls
+      {converter}
       swim={{ time, event: { distance, stroke, course } }}
       bind:elevation
       bind:policy={altitudePolicy}
@@ -193,6 +195,7 @@
       ></label
     >
     <MethodComparison
+      {converter}
       selected={method}
       request={{
         swim: { time, event: { distance, stroke, course } },

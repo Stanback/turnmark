@@ -1,6 +1,44 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { createServer } from "node:http";
+import { readFile } from "node:fs/promises";
+import { gzipSync } from "node:zlib";
+
+test("widget downloads only the focused converter Wasm", async ({
+  page,
+}, testInfo) => {
+  const downloads: Promise<Buffer>[] = [];
+  page.on("response", (response) => {
+    if (new URL(response.url()).pathname.endsWith(".wasm"))
+      downloads.push(response.body());
+  });
+  await page.goto("./embed/v1/");
+  await expect(
+    page.locator("article").filter({ hasText: "100 Freestyle · SCY" }),
+  ).toContainText("52.44");
+  const bodies = await Promise.all(downloads);
+  const focused = await readFile(
+    new URL(import.meta.resolve("@turnmark/sdk/converter.wasm")),
+  );
+  const full = await readFile(
+    new URL(import.meta.resolve("@turnmark/sdk/engine.wasm")),
+  );
+  expect(bodies).toHaveLength(1);
+  expect(bodies[0].equals(focused)).toBe(true);
+  expect(focused.length).toBeLessThan(full.length / 2);
+  await testInfo.attach("widget-wasm-budget.json", {
+    body: JSON.stringify(
+      {
+        focused: { raw: focused.length, gzip: gzipSync(focused).length },
+        full: { raw: full.length, gzip: gzipSync(full).length },
+        wasmRequests: bodies.length,
+      },
+      null,
+      2,
+    ),
+    contentType: "application/json",
+  });
+});
 
 test("widget keeps NCAA default and offers Colorado offline without changing the entered swim", async ({
   page,

@@ -7,17 +7,19 @@
   } from "./calculation-copy";
   import AltitudeComparison from "./AltitudeComparison.svelte";
   import {
-    convertSwim,
+    type Converter,
     conversionMethods,
     type ConversionRequest,
     type ConversionMethod,
-  } from "@turnmark/sdk/conversion";
+  } from "@turnmark/sdk/converter";
 
   let {
+    converter,
     request,
     selected,
     adjusted = false,
   }: {
+    converter: Pick<Converter, "convert" | "adjustAltitude">;
     request: ConversionRequest;
     selected: ConversionMethod;
     adjusted?: boolean;
@@ -25,7 +27,7 @@
   const comparisons = $derived(
     conversionMethods.map((method) => ({
       ...method,
-      result: convertSwim({ ...request, method: method.id }),
+      result: converter.convert({ ...request, method: method.id }),
     })),
   );
   const chosen = $derived(comparisons.find((item) => item.id === selected)!);
@@ -79,6 +81,7 @@
     </p>{/if}
   <p>{methodComparisonCaveat}</p>
   {#if request.elevation}<AltitudeComparison
+      {converter}
       swim={request.swim}
       elevation={request.elevation}
       selected={request.altitudePolicy ?? "usa-swimming-altitude-2026"}

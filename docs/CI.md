@@ -31,7 +31,11 @@ Web-only layout changes still skip native builds. Editing CI selection rules
 themselves selects all checks.
 
 Core/Wasm checks also build and test the MCP package and local Worker. Web-only
-edits skip those checks. SDK changes exercise their MCP consumer.
+edits skip those checks. SDK changes exercise their MCP consumer. The widget’s focused converter entry
+and shared comparison controls select web; changes to the SDK converter itself
+select web and core/Wasm, including full MCP tool verification. The production
+widget test checks its fetched Wasm against the focused asset and rejects a
+second engine download.
 
 Shared changes run a fast `core` job first: source snapshot validation, Rust
 formatting, Clippy and direct Rust tests. Once it passes, `web-sdk` (Wasm/JS
