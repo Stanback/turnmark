@@ -168,5 +168,21 @@ places the complete USA Swimming / NCAA comparison once in calculation details.
 About has breathing room after history; Sources and Swimming resources share a
 compact disclosure treatment with one divider.
 
+The benchmark-width follow-up removes the old 920px desktop cap from Masters
+and points. Numerical cards, targets and formula rows fill the containing
+panel; explanatory paragraphs retain their 75-character reading measure.
+The [desktop points view](screenshots/web-points-desktop-dark.png) uses an
+entered 17:36.20 SCM 1500 freestyle for women (635 points); the
+[Masters view](screenshots/web-masters-desktop-light.png) uses an entered
+58.32 SCY 100 freestyle for women aged 40–44. Both themes were checked at
+1120px and 390px with no horizontal overflow. This layout change does not
+change which swim is assessed.
+Calculation options retains the divider above its summary and omits the
+redundant bottom rule. The default desktop and phone input captures were
+refreshed with that lighter treatment.
+The [FAQ list](screenshots/web-faq-desktop-dark.png) likewise keeps separators
+between questions and omits the final bottom rule, whether the last answer is
+open or closed.
+
 [Web altitude settings](screenshots/web-altitude-settings.png) ·
 [Widget altitude settings](screenshots/widget-altitude-settings-dark.png)

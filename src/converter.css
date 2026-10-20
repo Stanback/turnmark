@@ -472,7 +472,7 @@
   padding-block: 10px;
 }
 .calculation-options {
-  border-block: 1px solid var(--line);
+  border-top: 1px solid var(--line);
 }
 .calculation-options summary {
   display: flex;
@@ -1323,10 +1323,6 @@
   .standards-title-row .standards-controls {
     width: auto;
   }
-  .masters-panel,
-  .points-panel {
-    max-width: 920px;
-  }
 }
 @media (max-width: 900px) {
   .history-list {
@@ -1468,6 +1464,9 @@
   margin-top: 48px;
   padding-top: 0;
   border-top: 0;
+}
+.faq-list details:last-child {
+  border-bottom: 0;
 }
 .method-section {
   display: block;
