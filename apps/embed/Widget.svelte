@@ -203,7 +203,7 @@
     />
   </details>
   <footer>
-    <p>Converted times are estimates. Meet rules decide entry eligibility.</p>
+    <p>Converted times are estimates. Check your meet’s entry rules.</p>
     <div>
       <a
         href={selectedMethod.source.url}

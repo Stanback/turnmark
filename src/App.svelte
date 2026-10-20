@@ -785,11 +785,6 @@
             </section>
           </div>
         </details>
-        <div class="input-footnote">
-          <Icon name="info" size={14} /><span
-            >Estimates for perspective. Meet rules decide entry eligibility.</span
-          >
-        </div>
         <button
           class="primary-button mobile-results-jump"
           disabled={!!error}
@@ -946,6 +941,9 @@
             </button>
           {/each}
         </div>
+        {#if time !== null && !error}<p class="result-note">
+            Converted times are estimates. Check your meet’s entry rules.
+          </p>{/if}
         <details class="result-method">
           <summary>
             <span><Icon name="info" size={15} />How this is calculated</span>

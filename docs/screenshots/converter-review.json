@@ -1,17 +1,17 @@
 {
-  "capturedAt": "2026-10-20T01:29:02.397926+00:00",
+  "capturedAt": "2026-10-20T01:34:31.151424+00:00",
   "branch": "fix/elevation-field-spacing",
-  "sourceBase": "de9a8fde7a070280d0bbe0967951983ffde8101d",
+  "sourceBase": "f46de98bb0325af7e28da5b495a83539d4749eff",
   "sourceHashes": {
-    "src/App.svelte": "2959c74c672607195a55f0dac7fe46d38da18e92eacc486d369fb6fa07df2c4b",
-    "src/converter.css": "6ccbbe0a69590fcc3a6390a2a698de4eb8d082fddb84207fdad4d07469354ef1",
+    "src/App.svelte": "71c0c5bd44c81c0398281a8d193b58a5a8c33ca312166e76760cad8820ebac07",
+    "src/converter.css": "e1e50d8b674acb4256dc15d378574146dc9a0e8185be759bdde5ce54b48ffce7",
     "src/app.css": "76f7065b58be4f721825dbf92434b1a9eb21e3d923ef57648502c6cbf3e79bf1",
     "design/turnmark.tokens.json": "aeaddebc1caadbbd96ba58e1d26bd0073b02ee78f4537f41c554a60c5b0d7634",
     "public/images/water-ribbons.webp": "00c268a88616c4bf1402ef8153547966821e95ebc5bedf83a7f80e6a4ebbb447",
     "src/lib/MethodComparison.svelte": "d43a0d4ca89516d4b8c2ed44ff4d07b11e539b45724bde330c7d5c04a012c19a",
     "src/lib/AltitudeComparison.svelte": "c1d1213e45f58f6209ca47173ae4a442477877da94ca2a6efc70ff8acb46dd06",
     "src/lib/AltitudeControls.svelte": "76a98326d9789bbece2d64b6dd39e8d1e066416839266a005e711ba411edfb7b",
-    "apps/embed/Widget.svelte": "0b1ecd2f2ad937ef646b312504ba39683ea1f0db6f94f53b783bb8dd2a822290",
+    "apps/embed/Widget.svelte": "769c0833220be23122e60b02407df9e5833343a763ac5c54af4f3fd4c75428d3",
     "packages/mcp/ui/app.ts": "4648b2250a0da4eb96052d769d683b0e6d021753ccdeb193387ec9e54c951985",
     "apps/ios/Sources/TurnmarkApp.swift": "4d2b488edef9fcaf07f5117836c4b22992800ae7005cc8de1d76ae794bf24dad",
     "apps/android/src/main/java/net/stanback/turnmark/MainActivity.kt": "09a817234a93a8903efc943eb7be8eb0de14ee524ad8cde50dd69f8c49357cd3",
@@ -21,39 +21,39 @@
   "captures": [
     {
       "file": "web-converter-comparison-dark.png",
-      "sha256": "700bc24dda282d6a78cf3dbbf5a6fcbddea70d5ee44f45925fae802c2e3a8070"
+      "sha256": "05ab75ee64e54fe4b698b91f89eba049ae70e168bc0521fd3239790ee3b00873"
     },
     {
       "file": "web-converter-desktop-layout-dark.png",
-      "sha256": "91fe487b8d7b4f8993c1fe80a886097ed3026b90f1ad6e1f65ed6e5097dcd978"
+      "sha256": "ed2b31811007586333f7a9bccfc82862005d7d937d00b4fb9da281ecc9c65060"
     },
     {
       "file": "web-converter-method-dark.png",
-      "sha256": "b359c0e6f6b8e7297bd11280f12655da865559f39c9f53dc4a61157db678a24e"
+      "sha256": "62bdf14be5cc657196f2138fb5adaca6f1a564312423a79179e36e4fa1284e9c"
     },
     {
       "file": "web-converter-comparison-light.png",
-      "sha256": "daa1828d4d5818b8639578315bdcd2904d2b4d3f6e93228c7e3b17231a23f347"
+      "sha256": "2788f4491abeed12a997ec6fbf30e8a4a7422cd4b0730e59c66c117a00201f7a"
     },
     {
       "file": "web-converter-empty-mobile.png",
-      "sha256": "6d24c613ae75b85a7d0a1aab27fb3a0d9fcfb15f261f745f263ab9177a0e189a"
+      "sha256": "42e59c3eb2f626bad937c2301c9e69aa858c2c4621b29b0c4eb8c69e263622b8"
     },
     {
       "file": "web-converter-comparison-mobile.png",
-      "sha256": "8218ff2de04de345fc60427a172a36bc6ab275c1c0abd9b4cadc1941f78cec7c"
+      "sha256": "e8d555bad03900b345d81a7715ea106875e548a123030e8afa1bc4fd76bc1618"
     },
     {
       "file": "web-converter-results-mobile.png",
-      "sha256": "e13da7c33ab0d4af0f903fc3efe2e7c169005fc141588d4d3f727dc5932b0609"
+      "sha256": "daa953f8571b1e0cd8b5caf5b3757a9528a31fa1d37c5c95a28668b00afb259e"
     },
     {
       "file": "web-converter-method-mobile.png",
-      "sha256": "24ca834859c5f85177a61d1d6c4b3882b7c65fb53d8b18e28d8abb49f507f852"
+      "sha256": "fffd64d8c74de6cfd44558aefec71686392839949edec4ac8da79ba688519e4d"
     },
     {
       "file": "web-converter-large-text.png",
-      "sha256": "241850a0b2d705befaa465f86cb61a509185315cee647bae6a2760e9c289b0b5"
+      "sha256": "d86ee2c791470f6c97c7e23926ad9ab33cf5bc15513f4cdcb557c26227d771cd"
     },
     {
       "file": "web-altitude-settings.png",
@@ -130,6 +130,7 @@
     "Altitude policy settings are compact; full USA Swimming/NCAA comparison appears once in calculation details.",
     "Native screenshots come from the 24-case iOS and 27-case Android builds; UI animation is disabled only by the DEBUG test harness.",
     "Calculation options groups separate course-conversion and optional altitude-policy controls on web, native, widget and MCP. Native settings captures include the enabled restored policy.",
-    "Web elevation label/unit controls and input share an 8 px field gap. Helper copy explains the adjustment without an unlabeled alternate-unit equivalent."
+    "Web elevation label/unit controls and input share an 8 px field gap. Helper copy explains the adjustment without an unlabeled alternate-unit equivalent.",
+    "The entry-eligibility reminder appears beside valid conversion results instead of in the input form."
   ]
 }
