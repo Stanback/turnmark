@@ -124,5 +124,6 @@ The native converted option also uses a mountain when a valid preview includes
 a nonzero altitude deduction. iOS uses an SF Symbol in the native menu; Android
 uses a vector in the option and selected dropdown field. The
 [Android altitude preview](screenshots/android-benchmark-altitude-preview.png)
-shows the original 58.32 SCY alongside the 1:06.61 LCM estimate under the NCAA
+and [iOS altitude preview](screenshots/ios-benchmark-altitude-preview.png)
+show the original 58.32 SCY alongside the 1:06.61 LCM estimate under the NCAA
 altitude policy at 5,000 ft. The comparison mode stays on its own later row.
