@@ -361,9 +361,9 @@ final class TurnmarkUITests: XCTestCase {
         XCTAssertEqual(app.staticTexts["benchmarkSummary"].label, "A standard")
         let aaaa = app.descendants(matching: .any)["benchmark-level-AAAA"].firstMatch
         reach(aaaa, in: app); capture(app, "Youth standards targets")
-        let system = app.descendants(matching: .any)["benchmarkSystem"].firstMatch
+        let system = app.buttons["benchmarkSystem"]
         reach(system, in: app); system.tap(); app.buttons["USMS · Masters"].tap()
-        let age = app.descendants(matching: .any)["benchmarkAge"].firstMatch
+        let age = app.buttons["benchmarkAge"]
         reach(age, in: app); age.tap(); app.buttons["40–44"].tap()
         reach(app.staticTexts["benchmarkSummary"], in: app)
         XCTAssertEqual(app.staticTexts["benchmarkSummary"].label, "NQT target met")
@@ -412,9 +412,9 @@ final class TurnmarkUITests: XCTestCase {
         let app = launch()
         let open = app.buttons["openBenchmarks"]
         reach(open, in: app); open.tap()
-        let system = app.descendants(matching: .any)["benchmarkSystem"].firstMatch
+        let system = app.buttons["benchmarkSystem"]
         reach(system, in: app); system.tap(); app.buttons["USA Swimming · Futures"].tap()
-        let age = app.descendants(matching: .any)["benchmarkAge"].firstMatch
+        let age = app.buttons["benchmarkAge"]
         reach(age, in: app); age.tap(); app.buttons["19 & over"].tap()
         let target = app.staticTexts["benchmarkNextTime"]
         reach(target, in: app, earlier: true)
@@ -424,10 +424,10 @@ final class TurnmarkUITests: XCTestCase {
         XCTAssertEqual(original.label, "58.32")
         reach(target, in: app)
         capture(app, "Futures original swim benchmark")
-        reach(system, in: app, earlier: true); system.tap(); app.buttons["USA Swimming · Junior Nationals"].tap()
+        reach(system, in: app); system.tap(); app.buttons["USA Swimming · Junior Nationals"].tap()
         let junior = app.staticTexts["benchmarkNextTime"]
         reach(junior, in: app, earlier: true); XCTAssertEqual(junior.label, "49.79")
-        reach(system, in: app, earlier: true); system.tap(); app.buttons["NISCA · All-America"].tap()
+        reach(system, in: app); system.tap(); app.buttons["NISCA · All-America"].tap()
         let consideration = app.descendants(matching: .any)["benchmark-level-Consideration"].firstMatch
         reach(consideration, in: app, earlier: true); XCTAssertTrue(consideration.exists)
         XCTAssertTrue(app.descendants(matching: .any)["benchmark-level-All-America time"].firstMatch.exists)
@@ -461,12 +461,12 @@ final class TurnmarkUITests: XCTestCase {
             return
         }
         XCTAssertEqual(app.staticTexts["benchmarkContext"].label, "200 m Butterfly · LCM · Women")
-        let system = app.descendants(matching: .any)["benchmarkSystem"].firstMatch
+        let system = app.buttons["benchmarkSystem"]
         reach(system, in: app); system.tap(); app.buttons["USMS · Masters"].tap()
-        let missing = app.descendants(matching: .any)["benchmarkUnavailable"].firstMatch
+        let missing = app.staticTexts["benchmarkUnavailable"]
         // Changing systems can preserve the settings row's scroll position.
         // SwiftUI's lazy Form may not expose the preceding state until scrolled.
-        let form = app.descendants(matching: .any)["benchmarkForm"].firstMatch
+        let form = app.collectionViews["benchmarkForm"]
         for _ in 0..<6 {
             if missing.exists && missing.isHittable { break }
             form.swipeDown()
