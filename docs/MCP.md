@@ -122,7 +122,14 @@ The deployment condition explicitly checks the MCP job and selected-check gate
 with `!cancelled()`, so skipped, unchanged native ancestors do not suppress a
 successful main deployment. Failed or canceled checks still prevent publishing.
 Live verification reads the resource URI from the checked-out server metadata
-instead of maintaining another revision suffix in the workflow.
+instead of maintaining another revision suffix in the workflow. After rollout,
+it retries the entire live check up to 12 times, five seconds apart, to allow for
+edge propagation; each request has a 15-second timeout. A stale resource URI,
+missing preview schema, broken Apps resource/CSP, wrong conversion or preview
+that falls back to the entered swim still fails deployment verification. Both
+points and benchmark previews must preserve the original swim and assess the
+explicit converted destination. A successful upload alone is not a passing
+deployment record.
 
 The private IaC repository manages the zone's Free-plan edge rules: a
 path-only `/mcp` limit of 30 requests per 10 seconds per IP/location, with a

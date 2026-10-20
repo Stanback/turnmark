@@ -23,6 +23,160 @@ const flags = (...selected) =>
   );
 const all = flags("web", "core", "ios", "android");
 
+function mcpLiveVerifier({ staleLists = 0, wrongPreview = false } = {}) {
+  const workflow = readFileSync(
+    new URL("../.github/workflows/shared-engine.yml", import.meta.url),
+    "utf8",
+  );
+  const step = workflow
+    .split("      - name: Verify service, conversion and Apps resource\n")[1]
+    .split("  engine-ci:\n")[0];
+  const script = step
+    .split("node --input-type=module <<'JS'\n")[1]
+    .split("\n          JS")[0]
+    .replace(/^          /gm, "")
+    .replace(/^import .*;\n/gm, "");
+  const run = new Function(
+    "assert",
+    "readFileSync",
+    "fetch",
+    "setTimeout",
+    "console",
+    `return (async () => {${script}})()`,
+  );
+  const uri = "ui://turnmark/conversion/0.3.0-r6.html";
+  const names = [
+    "adjust_altitude",
+    "assess_swim_benchmark",
+    "convert_swim",
+    "get_masters_target",
+    "get_sources",
+    "get_world_points",
+    "get_youth_standards",
+  ];
+  const calls = [];
+  const waits = [];
+  let lists = 0;
+  const fetch = async (url, request) => {
+    assert.equal(url, "https://mcp.turnmark.app/mcp");
+    assert.equal(request.method, "POST");
+    const { method, params } = JSON.parse(request.body);
+    calls.push({ method, params });
+    let result;
+    if (method === "tools/list") {
+      lists++;
+      result = {
+        tools: names.map((name) => ({
+          name,
+          inputSchema: { properties: { preview: { type: "object" } } },
+          _meta: {
+            ui: {
+              resourceUri: lists <= staleLists ? uri.replace("r6", "r5") : uri,
+            },
+          },
+        })),
+      };
+    } else if (method === "resources/read") {
+      assert.equal(params.uri, uri);
+      result = {
+        contents: [
+          {
+            mimeType: "text/html;profile=mcp-app",
+            text: "<button>Update comparison</button>",
+            _meta: {
+              ui: {
+                csp: {
+                  connectDomains: [],
+                  resourceDomains: [],
+                  frameDomains: [],
+                },
+              },
+            },
+          },
+        ],
+      };
+    } else {
+      assert.equal(method, "tools/call");
+      const { swim } = params.arguments;
+      result = {
+        structuredContent:
+          params.name === "convert_swim"
+            ? { value: { time: "1:06.72" } }
+            : {
+                status: "available",
+                assessmentContext: {
+                  basis: wrongPreview ? "entered-swim" : "converted-estimate",
+                  originalSwim: swim,
+                  assessedSwim: {
+                    time: "1:06.72",
+                    event: { ...swim.event, course: "LCM" },
+                  },
+                },
+              },
+      };
+    }
+    // Exercise the real deploy verifier's Streamable HTTP/SSE decoding too.
+    return new Response(
+      "event: message\ndata: " +
+        JSON.stringify({ jsonrpc: "2.0", id: 2, result }) +
+        "\n\n",
+    );
+  };
+  return {
+    calls,
+    waits,
+    run: () =>
+      run(
+        assert,
+        (path) => {
+          assert.equal(path, "packages/mcp/src/server.ts");
+          return `export const conversionResourceUri = "${uri}";`;
+        },
+        fetch,
+        (resolve, delay) => {
+          waits.push(delay);
+          resolve();
+        },
+        { warn() {}, log() {} },
+      ),
+  };
+}
+
+test("MCP live verification waits for the current resource, then checks previews", async () => {
+  const verifier = mcpLiveVerifier({ staleLists: 2 });
+  await verifier.run();
+  assert.deepEqual(verifier.waits, [5000, 5000]);
+  assert.equal(
+    verifier.calls.filter((c) => c.method === "tools/list").length,
+    3,
+  );
+  assert.deepEqual(
+    verifier.calls
+      .filter((c) => c.method === "tools/call")
+      .map((c) => c.params.name),
+    ["convert_swim", "get_world_points", "assess_swim_benchmark"],
+  );
+});
+
+test("MCP live verification fails after a bounded stale rollout", async () => {
+  const verifier = mcpLiveVerifier({ staleLists: Infinity });
+  await assert.rejects(verifier.run(), /strictly equal/);
+  assert.equal(verifier.calls.length, 12);
+  assert.equal(verifier.waits.length, 11);
+});
+
+test("MCP live verification rejects entered-swim fallback for a requested preview", async () => {
+  const verifier = mcpLiveVerifier({ wrongPreview: true });
+  await assert.rejects(verifier.run(), /strictly equal/);
+  assert.equal(verifier.waits.length, 11);
+  assert.equal(
+    verifier.calls.filter(
+      (c) => c.method === "tools/call" && c.params.name === "get_world_points",
+    ).length,
+    12,
+  );
+});
+
 test("MCP deploy requires passing checks but permits skipped native ancestors", () => {
   const workflow = readFileSync(
     new URL("../.github/workflows/shared-engine.yml", import.meta.url),
