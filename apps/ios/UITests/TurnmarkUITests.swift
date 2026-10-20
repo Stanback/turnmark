@@ -67,6 +67,9 @@ final class TurnmarkUITests: XCTestCase {
         app.buttons["Done"].firstMatch.tap()
         reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
         XCTAssertEqual(app.staticTexts["benchmarkOriginalTime"].label, "58.32")
+        app.buttons["benchmarkBasis"].tap(); app.buttons["Converted estimate · LCM"].tap()
+        XCTAssertEqual(app.staticTexts["benchmarkEstimateTime"].label, "1:06.61")
+        capture(app, "Native altitude benchmark preview")
         app.buttons["closeBenchmarks"].tap()
         app.terminate(); app.launchArguments = []; app.launch()
         let restoredElevation = app.textFields["poolElevation"]

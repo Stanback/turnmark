@@ -1052,36 +1052,64 @@
       id="standards"
       aria-labelledby="standards-title"
     >
-      <div
-        class="standards-tabs"
-        role="group"
-        aria-label="Performance comparison"
-      >
-        <button
-          class:active={standardMode === "targets"}
-          aria-pressed={standardMode === "targets"}
-          aria-label="Time standards"
-          onclick={() => (standardMode = "targets")}>Standards</button
+      <div class="benchmark-toolbar">
+        <div class="benchmark-basis" role="group" aria-label="Compare using">
+          <button
+            class:active={benchmarkBasis === "entered"}
+            aria-pressed={benchmarkBasis === "entered"}
+            onclick={() => (benchmarkBasis = "entered")}
+            ><span class="benchmark-choice-label">Entered swim</span>
+            <span class="benchmark-choice-time"
+              >{time !== null ? form.time : "—"}<small>
+                · {form.course}</small
+              ></span
+            >
+          </button>
+          <button
+            class:active={benchmarkBasis === "estimate"}
+            aria-pressed={benchmarkBasis === "estimate"}
+            aria-describedby={adjustment > 0 && focused.time !== null
+              ? "benchmark-altitude-hint"
+              : undefined}
+            onclick={() => (benchmarkBasis = "estimate")}
+            ><span class="benchmark-choice-label">
+              {#if adjustment > 0 && focused.time !== null}<span
+                  aria-hidden="true"
+                  title={`Altitude adjusted: ${adjustment.toFixed(2)}s deducted before course conversion`}
+                  data-testid="benchmark-altitude-icon"
+                  ><Icon name="mountain" size={16} /></span
+                >{/if}
+              Converted estimate</span
+            >
+            <span class="benchmark-choice-time"
+              >{focusedTime}<small> · {focus}</small></span
+            >
+          </button>
+        </div>
+        {#if adjustment > 0 && focused.time !== null}<span
+            class="benchmark-a11y"
+            id="benchmark-altitude-hint"
+            >Altitude adjusted: {adjustment.toFixed(2)} seconds deducted before course
+            conversion.</span
+          >{/if}
+        <div
+          class="standards-tabs"
+          role="group"
+          aria-label="Performance comparison"
         >
-        <button
-          class:active={standardMode === "points"}
-          aria-pressed={standardMode === "points"}
-          aria-label="World Aquatics points"
-          onclick={() => (standardMode = "points")}>Points</button
-        >
-      </div>
-      <div class="benchmark-basis" role="group" aria-label="Compare using">
-        <button
-          class:active={benchmarkBasis === "entered"}
-          aria-pressed={benchmarkBasis === "entered"}
-          onclick={() => (benchmarkBasis = "entered")}>Entered swim</button
-        >
-        <button
-          class:active={benchmarkBasis === "estimate"}
-          aria-pressed={benchmarkBasis === "estimate"}
-          onclick={() => (benchmarkBasis = "estimate")}
-          >Converted estimate · {focus}</button
-        >
+          <button
+            class:active={standardMode === "targets"}
+            aria-pressed={standardMode === "targets"}
+            aria-label="Time standards"
+            onclick={() => (standardMode = "targets")}>Standards</button
+          >
+          <button
+            class:active={standardMode === "points"}
+            aria-pressed={standardMode === "points"}
+            aria-label="World Aquatics points"
+            onclick={() => (standardMode = "points")}>Points</button
+          >
+        </div>
       </div>
       {#if benchmarkBasis === "estimate"}<p
           class="benchmark-preview-note"
@@ -1102,7 +1130,8 @@
         </p>
       {:else if standardMode === "targets"}
         <label class="standards-system" for="standards-system"
-          >Standards<span class="select-wrap standards-select"
+          ><span class="benchmark-a11y">Published standards</span><span
+            class="select-wrap standards-select"
             ><select id="standards-system" bind:value={form.standardSystem}
               ><option value="youth">USA Swimming · Youth</option><option
                 value="masters">U.S. Masters Swimming · Adults</option

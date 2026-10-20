@@ -29,6 +29,11 @@ struct BenchmarkScreen: View {
         return Swim(time: value.time, event: value.event)
     }
     private var comparisonCourse: String { preview ? courseNames[input.targetIndex] : courseNames[input.courseIndex] }
+    private var altitudeAdjusted: Bool {
+        guard input.altitudeText != nil, input.available,
+              case let .available(value, _) = input.altitudeOutcome else { return false }
+        return value.adjustmentSeconds > 0
+    }
     private var provider: String { program.map { "\($0.title) · \($0.scope)" } ?? (system == .masters ? "USMS · 2026" : "USA Swimming · 2024–28") }
 
     var body: some View {
@@ -45,7 +50,12 @@ struct BenchmarkScreen: View {
                 Section {
                     Picker("Compare using", selection: $preview) {
                         Text("Entered swim").tag(false)
-                        Text("Converted estimate · \(courseNames[input.targetIndex])").tag(true)
+                        if altitudeAdjusted {
+                            Label("Converted estimate · \(courseNames[input.targetIndex])", systemImage: "mountain.2")
+                                .accessibilityHint("Altitude adjusted before course conversion").tag(true)
+                        } else {
+                            Text("Converted estimate · \(courseNames[input.targetIndex])").tag(true)
+                        }
                     }.pickerStyle(.menu).accessibilityIdentifier("benchmarkBasis")
                     if preview, let converted = comparisonSwim {
                         VStack(alignment: .leading, spacing: 8) {

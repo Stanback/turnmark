@@ -463,12 +463,15 @@ private fun share(context: Context, draft: Draft) {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable fun Choice(label: String, selected: String, values: List<String>, modifier: Modifier, labelIcon: Int? = null, optionIcons: List<Int>? = null, onSelect: (Int) -> Unit) {
+@Composable fun Choice(label: String, selected: String, values: List<String>, modifier: Modifier, labelIcon: Int? = null, optionIcons: List<Int?>? = null, selectedIcon: Int? = null, maxLines: Int = 1, onSelect: (Int) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     BoxWithConstraints(modifier) {
         val showIcon = maxWidth >= 160.dp && labelIcon != null
         ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }, modifier = Modifier.fillMaxWidth()) {
-            OutlinedTextField(value = selected, onValueChange = {}, readOnly = true, singleLine = true, label = {
+            val leading: (@Composable () -> Unit)? = selectedIcon?.let { resource ->
+                { Icon(painterResource(resource), contentDescription = "Altitude adjusted", modifier = Modifier.size(20.dp)) }
+            }
+            OutlinedTextField(value = selected, onValueChange = {}, readOnly = true, singleLine = maxLines == 1, maxLines = maxLines, leadingIcon = leading, label = {
                 Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                     if (showIcon) Icon(painterResource(labelIcon!!), contentDescription = null, modifier = Modifier.size(16.dp))
                     Text(label)

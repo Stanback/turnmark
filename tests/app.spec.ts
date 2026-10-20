@@ -954,15 +954,13 @@ test("benchmark preview is explicit, tracks the selected method and resets to en
   await openExample(page, "/#t=58.32&s=FR&d=100&c=SCY&g=women&h=0");
   const basis = page.getByRole("group", { name: "Compare using", exact: true });
   await expect(
-    basis.getByRole("button", { name: "Entered swim", exact: true }),
+    basis.getByRole("button", { name: /^Entered swim/ }),
   ).toHaveAttribute("aria-pressed", "true");
   await page
     .getByRole("button", { name: "World Aquatics points", exact: true })
     .click();
   await expect(page.getByTestId("points-score")).toHaveCount(0);
-  await basis
-    .getByRole("button", { name: "Converted estimate · LCM", exact: true })
-    .click();
+  await basis.getByRole("button", { name: /^Converted estimate/ }).click();
   await expect(page.getByTestId("points-score")).toBeVisible();
   await expect(page.locator(".benchmark-preview-note").first()).toContainText(
     "1:06.72",
@@ -987,7 +985,7 @@ test("benchmark preview is explicit, tracks the selected method and resets to en
   );
   await page.getByRole("button", { name: "Reset", exact: true }).click();
   await expect(
-    basis.getByRole("button", { name: "Entered swim", exact: true }),
+    basis.getByRole("button", { name: /^Entered swim/ }),
   ).toHaveAttribute("aria-pressed", "true");
 });
 
@@ -997,11 +995,54 @@ test("unavailable benchmark previews never fall back to the original swim", asyn
   await openExample(page, "/#t=58.32&s=IM&d=100&c=SCY&g=women&h=0");
   await page
     .getByRole("group", { name: "Compare using", exact: true })
-    .getByRole("button", { name: "Converted estimate · LCM", exact: true })
+    .getByRole("button", { name: /^Converted estimate/ })
     .click();
   await expect(page.locator("#standards")).toContainText(
     "Conversion unavailable",
   );
   await expect(page.locator(".standard-summary")).toHaveCount(0);
   await expect(page.getByTestId("points-score")).toHaveCount(0);
+});
+
+test("benchmark swim selection leads its view and marks only applied altitude deductions", async ({
+  page,
+}) => {
+  await page.goto(
+    "./#t=58.32&s=FR&d=100&c=SCY&g=women&h=1000&ap=ncaa-altitude-2026-27-d1",
+  );
+  const basis = page.getByRole("group", { name: "Compare using", exact: true });
+  const view = page.getByRole("group", {
+    name: "Performance comparison",
+    exact: true,
+  });
+  await basis.scrollIntoViewIfNeeded();
+  const sourceBounds = await basis.boundingBox();
+  const viewBounds = await view.boundingBox();
+  expect(sourceBounds!.y + sourceBounds!.height).toBeLessThanOrEqual(
+    viewBounds!.y,
+  );
+  await expect(basis).toContainText("58.32");
+  await expect(basis).toContainText("1:06.72");
+  await expect(page.getByTestId("benchmark-altitude-icon")).toHaveCount(0);
+  await openCalculationOptions(page);
+  await page.locator(".elevation-entry input").fill("5000");
+  const estimate = basis.getByRole("button", {
+    name: /^Converted estimate/,
+  });
+  await expect(page.getByTestId("benchmark-altitude-icon")).toHaveCount(1);
+  await expect(estimate).toHaveAccessibleDescription(
+    /0.10 seconds deducted before course conversion/,
+  );
+  await estimate.click();
+  await expect(estimate).toContainText("1:06.61");
+  await expect(
+    basis.getByRole("button", { name: /^Entered swim/ }),
+  ).toContainText("58.32");
+  // USA Swimming has no deduction for this 100 event at the same elevation.
+  await page
+    .locator("#altitude-policy")
+    .selectOption("usa-swimming-altitude-2026");
+  await expect(page.getByTestId("benchmark-altitude-icon")).toHaveCount(0);
+  await expect(estimate).not.toHaveAttribute("aria-describedby");
+  await expect(estimate).toContainText("1:06.72");
 });

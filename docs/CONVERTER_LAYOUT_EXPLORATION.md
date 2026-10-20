@@ -197,6 +197,13 @@ original input remains visible; unsupported conversion never falls back to it.
 Reset and a fresh visit return to entered-swim comparisons. Neither preview
 points nor reached thresholds imply a recorded performance or entry eligibility.
 
+The assessed swim is now the primary grouped selector, with its time/course in
+each choice. Standards/Points are quieter tabs on a separate second row on both
+desktop and phones. The converted choice gains a small mountain only when the
+engine actually deducts altitude credit; zero-credit policies, below-threshold
+elevations and unavailable estimates do not show it. An accessible description
+states the deduction, and the calculation details retain the selected policy.
+
 The same opt-in is available in native Standards & points. Native screens retain
 the entered/recorded source and use native menu controls. The widget remains a
 converter. MCP benchmark/points previews require explicit read-only inputs,
