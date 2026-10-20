@@ -83,7 +83,7 @@
         bind:value={time}
         aria-invalid={invalid?.status === "invalid"}
         aria-describedby="time-help"
-        inputmode="decimal"
+        inputmode="text"
         autocomplete="off"
         maxlength="12"
         placeholder="1:02.45"
