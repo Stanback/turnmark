@@ -67,6 +67,9 @@ final class TurnmarkUITests: XCTestCase {
         XCTAssertEqual(app.staticTexts["benchmarkOriginalTime"].label, "58.32")
         app.buttons["closeBenchmarks"].tap()
         app.terminate(); app.launchArguments = []; app.launch()
+        let restoredElevation = app.textFields["poolElevation"]
+        reach(restoredElevation, in: app)
+        XCTAssertEqual(restoredElevation.value as? String, "5000")
         reach(app.staticTexts["resultTime"], in: app)
         XCTAssertEqual(app.staticTexts["resultTime"].label, "1:06.61")
     }

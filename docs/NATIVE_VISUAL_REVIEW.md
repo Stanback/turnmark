@@ -181,7 +181,8 @@ scope describe its earlier pass; this follow-up changes numerical support.
 ## Altitude parity follow-up
 
 The optional **Swam at altitude?** input now exposes feet/meters and a separate
-USA Swimming / NCAA altitude policy on both apps. Settings keep a compact
+USA Swimming / NCAA altitude policy on both apps. Restored enabled settings
+start expanded so their effect remains visible. Settings keep a compact
 selected-policy preview; calculation details show both deductions
 and sea-level estimates; course conversion follows the selected deduction in
 Rust. Standards, points and logged performances retain the original swim.

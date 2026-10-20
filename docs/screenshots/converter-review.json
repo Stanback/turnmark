@@ -13,7 +13,7 @@
     "src/lib/AltitudeControls.svelte": "bb5dd9b4c10ce0bf45a76fac97ebb01f3660be6da2047aa102ec327af3a913ad",
     "apps/embed/Widget.svelte": "219fe682bf058035690c971485eda6e5fddaa6fc1f04efaa52eaeddc35af7a4d",
     "packages/mcp/ui/app.ts": "43d118bd76107593f2a09f78f1b2ed42bd2ce97ad54cf15eea5d352363dc2c0e",
-    "apps/ios/Sources/TurnmarkApp.swift": "ab28dc2ad8f282696604e6ffe05cdd6f16846a72f6545e4004d3d3682ba601e2",
+    "apps/ios/Sources/TurnmarkApp.swift": "064bf81d8ce6f00369c7eb9f755dd96ab65fb302efe0e3f85e55459c81fe8ba3",
     "apps/android/src/main/java/net/stanback/turnmark/MainActivity.kt": "3fb6e7d51fe08f1d06060d6845ad5df4c4c847bef65a31708b23061aa30b6dbb"
   },
   "captures": [
@@ -118,6 +118,7 @@
     "Native captures and validation are maintained in the paired native review.",
     "Long calculation-disclosure content crop omits fixed mobile navigation and transient toast; regular phone captures retain navigation.",
     "Altitude policy settings are compact; full USA Swimming/NCAA comparison appears once in calculation details.",
-    "Native screenshots come from the 24-case iOS and 27-case Android builds; UI animation is disabled only by the DEBUG test harness."
+    "Native screenshots come from the 24-case iOS and 27-case Android builds; UI animation is disabled only by the DEBUG test harness.",
+    "The subsequent iOS restore-only change opens saved enabled altitude settings; these default and detail captures are unchanged."
   ]
 }

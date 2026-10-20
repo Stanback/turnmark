@@ -147,7 +147,9 @@ private struct TurnmarkView: View {
             UserDefaults.standard.set(Draft.example.encoded, forKey: "savedSwim")
         }
         #endif
-        _draft = State(initialValue: Draft.decode(UserDefaults.standard.string(forKey: "draft")) ?? Draft())
+        let restored = Draft.decode(UserDefaults.standard.string(forKey: "draft")) ?? Draft()
+        _draft = State(initialValue: restored)
+        _altitudeExpanded = State(initialValue: restored.altitudeText != nil)
     }
 
     var body: some View {
