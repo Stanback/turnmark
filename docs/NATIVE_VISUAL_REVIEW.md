@@ -204,3 +204,9 @@ rule, not a change to its coefficients.
 
 [iOS distance caveat](screenshots/ios-distance-caveat.png) ·
 [Android distance caveat](screenshots/android-distance-caveat.png)
+
+The hosted reset-flow failure was isolated to the scroll helper waiting for
+SwiftUI navigation/tab accessibility frames after a sheet closed. The helper
+now searches the stable app viewport, keeping the target's hittability and
+content-center checks. It does not use a sheet's stale chrome bounds as a
+prerequisite for scrolling.

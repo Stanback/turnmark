@@ -168,29 +168,24 @@ final class TurnmarkUITests: XCTestCase {
         // A hittable element already owns its native touch geometry. Avoid
         // repeatedly snapshotting navigation chrome during sheet transitions.
         if !earlier && element.exists && element.isHittable { return }
-        // Rotation can briefly expose interpolated, even negative, AX frames.
-        // Wait for coherent chrome once, then cache it for the scroll search.
-        // A stale tab frame used to trigger wrong-direction swipes and repeated
-        // 60-second animation-idle waits even though the field was hittable.
+        // SwiftUI can retain a dismissed sheet's navigation/tab AX frames.
+        // Search within the stable app viewport instead of waiting for that
+        // decorative chrome to agree. The target must still be hittable with
+        // its center inside content, clear of the header and floating tab bar.
         var viewport = CGRect.zero
-        var visibleTop: CGFloat = 0
-        var tabBottom: CGFloat = 0
         let settled = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
             let frame = app.frame
-            let navigation = app.navigationBars.firstMatch
-            let tabs = app.tabBars.firstMatch
-            let top = earlier && navigation.exists ? navigation.frame.maxY + 12 : frame.minY + 80
-            let bottom = earlier && tabs.exists ? tabs.frame.minY : frame.maxY
-            guard frame.width > 0, frame.height > 0,
-                  top.isFinite, bottom.isFinite,
-                  top >= frame.minY, top < frame.midY,
-                  bottom > frame.midY, bottom <= frame.maxY else { return false }
-            viewport = frame; visibleTop = top; tabBottom = bottom
+            guard frame.width > 0, frame.height > 200,
+                  frame.minX.isFinite, frame.minY.isFinite,
+                  frame.maxX.isFinite, frame.maxY.isFinite else { return false }
+            viewport = frame
             return true
         }, object: nil)
         guard XCTWaiter.wait(for: [settled], timeout: 5) == .completed else {
-            XCTFail("Native content bounds must settle before scrolling"); return
+            XCTFail("App viewport must settle before scrolling"); return
         }
+        let visibleTop = viewport.minY + 80
+        let tabBottom = earlier ? viewport.maxY - 100 : viewport.maxY
         let nativeList = app.collectionViews.element(boundBy: max(app.collectionViews.count - 1, 0))
         let editor = app.descendants(matching: .any)["swimEditorForm"].firstMatch
         let hasEditor = editor.exists
