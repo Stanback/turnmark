@@ -41,6 +41,8 @@ import uniffi.turnmark_core.*
     var preview by rememberSaveable { mutableStateOf(false) }
     val originalSwim = Swim(draft.time, SwimEvent(draft.distance, strokes[draft.strokeIndex], courses[draft.courseIndex]))
     val conversion = if (preview) draft.outcome as? ConversionOutcome.Available else null
+    val altitudeAdjusted = draft.altitudeText != null && draft.outcome is ConversionOutcome.Available &&
+        ((draft.altitudeOutcome as? AltitudeOutcome.Available)?.value?.adjustmentSeconds ?: 0.0) > 0.0
     val swim = if (!preview) originalSwim else conversion?.value?.let { Swim(it.time, it.event) }
     val comparisonCourse = if (preview) courses[draft.targetIndex] else courses[draft.courseIndex]
     val table = if (draft.categoryIndex == 0) Category.WOMEN else Category.MEN
@@ -60,7 +62,10 @@ import uniffi.turnmark_core.*
             }
             BenchmarkGroup {
                 Choice("Compare using", if (preview) "Converted estimate · ${courses[draft.targetIndex]}" else "Entered swim",
-                    listOf("Entered swim", "Converted estimate · ${courses[draft.targetIndex]}"), Modifier.fillMaxWidth().testTag("benchmarkBasis")) { preview = it == 1 }
+                    listOf("Entered swim", "Converted estimate · ${courses[draft.targetIndex]}"), Modifier.fillMaxWidth().testTag("benchmarkBasis"),
+                    optionIcons = if (altitudeAdjusted) listOf(null, R.drawable.ic_mountain) else null,
+                    selectedIcon = if (preview && altitudeAdjusted) R.drawable.ic_mountain else null,
+                    maxLines = 2) { preview = it == 1 }
                 if (preview) {
                     conversion?.value?.let { value ->
                         BenchmarkClock(value.time, Modifier.testTag("benchmarkEstimateTime"))

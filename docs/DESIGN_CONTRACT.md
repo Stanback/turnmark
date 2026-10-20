@@ -99,6 +99,19 @@ Do not force all screens into the same density, shrink readable text to preserve
 a fixed card height, or cap accessibility text sizes. Reflow controls and let the
 result scroll when large text or the keyboard needs space.
 
+## Benchmark hierarchy
+
+Choose the assessed swim before choosing Standards or Points. The web uses one
+grouped entered/converted selector with both times and courses, followed by
+quieter view tabs on a separate row at every viewport width. Native screens keep
+their platform pickers and separate comparison-mode row in the same order.
+
+A small mountain belongs to the converted choice only when an available engine
+result includes a nonzero altitude deduction. Enabling the setting, entering an
+elevation below the threshold, or selecting a policy with zero credit does not
+show an adjusted marker. Keep the original swim unchanged and expose the
+adjustment through accessible text and calculation details as well as the icon.
+
 ## Result and terminology contract
 
 1. Destination event and actual distance/units, course and relevant category.
