@@ -293,16 +293,15 @@ private struct TurnmarkView: View {
         ScrollViewReader { scroll in
             Form {
                 inputCard
-                // Keep the Form's row structure stable while the first valid
-                // digit arrives; inserting a section can interrupt text entry.
-                Section {
-                    Button {
-                        dismissTimeEntry()
-                        scroll.scrollTo("comparison", anchor: .top)
-                    } label: { Label("See your results", systemImage: "arrow.down") }
-                        .disabled(!draft.available)
-                        .accessibilityIdentifier("seeResults")
-                }.listRowBackground(TurnmarkPalette.surface)
+                if draft.available {
+                    Section {
+                        Button {
+                            dismissTimeEntry()
+                            scroll.scrollTo("comparison", anchor: .top)
+                        } label: { Label("See your results", systemImage: "arrow.down") }
+                            .accessibilityIdentifier("seeResults")
+                    }.listRowBackground(TurnmarkPalette.surface)
+                }
                 Section {
                     resultContent(compact: true)
                         .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)

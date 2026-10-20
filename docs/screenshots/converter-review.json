@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-20T03:04:03.086787+00:00",
+  "capturedAt": "2026-10-20T03:41:28.072271+00:00",
   "branch": "feat/national-benchmarks",
   "sourceBase": "9851b20f54a9d9c86e282c7c47fee64b624a229e",
   "sourceHashes": {
@@ -13,7 +13,7 @@
     "src/lib/AltitudeControls.svelte": "76a98326d9789bbece2d64b6dd39e8d1e066416839266a005e711ba411edfb7b",
     "apps/embed/Widget.svelte": "769c0833220be23122e60b02407df9e5833343a763ac5c54af4f3fd4c75428d3",
     "packages/mcp/ui/app.ts": "6856cef9e2d3314639c44881b6955030dc840500718d0da6ec25aec81f1b292d",
-    "apps/ios/Sources/TurnmarkApp.swift": "f8ebd2bd27ac0509994fa0d4d4650bdf5c892ac81f9682204d24f248a1165db2",
+    "apps/ios/Sources/TurnmarkApp.swift": "944786a39aee36894b560ac1301cc56304c95ec2b7c99ada6285f1a8b823910f",
     "apps/android/src/main/java/net/stanback/turnmark/MainActivity.kt": "ae183602491715d22b5f9ead932272be13fa86dffcb29d6cd70c6ccbe480d75b",
     "packages/mcp/ui/app.css": "9b2dc8bf68aadd0ad90551dcfee18478937533e1a02c9ccc437eb28d2228d4bf",
     "scripts/build-mcp-ui.mjs": "f5f5b8e349b9d4c9fc79030296abc88b8196f147bb1b48de33750a2457666768",
@@ -73,7 +73,7 @@
     },
     {
       "file": "ios-home-light.png",
-      "sha256": "d2634c53e08bcdebc27687f3d3cd9431562a23f82dbc19cc9855b72f903ba84c"
+      "sha256": "01fb4a2e11b3b13adc8778ca693dc8ea5be8a9e5a4036c547fe87dffc96bd982"
     },
     {
       "file": "android-home-light.png",
@@ -177,6 +177,6 @@
     "National benchmark captures use original sample swims and editioned Futures/Junior Nationals/NISCA tables. Numeric transcription and source hashes are tracked alongside the rendered UI source.",
     "Collapsed Recent conversions centers its heading, count and chevron with equal top/bottom space at phone and desktop widths. National native captures include the final compact single-target layout.",
     "Calculation details state NCAA age/category scope, distinguish shared short-course factors, and exclude individual swimming ability. Detail captures use the paired native method checks; browser and MCP captures use the same explanatory copy.",
-    "The iOS results-jump row remains present and disabled for empty/invalid input to preserve Form structure during first entry. Empty-arrival captures were refreshed; the cold-entry/altitude case passed three consecutive local runs."
+    "Time-entry checks wait for the complete expected field value after one typing action, allowing hosted keyboard events to finish; they do not retry or repair input."
   ]
 }

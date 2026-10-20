@@ -266,7 +266,11 @@ final class TurnmarkUITests: XCTestCase {
             if clear.exists { reach(clear, in: app); clear.tap() }
             else { field.tap() }
             field.typeText(text)
-            XCTAssertEqual(field.value as? String, text)
+            // Hosted XCTest can return before the final keyboard events reach
+            // SwiftUI. Wait for the entire value, without retrying the input.
+            let entered = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", text), object: field)
+            XCTAssertEqual(XCTWaiter.wait(for: [entered], timeout: 5), .completed,
+                "The full time must arrive; observed \(field.value as? String ?? "<no value>")")
         } else {
             field.tap()
             field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: (field.value as? String ?? "").count) + text)
