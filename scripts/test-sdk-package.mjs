@@ -68,6 +68,11 @@ try {
     "dist/node.d.ts",
     "src/index.ts",
     "dist/generated/turnmark_wasm_bg.wasm",
+    "dist/converter.js",
+    "dist/converter.d.ts",
+    "dist/standards.js",
+    "dist/standards.d.ts",
+    "dist/generated/converter/turnmark_wasm_bg.wasm",
   ])
     assert.ok(files.has(required), `Missing packed file: ${required}`);
   await writeFile(
@@ -130,6 +135,42 @@ try {
     subset(results[index], fixture.expected, `Node: ${fixture.id}`),
   );
 
+  await writeFile(
+    join(temporary, "modular-consumer.mjs"),
+    `
+    import assert from 'node:assert/strict';
+    import {readFile} from 'node:fs/promises';
+    import {createConverter} from '@turnmark/sdk/converter';
+    import {createStandardsEngine} from '@turnmark/sdk/standards';
+    import {parseTime} from '@turnmark/sdk';
+    import fixtures from './fixtures.json' with {type:'json'};
+    globalThis.fetch = () => {throw new Error('Unexpected network request')};
+    await assert.rejects(createConverter({wasm:new Uint8Array()}));
+    const lean = await readFile(new URL(import.meta.resolve('@turnmark/sdk/converter.wasm')));
+    const full = await readFile(new URL(import.meta.resolve('@turnmark/sdk/standards.wasm')));
+    assert.ok(lean.length < full.length * 0.65, 'Converter must omit the benchmark payload');
+    const [converter, again] = await Promise.all([createConverter({wasm:lean}),createConverter({wasm:lean})]);
+    assert.ok(Object.isFrozen(converter)); assert.equal(converter.version,again.version);
+    assert.throws(() => parseTime('58.32'), /Initialize the Turnmark SDK/);
+    await assert.rejects(createStandardsEngine({wasm:new Uint8Array()}));
+    const standards = await createStandardsEngine({wasm:full});
+    assert.ok(Object.isFrozen(standards));
+    const operations = {parse:converter.parseTime,convert:converter.convert,altitude:converter.adjustAltitude,
+      youth:standards.youth,masters:standards.masters,points:standards.points,benchmark:standards.benchmark};
+    process.stdout.write(JSON.stringify(fixtures.cases.map(f => operations[f.operation](f.input))));
+  `,
+  );
+  const modularResults = JSON.parse(
+    command(process.execPath, ["modular-consumer.mjs"], temporary),
+  );
+  fixtures.cases.forEach((fixture, index) =>
+    subset(
+      modularResults[index],
+      fixture.expected,
+      `Modular Node: ${fixture.id}`,
+    ),
+  );
+
   // A fresh process verifies first initialization through the documented Node
   // entry, including recovery from a bad Wasm input and no fetch dependency.
   await writeFile(
@@ -165,10 +206,16 @@ try {
     import { getMastersTarget } from '@turnmark/sdk/masters';
     import { getWorldPoints } from '@turnmark/sdk/points';
     import { createEngine as createNodeEngine } from '@turnmark/sdk/node';
+    import { createConverter } from '@turnmark/sdk/converter';
+    import { createStandardsEngine } from '@turnmark/sdk/standards';
     const engine = await createEngine();
     const nodeEngine: typeof engine = await createNodeEngine(); void nodeEngine;
     const request: ConversionRequest = { swim: { time: '2:16.71', event: { distance: 200, stroke: 'breaststroke', course: 'LCM' } }, to: 'SCY', table: 'men' };
     const result = engine.convert(request);
+    const converter = await createConverter(); converter.convert(request);
+    const standards = await createStandardsEngine(); standards.points({swim:request.swim,table:'men'});
+    // @ts-expect-error converter-only engines do not expose benchmarks.
+    converter.points({swim:request.swim,table:'men'});
     if (result.status === 'available') { const hundredths: number = result.value.hundredths; void hundredths; }
     const unused: Result<number> = { status: 'invalid', field: 'test', reason: 'invalid-time' }; void unused;
     getYouthStandards({ event: request.swim.event, table: 'women', age: '15-16' });
@@ -230,6 +277,75 @@ try {
   fixtures.cases.forEach((fixture, index) =>
     subset(browserResults[index], fixture.expected, `Browser: ${fixture.id}`),
   );
+
+  await writeFile(
+    join(temporary, "focused.html"),
+    `<html lang="en"><title>Focused converter</title><script type="module">
+    import {createConverter} from '@turnmark/sdk/converter';
+    import wasmUrl from '@turnmark/sdk/converter.wasm?url';
+    import fixtures from './fixtures.json';
+    const engine = await createConverter({wasm:wasmUrl});
+    const operations={parse:engine.parseTime,convert:engine.convert,altitude:engine.adjustAltitude};
+    globalThis.focusedResults=fixtures.cases.filter(f=>f.operation in operations).map(f=>operations[f.operation](f.input));
+  </script></html>`,
+  );
+  const focusedRequests = [];
+  page.on("request", (request) => {
+    if (
+      request.resourceType() === "fetch" &&
+      new URL(request.url()).pathname.endsWith(".wasm")
+    )
+      focusedRequests.push(request.url());
+  });
+  await page.goto(`http://127.0.0.1:${address.port}/focused.html`);
+  await page.waitForFunction(() => Array.isArray(globalThis.focusedResults));
+  const focusedResults = await page.evaluate(() => globalThis.focusedResults);
+  fixtures.cases
+    .filter((f) => ["parse", "convert", "altitude"].includes(f.operation))
+    .forEach((fixture, index) =>
+      subset(
+        focusedResults[index],
+        fixture.expected,
+        `Focused browser: ${fixture.id}`,
+      ),
+    );
+  assert.equal(focusedRequests.length, 1);
+  assert.ok(
+    focusedRequests[0].includes("/converter/"),
+    "Focused browser must load only converter.wasm",
+  );
+  const focusedBuild = await build({
+    configFile: false,
+    root: temporary,
+    logLevel: "error",
+    build: {
+      write: false,
+      assetsInlineLimit: 0,
+      rolldownOptions: { input: join(temporary, "focused.html") },
+    },
+  });
+  const focusedAssets = (
+    Array.isArray(focusedBuild) ? focusedBuild : [focusedBuild]
+  )
+    .flatMap((r) => r.output)
+    .filter((o) => o.type === "asset" && o.fileName.endsWith(".wasm"));
+  assert.equal(
+    focusedAssets.length,
+    1,
+    "Focused production bundle must emit one Wasm asset",
+  );
+  assert.equal(
+    Buffer.byteLength(focusedAssets[0].source),
+    (
+      await readFile(
+        join(
+          temporary,
+          "node_modules/@turnmark/sdk/dist/generated/converter/turnmark_wasm_bg.wasm",
+        ),
+      )
+    ).length,
+  );
+  assert.deepEqual(errors, []);
 
   await writeFile(
     join(temporary, "conversion-only.js"),

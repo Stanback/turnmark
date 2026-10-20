@@ -143,3 +143,19 @@ pub fn evaluate(operation: String, request_json: String) -> Result<String, Engin
     };
     Ok(result.to_string())
 }
+
+/// Focused transport for converter-only Wasm consumers. Keeping this dispatch
+/// separate lets the linker omit benchmark tables without duplicating formulas.
+pub fn evaluate_conversion(operation: String, request_json: String) -> Result<String, EngineError> {
+    let request: Value =
+        serde_json::from_str(&request_json).map_err(|e| EngineError::MalformedJson {
+            detail: e.to_string(),
+        })?;
+    let result = match operation.as_str() {
+        "parse" => json!(request.as_str().and_then(engine::parse_time)),
+        "convert" => json!(ConversionOutcome::from(engine::convert(&request))),
+        "altitude" => json!(AltitudeOutcome::from(engine::altitude(&request))),
+        _ => return Err(EngineError::UnknownOperation { operation }),
+    };
+    Ok(result.to_string())
+}
