@@ -1,10 +1,10 @@
 {
-  "capturedAt": "2026-10-20T01:17:56.801729+00:00",
-  "branch": "feat/altitude-ui-parity",
-  "sourceBase": "f1e9a848043f8d2bec71cd694195bd28ff0c4e2b",
+  "capturedAt": "2026-10-20T01:29:02.397926+00:00",
+  "branch": "fix/elevation-field-spacing",
+  "sourceBase": "de9a8fde7a070280d0bbe0967951983ffde8101d",
   "sourceHashes": {
-    "src/App.svelte": "38c4899683ac9f225f26ebef734aef5068567e43fca8df9f3565bbda9a5fd49f",
-    "src/converter.css": "e19cb04e04a0cbb06f4e36c330dee4249ff720a371fd77fc85a40fba300117c7",
+    "src/App.svelte": "2959c74c672607195a55f0dac7fe46d38da18e92eacc486d369fb6fa07df2c4b",
+    "src/converter.css": "6ccbbe0a69590fcc3a6390a2a698de4eb8d082fddb84207fdad4d07469354ef1",
     "src/app.css": "76f7065b58be4f721825dbf92434b1a9eb21e3d923ef57648502c6cbf3e79bf1",
     "design/turnmark.tokens.json": "aeaddebc1caadbbd96ba58e1d26bd0073b02ee78f4537f41c554a60c5b0d7634",
     "public/images/water-ribbons.webp": "00c268a88616c4bf1402ef8153547966821e95ebc5bedf83a7f80e6a4ebbb447",
@@ -21,11 +21,11 @@
   "captures": [
     {
       "file": "web-converter-comparison-dark.png",
-      "sha256": "c99044c87234b9004786ba898f1cabb3aef787ecc1fc13e1490f0c87f322f491"
+      "sha256": "700bc24dda282d6a78cf3dbbf5a6fcbddea70d5ee44f45925fae802c2e3a8070"
     },
     {
       "file": "web-converter-desktop-layout-dark.png",
-      "sha256": "cedff30c6a4d63046bd13797c9677074250ea6f4135aba97ece04fe5fc45f196"
+      "sha256": "91fe487b8d7b4f8993c1fe80a886097ed3026b90f1ad6e1f65ed6e5097dcd978"
     },
     {
       "file": "web-converter-method-dark.png",
@@ -53,11 +53,11 @@
     },
     {
       "file": "web-converter-large-text.png",
-      "sha256": "f6d07b235d50bfe3b8715d58ea08dbd67156f3ec7eee26fab0e46133509f421f"
+      "sha256": "241850a0b2d705befaa465f86cb61a509185315cee647bae6a2760e9c289b0b5"
     },
     {
       "file": "web-altitude-settings.png",
-      "sha256": "685e437753cb5a78b650feffa952e2c633a704b1acbec4668dc360c1c0bb1b1e"
+      "sha256": "ad45d7a9732cd36af7c1210a98bbc6163b924dc92f692d413c7597e0e88573d5"
     },
     {
       "file": "widget-altitude-settings-dark.png",
@@ -129,6 +129,7 @@
     "Long calculation-disclosure content crop omits fixed mobile navigation and transient toast; regular phone captures retain navigation.",
     "Altitude policy settings are compact; full USA Swimming/NCAA comparison appears once in calculation details.",
     "Native screenshots come from the 24-case iOS and 27-case Android builds; UI animation is disabled only by the DEBUG test harness.",
-    "Calculation options groups separate course-conversion and optional altitude-policy controls on web, native, widget and MCP. Native settings captures include the enabled restored policy."
+    "Calculation options groups separate course-conversion and optional altitude-policy controls on web, native, widget and MCP. Native settings captures include the enabled restored policy.",
+    "Web elevation label/unit controls and input share an 8 px field gap. Helper copy explains the adjustment without an unlabeled alternate-unit equivalent."
   ]
 }

@@ -493,6 +493,13 @@
   gap: 16px;
   padding-block: 8px 20px;
 }
+.altitude-body .elevation-field {
+  display: grid;
+  gap: var(--tm-space-8);
+}
+.altitude-body .elevation-heading {
+  margin-bottom: 0;
+}
 .altitude-policy-field {
   display: grid;
   gap: 8px;
