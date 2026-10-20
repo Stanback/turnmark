@@ -1,50 +1,115 @@
 {
-  "capturedAt": "2026-10-19T19:51:39.506Z",
-  "branch": "design/converter-layout-exploration",
-  "sourceBase": "5a30655",
+  "capturedAt": "2026-10-20T01:17:56.801729+00:00",
+  "branch": "feat/altitude-ui-parity",
+  "sourceBase": "f1e9a848043f8d2bec71cd694195bd28ff0c4e2b",
   "sourceHashes": {
-    "src/App.svelte": "09bf80234be4b6330c9e62dab3c2ea522433dc962c9a1d6c63d0b78ac5bbe7c3",
-    "src/converter.css": "4eda10c7f2d7866cc67fd2c9e5374ddad4afab0253a10dc3a4d420f4afa7cc17",
+    "src/App.svelte": "38c4899683ac9f225f26ebef734aef5068567e43fca8df9f3565bbda9a5fd49f",
+    "src/converter.css": "e19cb04e04a0cbb06f4e36c330dee4249ff720a371fd77fc85a40fba300117c7",
     "src/app.css": "76f7065b58be4f721825dbf92434b1a9eb21e3d923ef57648502c6cbf3e79bf1",
     "design/turnmark.tokens.json": "aeaddebc1caadbbd96ba58e1d26bd0073b02ee78f4537f41c554a60c5b0d7634",
-    "public/images/water-ribbons.webp": "00c268a88616c4bf1402ef8153547966821e95ebc5bedf83a7f80e6a4ebbb447"
+    "public/images/water-ribbons.webp": "00c268a88616c4bf1402ef8153547966821e95ebc5bedf83a7f80e6a4ebbb447",
+    "src/lib/MethodComparison.svelte": "d43a0d4ca89516d4b8c2ed44ff4d07b11e539b45724bde330c7d5c04a012c19a",
+    "src/lib/AltitudeComparison.svelte": "c1d1213e45f58f6209ca47173ae4a442477877da94ca2a6efc70ff8acb46dd06",
+    "src/lib/AltitudeControls.svelte": "76a98326d9789bbece2d64b6dd39e8d1e066416839266a005e711ba411edfb7b",
+    "apps/embed/Widget.svelte": "0b1ecd2f2ad937ef646b312504ba39683ea1f0db6f94f53b783bb8dd2a822290",
+    "packages/mcp/ui/app.ts": "4648b2250a0da4eb96052d769d683b0e6d021753ccdeb193387ec9e54c951985",
+    "apps/ios/Sources/TurnmarkApp.swift": "4d2b488edef9fcaf07f5117836c4b22992800ae7005cc8de1d76ae794bf24dad",
+    "apps/android/src/main/java/net/stanback/turnmark/MainActivity.kt": "09a817234a93a8903efc943eb7be8eb0de14ee524ad8cde50dd69f8c49357cd3",
+    "packages/mcp/ui/app.css": "9b2dc8bf68aadd0ad90551dcfee18478937533e1a02c9ccc437eb28d2228d4bf",
+    "scripts/build-mcp-ui.mjs": "20ebc1ba6c9dbbb680c426e7890d2a87c833294e67bcdf15834a6a60e225429a"
   },
   "captures": [
     {
       "file": "web-converter-comparison-dark.png",
-      "sha256": "bc42420b7a44e39e9f0b2b7e3f3d7fd681be499ec099d106afb259af86dd22a2"
+      "sha256": "c99044c87234b9004786ba898f1cabb3aef787ecc1fc13e1490f0c87f322f491"
     },
     {
       "file": "web-converter-desktop-layout-dark.png",
-      "sha256": "8d370eaa410476925103c97a405217721611f1aa15c4bfd487d42dc3434c4f05"
+      "sha256": "cedff30c6a4d63046bd13797c9677074250ea6f4135aba97ece04fe5fc45f196"
     },
     {
       "file": "web-converter-method-dark.png",
-      "sha256": "50911eff7b047344bde181b7c5865d40e6d49b209f753725503f273179898f81"
+      "sha256": "b359c0e6f6b8e7297bd11280f12655da865559f39c9f53dc4a61157db678a24e"
     },
     {
       "file": "web-converter-comparison-light.png",
-      "sha256": "0bb758c25d86c13fab3f84c7115a3c1cba38f90a4cf424458369ec06bdcff160"
+      "sha256": "daa1828d4d5818b8639578315bdcd2904d2b4d3f6e93228c7e3b17231a23f347"
     },
     {
       "file": "web-converter-empty-mobile.png",
-      "sha256": "9bc111442210f57846d672c2da873698096f05a5351ecad744c996696f3fe94d"
+      "sha256": "6d24c613ae75b85a7d0a1aab27fb3a0d9fcfb15f261f745f263ab9177a0e189a"
     },
     {
       "file": "web-converter-comparison-mobile.png",
-      "sha256": "1c367cfb65804bb90fdbfeff9300936e6f25dcdbcf2b1a87defd0a284655f3c8"
+      "sha256": "8218ff2de04de345fc60427a172a36bc6ab275c1c0abd9b4cadc1941f78cec7c"
     },
     {
       "file": "web-converter-results-mobile.png",
-      "sha256": "cc67a236887f8e6ac704c3bee67a51db734e3d016b231682d24775a58a2ff338"
+      "sha256": "e13da7c33ab0d4af0f903fc3efe2e7c169005fc141588d4d3f727dc5932b0609"
     },
     {
       "file": "web-converter-method-mobile.png",
-      "sha256": "cbee8470102c20219b34516ae0881dcefab1e25ba04858bcc8bca370c068ae38"
+      "sha256": "24ca834859c5f85177a61d1d6c4b3882b7c65fb53d8b18e28d8abb49f507f852"
     },
     {
       "file": "web-converter-large-text.png",
-      "sha256": "642e2b0219525561dfe5f16b73c3b34eb6cf1fdb8f156da53e3bac01a79a7c94"
+      "sha256": "f6d07b235d50bfe3b8715d58ea08dbd67156f3ec7eee26fab0e46133509f421f"
+    },
+    {
+      "file": "web-altitude-settings.png",
+      "sha256": "685e437753cb5a78b650feffa952e2c633a704b1acbec4668dc360c1c0bb1b1e"
+    },
+    {
+      "file": "widget-altitude-settings-dark.png",
+      "sha256": "845f501155739d2a39733e2c8756bb1b7259f8239d1894ed4907836e269ffa29"
+    },
+    {
+      "file": "ios-home-light.png",
+      "sha256": "497d4a67bc6530485ebe95a224644b661ccfbf0bf3b1e8fc7d65711bf4e9102b"
+    },
+    {
+      "file": "android-home-light.png",
+      "sha256": "d0563b3b4daef147cfc6e3685c32d810458305f50cb5097e8ec4dfe65f671215"
+    },
+    {
+      "file": "ios-native-result-light.png",
+      "sha256": "33cee40c3cf7f2dc216f0bfac040e257d7f295c13f4eff5fad1b5e1441a7e4e2"
+    },
+    {
+      "file": "ios-native-result-dark.png",
+      "sha256": "34c69bf8c8d132087d85fbcc6256b9451da18a09d08d2ef9af9d340ef8b5581e"
+    },
+    {
+      "file": "android-current-result-light.png",
+      "sha256": "a7b441b3502f37eddf1e43ecfe147606a25143369e3465cad331b46cc962a5ac"
+    },
+    {
+      "file": "android-current-result-dark.png",
+      "sha256": "2498e7970872a5da50632f1aa4ad3bf74e61427cb4ec27888e28ff7203100cb9"
+    },
+    {
+      "file": "ios-altitude-policies.png",
+      "sha256": "b2d7e12b6b0f8a4356876a8485fc2151dbe9aa7dd5008b40fabe77ec880ae3c4"
+    },
+    {
+      "file": "android-altitude-policies.png",
+      "sha256": "d0b49fe491a30c71930a1ec578599292fb311a43498de805c06af0668ad85052"
+    },
+    {
+      "file": "mcp-card-light.png",
+      "sha256": "f0e8d511a0afc5334a91ca989fe7502b39a7b6819f1512ae384e2854b3cfc6c0"
+    },
+    {
+      "file": "mcp-altitude-dark.png",
+      "sha256": "2455d1c0bd644c98a35c4c6ad94eee50c56635c0f50022770c79e0730bdec859"
+    },
+    {
+      "file": "ios-calculation-options.png",
+      "sha256": "f2b63e0a597ce958cecb7c389d2cfed36b59becfdc75ee642e563012e30ce79a"
+    },
+    {
+      "file": "android-calculation-options.png",
+      "sha256": "c844aa1c660837f6ae60462aeca935943c6ec8f8536d7b934315246e5a3c8014"
     }
   ],
   "sample": {
@@ -57,10 +122,13 @@
     "supplementMethod": "Colorado Timing"
   },
   "notes": [
-    "Actual local Vite build; sample data only. Calculation details collapsed except method supplements.",
-    "Desktop: 1120x1450 converter crop and viewport. Mobile: 390x844 viewport.",
-    "Mobile result capture reached through See your results with the actual fixed navigation visible.",
-    "Long-time content crop: 320x900, root font 200%; fixed navigation omitted only in this long crop.",
-    "Native images unchanged; separate native layout adoption remains a follow-up."
+    "Actual local Vite build; sample data only. Desktop 1120\u00d71450, phone 390\u00d7844.",
+    "Default NCAA: 58.32 SCY 100 freestyle, women, age 15\u201316; optional Colorado supplement.",
+    "Long-time content check: 320\u00d7900, 150% root font, 59:59.99.",
+    "Native captures and validation are maintained in the paired native review.",
+    "Long calculation-disclosure content crop omits fixed mobile navigation and transient toast; regular phone captures retain navigation.",
+    "Altitude policy settings are compact; full USA Swimming/NCAA comparison appears once in calculation details.",
+    "Native screenshots come from the 24-case iOS and 27-case Android builds; UI animation is disabled only by the DEBUG test harness.",
+    "Calculation options groups separate course-conversion and optional altitude-policy controls on web, native, widget and MCP. Native settings captures include the enabled restored policy."
   ]
 }

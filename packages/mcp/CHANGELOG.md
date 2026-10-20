@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+- Add optional, explicit altitude context to conversion tools/card and an independent USA Swimming / NCAA altitude policy. Both policies are compared without confidence claims; original inputs and altitude provenance remain separate. UI resource revision is `0.3.0-r4.html`.
+  follow-up
+
+- `convert_swim` adds `methodComparison` (NCAA/Colorado outcomes with their own
+  provenance) and `methodDifferenceSeconds` when both results exist. The chosen
+  method still drives the original top-level result. Invalid inputs retain their
+  existing shape. Text-only clients receive the same comparison as Apps clients.
+- The revised `0.3.0-r2.html` view uses a shared navy result surface, white clock
+  and lime hundredths, with host-themed editing controls and less repeated copy.
+- The card keeps the comparison and deeper explanation inside How this is
+  calculated. Method differences are not prediction or confidence intervals.
+
 ## 0.3.0 — unreleased
 
 - Uses SDK 0.2.0, preserving the NCAA default and adding documented Colorado

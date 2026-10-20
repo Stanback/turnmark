@@ -2,6 +2,10 @@ import XCTest
 @testable import Turnmark
 
 @MainActor final class HistoryTests: XCTestCase {
+    func testLongConvertedClocksRetainMethodDifference() {
+        var input = Draft.example; input.time = "60:00"
+        XCTAssertEqual(input.methodDifference, "121.39s")
+    }
     private func fixture(_ name: String) throws -> Data {
         try Data(contentsOf: XCTUnwrap(Bundle(for: Self.self).url(forResource: name, withExtension: "json")))
     }
@@ -75,11 +79,11 @@ import XCTest
         XCTAssertTrue(store.isBest(rows[0])); XCTAssertTrue(store.isBest(tie))
     }
     func testActualSwimCanBeLoggedWithoutConversionAndKeepsEnteredTime() throws {
-        var draft = Draft(); draft.strokeIndex = 4
+        var draft = Draft.example; draft.strokeIndex = 4
         XCTAssertFalse(draft.available); XCTAssertTrue(draft.canLog)
         let record = try draft.record(date: nil, meet: nil)
         XCTAssertEqual(record.time, draft.time); XCTAssertEqual(record.distance, 100)
-        var metric = Draft(); metric.courseIndex = 2; metric.distance = 400
+        var metric = Draft.example; metric.courseIndex = 2; metric.distance = 400
         let actual = try metric.record(date: "2026-10-17", meet: "Meet")
         XCTAssertEqual(actual.distance, 400); XCTAssertEqual(actual.course, "LCM")
         metric.targetIndex = 0

@@ -34,10 +34,87 @@ class ConverterTest {
         compose.activityRule.scenario.recreate()
     }
 
+    private fun example() {
+        compose.onNodeWithTag("timeInput").performScrollTo().performTextReplacement("58.32")
+        compose.onNodeWithTag("timeInput").performImeAction()
+        compose.waitUntil(5_000) { compose.onAllNodesWithTag("nav-My times").fetchSemanticsNodes().isNotEmpty() }
+    }
+
+    private fun chooseCourseConversion(label: String, open: Boolean = true) {
+        if (open) compose.onNodeWithTag("calculationOptions").performScrollTo().performClick()
+        compose.onNodeWithTag("choice-Course conversion").performScrollTo().performClick()
+        compose.onNode(hasText(label) and hasClickAction()).performClick()
+    }
+
+    @Test fun blankArrivalEntryAndResetKeepEntryFirst() {
+        compose.onNodeWithTag("timeInput").assert(SemanticsMatcher.expectValue(androidx.compose.ui.semantics.SemanticsProperties.EditableText, androidx.compose.ui.text.AnnotatedString("")))
+        compose.onNodeWithTag("invalidTime").assertDoesNotExist()
+        compose.onNodeWithTag("resultTime").assertDoesNotExist()
+        capture("android-align-arrival-light")
+        example()
+        capture("android-align-input-light")
+        compose.onNodeWithTag("seeResults").performScrollTo().performClick()
+        compose.onNodeWithTag("equivalent-SCY").assertExists()
+        compose.onNodeWithTag("equivalent-SCM").assertExists()
+        compose.onNodeWithTag("equivalent-LCM").assertExists()
+        compose.onNodeWithTag("equivalent-SCM").performScrollTo().performClick()
+        compose.onNodeWithTag("resultTime").assertTextEquals("1:05.08")
+        capture("android-align-results-light")
+        compose.onNodeWithTag("conversionDetails").performScrollTo().performClick()
+        compose.onNodeWithTag("methodResult-NCAA").performScrollTo().assertTextEquals("1:05.08")
+        compose.onNodeWithTag("methodResult-Colorado Timing").performScrollTo().assertTextEquals("1:04.73")
+        compose.onNodeWithTag("methodDifference").performScrollTo().assertTextEquals("Method difference: 0.35s")
+        capture("android-align-methods")
+        compose.onNodeWithText("Done").assertIsDisplayed().performClick()
+        compose.onNodeWithTag("resetConverter").performScrollTo().performClick()
+        compose.onNodeWithTag("timeInput").assert(SemanticsMatcher.expectValue(androidx.compose.ui.semantics.SemanticsProperties.EditableText, androidx.compose.ui.text.AnnotatedString("")))
+        compose.onNodeWithTag("invalidTime").assertDoesNotExist()
+        compose.onNodeWithTag("resultTime").assertDoesNotExist()
+        compose.onNodeWithTag("nav-My times").performClick()
+        compose.onNodeWithText("No logged swims").assertExists()
+    }
+
+    @Test fun altitudePoliciesKeepOriginalSwimAndPersist() {
+        example()
+        compose.onNodeWithTag("calculationOptions").performScrollTo().performClick()
+        compose.onNodeWithTag("altitudeEnabled").performScrollTo().performClick()
+        compose.onNodeWithTag("poolElevation").performScrollTo().performTextReplacement("5000")
+        compose.onNodeWithTag("poolElevation").performImeAction()
+        compose.onNodeWithTag("choice-Elevation unit").performScrollTo().performClick()
+        compose.onNode(hasText("Meters") and hasClickAction()).performClick()
+        compose.onNodeWithTag("poolElevation").assertTextContains("1524.0")
+        compose.onNodeWithTag("choice-Elevation unit").performScrollTo().performClick()
+        compose.onNode(hasText("Feet") and hasClickAction()).performClick()
+        compose.onNodeWithTag("poolElevation").assertTextContains("5000")
+        compose.onNodeWithTag("choice-Altitude policy").performScrollTo().performClick()
+        compose.onNode(hasText("NCAA · 2026–27 Division I") and hasClickAction()).performClick()
+        capture("android-calculation-options")
+        compose.onNodeWithTag("resultTime").performScrollTo().assertTextEquals("1:06.61")
+        compose.onNodeWithTag("conversionDetails").performScrollTo().performClick()
+        compose.onNodeWithTag("altitudeResult-ncaa-altitude-2026-27-d1").performScrollTo().assertTextEquals("−0.10s → 58.22")
+        capture("android-altitude-policies")
+        compose.onNodeWithText("Done").assertIsDisplayed().performClick()
+        compose.onNodeWithTag("openBenchmarks").performScrollTo().performClick()
+        compose.onNodeWithTag("benchmarkOriginalTime").assertTextEquals("58.32")
+        compose.onNodeWithTag("closeBenchmarks").performClick()
+        compose.activityRule.scenario.recreate()
+        compose.onNodeWithTag("resultTime").performScrollTo().assertTextEquals("1:06.61")
+    }
+
+    @Test fun distanceColoradoCaveatUsesCorrectEventContext() {
+        val preferences = ApplicationProvider.getApplicationContext<Context>().getSharedPreferences("turnmark", Context.MODE_PRIVATE)
+        preferences.edit().putString("draft", Draft.example.copy(time = "4:11.36", distance = 400u, courseIndex = 1, targetIndex = 0, methodId = "colorado-teamunify-2026").encode()).commit()
+        compose.activityRule.scenario.recreate()
+        compose.onNodeWithTag("resultTime").performScrollTo().assertTextEquals("3:46.45")
+        compose.onNodeWithTag("resultContext").assertTextContains("500 yd", substring = true)
+        compose.onNodeWithTag("distanceCaveat").performScrollTo().assertTextContains("unequal-distance freestyle", substring = true)
+        capture("android-distance-caveat")
+    }
+
     @Test fun conversionMethodPersistsAndKeepsNcaaDefault() {
+        example()
         compose.onNodeWithTag("resultTime").assertTextEquals("1:06.72")
-        compose.onNodeWithTag("converterMenu").performClick()
-        compose.onNodeWithTag("conversionMethod-colorado-teamunify-2026").performClick()
+        chooseCourseConversion("Colorado Timing")
         compose.onNodeWithTag("resultTime").assertTextEquals("1:06.33")
         capture("android-colorado-comparison")
         compose.activityRule.scenario.recreate()
@@ -45,18 +122,18 @@ class ConverterTest {
         compose.onNodeWithTag("conversionDetails").performScrollTo().performClick()
         compose.onNodeWithText("Time offset: 1.6 seconds").performScrollTo().assertIsDisplayed()
         compose.onNodeWithText("Edition: colorado-teamunify-2026").performScrollTo().assertIsDisplayed()
-        compose.onNodeWithText("Done").performScrollTo().performClick()
-        compose.onNodeWithTag("converterMenu").performClick()
-        compose.onNodeWithTag("conversionMethod-ncaa-2025-27").performClick()
+        compose.onNodeWithText("Done").assertIsDisplayed().performClick()
+        chooseCourseConversion("NCAA (default)", open = false)
         compose.onNodeWithTag("resultTime").assertTextEquals("1:06.72")
     }
 
     @Test fun benchmarksUseOriginalSwimAndRememberAgeSettings() {
+        example()
         compose.onNodeWithTag("converterBrand").assertIsDisplayed()
         compose.onNodeWithTag("converterMenu").performClick()
         compose.onNodeWithText("About Turnmark").performClick()
         compose.onNodeWithText("How comparisons work").assertIsDisplayed()
-        compose.onNodeWithText("Done").performScrollTo().performClick()
+        compose.onNodeWithText("Done").performScrollTo().assertIsDisplayed().performClick()
         capture("android-converter-default")
         compose.onNodeWithTag("openBenchmarks").performScrollTo().performClick()
         compose.onNodeWithTag("benchmarkOriginalTime").assertTextEquals("58.32")
@@ -86,6 +163,7 @@ class ConverterTest {
     }
 
     @Test fun recordedBenchmarkKeepsActualCategoryAndTime() {
+        example()
         compose.onNodeWithTag("timeInput").performScrollTo().performTextReplacement("1:00.25")
         compose.onNodeWithTag("timeInput").performImeAction()
         compose.onNodeWithText("Men").performScrollTo().performClick()
@@ -104,6 +182,7 @@ class ConverterTest {
     }
 
     @Test fun benchmarkMissingTargetKeepsMissingDataVisible() {
+        example()
         compose.onNodeWithTag("inputCourse-LCM").performScrollTo().performClick()
         compose.onNodeWithTag("choice-Stroke").performScrollTo().performClick()
         compose.onNodeWithText("Butterfly").performClick()
@@ -118,6 +197,7 @@ class ConverterTest {
     }
 
     @Test fun benchmarkControlsRemainReachableAtLargeText() {
+        example()
         compose.activityRule.scenario.onActivity { activity -> activity.setContent {
             val density = LocalDensity.current
             CompositionLocalProvider(LocalDensity provides Density(density.density, 2f)) {
@@ -135,13 +215,14 @@ class ConverterTest {
     }
 
     @Test fun conversionKeepsOriginalAndSupportsContextualDetails() {
+        example()
         compose.onNodeWithTag("timeInput").performScrollTo().performClick().performTextReplacement("1:00")
         compose.onNodeWithTag("timeInput").performImeAction()
         compose.waitUntil(5_000) { compose.onAllNodesWithTag("nav-Convert").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithTag("nav-Saved").assertDoesNotExist()
         compose.onNodeWithTag("nav-Method").assertDoesNotExist()
         compose.onNodeWithTag("inputCourse-LCM").performScrollTo().performClick()
-        compose.onNodeWithTag("targetCourse-SCY").performScrollTo().performClick()
+        compose.onNodeWithTag("equivalent-SCY").performScrollTo().performClick()
         compose.onNodeWithTag("resultTime").assertTextEquals("52.44")
         compose.onNodeWithTag("resultContext").assertTextEquals("100 yd Freestyle · SCY · Women")
         compose.onNodeWithTag("conversionDetails").performScrollTo().performClick()
@@ -149,14 +230,15 @@ class ConverterTest {
         compose.onNodeWithText("100 m Freestyle · LCM · Women").assertExists()
         compose.onNodeWithText("Edition:", substring = true).performScrollTo().assertIsDisplayed()
         capture("android-details")
-        compose.onNodeWithText("Done").performScrollTo().performClick()
+        compose.onNodeWithText("Done").assertIsDisplayed().performClick()
         compose.onNodeWithTag("resultTime").performScrollTo()
         capture("android-converter-result")
         compose.onNodeWithTag("timeInput").performScrollTo()
         capture("android-converter-input")
-        compose.onNodeWithTag("methodology").performScrollTo().performClick()
+        compose.onNodeWithTag("converterMenu").performClick()
+        compose.onNodeWithTag("converterAbout").performClick()
         compose.onNodeWithText("How comparisons work").assertExists()
-        compose.onNodeWithText("Done").performScrollTo().performClick()
+        compose.onNodeWithText("Done").performScrollTo().assertIsDisplayed().performClick()
         compose.onNodeWithTag("nav-My times").performClick()
         compose.onNodeWithText("No logged swims").assertExists()
         compose.onNodeWithTag("nav-Convert").performClick()
@@ -166,6 +248,7 @@ class ConverterTest {
     }
 
     @Test fun sharingUsesOriginalValuesWithoutRecordingAResult() {
+        example()
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val captured = AtomicReference<Intent>()
         val monitor = object : Instrumentation.ActivityMonitor() {
@@ -192,6 +275,7 @@ class ConverterTest {
     }
 
     @Test fun earlierBookmarkRemainsSeparateFromActualTimes() {
+        example()
         ApplicationProvider.getApplicationContext<Context>().getSharedPreferences("turnmark", Context.MODE_PRIVATE)
             .edit().putString("saved", Draft(time = "57.25").encode()).commit()
         compose.activityRule.scenario.recreate()
@@ -209,6 +293,7 @@ class ConverterTest {
     }
 
     @Test fun actualTimeCanBeRecordedDirectlyFromMyTimes() {
+        example()
         compose.onNodeWithTag("nav-My times").performClick()
         compose.onNodeWithTag("recordTime").performClick()
         compose.onNodeWithTag("confirmLog").assertIsNotEnabled()
@@ -226,6 +311,7 @@ class ConverterTest {
     }
 
     @Test fun longEventAndMeetKeepRecordingAndComparisonReachable() {
+        example()
         val meet = "Pacific Northwest Masters Long Course Championships"
         compose.onNodeWithTag("timeInput").performScrollTo().performTextReplacement("2:12.34")
         compose.onNodeWithTag("timeInput").performImeAction()
@@ -256,6 +342,7 @@ class ConverterTest {
     }
 
     @Test fun loggingEditingComparingAndDeletingActualSwims() {
+        example()
         compose.onNodeWithTag("choice-Stroke").performScrollTo().performClick()
         compose.onNodeWithText("Individual medley").performClick()
         compose.onNodeWithTag("unavailableConversion").assertExists()
@@ -290,6 +377,7 @@ class ConverterTest {
     }
 
     @Test fun documentImportPreviewAndExportPreserveThePortableRecords() {
+        example()
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val context = instrumentation.targetContext
         val input = java.io.File(context.cacheDir, "history-test-input.json")
@@ -365,24 +453,27 @@ class ConverterTest {
     }
 
     @Test fun resultContextUsesDestinationDistanceAndCategory() {
+        example()
         compose.onNodeWithTag("inputCourse-LCM").performScrollTo().performClick()
         compose.onNodeWithTag("choice-Distance").performScrollTo().performClick()
         compose.onNodeWithText("400 m").performClick()
         compose.onNodeWithText("Men").performScrollTo().performClick()
-        compose.onNodeWithTag("targetCourse-SCY").performScrollTo().performClick()
+        compose.onNodeWithTag("equivalent-SCY").performScrollTo().performClick()
         compose.onNodeWithTag("resultContext").assertTextEquals("500 yd Freestyle · SCY · Men")
-        compose.onNodeWithTag("targetCourse-LCM").performScrollTo().performClick()
+        compose.onNodeWithTag("equivalent-LCM").performScrollTo().performClick()
         compose.onNodeWithTag("resultContext").assertTextEquals("400 m Freestyle · LCM · Men")
         compose.onNodeWithText("Original time").assertExists()
     }
 
     @Test fun invalidTimeHasNoResult() {
+        example()
         compose.onNodeWithTag("timeInput").performScrollTo().performTextReplacement("0")
         compose.onNodeWithTag("invalidTime").assertExists()
         compose.onNodeWithTag("resultTime").assertDoesNotExist()
     }
 
     @Test fun unsupportedComparisonStaysUnavailable() {
+        example()
         compose.onNodeWithTag("choice-Stroke").performScrollTo().performClick()
         capture("android-stroke-menu")
         compose.onNodeWithText("Individual medley").performClick()

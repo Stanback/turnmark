@@ -52,6 +52,8 @@ for (const [path, expected] of [
   ["packages/mcp/ui/app.css", flags("core")],
   ["packages/mcp/test/host.ts", flags("core")],
   ["src/generated/design-tokens.css", flags("web", "core")],
+  ["src/lib/elevation-display.ts", flags("web", "core")],
+  ["src/lib/calculation-copy.ts", flags("web", "core")],
   ["crates/turnmark-wasm/src/lib.rs", flags("web", "core")],
   ["apps/ios/Sources/TurnmarkApp.swift", flags("ios")],
   ["apps/history/contract-v1.json", flags("ios", "android")],

@@ -1,3 +1,5 @@
+import { coloradoDistanceCaveat } from "../../../src/lib/calculation-copy.js";
+import { elevationDisplay } from "../../../src/lib/elevation-display.js";
 import { App } from "@modelcontextprotocol/ext-apps";
 import swimIcons from "../../../design/swim-icons.json";
 import type {
@@ -13,6 +15,21 @@ const form = $("convert");
 const time = $<HTMLInputElement>("time");
 const course = $<HTMLSelectElement>("course");
 const method = $<HTMLSelectElement>("method");
+const altitudeEnabled = $<HTMLInputElement>("altitude-enabled");
+const elevation = $<HTMLInputElement>("elevation");
+const elevationUnit = $<HTMLSelectElement>("elevation-unit");
+let previousElevationUnit: "feet" | "meters" = "feet";
+elevationUnit.onchange = () => {
+  const next = elevationUnit.value as "feet" | "meters";
+  elevation.value = String(
+    elevationDisplay(elevation.valueAsNumber, previousElevationUnit, next),
+  );
+  previousElevationUnit = next;
+};
+const altitudePolicy = $<HTMLSelectElement>("altitude-policy");
+altitudeEnabled.onchange = () => {
+  $("altitude-fields").hidden = !altitudeEnabled.checked;
+};
 const update = $<HTMLButtonElement>("update");
 const cancel = $<HTMLButtonElement>("cancel");
 const status = $("status");
@@ -56,6 +73,11 @@ function swimIcon(name: keyof typeof swimIcons) {
 function controls() {
   update.disabled = !connected || !original || !!pending;
   time.disabled = course.disabled = method.disabled = !original || !!pending;
+  altitudeEnabled.disabled =
+    elevation.disabled =
+    elevationUnit.disabled =
+    altitudePolicy.disabled =
+      !original || !!pending;
   cancel.hidden = !pending;
   form.setAttribute("aria-busy", String(!!pending));
 }
@@ -99,15 +121,26 @@ function render(value: unknown, request: ConversionRequest) {
       !input({ ...request, swim: { ...request.swim, event: v.event } })
     )
       throw new Error("Invalid result");
-    line("p", "YOUR COMPARISON", "eyebrow");
+    line("p", "EQUIVALENT TIME", "eyebrow");
     line("h1", context(v.event, request.table), "context").prepend(
       swimIcon(v.event.stroke),
     );
-    line("p", v.time, "clock");
+    const clock = line("p", "", "clock");
+    const dot = v.time.lastIndexOf(".");
+    if (dot >= 0) {
+      clock.append(document.createTextNode(v.time.slice(0, dot)));
+      const hundredths = document.createElement("span");
+      hundredths.className = "hundredths";
+      hundredths.textContent = v.time.slice(dot);
+      clock.append(hundredths);
+    } else clock.textContent = v.time;
     line(
       "p",
       {
-        swum: "Original time",
+        swum:
+          (v.altitude?.value.adjustmentSeconds ?? 0) > 0
+            ? "Sea-level estimate"
+            : "Original time",
         published: "Published conversion",
         derived: "Derived estimate",
       }[v.kind] +
@@ -116,6 +149,7 @@ function render(value: unknown, request: ConversionRequest) {
           : ""),
       "kind",
     );
+    if (v.caveat) line("p", coloradoDistanceCaveat, "muted");
     line(
       "p",
       `From ${request.swim.time} · ${context(request.swim.event, request.table)}`,
@@ -142,16 +176,142 @@ function render(value: unknown, request: ConversionRequest) {
     const source = outcome.provenance;
     const details = document.createElement("details");
     const summary = document.createElement("summary");
-    summary.textContent = "Source & method";
+    summary.textContent = "How this is calculated";
     details.append(summary);
     const p = document.createElement("p");
     p.textContent = `${source.title} · ${source.id} · ${source.revision}`;
-    details.append(p);
+    const comparison = value as {
+      methodComparison?: {
+        method: string;
+        label: string;
+        result: Result<ConversionValue>;
+      }[];
+      methodDifferenceSeconds?: number;
+    };
+    if (Array.isArray(comparison.methodComparison)) {
+      const heading = document.createElement("h2");
+      heading.textContent = `Compare methods · ${request.to}`;
+      details.append(heading);
+      const methods = document.createElement("dl");
+      methods.className = "method-comparison";
+      for (const item of comparison.methodComparison) {
+        if (!["ncaa-2025-27", "colorado-teamunify-2026"].includes(item.method))
+          continue;
+        const row = document.createElement("div");
+        row.dataset.method = item.method;
+        const name = document.createElement("dt");
+        name.textContent = `${item.label}${item.method === (request.method ?? "ncaa-2025-27") ? " · Selected" : ""}`;
+        const time = document.createElement("dd");
+        time.textContent =
+          item.result.status === "available"
+            ? item.result.value.time
+            : "Unavailable for this event";
+        row.append(name, time);
+        methods.append(row);
+      }
+      details.append(methods);
+      const difference = document.createElement("p");
+      difference.className = "method-difference";
+      difference.textContent = `${typeof comparison.methodDifferenceSeconds === "number" && Number.isFinite(comparison.methodDifferenceSeconds) ? `Method difference: ${comparison.methodDifferenceSeconds.toFixed(2)}s. ` : ""}Different conversion rules, not a prediction range or confidence interval. Follow the method required by your meet.`;
+      details.append(difference);
+    }
+    if (
+      comparison.methodComparison?.some(
+        (item) =>
+          item.result.status === "available" && item.result.value.caveat,
+      )
+    ) {
+      const note = document.createElement("p");
+      note.textContent = coloradoDistanceCaveat;
+      details.append(note);
+    }
+    const altitudeRows = (
+      value as {
+        altitudeComparison?: {
+          policy: string;
+          label: string;
+          result: Result<{ adjustedTime: string; adjustmentSeconds: number }>;
+        }[];
+      }
+    ).altitudeComparison;
+    if (Array.isArray(altitudeRows) && request.elevation) {
+      const heading = document.createElement("h2");
+      heading.textContent = "Sea-level estimates";
+      details.append(heading);
+      const raw = document.createElement("p");
+      raw.textContent = `Entered swim: ${request.swim.time} · ${request.elevation.value} ${request.elevation.unit}`;
+      details.append(raw);
+      for (const item of altitudeRows) {
+        if (
+          !["usa-swimming-altitude-2026", "ncaa-altitude-2026-27-d1"].includes(
+            item.policy,
+          ) ||
+          item.result.status !== "available"
+        )
+          continue;
+        const row = document.createElement("p");
+        row.textContent = `${item.label.replace(" (default)", "")}${item.policy === (request.altitudePolicy ?? "usa-swimming-altitude-2026") ? " · Selected" : ""}: −${item.result.value.adjustmentSeconds.toFixed(2)}s → ${item.result.value.adjustedTime}`;
+        details.append(row);
+        const source = document.createElement("button");
+        source.type = "button";
+        source.className = "link";
+        source.textContent = `${item.label.replace(" (default)", "")} altitude source ↗`;
+        const url = item.result.provenance.url;
+        if (typeof url === "string" && url.startsWith("https://")) {
+          source.onclick = () => {
+            void app
+              .openLink({ url })
+              .catch(() => message("This host couldn’t open the source link."));
+          };
+          details.append(source);
+        }
+      }
+      const note = document.createElement("p");
+      note.textContent =
+        "Altitude is deducted before course conversion. Below 3,000 ft, or where the table has no deduction, the time stays unchanged. Use the policy required by your meet.";
+      details.append(note);
+    }
+    const inputs = document.createElement("h2");
+    inputs.textContent = "Why the times differ";
+    details.append(inputs);
+    for (const [title, text] of [
+      [
+        "NCAA",
+        "Published factors vary by event and category. Metric-to-yards values are direct; reverse and SCM/LCM comparisons use ratios.",
+      ],
+      [
+        "Colorado Timing",
+        "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.",
+      ],
+      [
+        "Pool length",
+        "Shorter pools add turns and push-offs. These rules do not measure your technique, endurance or individual development.",
+      ],
+      [
+        "Distance events",
+        "500, 1000 and 1650 yards map to 400, 800 and 1500 meters.",
+      ],
+    ]) {
+      const group = document.createElement("div");
+      group.className = "calculation-explanation";
+      const heading = document.createElement("h3");
+      heading.textContent = title;
+      const explanation = document.createElement("p");
+      explanation.textContent = text;
+      group.append(heading, explanation);
+      details.append(group);
+    }
     if (outcome.status === "available" && outcome.value.kind !== "swum") {
+      const heading = document.createElement("h2");
+      heading.textContent = "Selected calculation";
+      details.append(heading);
       const formula = document.createElement("p");
-      formula.textContent = `Seconds × ${outcome.value.factor}${outcome.value.offsetSeconds ? ` ${outcome.value.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(outcome.value.offsetSeconds)}s` : ""}; final result truncated to hundredths.`;
+      formula.textContent = `${outcome.value.altitude ? "After the altitude deduction, seconds" : "Seconds"} × ${outcome.value.factor.toFixed(5)}${outcome.value.offsetSeconds ? ` ${outcome.value.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(outcome.value.offsetSeconds)}s` : ""}; factor rounded for display, final result truncated to hundredths.`;
       details.append(formula);
     }
+    const sourceHeading = document.createElement("h2");
+    sourceHeading.textContent = "Source";
+    details.append(sourceHeading, p);
     if (typeof source.url === "string" && source.url.startsWith("https://")) {
       const button = document.createElement("button");
       button.type = "button";
@@ -185,6 +345,17 @@ app.ontoolinput = ({ arguments: args }) => {
     return;
   }
   original = structuredClone(args);
+  $<HTMLDetailsElement>("calculation-options").open =
+    !!args.elevation || args.method === "colorado-teamunify-2026";
+  altitudeEnabled.checked = !!args.elevation;
+  $("altitude-fields").hidden = !args.elevation;
+  elevation.value = String(args.elevation?.value ?? 0);
+  elevationUnit.value = args.elevation?.unit ?? "feet";
+  previousElevationUnit = args.elevation?.unit ?? "feet";
+  altitudePolicy.value =
+    args.altitudePolicy === "ncaa-altitude-2026-27-d1"
+      ? args.altitudePolicy
+      : "usa-swimming-altitude-2026";
   time.value = args.swim.time;
   course.value = args.to;
   method.value =
@@ -238,6 +409,20 @@ update.onclick = async () => {
     to: course.value as ConversionRequest["to"],
     method: method.value as ConversionRequest["method"],
   };
+  delete request.elevation;
+  delete request.altitudePolicy;
+  if (altitudeEnabled.checked) {
+    if (!Number.isFinite(elevation.valueAsNumber)) {
+      message("Enter a valid pool elevation.");
+      return;
+    }
+    request.elevation = {
+      value: elevation.valueAsNumber,
+      unit: elevationUnit.value as "feet" | "meters",
+    };
+    request.altitudePolicy =
+      altitudePolicy.value as ConversionRequest["altitudePolicy"];
+  }
   const controller = (pending = new AbortController());
   const id = ++generation;
   controls();

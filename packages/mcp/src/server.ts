@@ -9,6 +9,7 @@ import { z } from "zod";
 import type { Engine } from "@turnmark/sdk";
 import {
   conversionMethods,
+  altitudePolicies,
   type ConversionMethod,
   conversionProvenance,
   altitudeProvenance,
@@ -25,7 +26,7 @@ import {
   pointsValidity,
 } from "@turnmark/sdk/points";
 
-export const conversionResourceUri = "ui://turnmark/conversion/0.3.0.html";
+export const conversionResourceUri = "ui://turnmark/conversion/0.3.0-r4.html";
 const uiMeta = {
   ui: {
     csp: { connectDomains: [], resourceDomains: [], frameDomains: [] },
@@ -55,6 +56,10 @@ const swim = z.strictObject({
       "Entered clock time, e.g. 58.32 or 1:02.45. No conversion estimates.",
     ),
   event,
+});
+const elevation = z.strictObject({
+  value: z.number(),
+  unit: z.enum(["feet", "meters"]),
 });
 const table = z
   .enum(["women", "men"])
@@ -126,12 +131,14 @@ export function createServer(engine: Engine) {
     "convert_swim",
     {
       description:
-        "Convert an entered swim to an explicit course. NCAA is the default; colorado-teamunify-2026 selects documented Colorado Timing formulas. Preserve the returned source and method; conversions are estimates, not entry approval.",
+        "Convert an entered swim to an explicit course. NCAA is the default; colorado-teamunify-2026 selects documented Colorado Timing formulas. The selected method drives the primary result; methodComparison also returns NCAA and Colorado for the same destination. methodDifferenceSeconds is a difference between rules, not a confidence interval. Optional elevation is deducted from the original event first, using altitudePolicy (USA Swimming default); value.altitude retains the original time, deduction and source. altitudeComparison returns both policies. value.caveat identifies the documented Colorado SCM/SCY unequal-distance freestyle limitation; show it alongside that result. Preserve each source; conversions are estimates, not entry approval.",
       inputSchema: z.strictObject({
         swim,
         to: z.enum(["SCY", "SCM", "LCM"]),
         table,
         method: z.string().optional(),
+        elevation: elevation.optional(),
+        altitudePolicy: z.string().optional(),
       }),
       _meta: {
         ui: {
@@ -139,33 +146,100 @@ export function createServer(engine: Engine) {
           visibility: ["model", "app"],
         },
       },
-      outputSchema: outcome,
-      annotations,
-    },
-    (input) =>
-      result(
-        engine.convert({
-          ...input,
-          method: input.method as ConversionMethod | undefined,
+      outputSchema: outcome.and(
+        z.object({
+          methodComparison: z
+            .array(
+              z.object({
+                method: z.string(),
+                label: z.string(),
+                result: outcome,
+              }),
+            )
+            .optional(),
+          methodDifferenceSeconds: z.number().nonnegative().optional(),
+          altitudeComparison: z
+            .array(
+              z.object({
+                policy: z.string(),
+                label: z.string(),
+                result: outcome,
+              }),
+            )
+            .optional(),
         }),
       ),
+      annotations,
+    },
+    (input) => {
+      const primary = engine.convert({
+        ...input,
+        method: input.method as ConversionMethod | undefined,
+        altitudePolicy: input.altitudePolicy as
+          (typeof altitudePolicies)[number]["id"] | undefined,
+      });
+      if (primary.status === "invalid") return result(primary);
+      const methodComparison = conversionMethods.map((method) => ({
+        method: method.id,
+        label: method.label,
+        result:
+          method.id === (input.method ?? conversionMethods[0].id)
+            ? primary
+            : engine.convert({
+                ...input,
+                method: method.id,
+                altitudePolicy: input.altitudePolicy as
+                  (typeof altitudePolicies)[number]["id"] | undefined,
+              }),
+      }));
+      const [ncaa, colorado] = methodComparison.map((item) => item.result);
+      return result({
+        ...primary,
+        methodComparison,
+        ...(input.elevation
+          ? {
+              altitudeComparison: altitudePolicies.map((policy) => ({
+                policy: policy.id,
+                label: policy.label,
+                result: engine.adjustAltitude({
+                  swim: input.swim,
+                  elevation: input.elevation!,
+                  policy: policy.id,
+                }),
+              })),
+            }
+          : {}),
+        ...(ncaa.status === "available" && colorado.status === "available"
+          ? {
+              methodDifferenceSeconds:
+                Math.abs(ncaa.value.hundredths - colorado.value.hundredths) /
+                100,
+            }
+          : {}),
+      });
+    },
   );
   server.registerTool(
     "adjust_altitude",
     {
       description:
-        "Adjust an entered swim at an explicit elevation using USA Swimming altitude adjustments. Separate from course conversion.",
+        "Adjust an entered swim at an explicit elevation using USA Swimming altitude adjustments. USA Swimming is the default; ncaa-altitude-2026-27-d1 selects the NCAA Division I 2026–27 altitude table. Separate from course-conversion method.",
       inputSchema: z.strictObject({
         swim,
-        elevation: z.strictObject({
-          value: z.number(),
-          unit: z.enum(["feet", "meters"]),
-        }),
+        elevation,
+        policy: z.string().optional(),
       }),
       outputSchema: outcome,
       annotations,
     },
-    (input) => result(engine.adjustAltitude(input)),
+    (input) =>
+      result(
+        engine.adjustAltitude({
+          ...input,
+          policy: input.policy as
+            (typeof altitudePolicies)[number]["id"] | undefined,
+        }),
+      ),
   );
   server.registerTool(
     "get_youth_standards",
@@ -244,6 +318,7 @@ export function createServer(engine: Engine) {
         conversion: z.unknown(),
         conversionMethods: z.unknown(),
         altitude: z.unknown(),
+        altitudePolicies: z.unknown(),
         youth: z.unknown(),
         masters: z.unknown(),
         points: z.unknown(),
@@ -256,6 +331,7 @@ export function createServer(engine: Engine) {
         conversion: conversionProvenance,
         conversionMethods,
         altitude: altitudeProvenance,
+        altitudePolicies,
         youth: {
           edition: youthEdition,
           ages: youthAges,

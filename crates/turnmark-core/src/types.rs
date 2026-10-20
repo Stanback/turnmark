@@ -71,6 +71,14 @@ pub enum ConversionMethod {
     #[serde(rename = "colorado-teamunify-2026")]
     Colorado,
 }
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "native", derive(uniffi::Enum))]
+pub enum AltitudePolicy {
+    #[serde(rename = "usa-swimming-altitude-2026")]
+    UsaSwimming,
+    #[serde(rename = "ncaa-altitude-2026-27-d1")]
+    Ncaa,
+}
 record!(Elevation {
     value: f64,
     unit: ElevationUnit
@@ -138,6 +146,12 @@ pub enum ValidationReason {
     UnsafeResult,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+#[cfg_attr(feature = "native", derive(uniffi::Enum))]
+pub enum ConversionCaveat {
+    ColoradoShortCourseDistance,
+}
 record!(ConversionValue {
     time: String,
     seconds: f64,
@@ -146,7 +160,11 @@ record!(ConversionValue {
     #[serde(default, skip_serializing_if = "is_zero")]
     offset_seconds: f64,
     kind: ConversionKind,
-    event: SwimEvent
+    event: SwimEvent,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    altitude: Option<AltitudeCalculation>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    caveat: Option<ConversionCaveat>
 });
 fn is_zero(value: &f64) -> bool {
     *value == 0.0
@@ -159,6 +177,10 @@ record!(AltitudeValue {
     adjustment_seconds: f64,
     elevation_feet: u32,
     kind: AltitudeKind
+});
+record!(AltitudeCalculation {
+    value: AltitudeValue,
+    provenance: Provenance
 });
 record!(YouthValue { event: SwimEvent, age: String, levels: Vec<String>, times: Vec<f64> });
 record!(MastersValue {
@@ -194,10 +216,11 @@ pub(crate) enum Failure {
 }
 pub(crate) type Calculation<T> = Result<(T, Provenance), Failure>;
 macro_rules! outcome {
-    ($name:ident, $value:ident) => {
+    ($(#[$meta:meta])* $name:ident, $value:ident) => {
         #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
         #[serde(tag = "status", rename_all = "lowercase")]
         #[cfg_attr(feature = "native", derive(uniffi::Enum))]
+        $(#[$meta])*
         pub enum $name {
             Available {
                 value: $value,
@@ -226,7 +249,13 @@ macro_rules! outcome {
         }
     };
 }
-outcome!(ConversionOutcome, ConversionValue);
+// UniFFI outcomes carry concrete records. Preserve that generated API shape;
+// the optional source-backed altitude context makes this variant 440 bytes.
+outcome!(
+    #[allow(clippy::large_enum_variant)]
+    ConversionOutcome,
+    ConversionValue
+);
 outcome!(AltitudeOutcome, AltitudeValue);
 outcome!(YouthOutcome, YouthValue);
 outcome!(MastersOutcome, MastersValue);

@@ -5,6 +5,19 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [svelte()],
   base: "/",
+  server: {
+    // Native test/report writers must not reload a running web review.
+    watch: {
+      ignored: [
+        "**/target/**",
+        "**/apps/**/build/**",
+        "**/packages/**/build/**",
+        "**/build/reports/**",
+        "**/test-results/**",
+        "**/playwright-report/**",
+      ],
+    },
+  },
   build: {
     rolldownOptions: {
       input: [

@@ -239,7 +239,25 @@ pub(crate) fn convert(input: &Value) -> Calculation<ConversionValue> {
     let to = course(&input["to"], "to")?;
     let table = category(&input["table"])?;
     let (event, distance, seconds) = swim(&input["swim"])?;
-    convert_seconds_with_method(event, distance, seconds, to, table, method)
+    let altitude = if input.get("elevation").is_some() {
+        let (value, provenance) = altitude(&json!({
+            "swim": input["swim"], "elevation": input["elevation"],
+            "policy": input.get("altitudePolicy").cloned().unwrap_or(json!("usa-swimming-altitude-2026"))
+        }))?;
+        Some(AltitudeCalculation { value, provenance })
+    } else {
+        if input.get("altitudePolicy").is_some() {
+            return Err(invalid("elevation", ValidationReason::InvalidElevation));
+        }
+        None
+    };
+    let seconds = altitude
+        .as_ref()
+        .map_or(seconds, |a| a.value.adjusted_seconds);
+    let (mut value, provenance) =
+        convert_seconds_with_method(event, distance, seconds, to, table, method)?;
+    value.altitude = altitude;
+    Ok((value, provenance))
 }
 
 pub(crate) fn conversion_method(input: Option<&Value>) -> Result<ConversionMethod, Failure> {
@@ -319,6 +337,15 @@ pub(crate) fn convert_seconds_with_method(
             hundredths: (seconds * 100.0).round() as u64,
             factor,
             offset_seconds,
+            altitude: None,
+            caveat: (method == ConversionMethod::Colorado
+                && event.stroke == Stroke::Freestyle
+                && distance >= 400
+                && matches!(
+                    (event.course, to),
+                    (Course::SCY, Course::SCM) | (Course::SCM, Course::SCY)
+                ))
+            .then_some(ConversionCaveat::ColoradoShortCourseDistance),
             kind,
             event: target,
         },
@@ -371,13 +398,33 @@ pub(crate) fn altitude(input: &Value) -> Calculation<AltitudeValue> {
     if !valid {
         return Err(invalid("elevation", ValidationReason::InvalidElevation));
     }
-    let source = &CONVERSIONS["altitudeSource"];
+    let policy = match input.get("policy") {
+        None => AltitudePolicy::UsaSwimming,
+        Some(value) => serde_json::from_value(value.clone())
+            .map_err(|_| invalid("policy", ValidationReason::UnsupportedMethod))?,
+    };
+    let source = &CONVERSIONS[if policy == AltitudePolicy::Ncaa {
+        "ncaaAltitudeSource"
+    } else {
+        "altitudeSource"
+    }];
     let provenance = Provenance {
-        id: "usa-swimming-altitude-2026".to_owned(),
+        id: if policy == AltitudePolicy::Ncaa {
+            "ncaa-altitude-2026-27-d1"
+        } else {
+            "usa-swimming-altitude-2026"
+        }
+        .to_owned(),
         title: text(&source["title"]),
         url: text(&source["url"]),
-        revision: text(&source["verified"]),
-        sha256: None,
+        revision: text(
+            &source[if policy == AltitudePolicy::Ncaa {
+                "revision"
+            } else {
+                "verified"
+            }],
+        ),
+        sha256: source["sha256"].as_str().map(str::to_owned),
         verified: None,
     };
     if !published(&event, distance) {
@@ -388,7 +435,21 @@ pub(crate) fn altitude(input: &Value) -> Calculation<AltitudeValue> {
     } else {
         value.unwrap()
     } as u32;
-    let adjustment = altitude_adjustment(distance, f64::from(feet));
+    let adjustment = if policy == AltitudePolicy::Ncaa {
+        let band = if feet < 3000 {
+            None
+        } else if feet <= 4250 {
+            Some(0)
+        } else if feet <= 6500 {
+            Some(1)
+        } else {
+            Some(2)
+        };
+        band.and_then(|b| CONVERSIONS["ncaaAltitudeAdjustments"][distance.to_string()][b].as_f64())
+            .unwrap_or(0.0)
+    } else {
+        altitude_adjustment(distance, f64::from(feet))
+    };
     if seconds <= adjustment {
         return Err(invalid("swim.time", ValidationReason::InvalidTime));
     }

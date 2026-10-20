@@ -68,7 +68,7 @@ bests when changing the layout.
 ## Implementation boundaries
 
 - Use Convert and My times as the two native destinations, with contextual
-  methodology. Record time confirms an actual entered swim; comparisons and
+  methodology. Log swim confirms an actual entered swim; comparisons and
   sharing remain available without a separate comparison-save action. Follow the
   [agreed persistence contract](DESIGN_CONTRACT.md#result-and-terminology-contract)
   when transitioning existing saved comparisons.
@@ -169,7 +169,7 @@ resize, so Done remains dismissed. The rotation test covers typing across pane
 changes, starting a new entry while already wide, and dismissing the keyboard in
 both orientations on iPhone 18 Pro/iOS 27.0 and Duo/iOS 27.1.
 
-Explicit Done, Record time and Standards actions invalidate delayed pane-focus
+Explicit Done, Log swim and Standards actions invalidate delayed pane-focus
 restoration before resigning the native first responder. A restoration queued on
 a busy main actor must not override the user's newer dismissal. The native tests
 exercise actual Done dismissal and continue into category/record navigation.

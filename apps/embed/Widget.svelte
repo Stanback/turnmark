@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { coloradoDistanceCaveat } from "../../src/lib/calculation-copy";
+  import AltitudeControls from "../../src/lib/AltitudeControls.svelte";
+  import MethodComparison from "../../src/lib/MethodComparison.svelte";
   import Icon from "../../src/lib/Icon.svelte";
   import {
     convertSwim,
@@ -10,6 +13,8 @@
     conversionMethod,
     conversionMethods,
     type ConversionMethod,
+    type Elevation,
+    type AltitudePolicy,
   } from "@turnmark/sdk/conversion";
   const courses: Course[] = ["SCY", "SCM", "LCM"];
   const strokes: { value: Stroke; label: string }[] = [
@@ -24,7 +29,10 @@
   let stroke = $state<Stroke>("freestyle");
   let distance = $state(100);
   let table = $state<Category>("women");
+  let comparisonCourse = $state<Course>("SCY");
   let method = $state<ConversionMethod>(conversionMethod);
+  let elevation = $state<Elevation>();
+  let altitudePolicy = $state<AltitudePolicy>("usa-swimming-altitude-2026");
   const selectedMethod = $derived(
     conversionMethods.find((item) => item.id === method)!,
   );
@@ -49,6 +57,7 @@
         to,
         table,
         method,
+        ...(elevation ? { elevation, altitudePolicy } : {}),
       }),
     })),
   );
@@ -122,6 +131,21 @@
       ></label
     >
   </div>
+  <details class="calculation-options">
+    <summary>Calculation options · {selectedMethod.label}</summary>
+    <label
+      >Course conversion<select bind:value={method}
+        >{#each conversionMethods as item}<option value={item.id}
+            >{item.label}</option
+          >{/each}</select
+      ></label
+    >
+    <AltitudeControls
+      swim={{ time, event: { distance, stroke, course } }}
+      bind:elevation
+      bind:policy={altitudePolicy}
+    />
+  </details>
   <section
     class="results"
     aria-label="Course comparison"
@@ -136,9 +160,17 @@
               {result.value.event.distance}
               {strokeLabel} · {result.value.event.course}
             </h2>
-            <p>{kind[result.value.kind]}</p>
+            <p>
+              {result.value.kind === "swum" &&
+              (result.value.altitude?.value.adjustmentSeconds ?? 0) > 0
+                ? "Sea-level estimate"
+                : kind[result.value.kind]}
+            </p>
           </div>
           <strong>{result.value.time}</strong>
+          {#if result.value.caveat}<p class="distance-caveat">
+              {coloradoDistanceCaveat}
+            </p>{/if}
         {:else}
           <div>
             <h2>{to}</h2>
@@ -154,14 +186,21 @@
     {/each}
   </section>
   <details class="method-options">
-    <summary>Conversion method · {selectedMethod.label}</summary>
+    <summary>How this is calculated</summary>
     <label
-      >Method<select bind:value={method}
-        >{#each conversionMethods as item}<option value={item.id}
-            >{item.label}</option
-          >{/each}</select
+      >Compare methods in<select bind:value={comparisonCourse}
+        >{#each courses as target}<option>{target}</option>{/each}</select
       ></label
     >
+    <MethodComparison
+      selected={method}
+      request={{
+        swim: { time, event: { distance, stroke, course } },
+        to: comparisonCourse,
+        table,
+        ...(elevation ? { elevation, altitudePolicy } : {}),
+      }}
+    />
   </details>
   <footer>
     <p>Converted times are estimates. Meet rules decide entry eligibility.</p>
@@ -181,6 +220,12 @@
 </div>
 
 <style>
+  .distance-caveat {
+    grid-column: 1 / -1;
+    font-size: 0.875rem;
+    color: var(--tm-color-text-muted);
+    line-height: 1.6;
+  }
   :global(:root) {
     font-family: "DM Sans Variable", system-ui, sans-serif;
     color-scheme: light dark;
@@ -211,15 +256,18 @@
     margin: auto;
     padding: 22px;
   }
-  .method-options {
+  .method-options,
+  .calculation-options {
     margin-top: 18px;
     color: var(--muted);
   }
-  .method-options summary {
+  .method-options summary,
+  .calculation-options summary {
     cursor: pointer;
     font-size: 0.875rem;
   }
-  .method-options label {
+  .method-options label,
+  .calculation-options > label {
     display: grid;
     gap: 8px;
     margin-top: 12px;

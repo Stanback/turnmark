@@ -7,13 +7,25 @@ on the pool deck. Keep the identity **Your swim. Any course.**
 
 Suggested short description:
 
-> Your offline swim companion. Convert times, explore standards, and understand your next target.
+> Your swim. Any course.
+>
+> An offline swim companion for converting times, checking standards, and logging swims on your device.
 
 The visual direction supports those jobs: editable swim first, readable course
 equivalents, one useful next target, and optional explanation/source detail.
 Use restrained water artwork and shared navy/cyan/lime tokens. Native apps
 adapt the hierarchy with SwiftUI/Compose controls and platform navigation;
 sharing colors and icons does not automatically propagate a web layout.
+
+Native supporting copy may add **“Log meet and practice swims on your device.”**
+Web supporting copy may add **“Save comparisons and optionally adjust for altitude.”**
+Keep SCY, SCM and LCM beside the converter, where they describe the choices.
+Do not lead with “swim logger”: conversion and standards remain the primary jobs,
+and actual performance logging is currently a native feature. “Offline-first”
+is useful in developer documentation; “works offline” is clearer in the UI.
+The web needs an initial online visit to cache its app files; installed native
+apps work offline on first launch. Optional altitude input uses an independent USA Swimming / NCAA policy across
+web, native, widget and the MCP conversion card. See [the altitude contract](ALTITUDE.md).
 
 ## What the companion helps with
 

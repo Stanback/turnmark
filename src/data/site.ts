@@ -3,13 +3,13 @@ export const site = {
   title: "Swim Time Converter: SCY, SCM & LCM | Turnmark",
   url: "https://turnmark.app/",
   description:
-    "Convert swim times between yards and meters (SCY, SCM, LCM). Compare USA Swimming and USMS standards, calculate World Aquatics points, and adjust for altitude.",
+    "Your offline swim companion: convert SCY, SCM and LCM times, check published standards and World Aquatics points, save comparisons locally, and optionally adjust for altitude.",
 };
 export const faqs = [
   {
     question: "How do I convert swim times between yards and meters?",
     answer:
-      "Choose your stroke, distance, entered time, and the course you swam. Turnmark defaults to NCAA metric-to-yards factors for SCY, SCM, and LCM. You can choose documented Colorado Timing formulas in the collapsed Conversion method settings. Reverse conversions and meter-to-meter comparisons are derived from those published factors. Unsupported conversions stay unavailable.",
+      "Choose your stroke, distance, entered time, and the course you swam. Turnmark defaults to NCAA metric-to-yards factors for SCY, SCM, and LCM. You can choose documented Colorado Timing formulas under Course conversion in Calculation options. Reverse conversions and meter-to-meter comparisons are derived from those published factors. Unsupported conversions stay unavailable.",
     url: "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
     source: "NCAA conversion tables",
   },

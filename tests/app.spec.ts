@@ -1,17 +1,25 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-// Most feature cases use the explicit demonstration; first-launch behavior is
+// Most feature cases enter the same sample swim; first-launch behavior is
 // tested separately below without manufacturing a shared URL or storage state.
 async function openExample(page: Page, url: string) {
   await page.goto(url);
   if (!(await page.locator("#swim-time").inputValue()))
-    await page
-      .getByRole("button", { name: "Try an example", exact: true })
-      .click();
+    await page.locator("#swim-time").fill("58.32");
 }
 
-test("arrival is blank, example is explicit, typing keeps focus and reset clears results", async ({
+async function openCalculationOptions(page: Page) {
+  const panel = page.locator(".calculation-options");
+  if ((await panel.getAttribute("open")) === null)
+    await panel.locator("summary").click();
+}
+async function enableAltitude(page: Page) {
+  await openCalculationOptions(page);
+  await page.getByLabel("Adjust for altitude", { exact: true }).check();
+}
+
+test("arrival is blank, typing keeps focus and reset clears results", async ({
   page,
 }) => {
   await page.clock.install();
@@ -25,27 +33,21 @@ test("arrival is blank, example is explicit, typing keeps focus and reset clears
   await expect(
     page.getByRole("button", { name: "Copy link", exact: true }),
   ).toBeDisabled();
-  await page
-    .getByRole("button", { name: "Try an example", exact: true })
-    .click();
+  await page.locator("#swim-time").fill("58.32");
   await expect(input).toHaveValue("58.32");
   await expect(page.getByTestId("result-LCM")).toHaveText("1:06.72");
   await page.clock.runFor(1600);
-  await expect(page.locator(".history-row")).toHaveCount(0);
+  await expect(page.locator(".history-row")).toHaveCount(1);
   await input.focus();
   const scroll = await page.evaluate(() => scrollY);
   await input.fill("59.32");
   await expect(input).toBeFocused();
   expect(await page.evaluate(() => scrollY)).toBe(scroll);
-  await expect(page.locator(".next-target-preview")).toContainText(
-    "Your entered swim",
-  );
+  await expect(page.locator(".next-target-preview")).toHaveCount(0);
   await page.getByRole("button", { name: "Reset", exact: true }).click();
   await expect(input).toHaveValue("");
   await expect(page.getByTestId("result-LCM")).toHaveText("—");
-  await expect(page.locator(".next-target-preview")).not.toContainText(
-    "Next standard",
-  );
+  await expect(page.locator(".next-target-preview")).toHaveCount(0);
   await page.reload();
   await expect(input).toHaveValue("");
 });
@@ -57,7 +59,7 @@ test("conversion method is optional, persists and round-trips through comparison
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await openExample(page, "/");
   await expect(page.getByTestId("result-LCM")).toHaveText("1:06.72");
-  const options = page.locator(".conversion-options");
+  const options = page.locator(".calculation-options");
   await expect(options).not.toHaveAttribute("open");
   await options.locator("summary").click();
   await page
@@ -100,6 +102,20 @@ test("calculation details stay optional and keyboard accessible", async ({
   await page.keyboard.press("Enter");
   await expect(details).toHaveAttribute("open");
   await expect(page.locator(".result-explanation")).toContainText("NCAA");
+  const methods = page.getByRole("region", { name: "Compare methods in LCM" });
+  await expect(methods.locator('[data-method="ncaa-2025-27"]')).toContainText(
+    "1:06.72",
+  );
+  await expect(
+    methods.locator('[data-method="colorado-teamunify-2026"]'),
+  ).toContainText("1:06.33");
+  await expect(methods).toContainText("Method difference: 0.39s");
+  await expect(methods).toContainText("not a prediction range");
+  await page.getByTestId("result-SCM").click();
+  await expect(
+    page.getByRole("region", { name: "Compare methods in SCM" }),
+  ).toContainText("Method difference: 0.35s");
+
   await page.getByTestId("result-SCY").click();
   await expect(page.locator(".result-explanation")).toHaveText(
     "Your entered swim, exactly as timed.",
@@ -200,9 +216,7 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
     .click();
   await page.locator("#standards-system").selectOption("masters");
   await page.locator("#masters-age").selectOption("40-44");
-  await page
-    .locator(".altitude-options:not(.conversion-options) summary")
-    .click();
+  await enableAltitude(page);
   const units = page.getByRole("group", { name: "Elevation units" });
   await units.getByRole("button", { name: "m", exact: true }).click();
   await expect(page.locator("#altitude")).toBeVisible();
@@ -240,9 +254,10 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
       .getByRole("group", { name: "Swum in" })
       .getByRole("button", { name: "LCM" }),
   ).toHaveAttribute("aria-pressed", "true");
-  await expect(
-    page.locator(".altitude-options:not(.conversion-options)"),
-  ).toHaveAttribute("open", "");
+  await expect(page.locator(".calculation-options")).toHaveAttribute(
+    "open",
+    "",
+  );
   await expect(
     units.getByRole("button", { name: "m", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
@@ -263,7 +278,10 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
       .getByRole("group", { name: "Swum in" })
       .getByRole("button", { name: "SCM" }),
   ).toHaveAttribute("aria-pressed", "true");
-  await expect(page.locator("#altitude")).toHaveValue("0");
+  await openCalculationOptions(page);
+  await expect(
+    page.getByLabel("Adjust for altitude", { exact: true }),
+  ).not.toBeChecked();
   await expect(page.locator(".altitude-conversion")).toHaveCount(0);
   await page.getByRole("button", { name: "Reset", exact: true }).click();
   await page.reload();
@@ -274,9 +292,9 @@ test("remembers swimmer preferences without reusing race inputs, and shared swim
       .getByRole("group", { name: "Swum in" })
       .getByRole("button", { name: "SCY" }),
   ).toHaveAttribute("aria-pressed", "true");
-  await expect(
-    page.locator(".altitude-options:not(.conversion-options)"),
-  ).not.toHaveAttribute("open");
+  await expect(page.locator(".calculation-options")).not.toHaveAttribute(
+    "open",
+  );
 });
 
 test("dark standards keep long badges inside their circles and the swim marker visible", async ({
@@ -423,7 +441,7 @@ test("standards, altitude, local saves, restore and remove", async ({
   await expect(page.locator(".saved-card")).toHaveCount(0);
   await page.locator("#event").selectOption("FR:200");
   await page.locator("#swim-time").fill("2:00");
-  await page.getByText("Swam at altitude?", { exact: true }).click();
+  await enableAltitude(page);
   await page.locator("#altitude").fill("5280");
   await expect(page.getByTestId("result-SCY")).toHaveText("1:58.80");
 });
@@ -474,7 +492,7 @@ test("long times and expanded elevation fit narrow layouts", async ({
     await openExample(page, "./");
     await page.locator("#swim-time").fill("60:00.00");
     if (!(await page.locator("#altitude").isVisible()))
-      await page.getByText("Swam at altitude?", { exact: true }).click();
+      await enableAltitude(page);
     await page.locator("#altitude").fill("5280");
     for (const time of await page
       .locator(".result-time, .focused-time, .elevation-entry")
@@ -497,11 +515,13 @@ test("conversion history records settled edits, persists, filters, restores and 
   page,
 }) => {
   await openExample(page, "./");
+  await page.locator(".history-disclosure summary").click();
   await expect(page.locator(".history-row")).toHaveCount(0);
   await page.locator("#swim-time").fill("59.10");
   await expect(page.locator(".history-row")).toHaveCount(1);
   await expect(page.locator(".history-row")).toContainText("59.10");
   await page.reload();
+  await page.locator(".history-disclosure summary").click();
   await expect(page.locator(".history-row")).toHaveCount(1);
   const historyA11y = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
@@ -531,12 +551,14 @@ test("conversion history records settled edits, persists, filters, restores and 
     .click();
   await expect(page.locator(".history-row")).toHaveCount(1);
   await page.reload();
+  await page.locator(".history-disclosure summary").click();
   await expect(page.locator(".history-row")).toHaveCount(2);
   page.once("dialog", (dialog) => dialog.accept());
   await page
     .getByRole("button", { name: "Clear history", exact: true })
     .click();
   await page.reload();
+  await page.locator(".history-disclosure summary").click();
   await expect(page.locator(".history-row")).toHaveCount(0);
 });
 
@@ -630,6 +652,7 @@ test("history remembers target-course changes and explicit saves without duplica
   page,
 }) => {
   await openExample(page, "./");
+  await page.locator(".history-disclosure summary").click();
   await page
     .getByRole("button", { name: "Save comparison", exact: true })
     .click();
@@ -768,6 +791,7 @@ test("method retains the NCAA source and install instructions are usable", async
   page,
 }) => {
   await openExample(page, "./");
+  await page.locator("#method summary").click();
   await expect(
     page.locator("#method").getByRole("link", { name: /2025–27 NCAA rules/ }),
   ).toHaveAttribute("href", /PRXSW_RulesBook/);
@@ -820,4 +844,54 @@ test("points explain the reference and next milestone; swimboard remove buttons 
     .getByRole("button", { name: "Compare with age-group time standards" })
     .click();
   await expect(page.locator("#standards-system")).toBeVisible();
+});
+
+test("altitude policy stays separate from course method and original benchmarks", async ({
+  page,
+}) => {
+  await page.goto("./#t=58.32&s=FR&d=100&c=SCY&g=women&a=15-16&h=5000");
+  await expect(page.getByTestId("result-LCM")).toHaveText("1:06.72");
+  await page
+    .locator("#altitude-policy")
+    .selectOption("ncaa-altitude-2026-27-d1");
+  await expect(page.getByTestId("result-LCM")).toHaveText("1:06.61");
+  await expect(page.getByTestId("altitude-original")).toHaveText("58.32");
+  await expect(page.getByTestId("altitude-corrected")).toHaveText("58.22");
+  await expect(page.locator(".standard-achievement")).toContainText("1.83s");
+  await openCalculationOptions(page);
+  await page
+    .locator("#conversion-method")
+    .selectOption("colorado-teamunify-2026");
+  await expect(page.getByTestId("result-LCM")).toHaveText("1:06.22");
+  await page.locator(".result-method summary").click();
+  await expect(
+    page.getByRole("region", { name: "Compare methods in LCM" }),
+  ).toContainText("1:06.61");
+  await page.goto("./");
+  await expect(page.locator("#altitude-policy")).toHaveValue(
+    "ncaa-altitude-2026-27-d1",
+  );
+  await expect(page.locator("#swim-time")).toHaveValue("");
+  await page.goto(
+    "./#t=58.32&s=FR&d=100&c=SCY&g=women&h=5000&ap=ncaa-altitude-2026-27-d1",
+  );
+  await expect(page.getByTestId("result-LCM")).toHaveText("1:06.61");
+});
+
+test("distance freestyle keeps destination context and labels the legacy Colorado caveat", async ({
+  page,
+}) => {
+  await page.goto("./#t=4%3A11.36&s=FR&d=400&c=SCM&g=women&h=0");
+  await page.getByTestId("result-SCY").click();
+  await expect(page.getByTestId("focused-time")).toHaveText("4:47.30");
+  await expect(page.locator(".focused-context")).toContainText("500");
+  await expect(page.getByTestId("distance-caveat")).toHaveCount(0);
+  await openCalculationOptions(page);
+  await page
+    .locator("#conversion-method")
+    .selectOption("colorado-teamunify-2026");
+  await expect(page.getByTestId("focused-time")).toHaveText("3:46.45");
+  await expect(page.getByTestId("distance-caveat")).toContainText(
+    "unequal-distance freestyle",
+  );
 });

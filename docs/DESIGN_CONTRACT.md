@@ -211,3 +211,9 @@ conversion setup without creating a performance record.
 
 The mobile web age controls reserve room for the full selected label and the
 native arrow. Their edition metadata wraps onto a separate row on narrow phones.
+
+Web consumers can use the generated `.tm-result-surface` scope for the signature
+numerical card. It applies the same canonical dark roles in either host
+appearance, matching the generated native result palettes. Supporting forms and
+navigation continue to use the host appearance; do not copy dark hex values into
+consumer styles.

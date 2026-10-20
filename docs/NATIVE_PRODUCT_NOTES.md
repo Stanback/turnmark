@@ -132,3 +132,18 @@ The sheet's presentation state lives above adaptive pane branches. Rotation or
 fold changes retain its original input. Sources and coverage are progressively
 available, while missing targets are explained in the result itself. Source
 links require connectivity; lookups and preferences work offline.
+
+## October 19 converter alignment
+
+On phones, show editable swim inputs first, followed by all course equivalents.
+A fresh draft is blank, with direct time entry. Preserve the draft on
+relaunch; reset clears the time without changing the swimmer's chosen context.
+A user can scroll directly to results after valid entry. Wider workspaces keep
+independent input/result panes and preserve active entry through layout changes.
+
+The selected row focuses the main comparison. Keep one Standards & points entry
+point and the explicit Log swim action below the results. Calculation details
+compare NCAA and Colorado for the same destination, label their gap a method
+difference, and distinguish source formula inputs from personal physiology.
+Keep NCAA as default. The [altitude parity follow-up](ALTITUDE.md) provides an
+independent USA Swimming / NCAA altitude policy without changing original swims.

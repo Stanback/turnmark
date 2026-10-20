@@ -7,14 +7,16 @@ offline on first launch, and use the same source editions and outcomes.
 ## Current scope
 
 - Time, stroke, actual event distance, entered course, published category and
-  target course controls. Available input events come from Rust, including
+  course-equivalent rows for choosing the focused destination. Available input events come from Rust, including
   yard-distance mappings and short-course-only events.
 - Conversion, entered/published/derived labels, source attribution, invalid
   input and unsupported-comparison states. The persistent result shows its
   destination event, units, course and category alongside the original swim.
-  Details open a native sheet with entered/result context, multiplier and
-  source edition; the multiplier comes directly from the SDK.
-- **Convert · My times** navigation and **Record time** confirmation. From Convert,
+  Calculation details use native grouped sections/sheets to compare NCAA and
+  Colorado Timing for the chosen destination, explain the rules and show the
+  selected multiplier/offset and source edition. Values come from the SDK;
+  method differences are not prediction intervals.
+- **Convert · My times** navigation and **Log swim** confirmation. From Convert,
   the editor prefills the entered performance; My times opens a blank-time editor.
   Recent and Best times views show actual records, not converted estimates.
   Records can be edited/deleted and compared without changing the original time.
@@ -37,15 +39,17 @@ offline on first launch, and use the same source editions and outcomes.
   platform behavior and appearance. iOS uses Liquid Glass actions on iOS 26+;
   older systems use standard bordered controls. Android maps complete Material 3
   foreground/background roles.
-- Compact inline results, expanded input/result panes and independent scrolling.
+- Blank, input-first phone arrival with direct time entry, followed
+  by all three course equivalents. A scroll shortcut reaches valid results;
+  typing never jumps the viewport. Expanded workspaces keep independent input/
+  result panes.
   iOS 27.1 uses reserved division regions and ArrangementView for active folds;
   Android uses Material adaptive folding features and window bounds. Tabletop
   puts results above and inputs below the fold. My times has adaptive list/detail
   navigation. Native keyboard Done, scalable text and system sharing remain.
   [Adaptive layout notes](ADAPTIVE_LAYOUT.md) track verification and limits.
 
-This is the first converter workflow, not full web feature parity. Native altitude entry,
-layered iOS icon/store artwork, verified app links and final release targets remain later
+This is the first converter workflow, not full web feature parity. Layered iOS icon/store artwork, verified app links and final release targets remain later
 work. Physical-device, VoiceOver/TalkBack, large-text and 16 KB Android runtime
 checks are release gates; automated simulator tests do not establish those.
 Bundle/application ID `net.stanback.turnmark`, iOS 17 minimum and Android API 26

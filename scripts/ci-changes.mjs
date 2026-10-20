@@ -79,7 +79,14 @@ export function affectedChecks(paths) {
       ].includes(path)
     )
       select("web", "ios", "android");
-    else if (path === "src/generated/design-tokens.css") select("web", "core");
+    else if (
+      [
+        "src/generated/design-tokens.css",
+        "src/lib/elevation-display.ts",
+        "src/lib/calculation-copy.ts",
+      ].includes(path)
+    )
+      select("web", "core");
     else if (
       path.startsWith("crates/turnmark-wasm/") ||
       path.startsWith("packages/sdk/") ||

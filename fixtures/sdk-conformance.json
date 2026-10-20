@@ -128,7 +128,7 @@
         }
       },
       "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
-      "rationale": "Published Appendix C example: 136.71 \u00d7 0.858 = 117.29718; drop units below hundredths."
+      "rationale": "Published Appendix C example: 136.71 × 0.858 = 117.29718; drop units below hundredths."
     },
     {
       "id": "scm-400-to-500",
@@ -715,7 +715,7 @@
         }
       },
       "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
-      "rationale": "Published \u00a74.7 200-distance band boundaries; subtract the adjustment from the original time."
+      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
     },
     {
       "id": "altitude-3000",
@@ -745,7 +745,7 @@
         }
       },
       "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
-      "rationale": "Published \u00a74.7 200-distance band boundaries; subtract the adjustment from the original time."
+      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
     },
     {
       "id": "altitude-4250",
@@ -775,7 +775,7 @@
         }
       },
       "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
-      "rationale": "Published \u00a74.7 200-distance band boundaries; subtract the adjustment from the original time."
+      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
     },
     {
       "id": "altitude-4251",
@@ -805,7 +805,7 @@
         }
       },
       "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
-      "rationale": "Published \u00a74.7 200-distance band boundaries; subtract the adjustment from the original time."
+      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
     },
     {
       "id": "altitude-6500",
@@ -835,7 +835,7 @@
         }
       },
       "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
-      "rationale": "Published \u00a74.7 200-distance band boundaries; subtract the adjustment from the original time."
+      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
     },
     {
       "id": "altitude-6501",
@@ -865,7 +865,7 @@
         }
       },
       "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/general-docs/times-and-recognition-policy-manual.pdf#page=7",
-      "rationale": "Published \u00a74.7 200-distance band boundaries; subtract the adjustment from the original time."
+      "rationale": "Published §4.7 200-distance band boundaries; subtract the adjustment from the original time."
     },
     {
       "id": "meters-exact-boundary",
@@ -1070,7 +1070,7 @@
         }
       },
       "source": "https://www.usms.org/events/national-championships/pool-national-championships/national-qualifying-times",
-      "rationale": "2026 Spring SCY women, 18\u201324, 100 freestyle table cell."
+      "rationale": "2026 Spring SCY women, 18–24, 100 freestyle table cell."
     },
     {
       "id": "masters-distance-map",
@@ -1092,7 +1092,7 @@
         }
       },
       "source": "https://www.usms.org/events/national-championships/pool-national-championships/national-qualifying-times",
-      "rationale": "2026 Spring SCY women, 25\u201329, 500 freestyle table cell; SDK uses actual yards distance."
+      "rationale": "2026 Spring SCY women, 25–29, 500 freestyle table cell; SDK uses actual yards distance."
     },
     {
       "id": "masters-no-time",
@@ -1190,7 +1190,7 @@
         }
       },
       "source": "https://www.usaswimming.org/docs/default-source/timesdocuments/time-standards/2025/2028-motivational-standards-age-group.pdf",
-      "rationale": "2024\u20132028 revised October 10, 2025; independently inspected SCY 15\u201316 girls 100 FR row, B through AAAA."
+      "rationale": "2024–2028 revised October 10, 2025; independently inspected SCY 15–16 girls 100 FR row, B through AAAA."
     },
     {
       "id": "youth-missing-event",
@@ -1257,7 +1257,7 @@
         }
       },
       "source": "https://www.worldaquatics.com/swimming/points",
-      "rationale": "The 46.40-second base gives 1000 \u00d7 (46.40/60)^3 = 462.487703\u2026; truncate to 462."
+      "rationale": "The 46.40-second base gives 1000 × (46.40/60)^3 = 462.487703…; truncate to 462."
     },
     {
       "id": "points-no-yards",
@@ -1833,6 +1833,787 @@
       },
       "source": "data/colorado.json; SportsEngine Motion USA Swimming teams formulas, 2026-08-06",
       "rationale": "Direction-specific documented affine formula; truncate only the final converted result."
+    },
+    {
+      "id": "ncaa-altitude-100-3000",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 3000,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 0,
+          "adjustedSeconds": 600
+        },
+        "provenance": {
+          "id": "ncaa-altitude-2026-27-d1",
+          "revision": "2026-06-15"
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-100-4251",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 4251,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 0.1,
+          "adjustedSeconds": 599.9
+        },
+        "provenance": {
+          "id": "ncaa-altitude-2026-27-d1",
+          "revision": "2026-06-15"
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-100-6501",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 6501,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 0.15,
+          "adjustedSeconds": 599.85
+        },
+        "provenance": {
+          "id": "ncaa-altitude-2026-27-d1",
+          "revision": "2026-06-15"
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-200-3000",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 200,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 3000,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 0.5,
+          "adjustedSeconds": 599.5
+        },
+        "provenance": {
+          "id": "ncaa-altitude-2026-27-d1",
+          "revision": "2026-06-15"
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-200-4251",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 200,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 4251,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 1.2,
+          "adjustedSeconds": 598.8
+        },
+        "provenance": {
+          "id": "ncaa-altitude-2026-27-d1",
+          "revision": "2026-06-15"
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-200-6501",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 200,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 6501,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 1.6,
+          "adjustedSeconds": 598.4
+        },
+        "provenance": {
+          "id": "ncaa-altitude-2026-27-d1",
+          "revision": "2026-06-15"
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-500-3000",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 500,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 3000,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 2.5,
+          "adjustedSeconds": 597.5
+        },
+        "provenance": {
+          "id": "ncaa-altitude-2026-27-d1",
+          "revision": "2026-06-15"
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-500-4251",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 500,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 4251,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 5,
+          "adjustedSeconds": 595
+        },
+        "provenance": {
+          "id": "ncaa-altitude-2026-27-d1",
+          "revision": "2026-06-15"
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-500-6501",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 500,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 6501,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 7,
+          "adjustedSeconds": 593
+        },
+        "provenance": {
+          "id": "ncaa-altitude-2026-27-d1",
+          "revision": "2026-06-15"
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-1000-3000",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 1000,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 3000,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 6.3,
+          "adjustedSeconds": 593.7
+        },
+        "provenance": {
+          "id": "ncaa-altitude-2026-27-d1",
+          "revision": "2026-06-15"
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-1000-4251",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 1000,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 4251,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 11.4,
+          "adjustedSeconds": 588.6
+        },
+        "provenance": {
+          "id": "ncaa-altitude-2026-27-d1",
+          "revision": "2026-06-15"
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-1000-6501",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 1000,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 6501,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 18.5,
+          "adjustedSeconds": 581.5
+        },
+        "provenance": {
+          "id": "ncaa-altitude-2026-27-d1",
+          "revision": "2026-06-15"
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-1650-3000",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 1650,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 3000,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 11,
+          "adjustedSeconds": 589
+        },
+        "provenance": {
+          "id": "ncaa-altitude-2026-27-d1",
+          "revision": "2026-06-15"
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-1650-4251",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 1650,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 4251,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 20,
+          "adjustedSeconds": 580
+        },
+        "provenance": {
+          "id": "ncaa-altitude-2026-27-d1",
+          "revision": "2026-06-15"
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-1650-6501",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 1650,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 6501,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 32.5,
+          "adjustedSeconds": 567.5
+        },
+        "provenance": {
+          "id": "ncaa-altitude-2026-27-d1",
+          "revision": "2026-06-15"
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-boundary-2999",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 1000,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 2999,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 0
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-boundary-4250",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 1000,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 4250,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 6.3
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-boundary-6500",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 1000,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 6500,
+          "unit": "feet"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "adjustmentSeconds": 11.4
+        }
+      }
+    },
+    {
+      "id": "ncaa-altitude-meters",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 1000,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 1524,
+          "unit": "meters"
+        },
+        "policy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "elevationFeet": 5000,
+          "adjustmentSeconds": 11.4
+        }
+      }
+    },
+    {
+      "id": "altitude-invalid-policy",
+      "operation": "altitude",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 1000,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 5000,
+          "unit": "feet"
+        },
+        "policy": "unknown"
+      },
+      "expected": {
+        "status": "invalid",
+        "field": "policy",
+        "reason": "unsupported-method"
+      }
+    },
+    {
+      "id": "composed-usa-swimming-altitude-2026-ncaa-2025-27",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 1000,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 5000,
+          "unit": "feet"
+        },
+        "altitudePolicy": "usa-swimming-altitude-2026",
+        "method": "ncaa-2025-27",
+        "to": "LCM",
+        "table": "men"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "hundredths": 53393,
+          "altitude": {
+            "value": {
+              "rawTime": "10:00.00",
+              "adjustmentSeconds": 10,
+              "adjustedSeconds": 590
+            },
+            "provenance": {
+              "id": "usa-swimming-altitude-2026"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "composed-usa-swimming-altitude-2026-colorado-teamunify-2026",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 1000,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 5000,
+          "unit": "feet"
+        },
+        "altitudePolicy": "usa-swimming-altitude-2026",
+        "method": "colorado-teamunify-2026",
+        "to": "LCM",
+        "table": "men"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "hundredths": 52657,
+          "altitude": {
+            "value": {
+              "rawTime": "10:00.00",
+              "adjustmentSeconds": 10,
+              "adjustedSeconds": 590
+            },
+            "provenance": {
+              "id": "usa-swimming-altitude-2026"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "composed-ncaa-altitude-2026-27-d1-ncaa-2025-27",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 1000,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 5000,
+          "unit": "feet"
+        },
+        "altitudePolicy": "ncaa-altitude-2026-27-d1",
+        "method": "ncaa-2025-27",
+        "to": "LCM",
+        "table": "men"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "hundredths": 53266,
+          "altitude": {
+            "value": {
+              "rawTime": "10:00.00",
+              "adjustmentSeconds": 11.4,
+              "adjustedSeconds": 588.6
+            },
+            "provenance": {
+              "id": "ncaa-altitude-2026-27-d1"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "composed-ncaa-altitude-2026-27-d1-colorado-teamunify-2026",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 1000,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "elevation": {
+          "value": 5000,
+          "unit": "feet"
+        },
+        "altitudePolicy": "ncaa-altitude-2026-27-d1",
+        "method": "colorado-teamunify-2026",
+        "to": "LCM",
+        "table": "men"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "hundredths": 52532,
+          "altitude": {
+            "value": {
+              "rawTime": "10:00.00",
+              "adjustmentSeconds": 11.4,
+              "adjustedSeconds": 588.6
+            },
+            "provenance": {
+              "id": "ncaa-altitude-2026-27-d1"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "distance-400-scm-500-scy-ncaa",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "4:11.36",
+          "event": {
+            "distance": 400,
+            "stroke": "freestyle",
+            "course": "SCM"
+          }
+        },
+        "to": "SCY",
+        "table": "women"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "4:47.30",
+          "event": {
+            "distance": 500,
+            "course": "SCY"
+          }
+        }
+      }
+    },
+    {
+      "id": "distance-400-scm-500-scy-colorado-caveat",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "4:11.36",
+          "event": {
+            "distance": 400,
+            "stroke": "freestyle",
+            "course": "SCM"
+          }
+        },
+        "to": "SCY",
+        "table": "women",
+        "method": "colorado-teamunify-2026"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "3:46.45",
+          "caveat": "colorado-short-course-distance",
+          "event": {
+            "distance": 500,
+            "course": "SCY"
+          }
+        }
+      }
     }
   ]
 }

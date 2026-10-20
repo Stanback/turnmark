@@ -80,7 +80,7 @@ async function verify(transport, mode, label, ui = false) {
       listed.map((t) => t.name).sort(),
       [...Object.values(tools), "get_sources"].sort(),
     );
-    const uri = "ui://turnmark/conversion/0.3.0.html";
+    const uri = "ui://turnmark/conversion/0.3.0-r4.html";
     assert.equal(
       listed.find((t) => t.name === "convert_swim")._meta.ui.resourceUri,
       uri,
@@ -134,11 +134,52 @@ async function verify(transport, mode, label, ui = false) {
       } else {
         assert.ifError(error);
         assert.ok(!result.isError, `${label}: ${f.id}`);
+        const {
+          methodComparison,
+          methodDifferenceSeconds,
+          altitudeComparison,
+          ...primary
+        } = result.structuredContent;
         assert.deepEqual(
-          result.structuredContent,
+          primary,
           operations[f.operation](f.input),
           `${label}: ${f.id}`,
         );
+        if (
+          f.operation === "convert" &&
+          f.input.elevation &&
+          primary.status !== "invalid"
+        ) {
+          assert.equal(altitudeComparison.length, 2);
+          for (const item of altitudeComparison)
+            assert.deepEqual(
+              item.result,
+              engine.adjustAltitude({
+                swim: f.input.swim,
+                elevation: f.input.elevation,
+                policy: item.policy,
+              }),
+            );
+        } else assert.equal(altitudeComparison, undefined);
+        if (f.operation === "convert" && primary.status !== "invalid") {
+          assert.equal(methodComparison.length, 2);
+          assert.deepEqual(
+            methodComparison.map((item) => item.method),
+            ["ncaa-2025-27", "colorado-teamunify-2026"],
+          );
+          for (const item of methodComparison)
+            assert.deepEqual(
+              item.result,
+              engine.convert({ ...f.input, method: item.method }),
+            );
+          const [a, b] = methodComparison.map((item) => item.result);
+          assert.equal(
+            methodDifferenceSeconds,
+            a.status === "available" && b.status === "available"
+              ? Math.abs(a.value.hundredths - b.value.hundredths) / 100
+              : undefined,
+          );
+        } else assert.equal(methodComparison, undefined);
         assert.deepEqual(
           JSON.parse(result.content[0].text),
           result.structuredContent,

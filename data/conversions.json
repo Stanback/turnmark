@@ -45,26 +45,10 @@
     "verified": "2026-10-16"
   },
   "altitudeAdjustments": {
-    "200": [
-      0.5,
-      1.2,
-      1.6
-    ],
-    "400": [
-      2.5,
-      5,
-      7
-    ],
-    "800": [
-      5,
-      10,
-      15
-    ],
-    "1500": [
-      11,
-      23,
-      32.5
-    ]
+    "200": [0.5, 1.2, 1.6],
+    "400": [2.5, 5, 7],
+    "800": [5, 10, 15],
+    "1500": [11, 23, 32.5]
   },
   "shortCourseFactors": {
     "default": 0.896,
@@ -73,5 +57,19 @@
       "800": 1.143,
       "1500": 1.003
     }
+  },
+  "ncaaAltitudeSource": {
+    "title": "NCAA 2026–27 Division I qualifying standards · Altitude",
+    "url": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/d1/2026-27D1XSW_QUALSTANDARDS.pdf#page=3",
+    "revision": "2026-06-15",
+    "verified": "2026-10-19",
+    "sha256": "259c76ba10df6f72314a677df6aea1becc6d7d9b4400b5f0f95d4d33e88bf7ab"
+  },
+  "ncaaAltitudeAdjustments": {
+    "100": [0, 0.1, 0.15],
+    "200": [0.5, 1.2, 1.6],
+    "400": [2.5, 5, 7],
+    "800": [6.3, 11.4, 18.5],
+    "1500": [11, 20, 32.5]
   }
 }

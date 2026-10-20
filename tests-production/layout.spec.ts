@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("desktop history fits the standards panel and keeps long lists reachable", async ({
+test("standards lead their own row and history expands on demand", async ({
   page,
 }, testInfo) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
@@ -19,24 +19,28 @@ test("desktop history fits the standards panel and keeps long lists reachable", 
     );
   });
   await page.goto("./");
-  await page
-    .getByRole("button", { name: "Try an example", exact: true })
-    .click();
+  await page.locator("#swim-time").fill("58.32");
   await expect(page.locator(".history-row")).toHaveCount(50);
   const history = page.locator(".history-panel");
   const standards = page.locator(".standards-section");
   const list = page.getByRole("region", { name: "Recent conversion entries" });
-  const aligned = async () => {
-    const left = (await history.boundingBox())!;
-    const right = (await standards.boundingBox())!;
-    expect(right.x).toBeLessThan(left.x);
-    expect(Math.abs(left.y - right.y)).toBeLessThan(1);
-    expect(Math.abs(left.height - right.height)).toBeLessThanOrEqual(1);
-    expect(
-      await list.evaluate((node) => node.scrollHeight > node.clientHeight),
-    ).toBe(true);
+  const stacked = async () => {
+    const historyBox = (await history.boundingBox())!;
+    const standardsBox = (await standards.boundingBox())!;
+    expect(historyBox.y).toBeGreaterThanOrEqual(
+      standardsBox.y + standardsBox.height,
+    );
+    expect(Math.abs(historyBox.x - standardsBox.x)).toBeLessThan(1);
+    expect(Math.abs(historyBox.width - standardsBox.width)).toBeLessThan(1);
   };
-  await aligned();
+  await expect(history.locator("details")).not.toHaveAttribute("open");
+  await expect(page.locator(".next-target-preview")).toHaveCount(0);
+  await stacked();
+  await history.locator("summary").click();
+  await expect(list).toBeVisible();
+  expect(
+    await list.evaluate((node) => node.scrollHeight > node.clientHeight),
+  ).toBe(true);
   await page.locator(".history-remove").last().focus();
   expect(await list.evaluate((node) => node.scrollTop)).toBeGreaterThan(0);
   await expect(page.locator(".history-remove").last()).toBeInViewport();
@@ -48,13 +52,13 @@ test("desktop history fits the standards panel and keeps long lists reachable", 
   await page
     .getByRole("button", { name: "World Aquatics points", exact: true })
     .click();
-  await aligned();
+  await stacked();
   await page
     .getByRole("group", { name: "Performance comparison" })
     .getByRole("button", { name: "Time standards", exact: true })
     .click();
   await page.locator("#standards-system").selectOption("masters");
-  await aligned();
+  await stacked();
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(list).toHaveCSS("overflow-y", "visible");
   expect(
@@ -97,16 +101,32 @@ test("setup pages share branded content bounds in both appearances", async ({
     }
   }
   await page.goto("./");
-  await page
-    .getByRole("button", { name: "Try an example", exact: true })
-    .click();
+  await page.locator("#swim-time").fill("58.32");
   await page.setViewportSize({ width: 1440, height: 1000 });
-  const method = (await page.locator(".method-items").boundingBox())!;
-  const faq = (await page.locator(".faq-list").boundingBox())!;
-  expect(method.x).toBe(faq.x);
-  expect(method.width).toBe(faq.width);
-  const title = (await page.locator(".method-intro h2").boundingBox())!;
-  expect(title.y).toBe(method.y);
+  const history = (await page.locator("#history").boundingBox())!;
+  const about = (await page.locator(".faq-section").boundingBox())!;
+  expect(about.y - history.y - history.height).toBeGreaterThanOrEqual(32);
+  await expect(page.locator(".faq-section")).toHaveCSS(
+    "border-top-width",
+    "0px",
+  );
+  await expect(page.locator("#method")).toHaveCSS("border-top-width", "0px");
+  await expect(page.locator(".resources-section")).toHaveCSS(
+    "border-bottom-width",
+    "0px",
+  );
+  await expect(page.locator("#method details")).not.toHaveAttribute("open");
+  await page.locator("#method summary").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator(".method-items")).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "About the swim time converter" }),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
   await page.locator("#method").scrollIntoViewIfNeeded();
   await page.screenshot({
     path: testInfo.outputPath("method-alignment-dark.png"),
@@ -119,9 +139,7 @@ test("mobile comparison modes stay compact and navigation paints the bottom inse
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
   await page.goto("./");
-  await page
-    .getByRole("button", { name: "Try an example", exact: true })
-    .click();
+  await page.locator("#swim-time").fill("58.32");
   // Browser emulation does not supply a hardware home-indicator inset. Exercise
   // the layout with an explicit 34px inset as well as the default browser value.
   await page.evaluate(() =>

@@ -54,7 +54,7 @@ if (mode === "HTTP") {
     }),
   );
 }
-const uri = "ui://turnmark/conversion/0.3.0.html";
+const uri = "ui://turnmark/conversion/0.3.0-r4.html";
 const card = (await client.readResource({ uri })).contents[0].text;
 const host = await build({
   absWorkingDir: process.cwd(),
@@ -117,7 +117,26 @@ try {
     initial,
   });
   const frame = page.frameLocator("iframe").first();
-  await frame.getByText("1:06.72", { exact: true }).waitFor();
+  await frame.locator(".clock").getByText("1:06.72", { exact: true }).waitFor();
+  await frame.locator("#result summary").click();
+  await frame
+    .locator("body")
+    .screenshot({ path: `${shots}/mcp-methods-light.png` });
+  assert.match(
+    await frame.locator('[data-method="ncaa-2025-27"]').textContent(),
+    /1:06.72/,
+  );
+  assert.match(
+    await frame
+      .locator('[data-method="colorado-teamunify-2026"]')
+      .textContent(),
+    /1:06.33/,
+  );
+  assert.match(
+    await frame.locator(".method-difference").textContent(),
+    /0.39s/,
+  );
+  await frame.locator("#result summary").click();
   assert.equal(
     await frame.locator("#original").textContent(),
     "100 yd Freestyle · SCY · Women",
@@ -277,8 +296,13 @@ try {
     await frame.locator(".clock").evaluate((el) => {
       const range = document.createRange();
       range.selectNodeContents(el);
+      const rects = [...range.getClientRects()];
+      // The main clock and highlighted hundredths are separate inline runs.
+      // They must share one line and fit the available width.
       return (
-        range.getClientRects().length === 1 && el.scrollWidth <= el.clientWidth
+        rects.length > 0 &&
+        rects.every((rect) => Math.abs(rect.top - rects[0].top) < 1) &&
+        el.scrollWidth <= el.clientWidth
       );
     }),
     true,
@@ -293,7 +317,7 @@ try {
   // through the official bridge; the SDK owns both multiplier and offset.
   await page.evaluate(() => (window.denyContext = false));
   await frame.locator("html").evaluate((el) => (el.style.fontSize = "100%"));
-  await frame.locator(".method-options summary").click();
+  await frame.locator(".calculation-options summary").click();
   await frame.locator("#method").selectOption("colorado-teamunify-2026");
   await frame.locator("#course").selectOption("LCM");
   await frame.locator("#update").click();
@@ -302,6 +326,23 @@ try {
     await page.evaluate(() => window.calls.at(-1).arguments.method),
     "colorado-teamunify-2026",
   );
+  // Altitude stays explicit, uses the same Rust pipeline and retains raw input.
+  await frame.locator("#altitude-enabled").check();
+  await frame.locator("#elevation").fill("5000");
+  await frame
+    .locator("#altitude-policy")
+    .selectOption("ncaa-altitude-2026-27-d1");
+  await frame.locator("#update").click();
+  await frame.locator(".clock").getByText("1:06.22", { exact: true }).waitFor();
+  assert.equal(
+    (await page.evaluate(() => window.calls.at(-1).arguments)).swim.time,
+    "58.32",
+  );
+  await frame.locator("#result summary").click();
+  assert.match(await frame.locator("#result").textContent(), /58.22/);
+  await frame
+    .locator("body")
+    .screenshot({ path: `${shots}/mcp-altitude-light.png` });
   console.log(
     `MCP Apps: official AppBridge + real ${mode} tools; opaque sandbox/CSP, keyboard, theme, narrow/large text, cancellation, denied calls/context, invalid/unavailable, destination context and card isolation passed.`,
   );

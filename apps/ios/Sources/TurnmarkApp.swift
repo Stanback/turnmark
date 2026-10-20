@@ -2,6 +2,8 @@ import SwiftUI
 import UIKit
 import TurnmarkCore
 
+private let coloradoDistanceCaveat = "Distance caveat: this documented Colorado rule uses a general SCM/SCY multiplier for unequal-distance freestyle events. Check the meet’s required conversion."
+
 let courseNames = ["SCY", "SCM", "LCM"]
 let courses: [Course] = [.scy, .scm, .lcm]
 let strokeNames = ["Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual medley"]
@@ -10,16 +12,30 @@ let strokeImages = ["Swim-freestyle", "Swim-backstroke", "Swim-breaststroke", "S
 let strokes: [Stroke] = [.freestyle, .backstroke, .breaststroke, .butterfly, .individualMedley]
 
 struct Draft: Codable, Equatable {
-    var time = "58.32"
+    var time = ""
     var strokeIndex = 0
     var distance: UInt32 = 100
     var courseIndex = 0
     var categoryIndex = 0
     var targetIndex = 2
     // Optional for decoding drafts saved before method selection existed.
+    var altitudeText: String?
+    var elevationUnitIndex: Int?
+    var altitudePolicyID: String?
+    var altitudePolicy: AltitudePolicy { altitudePolicyID == "ncaa-altitude-2026-27-d1" ? .ncaa : .usaSwimming }
+    var elevation: Elevation { Elevation(value: Double(altitudeText ?? "") ?? .nan, unit: elevationUnitIndex == 1 ? .meters : .feet) }
+    var altitudeOutcome: AltitudeOutcome { adjustAltitudeWithPolicy(request: AltitudeRequest(swim: swim, elevation: elevation), policy: altitudePolicy) }
+    var swim: Swim { Swim(time: time, event: SwimEvent(distance: distance, stroke: strokes[strokeIndex], course: courses[courseIndex])) }
     var methodID: String?
     var method: ConversionMethod { methodID == "colorado-teamunify-2026" ? .colorado : .ncaa }
     var methodLabel: String { method == .colorado ? "Colorado Timing" : "NCAA" }
+    static var example: Draft { var input = Draft(); input.time = "58.32"; return input }
+    var methodDifference: String? {
+        var ncaa = self; ncaa.methodID = "ncaa-2025-27"
+        var colorado = self; colorado.methodID = "colorado-teamunify-2026"
+        guard case let .available(a, _) = ncaa.outcome, case let .available(b, _) = colorado.outcome else { return nil }
+        return String(format: "%.2fs", abs(Double(a.hundredths) - Double(b.hundredths)) / 100)
+    }
 
     static func decode(_ text: String?) -> Draft? {
         guard let text, let data = text.data(using: .utf8),
@@ -34,9 +50,11 @@ struct Draft: Codable, Equatable {
     var encoded: String { String(data: try! JSONEncoder().encode(self), encoding: .utf8)! }
     var options: [EventOption] { getEventOptions(course: courses[courseIndex], stroke: strokes[strokeIndex]) }
     var outcome: ConversionOutcome {
-        convertSwimWithMethod(request: ConversionRequest(
-            swim: Swim(time: time, event: SwimEvent(distance: distance, stroke: strokes[strokeIndex], course: courses[courseIndex])),
-            to: courses[targetIndex], table: categoryIndex == 0 ? .women : .men), method: method)
+        let request = ConversionRequest(swim: swim, to: courses[targetIndex], table: categoryIndex == 0 ? .women : .men)
+        if altitudeText != nil {
+            return convertSwimAtAltitude(request: request, method: method, elevation: elevation, policy: altitudePolicy)
+        }
+        return convertSwimWithMethod(request: request, method: method)
     }
     var available: Bool { if case .available = outcome { return true }; return false }
     mutating func reconcile() {
@@ -50,6 +68,16 @@ struct Draft: Codable, Equatable {
         let course = courseNames[courses.firstIndex(of: event.course)!]
         return "\(event.distance) \(event.course == .scy ? "yd" : "m") \(stroke) · \(course) · \(category)"
     }
+    mutating func setElevationUnit(_ unit: Int) {
+        if let text = altitudeText, let value = Double(text), value.isFinite, value >= 0, unit != (elevationUnitIndex ?? 0) {
+            altitudeText = unit == 1 ? String(format: "%.1f", value * 0.3048) : String(format: "%.0f", (value / 0.3048).rounded())
+        }
+        elevationUnitIndex = unit
+    }
+    var altitudeFeet: String {
+        if case let .available(value, _) = altitudeOutcome { return String(value.elevationFeet) }
+        return "0"
+    }
     var shareURL: URL {
         var query = URLComponents()
         query.queryItems = [
@@ -57,7 +85,8 @@ struct Draft: Codable, Equatable {
             URLQueryItem(name: "d", value: String(options.first(where: { $0.event.distance == distance })?.canonicalDistance ?? distance)),
             URLQueryItem(name: "c", value: courseNames[courseIndex]),
             URLQueryItem(name: "g", value: categoryIndex == 0 ? "women" : "men"),
-            URLQueryItem(name: "h", value: "0")]
+            URLQueryItem(name: "h", value: altitudeText == nil ? "0" : altitudeFeet)]
+        if altitudeText != nil && altitudePolicy == .ncaa { query.queryItems?.append(URLQueryItem(name: "ap", value: "ncaa-altitude-2026-27-d1")) }
         if method == .colorado { query.queryItems?.append(URLQueryItem(name: "m", value: "colorado-teamunify-2026")) }
         var url = URLComponents(string: "https://turnmark.app/")!
         url.percentEncodedFragment = query.percentEncodedQuery
@@ -67,7 +96,21 @@ struct Draft: Codable, Equatable {
 
 @main
 struct TurnmarkApp: App {
-    var body: some Scene { WindowGroup { TurnmarkView() } }
+    private var testingWithoutAnimations: Bool {
+        #if DEBUG
+        ProcessInfo.processInfo.environment["TURNMARK_UI_TESTS"] == "1"
+        #else
+        false
+        #endif
+    }
+    init() {
+        #if DEBUG
+        if ProcessInfo.processInfo.environment["TURNMARK_UI_TESTS"] == "1" { UIView.setAnimationsEnabled(false) }
+        #endif
+    }
+    var body: some Scene {
+        WindowGroup { TurnmarkView().transaction { if testingWithoutAnimations { $0.disablesAnimations = true } } }
+    }
 }
 
 private struct TurnmarkView: View {
@@ -82,8 +125,10 @@ private struct TurnmarkView: View {
     @State private var lastLogDay = SwimRecord.day(Date())
     @State private var lastDate = SwimRecord.day(Date())
     @State private var showingMethod = false
+    @State private var calculationOptionsExpanded = false
     @AppStorage("savedSwim") private var savedJSON = ""
     @FocusState private var editingTime: Bool
+    @FocusState private var editingElevation: Bool
     @State private var focusDismissal = 0
     @ScaledMetric(relativeTo: .largeTitle) private var entrySize = 42
 
@@ -95,11 +140,16 @@ private struct TurnmarkView: View {
             for key in ["benchmarkMode", "benchmarkSystem", "benchmarkYouthAge", "benchmarkMastersAge", "benchmarkConfigured"] { UserDefaults.standard.removeObject(forKey: key) }
             if let store = try? SwimHistoryStore() { for swim in store.swims { try? store.remove(swim.id) } }
         }
+        if ProcessInfo.processInfo.arguments.contains("-uitesting-example") {
+            UserDefaults.standard.set(Draft.example.encoded, forKey: "draft")
+        }
         if ProcessInfo.processInfo.arguments.contains("-uitesting-legacy") {
-            UserDefaults.standard.set(Draft().encoded, forKey: "savedSwim")
+            UserDefaults.standard.set(Draft.example.encoded, forKey: "savedSwim")
         }
         #endif
-        _draft = State(initialValue: Draft.decode(UserDefaults.standard.string(forKey: "draft")) ?? Draft())
+        let restored = Draft.decode(UserDefaults.standard.string(forKey: "draft")) ?? Draft()
+        _draft = State(initialValue: restored)
+        _calculationOptionsExpanded = State(initialValue: restored.altitudeText != nil || restored.method == .colorado)
     }
 
     var body: some View {
@@ -146,13 +196,6 @@ private struct TurnmarkView: View {
                     ToolbarItem(placement: .principal) { Color.clear.frame(width: 0, height: 0).accessibilityHidden(true) }
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
-                            Menu {
-                                Picker("Method", selection: Binding(get: { draft.methodID ?? "ncaa-2025-27" }, set: { draft.methodID = $0 })) {
-                                    Text("NCAA (default)").tag("ncaa-2025-27")
-                                    Text("Colorado Timing").tag("colorado-teamunify-2026")
-                                }
-                            } label: { Label("Conversion method", systemImage: "slider.horizontal.3") }
-                                .accessibilityIdentifier("conversionMethodMenu")
                             Button { dismissTimeEntry(); showingMethod = true } label: { Label("About Turnmark", systemImage: "info.circle") }
                                 .accessibilityIdentifier("converterAbout")
                             Link(destination: URL(string: "https://turnmark.app/#method")!) {
@@ -161,7 +204,7 @@ private struct TurnmarkView: View {
                         } label: { Image(systemName: "ellipsis") }
                             .accessibilityLabel("More options").accessibilityIdentifier("converterMenu")
                     }
-                    if editingTime {
+                    if editingTime || editingElevation {
                         ToolbarItemGroup(placement: .keyboard) { Spacer(); Button("Done", action: dismissTimeEntry).accessibilityIdentifier("dismissConverterKeyboard") }
                     }
                 }
@@ -226,6 +269,7 @@ private struct TurnmarkView: View {
         // waiting on the main actor, including on a busy simulator/device.
         focusDismissal &+= 1
         editingTime = false
+        editingElevation = false
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 
@@ -246,15 +290,27 @@ private struct TurnmarkView: View {
     }
 
     private var compactConverter: some View {
-        Form {
-            Section {
-                ConversionResult(input: draft, compact: true, benchmarks: { dismissTimeEntry(); benchmarking = $0 }) { draft.targetIndex = $0 }
-                    .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
-            }
-            inputContent
-        }.formStyle(.grouped).scrollContentBackground(.hidden)
-            .scrollDismissesKeyboard(.interactively)
-            .frame(maxWidth: 600).frame(maxWidth: .infinity)
+        ScrollViewReader { scroll in
+            Form {
+                inputCard
+                if draft.available {
+                    Section {
+                        Button {
+                            dismissTimeEntry()
+                            scroll.scrollTo("comparison", anchor: .top)
+                        } label: { Label("See your results", systemImage: "arrow.down") }
+                            .accessibilityIdentifier("seeResults")
+                    }.listRowBackground(TurnmarkPalette.surface)
+                }
+                Section {
+                    resultContent(compact: true)
+                        .listRowInsets(EdgeInsets()).listRowBackground(Color.clear)
+                }.id("comparison")
+                localNotice
+            }.formStyle(.grouped).scrollContentBackground(.hidden)
+                .scrollDismissesKeyboard(.interactively)
+                .frame(maxWidth: 600).frame(maxWidth: .infinity)
+        }
     }
     private var inputPane: some View {
         Form { inputContent }.formStyle(.grouped).scrollContentBackground(.hidden)
@@ -266,21 +322,28 @@ private struct TurnmarkView: View {
     }
     private func comparisonPane(compact: Bool = false) -> some View {
         ScrollView {
-            ConversionResult(input: draft, compact: compact, benchmarks: { dismissTimeEntry(); benchmarking = $0 }) { draft.targetIndex = $0 }
+            resultContent(compact: compact)
                 .padding(20).frame(maxWidth: 620).frame(maxWidth: .infinity)
         }
     }
     private var inputContent: some View {
         Group {
             inputCard
-            Section {
-                if let logNotice { Text(logNotice).font(.footnote).foregroundStyle(TurnmarkPalette.textMuted).accessibilityIdentifier("logNotice") }
-                if history.error != nil { Text("History is unavailable. Open My times to try again.").font(.footnote) }
-                Button { showingMethod = true } label: { Label("About Turnmark", systemImage: "info.circle") }
-                    .accessibilityIdentifier("methodology")
-            } footer: { Text("On this device. Works offline.") }
-                .listRowBackground(TurnmarkPalette.surface)
+            localNotice
         }.foregroundStyle(TurnmarkPalette.text)
+    }
+    private func resultContent(compact: Bool) -> some View {
+        ConversionResult(input: draft, compact: compact,
+            benchmarks: { dismissTimeEntry(); benchmarking = $0 },
+            selectCourse: { draft.targetIndex = $0 },
+            log: history.store == nil ? nil : { dismissTimeEntry(); logging = draft })
+    }
+    private var localNotice: some View {
+        Section {
+            if let logNotice { Text(logNotice).font(.footnote).foregroundStyle(TurnmarkPalette.textMuted).accessibilityIdentifier("logNotice") }
+            if history.error != nil { Text("History is unavailable. Open My times to try again.").font(.footnote) }
+            Text("On this device. Works offline.").font(.footnote).foregroundStyle(TurnmarkPalette.textMuted)
+        }.listRowBackground(Color.clear)
     }
     private var inputCard: some View {
         Section {
@@ -298,7 +361,9 @@ private struct TurnmarkView: View {
                             .accessibilityLabel("Clear time").accessibilityIdentifier("clearConverterTime")
                     }
                 }.padding(.vertical, 4)
-                Text("For example, 58.32 or 1:02.45").font(.footnote).foregroundStyle(TurnmarkPalette.textMuted)
+                Text(draft.time.isEmpty ? "Enter seconds or a time like 1:02.45" : "Results update as you type")
+                    .font(.footnote).foregroundStyle(TurnmarkPalette.textMuted)
+
             }
             if typeSize.isAccessibilitySize { strokePicker; distancePicker }
             else {
@@ -314,14 +379,37 @@ private struct TurnmarkView: View {
                     Text("Women").tag(0); Text("Men").tag(1)
                 }.pickerStyle(.segmented).accessibilityIdentifier("category")
             }
-            coursePicker("Compare with", selection: $draft.targetIndex, id: "targetCourse")
-            Button { dismissTimeEntry(); logging = draft } label: {
-                Label("Log swim", image: "Swim-log-swim").fontWeight(.semibold)
-                    .foregroundStyle(TurnmarkPalette.onAction).frame(maxWidth: .infinity)
-            }.buttonStyle(.borderedProminent).tint(TurnmarkPalette.actionFill).controlSize(.large)
-                .disabled(!draft.canLog || history.store == nil).accessibilityIdentifier("logSwim")
-        } header: { Text("Your swim").font(.title3.bold()).textCase(nil).foregroundStyle(TurnmarkPalette.text) }
-          footer: { Text("Add this time to My times, with an optional date and meet.") }
+            DisclosureGroup(isExpanded: $calculationOptionsExpanded) {
+                Picker("Course conversion", selection: Binding(get: { draft.methodID ?? "ncaa-2025-27" }, set: { draft.methodID = $0 })) {
+                    Text("NCAA (default)").tag("ncaa-2025-27")
+                    Text("Colorado Timing").tag("colorado-teamunify-2026")
+                }.pickerStyle(.menu).accessibilityIdentifier("courseConversion")
+                Toggle("Adjust for altitude", isOn: Binding(get: { draft.altitudeText != nil }, set: { draft.altitudeText = $0 ? "0" : nil }))
+                    .accessibilityIdentifier("altitudeEnabled")
+                if draft.altitudeText != nil {
+                    TextField("Pool elevation", text: Binding(get: { draft.altitudeText ?? "" }, set: { draft.altitudeText = $0 }))
+                        .keyboardType(.numbersAndPunctuation).focused($editingElevation).submitLabel(.done).onSubmit(dismissTimeEntry).accessibilityIdentifier("poolElevation")
+                    Picker("Elevation unit", selection: Binding(get: { draft.elevationUnitIndex ?? 0 }, set: { draft.setElevationUnit($0) })) {
+                        Text("Feet").tag(0); Text("Meters").tag(1)
+                    }.accessibilityIdentifier("elevationUnit")
+                    Picker("Altitude policy", selection: Binding(get: { draft.altitudePolicyID ?? "usa-swimming-altitude-2026" }, set: { draft.altitudePolicyID = $0 })) {
+                        Text("USA Swimming (default)").tag("usa-swimming-altitude-2026")
+                        Text("NCAA · 2026–27 Division I").tag("ncaa-altitude-2026-27-d1")
+                    }.accessibilityIdentifier("altitudePolicy")
+                    if case let .available(value, _) = draft.altitudeOutcome {
+                        Text("Altitude deduction: −\(String(format: "%.2f", value.adjustmentSeconds))s. Sea-level estimate: \(value.adjustedTime). Applied before course conversion.")
+                            .font(.footnote).foregroundStyle(TurnmarkPalette.textMuted)
+                    }
+                }
+            } label: { Label("Calculation options", systemImage: "slider.horizontal.3").accessibilityIdentifier("calculationOptions") }
+        } header: {
+            HStack {
+                Text("Your swim").font(.title3.bold()).foregroundStyle(TurnmarkPalette.text)
+                Spacer()
+                Button { dismissTimeEntry(); draft.time = ""; logNotice = nil } label: { Label("Reset", systemImage: "arrow.counterclockwise") }
+                    .font(.subheadline).accessibilityIdentifier("resetConverter")
+            }.textCase(nil)
+        } footer: { Text("Estimates for perspective. Meet rules decide entry eligibility.") }
             .listRowBackground(TurnmarkPalette.surface)
     }
     private func coursePicker(_ title: String, selection: Binding<Int>, id: String) -> some View {
@@ -374,60 +462,76 @@ struct ConversionResult: View {
     var compact = false
     var benchmarks: ((Draft) -> Void)? = nil
     var selectCourse: ((Int) -> Void)? = nil
+    var log: (() -> Void)? = nil
     @State private var showingDetails = false
-    @State private var showingCourses = false
     @ScaledMetric(relativeTo: .largeTitle) private var compactTimeSize = 44
     @ScaledMetric(relativeTo: .largeTitle) private var fullTimeSize = 64
 
     var body: some View {
         VStack(alignment: .leading, spacing: compact ? 10 : 14) {
-            Text(input.courseIndex == input.targetIndex ? "Your time" : "Converted time")
-                .font(.caption.weight(.semibold)).textCase(.uppercase).tracking(1.5)
-                .foregroundStyle(TurnmarkResultPalette.textMuted)
-            switch input.outcome {
+            HStack {
+                Text("Equivalent times").font(.caption.weight(.semibold)).textCase(.uppercase).tracking(1.5)
+                Spacer()
+                HStack(spacing: 4) {
+                    ForEach(courses.indices, id: \.self) { index in
+                        Capsule().fill(index == input.targetIndex ? TurnmarkResultPalette.resultHighlight : TurnmarkResultPalette.borderControl)
+                            .frame(width: 18, height: 2)
+                    }
+                }.accessibilityHidden(true)
+            }.foregroundStyle(TurnmarkResultPalette.textMuted)
+            if input.time.isEmpty {
+                Text("Enter a swim to compare").font(.headline).accessibilityIdentifier("emptyConversion")
+                Text("See your time in SCY, SCM and LCM.").font(.subheadline).foregroundStyle(TurnmarkResultPalette.textMuted)
+            } else { switch input.outcome {
             case let .available(value, _):
                 Text(input.resultLabel(value.event)).font(.subheadline)
                     .foregroundStyle(TurnmarkResultPalette.textMuted).accessibilityIdentifier("resultContext")
                 timeLabel(value.time)
-                Text(kindLabel(value.kind) + (value.kind != .swum && input.method == .colorado ? " · Colorado Timing" : "")).font(.footnote.weight(.semibold)).foregroundStyle(TurnmarkResultPalette.textMuted)
+                Text(((value.altitude?.value.adjustmentSeconds ?? 0) > 0 && value.kind == .swum ? "Sea-level estimate" : kindLabel(value.kind)) + (value.kind != .swum && input.method == .colorado ? " · Colorado Timing" : "")).font(.footnote.weight(.semibold)).foregroundStyle(TurnmarkResultPalette.textMuted)
+                if value.caveat != nil { Text(coloradoDistanceCaveat).font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted).accessibilityIdentifier("distanceCaveat") }
                 if value.kind != .swum {
                     Text("From \(input.time) · \(input.distance) \(input.unit) \(courseNames[input.courseIndex])")
                         .font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted)
                 }
-                if compact {
-                    Divider().overlay(TurnmarkResultPalette.borderSubtle)
-                    DisclosureGroup(isExpanded: $showingCourses) { courseRows } label: {
-                        Label("All course equivalents", image: "Swim-equivalents")
-                    }
-                        .font(.subheadline).tint(TurnmarkResultPalette.accent)
-                        .environment(\.colorScheme, .dark).accessibilityIdentifier("courseEquivalents")
-                } else { Divider(); courseRows }
             case .invalid:
-                Text("Check your time").font(.headline).accessibilityIdentifier("invalidTime")
+                Text("Check your time or elevation").font(.headline).accessibilityIdentifier("invalidTime")
                 Text("Try 58.32 or 1:02.45, up to 60 minutes.").font(.subheadline).foregroundStyle(TurnmarkResultPalette.textMuted)
             case .unavailable:
                 Text("No published conversion").font(.headline).accessibilityIdentifier("unavailableConversion")
                 Text("Choose another event or course comparison.").font(.subheadline).foregroundStyle(TurnmarkResultPalette.textMuted)
+            } }
+            if parseTime(input: input.time) != nil {
+                Divider().overlay(TurnmarkResultPalette.borderSubtle)
+                Text("Select a course to focus").font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted)
+                courseRows
+                Button { showingDetails = true } label: {
+                    Label("How this is calculated", systemImage: "info.circle").font(.subheadline)
+                }.buttonStyle(.plain).foregroundStyle(TurnmarkResultPalette.accent)
+                    .padding(.vertical, 8).accessibilityIdentifier("conversionDetails")
+                Divider().overlay(TurnmarkResultPalette.borderSubtle)
+                resultActions
             }
-            if input.available || benchmarks != nil { resultActions }
         }.frame(maxWidth: .infinity, alignment: .leading).padding(compact ? 20 : 24)
             .foregroundStyle(TurnmarkResultPalette.text)
             .background(NativeResultSurface())
             .sheet(isPresented: $showingDetails) { ConversionDetails(input: input) }
     }
     private var resultActions: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 12) {
-                if input.available { detailsButton; shareButton }
-                Spacer(minLength: 0)
-                benchmarkButton
+        VStack(alignment: .leading, spacing: 12) {
+            if let log {
+                Button(action: log) {
+                    Label("Log swim", image: "Swim-log-swim").fontWeight(.semibold)
+                        .foregroundStyle(TurnmarkResultPalette.onAction).frame(maxWidth: .infinity)
+                }.buttonStyle(.borderedProminent).tint(TurnmarkResultPalette.actionFill).controlSize(.large)
+                    .accessibilityIdentifier("logSwim")
+                Text("Add your entered swim to My times.").font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted)
             }
-            VStack(alignment: .leading, spacing: 12) {
-                benchmarkButton
-                if input.available { HStack(spacing: 16) { detailsButton; shareButton } }
-            }
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 12) { benchmarkButton; Spacer(minLength: 0); if input.available { shareButton } }
+                VStack(alignment: .leading, spacing: 12) { benchmarkButton; if input.available { shareButton } }
+            }.modifier(SwimActionsStyle())
         }.fixedSize(horizontal: false, vertical: true)
-            .modifier(SwimActionsStyle()).tint(TurnmarkResultPalette.accent).environment(\.colorScheme, .dark)
+            .tint(TurnmarkResultPalette.accent).environment(\.colorScheme, .dark)
     }
     @ViewBuilder private var benchmarkButton: some View {
         if let benchmarks {
@@ -445,39 +549,39 @@ struct ConversionResult: View {
             .minimumScaleFactor(0.6).lineLimit(1).accessibilityLabel(time).accessibilityIdentifier("resultTime")
     }
     private var courseRows: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 8) {
             ForEach(courses.indices, id: \.self) { index in
                 let outcome = destination(index)
                 Button { selectCourse?(index) } label: {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: 6) {
                         HStack {
                             Text(courseNames[index]).font(.subheadline.weight(.semibold))
                             if index == input.targetIndex { Image(systemName: "checkmark").accessibilityHidden(true) }
                             Spacer()
-                            Text(outcome.time).font(.headline).monospacedDigit()
+                            if !typeSize.isAccessibilitySize { Text(outcome.time).font(.title3.bold()).monospacedDigit() }
                         }
+                        if typeSize.isAccessibilitySize { Text(outcome.time).font(.title3.bold()).monospacedDigit() }
                         Text(outcome.context).font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted)
-                    }.padding(.vertical, 12).contentShape(Rectangle())
+                    }.padding(12).frame(maxWidth: .infinity, alignment: .leading)
+                        .background(index == input.targetIndex ? TurnmarkResultPalette.selectedSurface : TurnmarkResultPalette.surfaceInput,
+                            in: RoundedRectangle(cornerRadius: TurnmarkPalette.radiusControl))
+                        .overlay(RoundedRectangle(cornerRadius: TurnmarkPalette.radiusControl)
+                            .strokeBorder(index == input.targetIndex ? TurnmarkResultPalette.resultHighlight.opacity(0.6) : TurnmarkResultPalette.borderSubtle))
+                        .contentShape(Rectangle())
                 }.buttonStyle(.plain).disabled(selectCourse == nil)
                     .foregroundStyle(index == input.targetIndex ? TurnmarkResultPalette.resultHighlight : TurnmarkResultPalette.text)
                     .accessibilityIdentifier("equivalent-\(courseNames[index])")
                     .accessibilityValue(index == input.targetIndex ? "Selected" : "")
-                if index < 2 { Divider() }
             }
         }
     }
     private func destination(_ index: Int) -> (time: String, context: String) {
         var value = input; value.targetIndex = index
         switch value.outcome {
-        case let .available(result, _): return (result.time, "\(value.resultLabel(result.event)) · \(kindLabel(result.kind))")
+        case let .available(result, _): return (result.time, "\(value.resultLabel(result.event)) · \((result.altitude?.value.adjustmentSeconds ?? 0) > 0 && result.kind == .swum ? "Sea-level estimate" : kindLabel(result.kind))")
         case .unavailable: return ("Unavailable", "No published conversion")
         case .invalid: return ("—", "Check your time")
         }
-    }
-    private var detailsButton: some View {
-        Button { showingDetails = true } label: { Label("Details", systemImage: "info.circle") }
-            .labelStyle(.iconOnly).buttonBorderShape(.circle)
-            .accessibilityIdentifier("conversionDetails")
     }
     private var shareButton: some View {
         ShareLink(item: input.shareURL) { Label("Share", systemImage: "square.and.arrow.up") }
@@ -542,7 +646,7 @@ struct MethodScreen: View {
         NavigationStack {
             List {
                 Section("How comparisons work") {
-                    Text("NCAA factors are the default. Colorado Timing formulas are available under Conversion method in the overflow menu. Reverse and cross-metric NCAA conversions are derived estimates. The original time stays separate.")
+                    Text("NCAA factors are the default. Colorado Timing formulas and optional altitude settings are available under Calculation options. Reverse and cross-metric NCAA conversions are derived estimates. The original time stays separate.")
                     Text("A converted time is not an official swim or confirmation of meet-entry eligibility.")
                     Link("Methodology and coverage", destination: URL(string: "https://turnmark.app/#method")!)
                     Link("Swimming resources", destination: URL(string: "https://turnmark.app/#resources")!)
@@ -556,49 +660,132 @@ struct MethodScreen: View {
     }
 }
 
+private struct AltitudeDetails: View {
+    let input: Draft
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Entered swim: \(input.time)").font(.subheadline).monospacedDigit()
+            ForEach(["usa-swimming-altitude-2026", "ncaa-altitude-2026-27-d1"], id: \.self) { policy in
+                var copy: Draft { var value = input; value.altitudePolicyID = policy; return value }
+                if case let .available(value, source) = copy.altitudeOutcome {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(policy == "usa-swimming-altitude-2026" ? "USA Swimming" : "NCAA · 2026–27 Division I").font(.subheadline.weight(.semibold))
+                        Text("−\(String(format: "%.2f", value.adjustmentSeconds))s → \(value.adjustedTime)").monospacedDigit()
+                            .accessibilityIdentifier("altitudeResult-\(policy)")
+                        if let url = URL(string: source.url) { Link("Published altitude policy", destination: url).font(.footnote) }
+                    }
+                } else { Text("Enter a valid time and pool elevation.").font(.footnote) }
+            }
+            Text("Altitude is deducted before course conversion. Below 3,000 ft, or where the table has no deduction, the time stays unchanged. Meters are rounded to the nearest foot. Use the policy required by your meet.")
+                .font(.footnote).foregroundStyle(.secondary)
+        }
+    }
+}
+
 private struct ConversionDetails: View {
     let input: Draft
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var typeSize
+    private let methodIDs = ["ncaa-2025-27", "colorado-teamunify-2026"]
 
+    @ViewBuilder private func methodName(_ comparison: Draft) -> some View {
+        HStack(spacing: 6) {
+            Text(comparison.methodLabel).fontWeight(.semibold)
+            if comparison.method == input.method {
+                Image(systemName: "checkmark").font(.caption.weight(.semibold))
+                    .foregroundStyle(TurnmarkPalette.accent).accessibilityLabel("Selected method")
+            }
+        }
+    }
+    @ViewBuilder private func methodTime(_ comparison: Draft) -> some View {
+        switch comparison.outcome {
+        case let .available(value, _):
+            Text(value.time).font(.title3.weight(.semibold)).monospacedDigit()
+                .accessibilityIdentifier("methodResult-\(comparison.methodLabel)")
+        case .unavailable: Text("Unavailable").foregroundStyle(.secondary)
+        case .invalid: Text("Check your time or elevation").foregroundStyle(.secondary)
+        }
+    }
     var body: some View {
         NavigationStack {
             List {
-                if case let .available(value, source) = input.outcome {
-                    Section("Entered swim") {
-                        Text(input.time).font(.title2.bold()).monospacedDigit()
-                        Text(input.label)
+                Section {
+                    ForEach(methodIDs, id: \.self) { method in
+                        var comparison: Draft { var copy = input; copy.methodID = method; return copy }
+                        if typeSize.isAccessibilitySize {
+                            VStack(alignment: .leading, spacing: 6) { methodName(comparison); methodTime(comparison) }
+                        } else {
+                            HStack(alignment: .firstTextBaseline, spacing: 16) {
+                                methodName(comparison); Spacer(minLength: 8); methodTime(comparison)
+                            }.padding(.vertical, 4)
+                        }
                     }
-                    Section(value.kind == .swum ? "Same course" : "Comparison") {
-                        Text(value.time).font(.title2.bold()).monospacedDigit()
-                        Text(input.resultLabel(value.event))
-                        Text(value.kind == .swum ? "The entered time is unchanged." : input.method == .colorado
-                             ? "Uses the documented Colorado Timing formula; this is an estimate." : value.kind == .published
-                             ? "Uses the published NCAA metric-to-yards factor."
-                             : "Derived from the published NCAA factors; this is an estimate.")
-                        Text("Time multiplier: \(String(value.factor))")
-                            .monospacedDigit()
-                        if value.offsetSeconds != 0 { Text("Time offset: \(String(value.offsetSeconds)) seconds").monospacedDigit() }
-                        if value.kind != .swum {
-                            Text("Multiplies the entered seconds by this factor, adds any time offset, then truncates to hundredths.")
+                    if let difference = input.methodDifference {
+                        LabeledContent("Method difference", value: difference)
+                            .accessibilityElement(children: .combine).accessibilityIdentifier("methodDifference")
+                    }
+                } header: {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Compare methods · \(courseNames[input.targetIndex])")
+                        if case let .available(value, _) = input.outcome {
+                            Text(input.resultLabel(value.event)).font(.footnote).textCase(nil)
+                        }
+                    }
+                } footer: {
+                    Text("Two conversion rules, not a prediction range. Use the method required by your meet.")
+                }
+                var colorado: Draft { var copy = input; copy.methodID = "colorado-teamunify-2026"; return copy }
+                if case let .available(value, _) = colorado.outcome, value.caveat != nil {
+                    Section { Text(coloradoDistanceCaveat).font(.footnote).foregroundStyle(.secondary) }
+                }
+                Section("Why the times differ") {
+                    detail("NCAA", "Published factors vary by event and category. Metric-to-yards values are direct; reverse and SCM/LCM comparisons use ratios.")
+                    detail("Colorado Timing", "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.")
+                    detail("Pool length", "Shorter pools add turns and push-offs. These rules do not measure your technique, endurance or individual development.")
+                    detail("Distance events", "500, 1000 and 1650 yards map to 400, 800 and 1500 meters.")
+                }
+                if case let .available(value, source) = input.outcome {
+                    if input.altitudeText != nil { Section("Altitude adjustment") { AltitudeDetails(input: input) } }
+                    Section("Entered swim") {
+                        Text(input.time).font(.title3.weight(.semibold)).monospacedDigit()
+                        Text(input.label).font(.subheadline).foregroundStyle(.secondary)
+                    }
+                    Section(value.kind == .swum ? "Same course" : "Selected calculation · \(input.methodLabel)") {
+                        Text(value.time).font(.title3.weight(.semibold)).monospacedDigit()
+                        Text(input.resultLabel(value.event)).font(.subheadline).foregroundStyle(.secondary)
+                        if value.kind == .swum { Text((value.altitude?.value.adjustmentSeconds ?? 0) > 0 ? "Altitude is deducted first; the course is unchanged." : "The entered time is unchanged.") }
+                        else {
+                            LabeledContent("Time multiplier", value: String(format: "%.5f", value.factor)).monospacedDigit()
+                            if value.offsetSeconds != 0 { Text("Time offset: \(String(value.offsetSeconds)) seconds").monospacedDigit() }
+                            Text("After any altitude deduction, multiply the seconds, add any offset, then truncate to hundredths. The factor is rounded here for display.")
                                 .font(.footnote).foregroundStyle(.secondary)
                         }
                     }
                     Section("Source") {
                         Text(source.title)
-                        Text("Edition: \(source.id)")
-                        Text("Revision: \(source.revision)").font(.footnote)
+                        Text("Edition: \(source.id)").font(.footnote).foregroundStyle(.secondary)
+                        Text("Revision: \(source.revision)").font(.footnote).foregroundStyle(.secondary)
                         if let url = URL(string: source.url) { Link("Published source", destination: url) }
-                        Text("Source links need an internet connection. Calculation and source metadata work offline.")
-                            .font(.footnote).foregroundStyle(.secondary)
-                    }
-                    Section {
-                        Text("A converted time is not a recorded performance or confirmation of meet-entry eligibility.")
-                        Button("Done") { dismiss() }.accessibilityIdentifier("closeDetailsFooter")
+                        var other: Draft { var copy = input; copy.methodID = input.method == .ncaa ? "colorado-teamunify-2026" : "ncaa-2025-27"; return copy }
+                        if case let .available(_, alternative) = other.outcome, let url = URL(string: alternative.url) {
+                            Link("\(other.methodLabel) source", destination: url)
+                        }
                     }
                 }
+                Section {
+                    Text("Standards, points and logged performances use your original swim, before altitude or course conversion.")
+                    Text("A converted time is not a recorded performance or confirmation of meet-entry eligibility.")
+                    Text("Calculations and source metadata work offline. Source links need a connection.")
+                }.font(.footnote).foregroundStyle(.secondary)
             }.navigationTitle("Conversion details").navigationBarTitleDisplayMode(.inline).toolbar(.visible, for: .navigationBar)
                 .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
         }
+    }
+    private func detail(_ title: String, _ explanation: String) -> some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(title).font(.subheadline.weight(.semibold))
+            Text(explanation).font(.subheadline).foregroundStyle(.secondary)
+        }.padding(.vertical, 3)
     }
 }
 

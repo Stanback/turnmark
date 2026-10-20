@@ -13,6 +13,9 @@ import java.util.UUID
 
 @RunWith(AndroidJUnit4::class)
 class HistoryTest {
+    @Test fun longConvertedClocksRetainMethodDifference() {
+        assertEquals("121.39s", Draft.example.copy(time = "60:00").methodDifference)
+    }
     private fun fixture(name: String) = InstrumentationRegistry.getInstrumentation().context.assets.open(name).use { it.readBytes() }
     private fun records() = HistoryArchive.preview(fixture("contract-v1.json"), emptyList()).records
     @Test fun portableArchiveRoundTripAndDuplicatePolicy() {
@@ -77,11 +80,11 @@ class HistoryTest {
         }
     }
     @Test fun actualSwimCanBeLoggedWithoutConversion() {
-        val draft = Draft(strokeIndex = 4)
+        val draft = Draft.example.copy(strokeIndex = 4)
         assertFalse(draft.available); assertTrue(draft.canLog)
         val record = draft.record(null, null)
         assertEquals(draft.time, record.time); assertEquals(100, record.distance)
-        val metric = Draft(courseIndex = 2, distance = 400u)
+        val metric = Draft.example.copy(courseIndex = 2, distance = 400u)
         val actual = metric.record("2026-10-17", "Meet")
         assertEquals(400, actual.distance); assertEquals("LCM", actual.course)
         assertEquals(actual.id, metric.copy(targetIndex = 0).record(actual.date, actual.meet, actual).id)

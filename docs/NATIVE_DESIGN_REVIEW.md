@@ -1,6 +1,7 @@
 # Native header and launch review
 
-Reviewed October 17, 2026 (U.S. charts).
+Historical header/launch research, reviewed October 17, 2026 (U.S. charts).
+See [Native visual review](NATIVE_VISUAL_REVIEW.md) for the current implemented UI.
 
 ## Scope
 
