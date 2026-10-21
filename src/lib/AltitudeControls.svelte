@@ -3,19 +3,25 @@
 
   import {
     altitudePolicies,
-    adjustAltitude,
+    type Converter,
     type Swim,
     type Elevation,
     type AltitudePolicy,
-  } from "@turnmark/sdk/conversion";
+  } from "@turnmark/sdk/converter";
   let {
+    converter,
     swim,
     elevation = $bindable(),
     policy = $bindable("usa-swimming-altitude-2026"),
-  }: { swim: Swim; elevation?: Elevation; policy?: AltitudePolicy } = $props();
+  }: {
+    converter: Pick<Converter, "adjustAltitude">;
+    swim: Swim;
+    elevation?: Elevation;
+    policy?: AltitudePolicy;
+  } = $props();
   const id = $props.id();
   const preview = $derived(
-    elevation ? adjustAltitude({ swim, elevation, policy }) : null,
+    elevation ? converter.adjustAltitude({ swim, elevation, policy }) : null,
   );
 </script>
 

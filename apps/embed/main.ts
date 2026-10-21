@@ -1,8 +1,8 @@
 import { mount } from "svelte";
 import "@fontsource-variable/dm-sans";
 import "@fontsource/dm-mono/400.css";
-import { createEngine } from "@turnmark/sdk";
-import wasmUrl from "@turnmark/sdk/engine.wasm?url";
+import { createConverter } from "@turnmark/sdk/converter";
+import wasmUrl from "@turnmark/sdk/converter.wasm?url";
 import "../../src/generated/design-tokens.css";
 import Widget from "./Widget.svelte";
 import { announceEmbedHeight } from "./resize";
@@ -15,9 +15,9 @@ if (theme === "light" || theme === "dark")
   document.documentElement.dataset.theme = theme;
 const target = document.getElementById("widget")!;
 try {
-  await createEngine({ wasm: wasmUrl });
+  const converter = await createConverter({ wasm: wasmUrl });
   target.replaceChildren();
-  mount(Widget, { target });
+  mount(Widget, { target, props: { converter } });
 } catch {
   target.replaceChildren();
   const error = document.createElement("p");

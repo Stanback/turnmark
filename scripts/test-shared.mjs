@@ -158,6 +158,28 @@ if (mode === "wasm") {
   assert.equal(engine.parseTime(1n), null);
   assert.equal(engine.parseTime(Symbol("not a clock")), null);
   assert.throws(() => evaluate("convert", "{"), /Malformed JSON/);
+  const { createConverter } = await import("../packages/sdk/dist/converter.js");
+  const converter = await createConverter({
+    wasm: await readFile(
+      "packages/sdk/dist/generated/converter/turnmark_wasm_bg.wasm",
+    ),
+  });
+  let focusedCount = 0;
+  cases.forEach(({ operation, input, expected, id }) => {
+    if (!["parse", "convert", "altitude"].includes(operation)) return;
+    subset(
+      converter[methods[operation]](input),
+      expected,
+      `Focused WebAssembly:${id}`,
+    );
+    focusedCount++;
+  });
+  const { evaluate: focusedEvaluate } =
+    await import("../packages/sdk/dist/generated/converter/turnmark_wasm.js");
+  assert.throws(() => focusedEvaluate("points", "{}"), /Unknown operation/);
+  console.log(
+    `Focused WebAssembly/Node: ${focusedCount} conversion/altitude cases passed`,
+  );
   // Exercise the browser's real fetch/instantiate path too.
   const { createServer } = await import("node:http");
   const server = createServer(async (req, res) => {

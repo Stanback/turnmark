@@ -34,16 +34,23 @@ configure a resizing integration.
 ## Behavior and attribution
 
 The widget converts the entered event across SCY, SCM and LCM. It uses the
-public `@turnmark/sdk` API and bundled Rust/Wasm core, with no duplicate formulas
-or numerical tables. Each result shows its actual destination distance/course
+focused `@turnmark/sdk/converter` API and bundled conversion-only Rust/Wasm
+asset, with no duplicate formulas or numerical tables. The widget initializes
+this engine once and supplies it to the shared method and altitude controls;
+it does not initialize or download the full standards/points engine. Each result shows its actual destination distance/course
 and whether it is the entered swim, a published-factor conversion or a derived
 estimate. Unsupported conversions remain unavailable. Times are estimates;
 meet rules determine eligibility. The source link and Turnmark credit stay
-visible. A collapsed Conversion method section keeps NCAA as default and offers
-Colorado Timing. It also compares both methods for a chosen destination, naming
+visible. A collapsed Calculation options section keeps NCAA as default and offers
+Colorado Timing plus optional USA Swimming / NCAA altitude adjustments. It also compares both methods for a chosen destination, naming
 the gap a method difference rather than a prediction interval. Expanded copy
-explains the inputs and limits. Standards, points, altitude and personal history
-remain in the full app.
+explains the inputs and limits. Standards, points and personal history remain
+in the full app.
+
+A production browser check verifies that a fresh widget loads exactly one Wasm
+asset matching the focused SDK bytes, at less than half the full engine’s raw
+size. Both course methods, both altitude policies, mapped events, failure
+recovery and offline use are covered separately.
 
 The implementation is GPL-3.0-or-later, with source in this repository.
 Preserve its license and source attribution when redistributing code. Numerical

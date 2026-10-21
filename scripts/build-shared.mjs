@@ -39,32 +39,37 @@ if (mode !== "wasm") {
   ]);
 }
 if (mode !== "native") {
-  run("cargo", [
-    "build",
-    "--locked",
-    "-p",
-    "turnmark-wasm",
-    "--release",
-    "--target",
-    "wasm32-unknown-unknown",
-  ]);
-  // Keep this CLI exactly aligned with the wasm-bindgen crate in Cargo.lock.
-  const version = spawnSync("wasm-bindgen", ["--version"], {
-    encoding: "utf8",
-  });
-  if (
-    version.status !== 0 ||
-    version.stdout.trim() !== "wasm-bindgen 0.2.129"
-  ) {
-    throw new Error(
-      "Install cargo install wasm-bindgen-cli --version 0.2.129 --locked",
-    );
+  for (const profile of ["converter", "full"]) {
+    run("cargo", [
+      "build",
+      "--locked",
+      "-p",
+      "turnmark-wasm",
+      "--release",
+      "--target",
+      "wasm32-unknown-unknown",
+      ...(profile === "converter" ? ["--features", "converter"] : []),
+    ]);
+    // Keep this CLI exactly aligned with the wasm-bindgen crate in Cargo.lock.
+    const version = spawnSync("wasm-bindgen", ["--version"], {
+      encoding: "utf8",
+    });
+    if (
+      version.status !== 0 ||
+      version.stdout.trim() !== "wasm-bindgen 0.2.129"
+    ) {
+      throw new Error(
+        "Install cargo install wasm-bindgen-cli --version 0.2.129 --locked",
+      );
+    }
+    run("wasm-bindgen", [
+      "--target",
+      "web",
+      "--out-dir",
+      profile === "converter"
+        ? "bindings/generated/wasm/converter"
+        : "bindings/generated/wasm",
+      "target/wasm32-unknown-unknown/release/turnmark_wasm.wasm",
+    ]);
   }
-  run("wasm-bindgen", [
-    "--target",
-    "web",
-    "--out-dir",
-    "bindings/generated/wasm",
-    "target/wasm32-unknown-unknown/release/turnmark_wasm.wasm",
-  ]);
 }

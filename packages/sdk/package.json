@@ -56,7 +56,17 @@
     "./node": {
       "types": "./dist/node.d.ts",
       "import": "./dist/node.js"
-    }
+    },
+    "./converter": {
+      "types": "./dist/converter.d.ts",
+      "import": "./dist/converter.js"
+    },
+    "./converter.wasm": "./dist/generated/converter/turnmark_wasm_bg.wasm",
+    "./standards": {
+      "types": "./dist/standards.d.ts",
+      "import": "./dist/standards.js"
+    },
+    "./standards.wasm": "./dist/generated/turnmark_wasm_bg.wasm"
   },
   "scripts": {
     "build": "node ../../scripts/build-sdk.mjs",

@@ -1,20 +1,26 @@
 <script lang="ts">
   import {
-    adjustAltitude,
+    type Converter,
     altitudePolicies,
     type Swim,
     type Elevation,
     type AltitudePolicy,
-  } from "@turnmark/sdk/conversion";
+  } from "@turnmark/sdk/converter";
   let {
+    converter,
     swim,
     elevation,
     selected,
-  }: { swim: Swim; elevation: Elevation; selected: AltitudePolicy } = $props();
+  }: {
+    converter: Pick<Converter, "adjustAltitude">;
+    swim: Swim;
+    elevation: Elevation;
+    selected: AltitudePolicy;
+  } = $props();
   const rows = $derived(
     altitudePolicies.map((policy) => ({
       ...policy,
-      result: adjustAltitude({ swim, elevation, policy: policy.id }),
+      result: converter.adjustAltitude({ swim, elevation, policy: policy.id }),
     })),
   );
 </script>

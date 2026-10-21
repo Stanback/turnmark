@@ -54,9 +54,41 @@ consumers do not load WebAssembly or JavaScript. See the
 
 ## Entry points
 
+For a small calculator, use `@turnmark/sdk/converter`. It initializes a separate
+conversion/altitude-only Wasm module, without the benchmark tables:
+
+```ts
+import { createConverter } from "@turnmark/sdk/converter";
+import wasmUrl from "@turnmark/sdk/converter.wasm?url"; // Vite example
+const converter = await createConverter({ wasm: wasmUrl });
+converter.convert({
+  swim: {
+    time: "58.32",
+    event: { distance: 100, stroke: "freestyle", course: "SCY" },
+  },
+  to: "LCM",
+  table: "women",
+  method: "colorado-teamunify-2026",
+});
+```
+
+Use the methods returned by this factory. Initializing a converter does not
+initialize the full SDK's standalone named exports. Its default course method
+remains NCAA; a publisher can choose Colorado explicitly as shown above.
+
+`@turnmark/sdk/standards` exposes `createStandardsEngine()` with youth, masters,
+points and benchmark methods. Pass `@turnmark/sdk/standards.wasm` as its asset.
+This uses the full payload because explicit benchmark previews can require
+conversion and altitude internally. It does not load `converter.wasm` too.
+If one application needs everything, continue using the existing `createEngine()`
+to avoid loading duplicate Wasm runtime/helper code. Existing imports and native
+bindings are unchanged. No new npm release is implied by these source additions.
+
 | Import                     | Operations                                                              |
 | -------------------------- | ----------------------------------------------------------------------- |
 | `@turnmark/sdk/node`       | Same engine/API, with local Wasm loading for Node.                      |
+| `@turnmark/sdk/converter`  | `createConverter`: independent, focused conversion/altitude payload.    |
+| `@turnmark/sdk/standards`  | `createStandardsEngine`: published standards, targets and points.       |
 | `@turnmark/sdk`            | Engine, conversion, altitude, time helpers, contract types.             |
 | `@turnmark/sdk/conversion` | Conversion/altitude operations, source metadata and method identifiers. |
 | `@turnmark/sdk/time`       | `parseTime`, `formatTime`, `truncateTime`.                              |
@@ -64,7 +96,9 @@ consumers do not load WebAssembly or JavaScript. See the
 | `@turnmark/sdk/masters`    | `getMastersTarget`, ages, source and edition.                           |
 | `@turnmark/sdk/points`     | `getWorldPoints`, next points milestone, source and validity.           |
 
-The Wasm asset currently embeds all numerical tables. JavaScript modules contain
+The default Wasm asset embeds all numerical tables; `converter.wasm` omits the
+benchmark tables through a focused Rust transport and linker reachability.
+JavaScript modules contain
 API adapters and generated source metadata, without a second set of calculations. `compat` entry points temporarily support the
 existing web UI; new integrations should use the validated APIs above.
 
@@ -215,3 +249,14 @@ National benchmark programs (`futures`, `juniors`, `nisca`) share the original-s
 `getNationalStandardPrograms()` for labels, age choices and coverage notes.
 Futures uses `18 & under` / `19 & over`; Juniors and NISCA use `age: ""`.
 See [coverage and source editions](../../docs/NATIONAL_BENCHMARKS.md).
+
+### Consumer boundaries
+
+The hosted publisher widget uses `createConverter` and `converter.wasm`, including
+its shared method comparison and altitude controls. The full web app continues
+to use `createEngine` because it also provides standards and points.
+
+MCP uses the full engine on its server for the complete read-only tool set. Its
+Apps card runs no Wasm: explicit edits call the server through the official host
+bridge. Adding the converter to that card would increase its payload without
+replacing the server’s standards/points engine.
