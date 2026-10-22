@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "venue_sources": [
+    {
+      "source_id": "invented-evidence",
+      "source_url": "https://example.invalid/invented-venues",
+      "checked_at": "2026-10-20T12:00:00Z",
+      "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "reuse_notes": "Invented fixture only; no real pool, measurement or race observation."
+    }
+  ],
+  "facilities": [
+    {
+      "facility_id": "toy-center",
+      "name": "Invented Aquatic Center",
+      "country": null,
+      "state": null,
+      "city": null,
+      "evidence_source_id": "invented-evidence"
+    },
+    {
+      "facility_id": "toy-other",
+      "name": "Another Invented Facility",
+      "country": null,
+      "state": null,
+      "city": null,
+      "evidence_source_id": "invented-evidence"
+    }
+  ],
+  "pools": [
+    {
+      "pool_id": "toy-main",
+      "facility_id": "toy-center",
+      "name": "Invented convertible basin",
+      "elevation_m": 1500,
+      "elevation_uncertainty_m": 5,
+      "elevation_source_id": "invented-evidence",
+      "evidence_source_id": "invented-evidence"
+    },
+    {
+      "pool_id": "toy-second",
+      "facility_id": "toy-center",
+      "name": "Invented separate basin",
+      "elevation_m": 1500,
+      "elevation_uncertainty_m": 5,
+      "elevation_source_id": "invented-evidence",
+      "evidence_source_id": "invented-evidence"
+    },
+    {
+      "pool_id": "toy-unknown",
+      "facility_id": "toy-other",
+      "name": "Invented pool with unknown elevation",
+      "elevation_m": null,
+      "elevation_uncertainty_m": null,
+      "elevation_source_id": null,
+      "evidence_source_id": "invented-evidence"
+    }
+  ],
+  "pool_configurations": [
+    {
+      "configuration_id": "toy-main-yards",
+      "pool_id": "toy-main",
+      "course": "SCY",
+      "valid_from": "2026-01-01",
+      "valid_to": "2026-01-10",
+      "evidence_source_id": "invented-evidence"
+    },
+    {
+      "configuration_id": "toy-main-meters",
+      "pool_id": "toy-main",
+      "course": "LCM",
+      "valid_from": "2026-01-11",
+      "valid_to": "2026-01-31",
+      "evidence_source_id": "invented-evidence"
+    },
+    {
+      "configuration_id": "toy-second-meters",
+      "pool_id": "toy-second",
+      "course": "LCM",
+      "valid_from": "2026-01-11",
+      "valid_to": "2026-01-31",
+      "evidence_source_id": "invented-evidence"
+    },
+    {
+      "configuration_id": "toy-unknown-meters",
+      "pool_id": "toy-unknown",
+      "course": "LCM",
+      "valid_from": "2026-01-11",
+      "valid_to": "2026-01-31",
+      "evidence_source_id": "invented-evidence"
+    }
+  ],
+  "race_venues": [
+    {
+      "source": "synthetic",
+      "race_id": "y1",
+      "configuration_id": "toy-main-yards",
+      "time_basis": "raw",
+      "evidence_source_id": "invented-evidence"
+    },
+    {
+      "source": "synthetic",
+      "race_id": "m1",
+      "configuration_id": "toy-main-meters",
+      "time_basis": "raw",
+      "evidence_source_id": "invented-evidence"
+    }
+  ]
+}

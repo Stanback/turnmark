@@ -1,0 +1,79 @@
+{
+  "checkpoint": "03",
+  "reviewed_registry_scope": "empty sidecar; no actual venue mappings approved",
+  "interpretation": "Measures missing reviewed linkage, not whether venue information exists in original sources.",
+  "pairs": 5687,
+  "cohorts": [
+    {
+      "cohort": "unresolved_venue",
+      "pairs": 5687,
+      "swimmers": 2601,
+      "meets": 215,
+      "pools": 0,
+      "both_elevations_known": 0,
+      "partitions": {
+        "test": 768,
+        "train": 4066,
+        "validation": 853
+      }
+    },
+    {
+      "cohort": "non_raw_or_unknown_basis",
+      "pairs": 0,
+      "swimmers": 0,
+      "meets": 0,
+      "pools": 0,
+      "both_elevations_known": 0,
+      "partitions": {}
+    },
+    {
+      "cohort": "same_pool",
+      "pairs": 0,
+      "swimmers": 0,
+      "meets": 0,
+      "pools": 0,
+      "both_elevations_known": 0,
+      "partitions": {}
+    },
+    {
+      "cohort": "same_facility_different_pools",
+      "pairs": 0,
+      "swimmers": 0,
+      "meets": 0,
+      "pools": 0,
+      "both_elevations_known": 0,
+      "partitions": {}
+    },
+    {
+      "cohort": "different_facilities",
+      "pairs": 0,
+      "swimmers": 0,
+      "meets": 0,
+      "pools": 0,
+      "both_elevations_known": 0,
+      "partitions": {}
+    }
+  ],
+  "clocks_changed": false,
+  "partitions_changed": false,
+  "altitude_model_trained": false,
+  "validated_for_product": false,
+  "pairs_sha256": "7956df40d6aeb32785e538cf888c6018635d62b8271f09c9820fafc56412ccce",
+  "registry_sha256": "a259f6dffcc63d86bd40d2cbfb90b2485744097dba0cf594a5e415f07951d696",
+  "header_candidate_audit": {
+    "paired_meets": 215,
+    "paired_meets_with_cached_header_candidates": 215,
+    "cached_headers_examined": 706,
+    "rejected_headers": 0,
+    "missing_cached_archives": 0,
+    "meet_altitude_claim_status_counts": {
+      "missing": 1,
+      "zero_requires_review": 186,
+      "unverified_source_claim": 28
+    },
+    "meets_with_conflicting_reported_altitudes": 0,
+    "verified_pool_mappings_added": 0,
+    "network_requests": 0,
+    "claims_are_verified_elevations": false
+  }
+}

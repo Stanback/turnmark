@@ -18,6 +18,13 @@ export function affectedChecks(paths) {
       /(^|\/)README\.md$/.test(path)
     )
       continue;
+    // This offline experiment has its own synthetic-only Python check. Nothing
+    // in the product build imports it or its optional analytics dependencies.
+    if (
+      path.startsWith("research/conversion-model/") ||
+      path === ".github/workflows/conversion-research.yml"
+    )
+      continue;
     if (
       path.startsWith(".github/workflows/") ||
       path.startsWith(".github/actions/") ||

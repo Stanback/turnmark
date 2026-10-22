@@ -193,9 +193,19 @@ class TurnmarkUITestCase: XCTestCase {
         XCTAssertTrue(button.waitForExistence(timeout: 5)); button.tap()
     }
 
-    @MainActor func chooseBenchmark(_ label: String, in app: XCUIApplication) {
+    @MainActor func chooseBenchmark(_ label: String, in app: XCUIApplication, earlier: Bool = false) {
         let target = app.buttons["benchmarkTarget"]
-        reach(target, in: app); target.tap(); app.buttons[label].tap()
+        reach(target, in: app, earlier: earlier); target.tap()
+        let item = app.buttons[label]
+        for _ in 0..<6 where !(item.exists && item.isHittable) {
+            if let anchor = ["USA Swimming · Junior Nationals", "USA Swimming · Futures", "USA Swimming · Youth"]
+                .map({ app.buttons[$0] }).first(where: { $0.exists && $0.isHittable }) {
+                anchor.swipeUp()
+            } else {
+                app.swipeUp()
+            }
+        }
+        item.tap()
     }
 
     @MainActor func capture(_ app: XCUIApplication, _ name: String) {

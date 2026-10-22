@@ -28,6 +28,7 @@ final class ConversionUITests: TurnmarkUITestCase {
         reach(app.buttons["conversionDetails"], in: app); app.buttons["conversionDetails"].tap()
         XCTAssertTrue(app.staticTexts["methodResult-NCAA"].exists)
         XCTAssertTrue(app.staticTexts["methodResult-Colorado Timing"].exists)
+        XCTAssertTrue(app.staticTexts["methodResult-Turnmark Empirical"].exists)
         XCTAssertTrue(app.descendants(matching: .any)["methodDifference"].firstMatch.exists)
         capture(app, "Native method comparison")
         app.buttons["Done"].firstMatch.tap()

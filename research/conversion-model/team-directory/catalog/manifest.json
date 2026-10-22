@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "scope": "public-research-metadata",
+  "national_coverage_verified": false,
+  "review": {
+    "purpose": "Local model training/evaluation metadata; reusable public reference, not a Turnmark results-hosting deployment plan.",
+    "source_facility_ids": 4956,
+    "source_listing_relations": 5430,
+    "residential_looking_facilities_excluded": 1,
+    "mailing_style_addresses_withheld": 35,
+    "source_coordinate_pairs_unusable": 85,
+    "facility_state_normalization": "Pa -> PA; Illinois (IL) -> IL; raw state retained.",
+    "publication_scope": "Public organizational/facility facts and source/format metadata only; personal contacts and swimmer/race records excluded.",
+    "limitations": "Listings do not establish current operation. Facilities remain source-scoped across USA Swimming club finder locations, USA Swimming national pool measurement certifications (2020 & 2022 editions, deduplicated and cleaned of line-wrap artifacts), Potomac Valley Swimming venue directory, Hawaiian Swimming LSC venue directory, Adirondack Swimming water-depth table, Pacific Northwest Swimming host venues, 20 USMS LMSC Places-to-Swim directories, and 9 flagship U.S. summer swim league pool directories. No terrain elevations or race-to-venue joins are inferred in the public snapshot without explicit source evidence.",
+    "usms_nationwide": {
+      "source_program_listings": 1124,
+      "source_location_rows": 1533,
+      "locations_excluded": 5,
+      "mailing_addresses_withheld": 0,
+      "unusable_coordinate_pairs": 0,
+      "identity": "Source club GUIDs; location rows scoped to document hash, club ID and row position; no physical pool deduplication."
+    },
+    "school_breadth": "Thirty-two school-source states imported (8,695 listings), plus three states affirmatively verified as non-sponsoring (SD, TN, VT). Includes FL (938), WA (241), OK (127), CT boys+girls (179), NE (82), AR (72), NV (68), ND boys+girls (35). No state completeness, activity verification, cross-provider joins or inferred pool links.",
+    "regional_expansion": "Seventeen cached source receipts independently checked; four school PDFs and the 2025 PNA directory visually reviewed. Regional club/workout-group source universes are not deduplicated against national finders. Withheld unsupported single city/website values; published source abbreviations do not create cross-provider joins.",
+    "site_access": "Four blocked-source browser dispositions reported separately from automation: three public pages accessible, one extension permission gap. Minimal ledger preserves original status/protection observations. USMS results index is a browser-reviewed links directory, not imported results.",
+    "ghsa_participation": "Official GHSA 2024-25 participation survey pp.37-53. All positive swimming rows: 261 boys and 264 girls, and participant-column sums matched published p.53 totals. Positive participation does not establish an independent full team or current operation. No contacts, athlete names or participant counts projected. Source names preserved; one intra-word line wrap visually joined. Raw PDF local; no redistribution license asserted.",
+    "naia_and_lsc_recon": "Added 54 NAIA 2026 championship qualifier varsity listings (26 men, 28 women matching published denominators), 19 Adirondack Swimming LSC registered clubs, and cataloged 12 high-altitude/regional LSC and USMS SCM result archives."
+  },
+  "files": {
+    "evidence_sources": {
+      "rows": 37,
+      "sha256": "039b251303a03b77b55dde86c5d688985254699246f93f89daa6f6fa5c027f29"
+    },
+    "facilities": {
+      "rows": 8240,
+      "sha256": "3254d64da6f2a8f6da824e963996003802261a630d76fb33b0e11aa185bbd800"
+    },
+    "program_facilities": {
+      "rows": 7497,
+      "sha256": "f1a86619fae15fc91e9e9a8e3d3bd77de917c64b697f9ec262fb6df70578d9b9"
+    },
+    "pool_basins": {
+      "rows": 1295,
+      "sha256": "652b20aebcdcab6c08ee45337e6d99a6fe8c878fc0bf61ebdb6fb2236ec0404b"
+    },
+    "formats": {
+      "rows": 10,
+      "sha256": "c4854d16c83be456829519f42c4e07b93e83d9ca5ed98452c98b3df25f4f7cf9"
+    },
+    "source_access": {
+      "rows": 152,
+      "sha256": "e0db7e836603ef5d9eccf71448635424226e4ee1e45beb095d0641e602e209dd"
+    },
+    "source_formats": {
+      "rows": 196,
+      "sha256": "4441b5267966bcbb1ceb95ba1374d3661fc61caba4ffd5537eb05dda3b11cccd"
+    }
+  }
+}

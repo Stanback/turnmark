@@ -1,0 +1,113 @@
+{
+  "checkpoint": "source-inventory-06",
+  "scope": "aggregate public archive-index discovery; no athlete or race records",
+  "checked_at": "2026-10-21T14:58:19.700041+00:00",
+  "publisher": "Pacific Swimming",
+  "published_years": [
+    2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024,
+    2025, 2026
+  ],
+  "enumerated_unique_export_urls": 2537,
+  "previous_2024_2026_inventory_urls": 456,
+  "additional_candidate_export_urls": 2081,
+  "year_counts": {
+    "2013": 201,
+    "2014": 222,
+    "2015": 210,
+    "2016": 204,
+    "2017": 197,
+    "2018": 190,
+    "2019": 194,
+    "2020": 74,
+    "2021": 223,
+    "2022": 180,
+    "2023": 186,
+    "2024": 184,
+    "2025": 138,
+    "2026": 134
+  },
+  "course_counts": {
+    "LCM": 545,
+    "SCM": 6,
+    "SCY": 1986
+  },
+  "source_index_receipts": [
+    {
+      "source_url": "https://www.pacswim.org/swim-meet-results?year=2013",
+      "content_sha256": "2993333f177d72782a98004a474b58cb2163b3ec9b01d9827f2671a32b7d9bea",
+      "retrieved_at": "2026-10-21T14:54:17.981953+00:00"
+    },
+    {
+      "source_url": "https://www.pacswim.org/swim-meet-results?year=2014",
+      "content_sha256": "e408a33b7ddaac9cbe29cfd4eeb173e20c5a8d64c98dfd712c916d98d28ca4de",
+      "retrieved_at": "2026-10-21T14:54:31.581204+00:00"
+    },
+    {
+      "source_url": "https://www.pacswim.org/swim-meet-results?year=2015",
+      "content_sha256": "247c2743f325d947201c2cd7de2a34c8e2096a2358a39ac42f6a336ac5d0e9a0",
+      "retrieved_at": "2026-10-21T14:54:45.550228+00:00"
+    },
+    {
+      "source_url": "https://www.pacswim.org/swim-meet-results?year=2016",
+      "content_sha256": "174bc9b4fb845ef65eb9f6e0d0b910f598cde58539bcbbb94d61a36aab2f51aa",
+      "retrieved_at": "2026-10-21T14:54:56.800718+00:00"
+    },
+    {
+      "source_url": "https://www.pacswim.org/swim-meet-results?year=2017",
+      "content_sha256": "53540d1ce1480fee9b6c8b59915aa9feb750f76b73ca97f60f27a72e251d97f2",
+      "retrieved_at": "2026-10-21T14:55:09.032175+00:00"
+    },
+    {
+      "source_url": "https://www.pacswim.org/swim-meet-results?year=2018",
+      "content_sha256": "5f90e14c0cc130cf2fd40e25d2fed7f77bbcb949657b71d5a1457c92e090e6af",
+      "retrieved_at": "2026-10-21T14:55:22.372167+00:00"
+    },
+    {
+      "source_url": "https://www.pacswim.org/swim-meet-results?year=2019",
+      "content_sha256": "0d1620b34003fae1c24b2846151f8fa3fcc9daa736a55b2353ab6ea6fdd65e9c",
+      "retrieved_at": "2026-10-21T14:55:34.032665+00:00"
+    },
+    {
+      "source_url": "https://www.pacswim.org/swim-meet-results?year=2020",
+      "content_sha256": "6fe6b72679f247f91d253244fd6f3f220e9eb383ffd86d828ab8f65d31a7ddbc",
+      "retrieved_at": "2026-10-21T14:55:47.859255+00:00"
+    },
+    {
+      "source_url": "https://www.pacswim.org/swim-meet-results?year=2021",
+      "content_sha256": "c9ab8a82f3c57e5c9a5be2393ac3df92dc480e5fb02937b10de9eba76269ef87",
+      "retrieved_at": "2026-10-21T14:55:58.852306+00:00"
+    },
+    {
+      "source_url": "https://www.pacswim.org/swim-meet-results?year=2022",
+      "content_sha256": "66389373fcc14a7f632f932a1f16f7ef9349f2aeb2f46c95b0894d89d8fb7c8c",
+      "retrieved_at": "2026-10-21T14:56:10.386652+00:00"
+    },
+    {
+      "source_url": "https://www.pacswim.org/swim-meet-results?year=2023",
+      "content_sha256": "d2d1498275d3b8213c14989829d74f29798a261d30cb1cf6a0eebf147eb2725c",
+      "retrieved_at": "2026-10-21T14:56:22.320125+00:00"
+    },
+    {
+      "source_url": "https://www.pacswim.org/swim-meet-results?year=2024",
+      "content_sha256": "309f8e72a0a685209d1e0b72797cac7435514d78ee901b01f0648b69e1360b31",
+      "retrieved_at": "2026-10-19T17:32:22.246906+00:00"
+    },
+    {
+      "source_url": "https://www.pacswim.org/swim-meet-results?year=2025",
+      "content_sha256": "6abedcf12f4fb68b3b131a6d09d82af70310e42e8ba8d3719c9652413f1d00db",
+      "retrieved_at": "2026-10-19T17:32:35.010901+00:00"
+    },
+    {
+      "source_url": "https://www.pacswim.org/swim-meet-results?year=2026",
+      "content_sha256": "e2289ad455e0cd90c7c9fd4fb5492195417ffb6c7019187c1901c438a57e4e14",
+      "retrieved_at": "2026-10-19T17:32:47.496303+00:00"
+    }
+  ],
+  "full_inventory_usable_race_yield_measured": false,
+  "limitations": [
+    "ZIP/export URL inventory, not imported races or guaranteed usable SDIF files.",
+    "Duplicate, incomplete, unsupported or ambiguous-ID observations are rejected during import.",
+    "No national representativeness or swimmer home-region claim.",
+    "Source access and reuse conditions remain separate from public availability; raw captures and result rows stay local."
+  ]
+}

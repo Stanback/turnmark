@@ -14,6 +14,7 @@ import {
 import {
   conversionMethod,
   coloradoMethod,
+  empiricalMethod,
   type ConversionMethod,
   type AltitudePolicy,
   convertSwim,
@@ -122,7 +123,8 @@ export function readState(hash: string): SwimState {
   if (["18 & under", "19 & over"].includes(p.get("fa") ?? ""))
     state.futuresAge = p.get("fa")!;
   if (mastersAges.includes(p.get("ma") ?? "")) state.mastersAge = p.get("ma")!;
-  if (p.get("m") === coloradoMethod) state.method = coloradoMethod;
+  if (p.get("m") === coloradoMethod || p.get("m") === empiricalMethod)
+    state.method = p.get("m") as ConversionMethod;
   if (p.get("ap") === "ncaa-altitude-2026-27-d1")
     state.altitudePolicy = "ncaa-altitude-2026-27-d1";
   return state;
@@ -139,7 +141,7 @@ export function stateHash(state: SwimState) {
     ...(state.altitudePolicy === "ncaa-altitude-2026-27-d1"
       ? { ap: state.altitudePolicy }
       : {}),
-    ...(state.method === coloradoMethod ? { m: state.method } : {}),
+    ...(state.method !== conversionMethod ? { m: state.method } : {}),
     ...(state.standardSystem === "masters"
       ? { b: "masters", ma: state.mastersAge }
       : state.standardSystem !== "youth"

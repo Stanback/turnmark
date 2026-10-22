@@ -77,8 +77,8 @@ struct BenchmarkScreen: View {
                     Picker("Compare against", selection: benchmarkSelection) {
                         Section("Time standards") {
                             Text("USA Swimming · Youth").tag("youth")
-                            Text("USMS · Masters").tag("masters")
                             ForEach(programs, id: \.system) { Text($0.label).tag(String(describing: $0.system)) }
+                            Text("USMS · Masters").tag("masters")
                         }
                         Section("Points") { Text("World Aquatics points").tag("world-points") }
                     }.pickerStyle(.menu).accessibilityIdentifier("benchmarkTarget")

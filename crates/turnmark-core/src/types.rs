@@ -70,6 +70,8 @@ pub enum ConversionMethod {
     Ncaa,
     #[serde(rename = "colorado-teamunify-2026")]
     Colorado,
+    #[serde(rename = "turnmark-empirical-2026")]
+    Empirical,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "native", derive(uniffi::Enum))]

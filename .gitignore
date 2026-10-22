@@ -34,3 +34,12 @@ local.properties
 # Bundled MCP card is generated before TypeScript compilation.
 packages/mcp/src/generated/
 packages/mcp/THIRD_PARTY_NOTICES.txt
+
+# Offline research artifacts
+research/**/__pycache__/
+
+/research/conversion-model/data/
+/research/conversion-model/artifacts/
+
+# Source-specific collection tools and any real swimmer data remain local.
+/research/conversion-model/local/

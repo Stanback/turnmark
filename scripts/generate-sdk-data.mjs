@@ -21,6 +21,7 @@ await writeFile(
       altitudeSource: conversions.altitudeSource,
       ncaaAltitudeSource: conversions.ncaaAltitudeSource,
       coloradoSource: (await read("colorado")).source,
+      empiricalSource: (await read("empirical")).source,
     },
     sources: await read("sources"),
   }) + "\n",

@@ -27,8 +27,8 @@ import uniffi.turnmark_core.*
     val preferences = remember { context.getSharedPreferences("turnmark", Context.MODE_PRIVATE) }
     var mode by rememberSaveable { mutableStateOf(preferences.getString("benchmarkMode", "standards").takeIf { it in listOf("standards", "points") } ?: "standards") }
     val programs = remember { getNationalStandardPrograms() }
-    val systemIds = listOf("youth", "masters", "futures", "juniors", "nisca")
-    val systemLabels = listOf("USA Swimming · Youth", "USMS · Masters") + programs.map { it.label }
+    val systemIds = listOf("youth", "futures", "juniors", "nisca", "masters")
+    val systemLabels = listOf("USA Swimming · Youth") + programs.map { it.label } + "USMS · Masters"
     var futuresAge by rememberSaveable { mutableStateOf(preferences.getString("benchmarkFuturesAge", "18 & under").takeIf { it in getStandardAgeGroups(StandardSystem.FUTURES) } ?: "18 & under") }
     var systemName by rememberSaveable { mutableStateOf(preferences.getString("benchmarkSystem", "youth").takeIf { it in systemIds } ?: "youth") }
     var youthAge by rememberSaveable { mutableStateOf(preferences.getString("benchmarkYouthAge", "15-16").takeIf { it in getStandardAgeGroups(StandardSystem.YOUTH) } ?: "15-16") }

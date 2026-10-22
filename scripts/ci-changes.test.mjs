@@ -402,6 +402,10 @@ for (const [path, expected] of [
   [".github/workflows/website.yml", all],
   ["future-package/calculations.rs", all],
   ["docs/NATIVE_APPS.md", flags()],
+  ["research/conversion-model/lakehouse.py", flags()],
+  ["research/conversion-model/requirements-lakehouse.lock", flags()],
+  [".github/workflows/conversion-research.yml", flags()],
+  ["research/future-package/model.rs", all],
   ["AGENTS.md", flags()],
   ["CLAUDE.md", flags()],
   ["packages/sdk/README.md", flags()],
@@ -413,6 +417,15 @@ test("mixed changes accumulate across platform boundaries", () => {
   assert.deepEqual(
     affectedChecks(["apps/ios/Info.plist", "src/App.svelte"]),
     flags("web", "ios"),
+  );
+});
+test("offline research does not suppress affected product checks", () => {
+  assert.deepEqual(
+    affectedChecks([
+      "research/conversion-model/lakehouse.py",
+      "data/conversions.json",
+    ]),
+    all,
   );
 });
 test("rename out of a shared directory still selects its old consumers", () => {

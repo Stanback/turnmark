@@ -197,6 +197,9 @@
     <MethodComparison
       {converter}
       selected={method}
+      onSelect={(m) => {
+        method = m;
+      }}
       request={{
         swim: { time, event: { distance, stroke, course } },
         to: comparisonCourse,

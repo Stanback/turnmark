@@ -450,6 +450,21 @@ Anti-goals for now: a general swim logger, expanded personal-best tracking,
 automatic meet-result aggregation, cloud accounts/sync, recruiting and coach
 features. Existing local records and export/import are maintenance scope.
 
+The separate [conversion-model research](CONVERSION_RESEARCH.md) prepares and
+queries private local meet exports for evaluation and model training.
+Source-specific collectors, swimmer-level records and identity keys remain
+ignored. A public organizational-directory projection can include source-backed
+club/program facts and provenance, excluding contacts and rosters; it does not
+change Turnmark into a hosted results service.
+
+Operating a hosted meet-results aggregator, running a national search service
+and migrating Turnmark to a cloud backend remain explicit project anti-goals.
+The [architecture](MEET_LAKEHOUSE_EXPERIMENT.md) and
+[production cost scenarios](WAREHOUSE_COST_COMPARISON.md) are public conceptual
+references for a hypothetical service. They preserve the reasoning should the
+scope ever be deliberately reconsidered; they are not deployment plans or
+roadmap commitments.
+
 ## Converter layout follow-up
 
 Explore a clearer grouping of swim inputs, course equivalents and the next

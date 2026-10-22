@@ -27,14 +27,61 @@ struct Draft: Codable, Equatable {
     var altitudeOutcome: AltitudeOutcome { adjustAltitudeWithPolicy(request: AltitudeRequest(swim: swim, elevation: elevation), policy: altitudePolicy) }
     var swim: Swim { Swim(time: time, event: SwimEvent(distance: distance, stroke: strokes[strokeIndex], course: courses[courseIndex])) }
     var methodID: String?
-    var method: ConversionMethod { methodID == "colorado-teamunify-2026" ? .colorado : .ncaa }
-    var methodLabel: String { method == .colorado ? "Colorado Timing" : "NCAA" }
+    var method: ConversionMethod {
+        switch methodID {
+        case "colorado-teamunify-2026": return .colorado
+        case "turnmark-empirical-2026": return .empirical
+        default: return .ncaa
+        }
+    }
+    var methodLabel: String {
+        switch method {
+        case .colorado: return "Colorado Timing"
+        case .empirical: return "Turnmark Empirical"
+        case .ncaa: return "NCAA"
+        }
+    }
     static var example: Draft { var input = Draft(); input.time = "58.32"; return input }
     var methodDifference: String? {
         var ncaa = self; ncaa.methodID = "ncaa-2025-27"
-        var colorado = self; colorado.methodID = "colorado-teamunify-2026"
-        guard case let .available(a, _) = ncaa.outcome, case let .available(b, _) = colorado.outcome else { return nil }
+        var other = self; other.methodID = method == .empirical ? "turnmark-empirical-2026" : "colorado-teamunify-2026"
+        guard case let .available(a, _) = ncaa.outcome, case let .available(b, _) = other.outcome else { return nil }
         return String(format: "%.2fs", abs(Double(a.hundredths) - Double(b.hundredths)) / 100)
+    }
+    var methodSpread: String? {
+        let ids = ["ncaa-2025-27", "colorado-teamunify-2026", "turnmark-empirical-2026"]
+        let hs = ids.compactMap { id -> UInt64? in
+            var copy = self; copy.methodID = id
+            if case let .available(v, _) = copy.outcome { return v.hundredths }
+            return nil
+        }
+        guard hs.count >= 2, let minH = hs.min(), let maxH = hs.max(), courseIndex != targetIndex else { return nil }
+        return String(format: "%.2fs", Double(maxH - minH) / 100.0)
+    }
+    func turnGeometrySummary(_ targetEvent: SwimEvent) -> String? {
+        guard courseIndex != targetIndex else { return nil }
+        let srcPool: UInt32 = courses[courseIndex] == .lcm ? 50 : 25
+        let dstPool: UInt32 = targetEvent.course == .lcm ? 50 : 25
+        let srcTurns = max(0, Int(distance / srcPool) - 1)
+        let dstTurns = max(0, Int(targetEvent.distance / dstPool) - 1)
+        let delta = dstTurns - srcTurns
+        let deltaText = delta == 0 ? "" : " · \(delta > 0 ? "+\(delta)" : "−\(abs(delta))") \(abs(delta) == 1 ? "wall" : "walls")"
+        return "\(distance) \(unit) \(courseNames[courseIndex]) (\(srcTurns) \(srcTurns == 1 ? "turn" : "turns")) → \(targetEvent.distance) \(targetEvent.course == .scy ? "yd" : "m") \(courseNames[targetIndex]) (\(dstTurns) \(dstTurns == 1 ? "turn" : "turns"))\(deltaText)"
+    }
+    func methodFormulaSummary(againstNcaa ncaaHundredths: UInt64?) -> String? {
+        guard courseIndex != targetIndex, case let .available(value, _) = outcome, value.kind != .swum else { return nil }
+        let off = value.offsetSeconds
+        let offText = off == 0 ? "" : String(format: " %@ %.2fs", off > 0 ? "+" : "−", abs(off))
+        var deltaText = ""
+        if let ncaaH = ncaaHundredths {
+            if method == .ncaa {
+                deltaText = " · NCAA baseline"
+            } else {
+                let d = (Double(value.hundredths) - Double(ncaaH)) / 100.0
+                deltaText = String(format: " · %@%.2fs vs NCAA", d >= 0 ? "+" : "−", abs(d))
+            }
+        }
+        return String(format: "× %.5f%@%@", value.factor, offText, deltaText)
     }
 
     static func decode(_ text: String?) -> Draft? {
@@ -87,7 +134,7 @@ struct Draft: Codable, Equatable {
             URLQueryItem(name: "g", value: categoryIndex == 0 ? "women" : "men"),
             URLQueryItem(name: "h", value: altitudeText == nil ? "0" : altitudeFeet)]
         if altitudeText != nil && altitudePolicy == .ncaa { query.queryItems?.append(URLQueryItem(name: "ap", value: "ncaa-altitude-2026-27-d1")) }
-        if method == .colorado { query.queryItems?.append(URLQueryItem(name: "m", value: "colorado-teamunify-2026")) }
+        if method != .ncaa, let methodID { query.queryItems?.append(URLQueryItem(name: "m", value: methodID)) }
         var url = URLComponents(string: "https://turnmark.app/")!
         url.percentEncodedFragment = query.percentEncodedQuery
         return url.url!
@@ -149,7 +196,7 @@ private struct TurnmarkView: View {
         #endif
         let restored = Draft.decode(UserDefaults.standard.string(forKey: "draft")) ?? Draft()
         _draft = State(initialValue: restored)
-        _calculationOptionsExpanded = State(initialValue: restored.altitudeText != nil || restored.method == .colorado)
+        _calculationOptionsExpanded = State(initialValue: restored.altitudeText != nil || restored.method != .ncaa)
     }
 
     var body: some View {
@@ -383,6 +430,7 @@ private struct TurnmarkView: View {
                 Picker("Course conversion", selection: Binding(get: { draft.methodID ?? "ncaa-2025-27" }, set: { draft.methodID = $0 })) {
                     Text("NCAA (default)").tag("ncaa-2025-27")
                     Text("Colorado Timing").tag("colorado-teamunify-2026")
+                    Text("Turnmark Empirical").tag("turnmark-empirical-2026")
                 }.pickerStyle(.menu).accessibilityIdentifier("courseConversion")
                 Toggle("Adjust for altitude", isOn: Binding(get: { draft.altitudeText != nil }, set: { draft.altitudeText = $0 ? "0" : nil }))
                     .accessibilityIdentifier("altitudeEnabled")
@@ -687,14 +735,25 @@ private struct ConversionDetails: View {
     let input: Draft
     @Environment(\.dismiss) private var dismiss
     @Environment(\.dynamicTypeSize) private var typeSize
-    private let methodIDs = ["ncaa-2025-27", "colorado-teamunify-2026"]
+    private let methodIDs = ["ncaa-2025-27", "colorado-teamunify-2026", "turnmark-empirical-2026"]
+
+    private var ncaaHundredths: UInt64? {
+        var ncaa = input; ncaa.methodID = "ncaa-2025-27"
+        if case let .available(v, _) = ncaa.outcome { return v.hundredths }
+        return nil
+    }
 
     @ViewBuilder private func methodName(_ comparison: Draft) -> some View {
-        HStack(spacing: 6) {
-            Text(comparison.methodLabel).fontWeight(.semibold)
-            if comparison.method == input.method {
-                Image(systemName: "checkmark").font(.caption.weight(.semibold))
-                    .foregroundStyle(TurnmarkPalette.accent).accessibilityLabel("Selected method")
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(spacing: 6) {
+                Text(comparison.methodLabel).fontWeight(.semibold)
+                if comparison.method == input.method {
+                    Image(systemName: "checkmark").font(.caption.weight(.semibold))
+                        .foregroundStyle(TurnmarkPalette.accent).accessibilityLabel("Selected method")
+                }
+            }
+            if let formula = comparison.methodFormulaSummary(againstNcaa: ncaaHundredths) {
+                Text(formula).font(.caption).foregroundStyle(.secondary).monospacedDigit()
             }
         }
     }
@@ -725,11 +784,18 @@ private struct ConversionDetails: View {
                         LabeledContent("Method difference", value: difference)
                             .accessibilityElement(children: .combine).accessibilityIdentifier("methodDifference")
                     }
+                    if let spread = input.methodSpread {
+                        LabeledContent("Method spread (all 3)", value: spread)
+                            .accessibilityElement(children: .combine)
+                    }
                 } header: {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Compare methods · \(courseNames[input.targetIndex])")
                         if case let .available(value, _) = input.outcome {
                             Text(input.resultLabel(value.event)).font(.footnote).textCase(nil)
+                            if let turns = input.turnGeometrySummary(value.event) {
+                                Text(turns).font(.caption).foregroundStyle(.secondary).textCase(nil)
+                            }
                         }
                     }
                 } footer: {
@@ -742,6 +808,7 @@ private struct ConversionDetails: View {
                 Section("Why the times differ") {
                     detail("NCAA", "Factors vary by event and course, not age. Long-course factors use separate men’s and women’s tables; short-course meters-to-yards factors are shared. NCAA publishes metric-to-yards factors; reverse and SCM/LCM conversions are derived.")
                     detail("Colorado Timing", "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.")
+                    detail("Turnmark Empirical", "Pace-dependent quadratic offsets over NCAA base factors, fitted with Huber loss and empirical-Bayes shrinkage on paired 30-day competition transitions across 6.32M US swims (2010–2026).")
                     detail("Pool length", "Shorter pools mean more turns and push-offs. These rules do not adjust for your starts, underwater skill, technique, endurance or individual development.")
                     detail("Distance events", "500, 1000 and 1650 yards map to 400, 800 and 1500 meters.")
                 }

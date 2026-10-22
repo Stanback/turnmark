@@ -1,8 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { benchmarkPreview } from "./benchmark-preview";
+import {
+  benchmarkPreview,
+  benchmarkTimeStandardChoices,
+} from "./benchmark-preview";
 import { defaultState, swimRequest } from "./swim";
 
 describe("converted benchmark previews", () => {
+  it("orders time standard choices with USA Swimming grouped before NISCA and Masters", () => {
+    expect(benchmarkTimeStandardChoices()).toEqual([
+      { id: "youth", label: "USA Swimming · Youth" },
+      { id: "futures", label: "USA Swimming · Futures" },
+      { id: "juniors", label: "Junior Nationals" },
+      { id: "nisca", label: "NISCA · All-America" },
+      { id: "masters", label: "USMS · Masters" },
+    ]);
+  });
   it("uses the selected method and enabled altitude without changing the entered swim", () => {
     const entered = {
       ...defaultState,

@@ -5,6 +5,15 @@ import XCTest
     func testLongConvertedClocksRetainMethodDifference() {
         var input = Draft.example; input.time = "60:00"
         XCTAssertEqual(input.methodDifference, "121.39s")
+        XCTAssertNotNil(input.methodSpread)
+        var empirical = Draft.example; empirical.methodID = "turnmark-empirical-2026"
+        XCTAssertEqual(empirical.methodLabel, "Turnmark Empirical")
+        if case let .available(value, _) = empirical.outcome {
+            XCTAssertEqual(empirical.turnGeometrySummary(value.event), "100 yd SCY (3 turns) → 100 m LCM (1 turn) · −2 walls")
+            XCTAssertNotNil(empirical.methodFormulaSummary(againstNcaa: 6672))
+        } else {
+            XCTFail("Expected available empirical conversion")
+        }
     }
     private func fixture(_ name: String) throws -> Data {
         try Data(contentsOf: XCTUnwrap(Bundle(for: Self.self).url(forResource: name, withExtension: "json")))

@@ -9,6 +9,8 @@ static CONVERSIONS: LazyLock<Value> =
     LazyLock::new(|| snapshot(include_str!("../../../data/conversions.json")));
 static COLORADO: LazyLock<Value> =
     LazyLock::new(|| snapshot(include_str!("../../../data/colorado.json")));
+static EMPIRICAL: LazyLock<Value> =
+    LazyLock::new(|| snapshot(include_str!("../../../data/empirical.json")));
 static SOURCES: LazyLock<Value> =
     LazyLock::new(|| snapshot(include_str!("../../../data/sources.json")));
 static YOUTH: LazyLock<Value> =
@@ -291,6 +293,17 @@ pub(crate) fn convert_seconds_with_method(
                 verified: Some(text(&source["verified"])),
             }
         }
+        ConversionMethod::Empirical => {
+            let source = &EMPIRICAL["source"];
+            Provenance {
+                id: "turnmark-empirical-2026".into(),
+                title: text(&source["title"]),
+                url: text(&source["url"]),
+                revision: text(&source["revision"]),
+                sha256: Some(text(&source["sha256"])),
+                verified: Some(text(&source["verified"])),
+            }
+        }
     };
     let target = SwimEvent {
         course: to,
@@ -309,6 +322,20 @@ pub(crate) fn convert_seconds_with_method(
         let Some((factor, offset)) = colorado_formula(&event, distance, to) else {
             return Err(unavailable(CoverageReason::FactorNotPublished, provenance));
         };
+        let converted = truncate(seconds * factor + offset);
+        if !converted.is_finite() || converted <= 0.0 {
+            return Err(invalid("swim.time", ValidationReason::UnsafeResult));
+        }
+        (converted, factor, offset, ConversionKind::Derived)
+    } else if method == ConversionMethod::Empirical {
+        let source = factor(&event, distance, table);
+        let target_factor = factor(&target, distance, table);
+        let (Some(source), Some(target_factor)) = (source, target_factor) else {
+            return Err(unavailable(CoverageReason::FactorNotPublished, provenance));
+        };
+        let factor = source / target_factor;
+        let raw_offset = empirical_offset(&event, distance, to, table, seconds);
+        let offset = (raw_offset * 100.0).round() / 100.0;
         let converted = truncate(seconds * factor + offset);
         if !converted.is_finite() || converted <= 0.0 {
             return Err(invalid("swim.time", ValidationReason::UnsafeResult));
@@ -353,6 +380,36 @@ pub(crate) fn convert_seconds_with_method(
         },
         provenance,
     ))
+}
+
+/// Shrinkage-regularized Huber pace-curve offset in destination seconds.
+fn empirical_offset(
+    event: &SwimEvent,
+    distance: u32,
+    to: Course,
+    table: Category,
+    seconds: f64,
+) -> f64 {
+    let dir_event = format!(
+        "{}->{}|{distance}-{}",
+        course_key(event.course),
+        course_key(to),
+        stroke_key(event.stroke)
+    );
+    let cell_key = format!("{dir_event}|{}", category_key(table));
+    if let Some(arr) = EMPIRICAL["cells"].get(&cell_key).and_then(Value::as_array) {
+        if let [Some(ref_s), Some(scale_s), Some(b0), Some(b1), Some(b2)] =
+            [arr.first(), arr.get(1), arr.get(2), arr.get(3), arr.get(4)]
+                .map(|v| v.and_then(Value::as_f64))
+        {
+            let z = ((seconds - ref_s) / scale_s.max(0.01)).clamp(-3.0, 3.0);
+            return b0 + b1 * z + b2 * z * z;
+        }
+    }
+    EMPIRICAL["fallbackOffsetSeconds"]
+        .get(&dir_event)
+        .and_then(Value::as_f64)
+        .unwrap_or(0.0)
 }
 
 /// Direction-specific documented formulas; do not route distance events

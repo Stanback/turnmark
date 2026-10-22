@@ -249,6 +249,69 @@ footer {
   }
 }
 
+.course-geometry {
+  margin: 6px 0 10px;
+  padding: 6px 10px;
+  border-radius: var(--tm-radius-control);
+  border: 1px solid var(--tm-color-border-subtle);
+  background: var(--tm-color-surface);
+  font-size: 0.775rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--tm-color-text-muted);
+}
+.method-spectrum {
+  margin: 8px 0 12px;
+  padding: 10px 12px 14px;
+  border-radius: var(--tm-radius-control);
+  border: 1px solid var(--tm-color-border-subtle);
+  background: var(--tm-color-surface);
+}
+.spectrum-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 10px;
+}
+.spectrum-track {
+  position: relative;
+  height: 32px;
+}
+.spectrum-rail {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 7px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--tm-color-border-subtle);
+}
+.spectrum-pin {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.pin-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid var(--tm-color-border-control);
+  background: var(--tm-color-surface);
+}
+.spectrum-pin.selected .pin-dot {
+  border-color: var(--tm-color-result-highlight);
+  background: var(--tm-color-result-highlight);
+}
+.pin-name {
+  font-size: 0.7rem;
+  font-weight: 650;
+  color: var(--tm-color-text);
+  white-space: nowrap;
+}
 .method-comparison {
   margin: 12px 0;
 }
@@ -256,12 +319,30 @@ footer {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  align-items: baseline;
   gap: 8px 20px;
   padding: 10px 0;
   border-bottom: 1px solid var(--tm-color-border-subtle);
 }
+.method-comparison dt {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--tm-color-text);
+}
+.method-formula,
+.method-delta {
+  font-size: 0.75rem;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--tm-color-text-muted);
+}
 .method-comparison dd {
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
   font-weight: 650;
   font-variant-numeric: tabular-nums;
   color: var(--tm-color-text);

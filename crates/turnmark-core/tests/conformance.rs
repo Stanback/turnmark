@@ -115,6 +115,31 @@ fn typed_native_contract_and_transport_errors() {
     };
     assert_eq!(value.hundredths, 5244);
     assert_eq!(provenance.id, "ncaa-2025-27");
+    let empirical = convert_swim_with_method(
+        ConversionRequest {
+            swim: Swim {
+                time: "1:00".into(),
+                event: SwimEvent {
+                    distance: 100,
+                    stroke: Stroke::Freestyle,
+                    course: Course::LCM,
+                },
+            },
+            to: Course::SCY,
+            table: Category::Women,
+        },
+        ConversionMethod::Empirical,
+    );
+    let ConversionOutcome::Available {
+        value: emp_val,
+        provenance: emp_prov,
+    } = empirical
+    else {
+        panic!("empirical conversion unavailable")
+    };
+    assert_eq!(emp_prov.id, "turnmark-empirical-2026");
+    assert_eq!(emp_val.kind, ConversionKind::Derived);
+    assert!(emp_val.hundredths > 5000 && emp_val.hundredths < 5600);
     assert!(evaluate("convert".into(), "{".into()).is_err());
     assert!(evaluate("typo".into(), "{}".into()).is_err());
     assert!(evaluate(
