@@ -1,4 +1,4 @@
-import { convertSwim } from "@turnmark/sdk";
+import { convertSwim, getNationalStandardPrograms } from "@turnmark/sdk";
 import {
   swimRequest,
   eventDistances,
@@ -6,6 +6,25 @@ import {
   type SwimState,
   type Course,
 } from "./swim";
+
+/**
+ * Presentation order for the "Time standards" group in the "Compare against"
+ * selector across web and native surfaces: USA Swimming choices together,
+ * followed by interscholastic (NISCA) and adult (USMS Masters) alternatives.
+ */
+export function benchmarkTimeStandardChoices(): ReadonlyArray<{
+  id: SwimState["standardSystem"];
+  label: string;
+}> {
+  return [
+    { id: "youth", label: "USA Swimming · Youth" },
+    ...getNationalStandardPrograms().map((program) => ({
+      id: program.system,
+      label: program.system === "juniors" ? "Junior Nationals" : program.label,
+    })),
+    { id: "masters", label: "USMS · Masters" },
+  ];
+}
 
 /** Compose shared engine results; never relabel an unsupported preview as entered. */
 export function benchmarkPreview(

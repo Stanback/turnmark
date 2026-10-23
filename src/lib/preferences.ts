@@ -42,7 +42,11 @@ export function readPreferences(value: unknown): SwimPreferences {
   const raw = value as Record<string, unknown>;
   if (raw.altitudePolicy === "ncaa-altitude-2026-27-d1")
     preferences.altitudePolicy = raw.altitudePolicy;
-  if (raw.method === "ncaa-2025-27" || raw.method === "colorado-teamunify-2026")
+  if (
+    raw.method === "ncaa-2025-27" ||
+    raw.method === "colorado-teamunify-2026" ||
+    raw.method === "turnmark-empirical-2026"
+  )
     preferences.method = raw.method;
   if (ages.some((age) => age.id === raw.age))
     preferences.age = raw.age as SwimState["age"];

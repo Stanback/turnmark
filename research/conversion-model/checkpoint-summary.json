@@ -1,0 +1,115 @@
+{
+  "checkpoint": "national-checkpoint-02",
+  "scope": "aggregate local research receipt; no swimmer-level records",
+  "input_sha256": "ee29dbbdd122f948c56afc3003d287274a085f486e038d575b9ef3c6f9bfde4d",
+  "races": 1024845,
+  "source_scoped_swimmers": 57780,
+  "meets": 685,
+  "raw_race_cohorts": {
+    "course": {
+      "LCM": 316807,
+      "SCM": 2508,
+      "SCY": 705530
+    },
+    "category": {
+      "men": 488738,
+      "women": 536107
+    },
+    "age_band": {
+      "10u": 233479,
+      "11-12": 249196,
+      "13-14": 252084,
+      "15-16": 182596,
+      "17-18": 94853,
+      "19+": 10221,
+      "unknown": 2416
+    },
+    "event": {
+      "100 backstroke": 82037,
+      "100 breaststroke": 81199,
+      "100 butterfly": 62407,
+      "100 freestyle": 123909,
+      "100 individual-medley": 33525,
+      "1000 freestyle": 3623,
+      "1500 freestyle": 2196,
+      "1650 freestyle": 2852,
+      "200 backstroke": 32249,
+      "200 breaststroke": 33114,
+      "200 butterfly": 17692,
+      "200 freestyle": 76401,
+      "200 individual-medley": 65448,
+      "25 backstroke": 8247,
+      "25 breaststroke": 5553,
+      "25 butterfly": 5377,
+      "25 freestyle": 9488,
+      "400 freestyle": 12821,
+      "400 individual-medley": 16497,
+      "50 backstroke": 66348,
+      "50 breaststroke": 60987,
+      "50 butterfly": 58138,
+      "50 freestyle": 138036,
+      "500 freestyle": 23761,
+      "800 freestyle": 2940
+    },
+    "year": {
+      "2020": 8905,
+      "2021": 39850,
+      "2022": 63315,
+      "2023": 80411,
+      "2024": 221424,
+      "2025": 346452,
+      "2026": 264488
+    },
+    "region": {
+      "Midwestern Swimming": 57938,
+      "Pacific Swimming": 466313,
+      "Potomac Valley Swimming": 158553,
+      "Southeastern Swimming": 342041
+    },
+    "meet_class": {
+      "Age Group": 244875,
+      "All-Star": 6108,
+      "Approved": 11511,
+      "Dual/Tri/Quad": 3080,
+      "Intrasquad": 11205,
+      "Invitational": 56702,
+      "League": 24057,
+      "Observed": 7370,
+      "Senior": 97342,
+      "USAS": 4063,
+      "unknown": 558532
+    }
+  },
+  "pilot": "SCY-to-LCM-freestyle-50-100-200",
+  "matching_window_days": 30,
+  "eligible_races": 337471,
+  "matched_pairs": 5655,
+  "partitions": {
+    "train": {
+      "pairs": 4046,
+      "swimmers": 1845
+    },
+    "validation": {
+      "pairs": 849,
+      "swimmers": 374
+    },
+    "test": {
+      "pairs": 760,
+      "swimmers": 358
+    }
+  },
+  "pair_archive_region": {
+    "Midwestern Swimming": 111,
+    "Pacific Swimming": 5267,
+    "Potomac Valley Swimming": 174,
+    "Southeastern Swimming": 103
+  },
+  "absolute_pair_date_gap_days": {
+    "0-7": 1128,
+    "15-30": 3507,
+    "8-14": 1020
+  },
+  "archive_region_is_home_region": false,
+  "representative_sample": false,
+  "validated_for_product": false
+}

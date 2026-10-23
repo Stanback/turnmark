@@ -1,0 +1,35 @@
+name: Check offline conversion research
+on:
+  pull_request:
+    paths:
+      - "research/conversion-model/**"
+      - ".github/workflows/conversion-research.yml"
+  push:
+    branches: [main]
+    paths:
+      - "research/conversion-model/**"
+      - ".github/workflows/conversion-research.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic-research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: research/conversion-model/requirements-lakehouse.lock
+      - name: Install hashed local-query dependencies
+        run: python -m pip install --require-hashes -r research/conversion-model/requirements-lakehouse.lock
+      - name: Install DuckDB Iceberg extension
+        run: python -c "import duckdb; duckdb.connect().execute('INSTALL iceberg')"
+      - name: Test invented records only
+        env:
+          TURNMARK_LAKEHOUSE_TESTS: "1"
+        run: python -m unittest discover -s research/conversion-model -v

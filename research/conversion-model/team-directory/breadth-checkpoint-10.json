@@ -1,0 +1,2423 @@
+{
+  "scope": "aggregate public organizational metadata; no swimmer records",
+  "purpose": "Local training/evaluation; reusable public reference, not a deployment plan",
+  "program_listings": 20306,
+  "source_scoped_organizations": 17697,
+  "affiliations": 21664,
+  "program_kind": {
+    "age_group": 4592,
+    "collegiate_club": 302,
+    "collegiate_varsity": 1223,
+    "high_school": 12167,
+    "masters": 1548,
+    "summer_league": 474
+  },
+  "school_listing_states": {
+    "AK": 35,
+    "AL": 80,
+    "AR": 72,
+    "AZ": 339,
+    "CA": 930,
+    "CO": 189,
+    "CT": 179,
+    "DC": 29,
+    "DE": 46,
+    "FL": 938,
+    "GA": 540,
+    "HI": 28,
+    "IA": 100,
+    "ID": 63,
+    "IL": 491,
+    "IN": 501,
+    "KS": 135,
+    "KY": 167,
+    "LA": 195,
+    "MA": 268,
+    "MD": 160,
+    "ME": 45,
+    "MI": 308,
+    "MN": 294,
+    "MO": 245,
+    "MS": 129,
+    "MT": 25,
+    "NC": 272,
+    "ND": 35,
+    "NE": 82,
+    "NH": 97,
+    "NJ": 153,
+    "NM": 52,
+    "NV": 68,
+    "NY": 290,
+    "OH": 549,
+    "OK": 127,
+    "OR": 261,
+    "PA": 676,
+    "RI": 43,
+    "SC": 253,
+    "TN": 341,
+    "TX": 1111,
+    "UT": 226,
+    "VA": 404,
+    "WA": 241,
+    "WI": 249,
+    "WV": 56,
+    "WY": 50
+  },
+  "activity_status": {
+    "unknown": 20306
+  },
+  "partial_jurisdiction_imports": 90,
+  "source_location_records": 8240,
+  "program_location_links": 7497,
+  "operator_described_basins": 1295,
+  "new_source_documents": 184,
+  "new_source_ids": [
+    "3c2a-swimming-programs-2024-26:5cb90d030ca4572f99d955229847c8717ea38c27d56214305757c14b3bebf5cf",
+    "aaa-swimming-conferences:6d49f37a4ad8e4d048a1cd72cc8f9b0286eb2aa260be3848d4072b3d4adb3374",
+    "adirondack-lsc-clubs:d46af9fb0ba7eee1930330e7674c26b70ab26758ca07710102cf40257fee084c",
+    "adirondack-masters-places:cd3c95e8cf782561c59288bb3289908ca28f2d675f234905ffd079bc2afa3bf9",
+    "ahsaa-2017-north-sectional:ff10872e4366d11005f6d026cfc5b787db2d1839eb4ee52d6eaecf11446fdc0e",
+    "ahsaa-2017-state-championship:523d2ae61131a3aae6734b407589248d5217865c371d1ea95bd774859b38c6aa",
+    "ahsaa-2020-state-championship:a1e9cbe2110365637abde54c88ba70aa13854ccfda9ec0bf8d2a51bf5c221c1e",
+    "ak-lmsc-workout-groups:4f6aea8f398f51187c1e20d5030b79dd1c8a2ef17aff9250db5f7f26001604aa",
+    "ar-lmsc-places-to-swim:0cfdea0f3897b1681901290b4a3c4ff5a15df3a40a2df0dfbbbcfd88b126700e",
+    "az-lmsc-where-to-swim:56137484d160dfa1fa7f9131e856df028c184e502a2d702701a09517b2672596",
+    "chsaa-cloc-boys-swimming:fce508a32af5ff0d0684c3179c44a1c4c41aadbba7c00282cb54d4dab436cee4",
+    "chsaa-cloc-girls-swimming:aa1446d7441df50b8a57dc05ec5f9dd301646a673fd46db499e9a7b29dfd06dc",
+    "ciac-swimming-boys:8eb6b0e7e8aa89c07bfa7b688036fd1dfed715e52b6fbc59b32f0e0dc82a3926",
+    "cif-cs-2026-d1-championships:c316f12fdd9eee42b6370666d4b8f7f29cc86e75f3f58d484a5a60ce5b6a20d6",
+    "cif-ncs-championship-history:0c9cb6e525ac48fe94da262bdb725352a214e4df1fc26e1bf003b76ba0224c71",
+    "cif-os-2025-26-blue-pages:ebaa02028b4bf3605bf27b37986c38d9841debb4954c16ba1f9900c00e84132e",
+    "cif-sds-swimming-alignment-city:4c83847a3f6c602ac0cc38031e915f0122757a9446244291faf3cfcbfb868315",
+    "cif-sds-swimming-alignment-coastal:f5abb4f728ee10c82e776bcfdbf40d4b43d91cfb97387c1221ed2535f9595030",
+    "cif-sds-swimming-alignment-frontier:f0e49b1a33e544c50009b991388f8883796a386a6ae87c9e79875dade4f8a7ba",
+    "cif-sds-swimming-alignment-grossmont:13f14f00637ee38eafb9aff229307b3b2a0b74f52aa41314cd338020e972d872",
+    "cif-sds-swimming-alignment-metro:fbc1d9ea491e2bd7035435941f90d3c3959d6fa9fae211e412a254403ba29273",
+    "cif-sds-swimming-alignment-north-county:fa2dc24c73b9fe9b20e74e8f554e0b1401f3eae46f06e3d69851edbdfdff5dc2",
+    "cif-sds-swimming-alignment-southeastern:9fd8f7c68dca369c6930295981cb224f205958064815b14435bc2c174dd14d88",
+    "cif-sfs-aaa-swimming-champions:59e46c28b267b6a75447fc25a54e0b9fd569b2ed6d7d48a03c5a0bee2714e482",
+    "cmsl-locations-and-standings:8b0506f03e91eee9b00b8c52bb215b58d22535280c9950426a404b7aa67f05c8",
+    "colorado-swimming-lsc-clubs:f4fe1ef2dcc4b8637cf7748737ea8866cd9713521b36dc86875299f464acad30",
+    "ct-lmsc-places-to-swim:b22cf3e79be5bb349e93d1f55f34df8e6303e00073d95f6ce84f47ef436a41e4",
+    "dcsaa-state-championships-2026:3b4ab95b8ab9a051ecb548a049a74df886f5c3b38a6bb16960df466e2dce1046",
+    "diaa-2026-boys-relays:6fd4dd3d73fdce2057dc8ab5e3a505a35c195eae2761d7725f849047f39625dc",
+    "diaa-2026-girls-relays:a37beb772af6d996dabf8db6746357dbe6fb4e7f2f69287729c93db1bbf9cb23",
+    "diaa-boys-state-finals:1790554a4e049a85d53a44ff67b28cd53fa2ad44212f59e414a4c7df430b0820",
+    "diaa-girls-state-finals:f5cbd44536deea93cc215afb9fe918c561edad9f0f41e447d7091a6be3da8873",
+    "fgc-lmsc-directory:f3d3cf7e30e29fe7ab19135bd083f7db5e3a1fb362ee0a63b4663b21e2199d1e",
+    "fhsaa-boys-swimming-hierarchy-2026-27:bf021b622c4de95e6d07b648a7de0851eea1a86b67be02e677d656d3ce095464",
+    "fhsaa-girls-swimming-hierarchy-2026-27:7ea683fb61ce7c36c032efe3bafde5b3c360aefa9940117c071ee8d93eae67d2",
+    "florida-swimming-lsc-seasonal-clubs:2419a1fa6837449d01eb7d5c036d36097d2698377260c40f5bb5681ab34f7eaa",
+    "florida-swimming-lsc-year-round-clubs:53d11cb4af107144ec483ca425e459e4f155a08c32c0795449b5d0ef798af63c",
+    "gcsl-divisions-directory:cd186af4b585da2ceac4939c86e180af062f75efb3176793a2c9a2f7f6e93f3c",
+    "georgia-swimming-lsc-clubs:d470f69c90f47350e6c67e2bf83b6a0df8aa91df781c680616c45a72346cbca7",
+    "great-lakes-ymca-zone-championship-2026:4de7671161187f4033c22faef9eee1b4e202c70c01019376a1f3aa1a6e9280b3",
+    "hawaiian-lsc-clubs:0280bfee56a71fa9238f80f37a4f28e3c0172ab25bf6ffbf3fa5b4f5608ae5e8",
+    "il-lmsc-workout-groups:3303534c76dcc2767f4b16bdb805bae5f6692f606ea818a743e013601a2ff2c7",
+    "illinois-swimming-lsc-clubs:c147cab1d92cdf02f871ed3b272a353aaccb0f29ffe936bdf83accb22d8696aa",
+    "illinois-ymca-state-championship-2026:e5d0274dd5e310bf15782e9b0506a57ab06110eafde57f54d764fed093d86c46",
+    "in-lmsc-where-to-swim:3c763e897266767639bb9896524c6e51ed6ff2469e118b5787df470a3bcc94b0",
+    "indiana-swimming-lsc-clubs:714f53ef3ffcbaead12118af9881c71d850d2ff4cdd6b9aea0b3bea3ee9fce1e",
+    "indiana-ymca-state-championship-2024:4a9c0e48305660c082db0414a487328757321f78a30c616f2faa7858f911fb21",
+    "inw-lmsc-clubs:e161e9ce4cd35d69e08fb08ab3025bff3cbd353d217f9a1ca8138c93890fe3bb",
+    "kisl-2026-city-championship-c1:7be68a5df6f0f85792b91d2207858451afccab6f41a276a39f128a9f74b5de2e",
+    "kshsaa-boys-swimming-programs:bbc9552042ffef185499c340526f8f19c5ae5602aa946fe1abb2a0b109a33355",
+    "kshsaa-girls-swimming-programs:688b8c0758a103cefd4de8b1e4dd14bf86c0dab8bd0f880d12ad942233f3a448",
+    "ky-lmsc-teams:5fbf000741ea5933ab5545249aa89ced6dba19219c45701cb2a68321474af6f2",
+    "lhsaa-2023-d2-finals:03ea3cc27166cea9797650b9d02ba609ab008a5af61df91f8ca22fe07ef2c1d8",
+    "lhsaa-2023-d3-finals:430f91fa52ca17c4d322871c06f703af00e74b0f85a166cef10d4db4b25817a1",
+    "lhsaa-d1-state-scores:84588fef8e5d14b9d17b18bc83176eb42fe5687bc17caf84f487c9c280248252",
+    "lhsaa-swimming-divisions-plan:3b3df9502f3a9406a17d43064605844f5946011d6d0c4ddc3f3eefb73abd2240",
+    "mcsl-team-directory:10ba4e392e64a3bbe0416d288ff6c685f7f6b4c5437bcef5be8ac070ab36d1e2",
+    "md-lmsc-clubs:bd669ffecb3a2385b7ec91adedca1420612bb9fabc2f61d8c2224efe26379b79",
+    "mhsaa-lp-d1-boys-2026:51e8ce3eae205ca305a6cb1b59a1474637629b7943c51ec6ff2a315ea304b985",
+    "mhsaa-lp-d1-girls-2025:5d832eb57572eaf044adc1e8b15666284a841621a68d0527b7f22c75460aaf31",
+    "mhsaa-lp-d2-boys-2026:836334bb3443480ac7b4ff491262d65edb1fb8d5c5420ddcd5daf80e6412f316",
+    "mhsaa-lp-d2-girls-2025:52ec6631458c66e5c8a1c0c1ad0cb3a4fea9cee31e84270d405fcda74a9e23c4",
+    "mhsaa-lp-d3-boys-2026:6d24bcd3071c2e65178d0cade8d12ed1b22c7e60fdb6ea0d094dc9764413ec61",
+    "mhsaa-lp-d3-girls-2025:1e1abdd7beeba65f6d1f11dcd46760bc3a25cb5f83a8db571dd039739cf6162a",
+    "mhsaa-up-finals-2026:aa253a07e3f3c96a5c56effa18b3fc966f762c15c2c030619c624f0ec5c41b3e",
+    "mi-lmsc-clubs-and-facilities:63b650b5cae1ff81fe9f9a4e85ca861c4f66f12d8a08bc1f5e4020a45e2b4a9b",
+    "minnesota-ymca-state-championship-2025:70f00da922b3003a1e2fb73f04ebc284d434c3a704d57c332fea8513a7181e8d",
+    "montana-masters-clubs:9a28772e9be493e5df2dbe240be2155f2fafb9ea8a24789507a4b3bb7aee4187",
+    "mpssaa-state-3a2a1a-2025:92a47ce72e0fabd759b5cd270b2fb456e2382254ba94286aaea5ee0cf2702374",
+    "mpssaa-state-4a3a-2025:abe6705059c6f1b5c87f93c362e5559c62ccec440c1b30b5cb003de3eb2beb77",
+    "mthssa-2024-regionals:e9ee487771e6eda6cbcc575614d43c51afe76f28e74c1eba0e94439c449b5a40",
+    "mthssa-2025-regionals:df7333d85e25c75d3c0a13f6777888a11fdb14fec3768977ffd910bc8d484826",
+    "naia-swimming-2026-qualifiers-men:f47cf9cc22aaa8257d30a06852e341ee0ce26759b4864cd02236746db167a268",
+    "naia-swimming-2026-qualifiers-women:d03a9efcc08fe1d3c7e5098164dd9f236e72d472fcabb64544793ac2c85ffc0f",
+    "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+    "nchsaa-2026-123a:d6d14488789ecf723b06ce7cf1baa128aa4fabc50dc2f9da02388b2b206562a5",
+    "nchsaa-2026-4a-by-gender:5926f781645ebbe7b5aaa6d25bbc477664d894f3b15b1e46301a0cf9ba18b041",
+    "nchsaa-2026-4a:5926f781645ebbe7b5aaa6d25bbc477664d894f3b15b1e46301a0cf9ba18b041",
+    "nchsaa-2026-5a-by-gender:50a93311f60d110a4ebc52dc9f2bd459c88fbbb6206b962976661aee1b986de8",
+    "nchsaa-2026-5a:50a93311f60d110a4ebc52dc9f2bd459c88fbbb6206b962976661aee1b986de8",
+    "nchsaa-2026-6a:dce08f592b2ad8074dde6aa647e6ff0044f8eb2e1461d8965a6c7493d9e74f08",
+    "nchsaa-2026-7a:a5a2000bdc10eb2e1b993814b085d34d5033f3642218126c5dce0c96cb7e8f52",
+    "nchsaa-2026-8a:efd533581c3077d626da97ca51aeafd95aae4a9fcc631c82e3910f0628e75d37",
+    "ncisaa-2025-d1:2c3a733ff3432fdaceab02538d2cb2ea3d39f6b7e86aa8e9209b42c1570ca3a8",
+    "ncisaa-2025-d2:1f8c26c15e1c13fe20d665760f4f084aee7f2110e5af3290ca0001253521b51d",
+    "ncisaa-2025-d3:cc727d50df7127639d2eeb7b8f3169aec5a2545ca50ffe0133ca3f46cc95420d",
+    "nd-lmsc-clubs:9e290fbc59c573e86ef6abf1e10be748c48f278b696553218b0f20edd7cda488",
+    "ndhsaa-swimming-girls:ec9d05078a3c6ca5aca0fab83df311019a6137fedac5a6116dd8521b06bf888f",
+    "ne-lmsc-clubs:b542a390ed85393b9f1eb595f234099eb7a5cd52be13a8a83636c946ff6cc349",
+    "new-england-swimming-lsc-clubs:581c552b49dc24e072084862fe7cffe235976f3efa0eaa02b3278d8857344245",
+    "new-england-ymca-swimming-championship-2026:0b1a6f794b70b042117236cfa3c150630e0940b7e9708dcc80d6eb355dde58a9",
+    "new-jersey-ymca-state-championship-2024:437b973a7686310ac426b44201958c1c95c508f969d9a13737e94ef6529f1f0a",
+    "new-york-north-country-ymca-league-championship:46dd7c6c6710ad0cc0094391716ad3ce84653a54b5bc4f831106d73f23c56f65",
+    "nhiaa-bylaw-swimming-2025-26:738924b98f41083f22a5ea9775f42037a38af7e2ff324106111fa76fd4645217",
+    "niaa-swimming-alignment-26-28:7e9bd0a52419c688affebb6e040fd388c0a2cbac55cd7b47ead70fe74d153c08",
+    "niagara-masters-clubs:0260082d481a5ccdce1c1f40c00feac51541bf4bf69bdbe4841945267762ca07",
+    "njcaa-swimming-programs-2025-26:9625e5c10cd06e92dca1833274ab0a3139070ea4b385c4610389db77e71f98bf",
+    "njsiaa-moc-2025:bdf405d5f6b348126de3ea1cc545e4ee468538958ea40f83f27fd44968ed03bc",
+    "njsiaa-moc-2026:188ecd0711f2fa5a1c949e41c80302a492d0ef325385a68d18243ec66075bade",
+    "north-carolina-swimming-lsc-clubs:b3529c2d1a81b22dfa20b491e2dfde90d2647f126096130e60c65ec0d1227496",
+    "northwest-ohio-ymca-swim-league-2025:84a15b1b02ea010970c3b18c08743b2e68f0e2a6fb010f31d104c3f4a8f6b67d",
+    "nsaa-swimming-registered-2026-27:ebd2837409c131f649d50e0b2d22ae0216d66acaaa95cb4b2c7311e0437a3b1c",
+    "nvsl-handbook-2026:ec5084d874112019e8d4e39fc0089417f2556e8635dde25269d20a3a59d8a15d",
+    "nwal-standings-directory:e5da22fd341fa278cc37857d2d57bb7df3114386f846d92672740ff27c68045b",
+    "nys-federation-2025-boys-finals:b248db511149bb64f5b32bb8e517fac110be242a1b87ac11bc23ec181b11d8cb",
+    "nys-federation-2025-girls-scores:a0fe02a7309f299d21679edacb301069001fc80484844eef4eb3302d92a2688d",
+    "nysphsaa-2025-boys-section-scores:df227c3c00de18a75523e1afc2466ab473540d7c7a913e930418b045a29b19cc",
+    "nysphsaa-2025-girls-finals:27f06132a6ff522beceb85b2b4dc29fa0174d059b7b75b659eb82cb9bd6f0fc8",
+    "nysphsaa-2025-girls-scores:d39a989101227c943e2464e7112b8dc7207801ad8b355e9ab05daf0618c9721e",
+    "nysphsaa-section-1-girls-championships:553db2ae0372da50a547e2a57a47398a22600990466b9218a9bc75812fd6e784",
+    "nysphsaa-section-4-boys-champions:3ef0c3c577e12ea417f6bce3571223953ca7b27ad66a94bc24bcc47c43a6abc5",
+    "nysphsaa-section-4-girls-champions:637cb7c458e544d683518d8505fb98c8ff40f5bcf51422dbcacbdd56b0b3c105",
+    "nysphsaa-section-7-10-boys-swimming:e1af00032d323260fed3ff527a7ccffb6afdd06303c6f405006fc702011823bb",
+    "nysphsaa-section-7-10-girls-swimming:f0b65052d70b6a98aae07a7ccd55253c09684e7425873d23611c165e12589196",
+    "nysphsaa-section-9-2026-handbook:64890c3c2eb51aeb53aa59117f19940d2c4cab4403b70b5a1159b21e7b08eae7",
+    "ossaa-boys-swimming-classifications-2026-27:bf11c9fe30cc819374754fca73251a7808bc30662ce7c9bbf0ba07ffda58a57a",
+    "ossaa-girls-swimming-classifications-2026-27:0a658d25e4e952bb3b3a3bcafd4cda110a388767d30b2e0de2c2d49e31bb3f4a",
+    "pa-ymca-registered-teams-2025-26:b042406f35af8de32384b926fc3d4f29d63e5ded1c375b9ba578367b6ba8b65d",
+    "pa-ymca-west-district-championship-2026:3e102315839f910cde877af8779142a331eb5fefe697dbde44d6a8cd4702e61f",
+    "penn-del-ymca-swim-league-members-2025-26:9f2fc43126af0b2096be8e5ebe282558cfa25c4b6c9df0531dcc32392315a2d5",
+    "pmsl-handbook-2026:14216bbbea9d3b612d9c0bc801bafaefac060e00f8aad5055cde262261f6d1bc",
+    "pns-lsc-clubs:522491f7adbc011224a1a09ac9a9c15a7b780a5f66d9e463bd7bc35639c0ab6e",
+    "pv-lmsc-clubs:0c6c275e3a913f37facd0a64299320655612d82362b6459b6f87854afc0b7d4c",
+    "sal-teams-directory:d0a79d80e2e953d76aa650ff4f72680984b22a9e3ca78b006427132521f3c858",
+    "sc-lmsc-adult-programs:df463bb31b41a6b178e12ecaac683bfc12a745ee006316a45073762e0f73b17f",
+    "schsl-swimming-2026-boys-3a:578200630c345238d33c2892a38e4e2fa88c46ed5ea0647696843dcf1413aced",
+    "schsl-swimming-2026-boys-4a:f25775447820463bdc985c1bf0a4a32a15c2e86defc1d0d935d844b907ea5105",
+    "schsl-swimming-2026-boys-5a:8960c4ea81b93ca2250b4984dcb4ccbbe4259c8c2fc4aa5dbdb60825328b1e9c",
+    "schsl-swimming-2026-girls-3a:1f031d6e68ea436e4bd341fbde8f38fe09e6b839de5b2f7563d7f7f0f5ac0888",
+    "schsl-swimming-2026-girls-4a:833db5c1a74ddee5018b75ea40d2d0276c8f29188669238bb1f4564fa1a9fd4b",
+    "schsl-swimming-2026-girls-5a:eb31b69a3c84922e06c87159be0f2ad4b42c6a58348116c2c77a83951f653008",
+    "scisa-2024-state-championship-scores:a08c068f25a312635f57afc7adaaee66d7ade56e2ce3a5fa5295094c4b0b5fc0",
+    "scisa-2025-state-championships-teams:92d732266cf98fa5f0bee7246d2b4b8d65a0ee75c1ddbb4cb79addfd1bad65df",
+    "scisa-2026-state-championships-c1:dd5fcba2e6881636d171b95053ea9005ff99cb0b1fa83c9dc7276bd3a7707da6",
+    "scs-lsc-clubs-coastal:6c028e847ac68ce2e5fbfffb0415b00f2d1286f453bd96f405cda3fd7257cb8a",
+    "scs-lsc-clubs-desert:4a018540312d60339a54c1185ddd72281e76d3d908cd4ccc7d914ccaf6eb99e7",
+    "scs-lsc-clubs-eastern:83ca85ce06004e7b0a4cc5f188199392cb461aec036de99b3c2daf6604c1d1b9",
+    "scs-lsc-clubs-metro:bfa83831cb8d9c310641f70d9427ef58e7399d145f51c7c10d505f973032ba85",
+    "scs-lsc-clubs-orange:1115abfb459f4c978f532bf76e520fc70d479097d0cd1948e1d5bf4c1c55ada3",
+    "scs-lsc-clubs-pacific:03565bf0948f27790572b28b2e6365a425f7ea371c26d11ad4da40ce319c6720",
+    "snake-river-masters-places:cfb044ac1b962776669bf3372dcca6c6658702768d9ead9b0d7690b1ebd2b73d",
+    "south-dakota-masters-places:618da8a0415d93ca99565ebc843a9a26f79932384f482e28c89b6627eadcf545",
+    "southeast-sunbelt-and-national-ymca-swim-teams-2025-26:479b126bc4561ffbd8991d1e4751ea2385b7b5dc6fead5ee2cf3644fcf22b7dd",
+    "ssl-de-teams-and-pools:e19f67960047aa6faf4326a2a62ca9cde2cf7efd290fc2fd65b04e47f6d49382",
+    "tcsl-member-teams:8683ae9d0ac32028965be1e18f91efb4a98841cfa0395e3391084e553e9070b1",
+    "tisca-2023-state-championships:ff31dcc3686494545675e9267287aee640f01a53f41c1ffa01d1004d6856d199",
+    "tisca-2024-state-scores:757f44c1084f581d0341ee87463e5be0be1a358032c273a07410e64afab16bd6",
+    "tisca-2025-state-championships:c5fd37ead95bf25e14c73562c5d0dbf93af19d98ff0151a443fc91355aee7657",
+    "tisca-2026-state-championships:b76eea8d534f45534bc9e02bf05dd6d23fae0f13f397bc5361e4126457bb7f6a",
+    "uhsaa-boys-swimming-teams:a60f30890a30741fbe8562224623c7c8f5f2ebbc04e78e0a6838c3a716b385cf",
+    "uhsaa-girls-swimming-teams:7a1d148ff1359da2867b527294c97dc899246824caead9e0d6f819b62d678a10",
+    "vhsl-2019-class3-state-scores:35da0ad288779f13aca348c9f0b05a803ebe5ba01853f49bf885dc0532262514",
+    "vhsl-2023-class1-2-state-championships:dbc2ac5708b3d37fc857723b4263a9dc1723636276b292c1b83437455d9e777d",
+    "vhsl-2025-class3-state-championships:98a55c02b824963d2fef300a5c2b8874072baef753457069d1cf39564ba799a8",
+    "vhsl-2025-class6-state-by-gender:bffaf80405584ba0b66d45fa885ecb02a9be2f1fa033b97540d485697ca4165a",
+    "vhsl-2025-region-1c-2c-championships:060bc2bf7a32e2680bf68c8e06a3756a8852066e235cec7b1ce07ef258fa3fba",
+    "vhsl-2025-region5d:7395f90a51273d067fa494a9ded58a3321b9c9b76da569e4daf532e2919b89d9",
+    "vhsl-2025-state-class4:1e0fa47ff44769217e1459c41ad5bcce25c05a00eee2270f7eb90a429dffb321",
+    "vhsl-2025-state-class5:85cfad7aa8375ccc1e2853f8a37384f6a93e56074773eec3cf597d3638521f49",
+    "vhsl-2025-state-class6:bffaf80405584ba0b66d45fa885ecb02a9be2f1fa033b97540d485697ca4165a",
+    "vhsl-2026-region4c:8310d8b690eb5375c9c5b11f66609f621ca3ca24eda5934085856f7e7a7c7958",
+    "vhsl-2026-region6d:169bf8abdb208fccec27da1e440acc810aa7a6fd33d8d5d4c09eb8fe960dcf57",
+    "vhsl-concorde-district-2026:2e44bf548cf7b44b993ad8f9f4aab4ef38c91722b7b4a9213ee84f4e159f8460",
+    "vhsl-liberty-district-2026:564655d99e0915fa911edab49408de1a233859b17d698c23367003ccc154cc68",
+    "vhsl-national-district-2026:dc5d10aa8ec7e19d22aebe28e414b9f20bd84f531d79964cb285211c6c32d4ac",
+    "vhsl-patriot-district-2026:65060fe5ce117d8cba2b28623074fb7b625a25f04fbea6ecccbe0bd890afd124",
+    "visaa-boys-swimming-divisions-2026-28:6f23575073799efa5fcce07ef2c6be6ddbb1c34ddb9f871d2bd2eff307221ba7",
+    "visaa-girls-swimming-divisions-2026-28:95a792601364cd6afc2e404c7115e7af86517ff8ad969427c95abe4b3198e54d",
+    "whsaa-swimming-2025-26-3a-boys:b635a24aa85d49cbe9401c14d879a7bbbeba479e8bf2250986b9412d529e8257",
+    "whsaa-swimming-2025-26-3a-girls:6fb0efaaaabcdf98b19b667d6dd08a4087838212f4178eb824d2d71a22818e6d",
+    "whsaa-swimming-2025-26-4a-boys:1f036437410d133e674ac20abcc26101eb7f369d26ec9f2e1814709ead629c77",
+    "whsaa-swimming-2025-26-4a-girls:bd42c4ba1afc35cd6814ff708f6bf35635f9d31d4662d97227933cf1a8ee4b0d",
+    "wiaa-wpa-boys-swimming-2026-27-1a:67c7a9011e038b99ebb67a37ba81523d552b72b1d3b140236346179479a56ec2",
+    "wiaa-wpa-boys-swimming-2026-27-2a:ca33a3a565a027d7951c13263096d6e3e9ceea001dfef33016619d164bc9d08f",
+    "wiaa-wpa-boys-swimming-2026-27-3a:fdb87187f0c4772dc54ee097867cacced62b5b72a96a4fabbb1c6c7638460028",
+    "wiaa-wpa-boys-swimming-2026-27-4a:d7e87895fa1732b0b2a807c6f8c87dad5dfb6df546a41e4adea25efdd7eed18c",
+    "wiaa-wpa-girls-swimming-2026-27-1a:150d9c9722672508fad9d88658218014623e1e767750a8aaa71402af4fc23e2b",
+    "wiaa-wpa-girls-swimming-2026-27-2a:a70bafc471167f7704d041077a5be7d9d24d9cf3a1f613d9836352ed3563e8fd",
+    "wiaa-wpa-girls-swimming-2026-27-3a:d137edce031739c77db0984c5af02a7268fd5dbd6d7d9e09956f88a530db6464",
+    "wiaa-wpa-girls-swimming-2026-27-4a:defe203aba6e6b43e80a5c3704dc6bec156f11b319e90f0d28b99185f407c07a",
+    "wisconsin-ymca-state-championship-2024:7669a332f6394e99bbe73b85510025781a83a906ab72067d4a402cdcf95a21bc",
+    "wmpssdl-md-championships-2026:bc6912e0416901daec509e31588b37f9a86931c3427af06f4f4613bb2e6b87c5",
+    "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+    "ymca-nationals-scoring-teams-2025-26:9ceb125cf03055d1a38e87a449e901e81b974795c77da6e4b54f19c5a061a2dd"
+  ],
+  "new_program_listings": 7821,
+  "new_source_scoped_organizations": 7267,
+  "new_school_source_documents": 118,
+  "new_school_source_ids": [
+    "aaa-swimming-conferences:6d49f37a4ad8e4d048a1cd72cc8f9b0286eb2aa260be3848d4072b3d4adb3374",
+    "ahsaa-2017-north-sectional:ff10872e4366d11005f6d026cfc5b787db2d1839eb4ee52d6eaecf11446fdc0e",
+    "ahsaa-2017-state-championship:523d2ae61131a3aae6734b407589248d5217865c371d1ea95bd774859b38c6aa",
+    "ahsaa-2020-state-championship:a1e9cbe2110365637abde54c88ba70aa13854ccfda9ec0bf8d2a51bf5c221c1e",
+    "chsaa-cloc-boys-swimming:fce508a32af5ff0d0684c3179c44a1c4c41aadbba7c00282cb54d4dab436cee4",
+    "chsaa-cloc-girls-swimming:aa1446d7441df50b8a57dc05ec5f9dd301646a673fd46db499e9a7b29dfd06dc",
+    "ciac-swimming-boys:8eb6b0e7e8aa89c07bfa7b688036fd1dfed715e52b6fbc59b32f0e0dc82a3926",
+    "cif-cs-2026-d1-championships:c316f12fdd9eee42b6370666d4b8f7f29cc86e75f3f58d484a5a60ce5b6a20d6",
+    "cif-ncs-championship-history:0c9cb6e525ac48fe94da262bdb725352a214e4df1fc26e1bf003b76ba0224c71",
+    "cif-os-2025-26-blue-pages:ebaa02028b4bf3605bf27b37986c38d9841debb4954c16ba1f9900c00e84132e",
+    "cif-sds-swimming-alignment-city:4c83847a3f6c602ac0cc38031e915f0122757a9446244291faf3cfcbfb868315",
+    "cif-sds-swimming-alignment-coastal:f5abb4f728ee10c82e776bcfdbf40d4b43d91cfb97387c1221ed2535f9595030",
+    "cif-sds-swimming-alignment-frontier:f0e49b1a33e544c50009b991388f8883796a386a6ae87c9e79875dade4f8a7ba",
+    "cif-sds-swimming-alignment-grossmont:13f14f00637ee38eafb9aff229307b3b2a0b74f52aa41314cd338020e972d872",
+    "cif-sds-swimming-alignment-metro:fbc1d9ea491e2bd7035435941f90d3c3959d6fa9fae211e412a254403ba29273",
+    "cif-sds-swimming-alignment-north-county:fa2dc24c73b9fe9b20e74e8f554e0b1401f3eae46f06e3d69851edbdfdff5dc2",
+    "cif-sds-swimming-alignment-southeastern:9fd8f7c68dca369c6930295981cb224f205958064815b14435bc2c174dd14d88",
+    "cif-sfs-aaa-swimming-champions:59e46c28b267b6a75447fc25a54e0b9fd569b2ed6d7d48a03c5a0bee2714e482",
+    "dcsaa-state-championships-2026:3b4ab95b8ab9a051ecb548a049a74df886f5c3b38a6bb16960df466e2dce1046",
+    "diaa-2026-boys-relays:6fd4dd3d73fdce2057dc8ab5e3a505a35c195eae2761d7725f849047f39625dc",
+    "diaa-2026-girls-relays:a37beb772af6d996dabf8db6746357dbe6fb4e7f2f69287729c93db1bbf9cb23",
+    "diaa-boys-state-finals:1790554a4e049a85d53a44ff67b28cd53fa2ad44212f59e414a4c7df430b0820",
+    "diaa-girls-state-finals:f5cbd44536deea93cc215afb9fe918c561edad9f0f41e447d7091a6be3da8873",
+    "fhsaa-boys-swimming-hierarchy-2026-27:bf021b622c4de95e6d07b648a7de0851eea1a86b67be02e677d656d3ce095464",
+    "fhsaa-girls-swimming-hierarchy-2026-27:7ea683fb61ce7c36c032efe3bafde5b3c360aefa9940117c071ee8d93eae67d2",
+    "kisl-2026-city-championship-c1:7be68a5df6f0f85792b91d2207858451afccab6f41a276a39f128a9f74b5de2e",
+    "kshsaa-boys-swimming-programs:bbc9552042ffef185499c340526f8f19c5ae5602aa946fe1abb2a0b109a33355",
+    "kshsaa-girls-swimming-programs:688b8c0758a103cefd4de8b1e4dd14bf86c0dab8bd0f880d12ad942233f3a448",
+    "lhsaa-2023-d2-finals:03ea3cc27166cea9797650b9d02ba609ab008a5af61df91f8ca22fe07ef2c1d8",
+    "lhsaa-2023-d3-finals:430f91fa52ca17c4d322871c06f703af00e74b0f85a166cef10d4db4b25817a1",
+    "lhsaa-d1-state-scores:84588fef8e5d14b9d17b18bc83176eb42fe5687bc17caf84f487c9c280248252",
+    "lhsaa-swimming-divisions-plan:3b3df9502f3a9406a17d43064605844f5946011d6d0c4ddc3f3eefb73abd2240",
+    "mhsaa-lp-d1-boys-2026:51e8ce3eae205ca305a6cb1b59a1474637629b7943c51ec6ff2a315ea304b985",
+    "mhsaa-lp-d1-girls-2025:5d832eb57572eaf044adc1e8b15666284a841621a68d0527b7f22c75460aaf31",
+    "mhsaa-lp-d2-boys-2026:836334bb3443480ac7b4ff491262d65edb1fb8d5c5420ddcd5daf80e6412f316",
+    "mhsaa-lp-d2-girls-2025:52ec6631458c66e5c8a1c0c1ad0cb3a4fea9cee31e84270d405fcda74a9e23c4",
+    "mhsaa-lp-d3-boys-2026:6d24bcd3071c2e65178d0cade8d12ed1b22c7e60fdb6ea0d094dc9764413ec61",
+    "mhsaa-lp-d3-girls-2025:1e1abdd7beeba65f6d1f11dcd46760bc3a25cb5f83a8db571dd039739cf6162a",
+    "mhsaa-up-finals-2026:aa253a07e3f3c96a5c56effa18b3fc966f762c15c2c030619c624f0ec5c41b3e",
+    "mpssaa-state-3a2a1a-2025:92a47ce72e0fabd759b5cd270b2fb456e2382254ba94286aaea5ee0cf2702374",
+    "mpssaa-state-4a3a-2025:abe6705059c6f1b5c87f93c362e5559c62ccec440c1b30b5cb003de3eb2beb77",
+    "mthssa-2024-regionals:e9ee487771e6eda6cbcc575614d43c51afe76f28e74c1eba0e94439c449b5a40",
+    "mthssa-2025-regionals:df7333d85e25c75d3c0a13f6777888a11fdb14fec3768977ffd910bc8d484826",
+    "nchsaa-2026-123a:d6d14488789ecf723b06ce7cf1baa128aa4fabc50dc2f9da02388b2b206562a5",
+    "nchsaa-2026-4a-by-gender:5926f781645ebbe7b5aaa6d25bbc477664d894f3b15b1e46301a0cf9ba18b041",
+    "nchsaa-2026-4a:5926f781645ebbe7b5aaa6d25bbc477664d894f3b15b1e46301a0cf9ba18b041",
+    "nchsaa-2026-5a-by-gender:50a93311f60d110a4ebc52dc9f2bd459c88fbbb6206b962976661aee1b986de8",
+    "nchsaa-2026-5a:50a93311f60d110a4ebc52dc9f2bd459c88fbbb6206b962976661aee1b986de8",
+    "nchsaa-2026-6a:dce08f592b2ad8074dde6aa647e6ff0044f8eb2e1461d8965a6c7493d9e74f08",
+    "nchsaa-2026-7a:a5a2000bdc10eb2e1b993814b085d34d5033f3642218126c5dce0c96cb7e8f52",
+    "nchsaa-2026-8a:efd533581c3077d626da97ca51aeafd95aae4a9fcc631c82e3910f0628e75d37",
+    "ncisaa-2025-d1:2c3a733ff3432fdaceab02538d2cb2ea3d39f6b7e86aa8e9209b42c1570ca3a8",
+    "ncisaa-2025-d2:1f8c26c15e1c13fe20d665760f4f084aee7f2110e5af3290ca0001253521b51d",
+    "ncisaa-2025-d3:cc727d50df7127639d2eeb7b8f3169aec5a2545ca50ffe0133ca3f46cc95420d",
+    "ndhsaa-swimming-girls:ec9d05078a3c6ca5aca0fab83df311019a6137fedac5a6116dd8521b06bf888f",
+    "nhiaa-bylaw-swimming-2025-26:738924b98f41083f22a5ea9775f42037a38af7e2ff324106111fa76fd4645217",
+    "niaa-swimming-alignment-26-28:7e9bd0a52419c688affebb6e040fd388c0a2cbac55cd7b47ead70fe74d153c08",
+    "njsiaa-moc-2025:bdf405d5f6b348126de3ea1cc545e4ee468538958ea40f83f27fd44968ed03bc",
+    "njsiaa-moc-2026:188ecd0711f2fa5a1c949e41c80302a492d0ef325385a68d18243ec66075bade",
+    "nsaa-swimming-registered-2026-27:ebd2837409c131f649d50e0b2d22ae0216d66acaaa95cb4b2c7311e0437a3b1c",
+    "nys-federation-2025-boys-finals:b248db511149bb64f5b32bb8e517fac110be242a1b87ac11bc23ec181b11d8cb",
+    "nys-federation-2025-girls-scores:a0fe02a7309f299d21679edacb301069001fc80484844eef4eb3302d92a2688d",
+    "nysphsaa-2025-boys-section-scores:df227c3c00de18a75523e1afc2466ab473540d7c7a913e930418b045a29b19cc",
+    "nysphsaa-2025-girls-finals:27f06132a6ff522beceb85b2b4dc29fa0174d059b7b75b659eb82cb9bd6f0fc8",
+    "nysphsaa-2025-girls-scores:d39a989101227c943e2464e7112b8dc7207801ad8b355e9ab05daf0618c9721e",
+    "nysphsaa-section-1-girls-championships:553db2ae0372da50a547e2a57a47398a22600990466b9218a9bc75812fd6e784",
+    "nysphsaa-section-4-boys-champions:3ef0c3c577e12ea417f6bce3571223953ca7b27ad66a94bc24bcc47c43a6abc5",
+    "nysphsaa-section-4-girls-champions:637cb7c458e544d683518d8505fb98c8ff40f5bcf51422dbcacbdd56b0b3c105",
+    "nysphsaa-section-7-10-boys-swimming:e1af00032d323260fed3ff527a7ccffb6afdd06303c6f405006fc702011823bb",
+    "nysphsaa-section-7-10-girls-swimming:f0b65052d70b6a98aae07a7ccd55253c09684e7425873d23611c165e12589196",
+    "nysphsaa-section-9-2026-handbook:64890c3c2eb51aeb53aa59117f19940d2c4cab4403b70b5a1159b21e7b08eae7",
+    "ossaa-boys-swimming-classifications-2026-27:bf11c9fe30cc819374754fca73251a7808bc30662ce7c9bbf0ba07ffda58a57a",
+    "ossaa-girls-swimming-classifications-2026-27:0a658d25e4e952bb3b3a3bcafd4cda110a388767d30b2e0de2c2d49e31bb3f4a",
+    "schsl-swimming-2026-boys-3a:578200630c345238d33c2892a38e4e2fa88c46ed5ea0647696843dcf1413aced",
+    "schsl-swimming-2026-boys-4a:f25775447820463bdc985c1bf0a4a32a15c2e86defc1d0d935d844b907ea5105",
+    "schsl-swimming-2026-boys-5a:8960c4ea81b93ca2250b4984dcb4ccbbe4259c8c2fc4aa5dbdb60825328b1e9c",
+    "schsl-swimming-2026-girls-3a:1f031d6e68ea436e4bd341fbde8f38fe09e6b839de5b2f7563d7f7f0f5ac0888",
+    "schsl-swimming-2026-girls-4a:833db5c1a74ddee5018b75ea40d2d0276c8f29188669238bb1f4564fa1a9fd4b",
+    "schsl-swimming-2026-girls-5a:eb31b69a3c84922e06c87159be0f2ad4b42c6a58348116c2c77a83951f653008",
+    "scisa-2024-state-championship-scores:a08c068f25a312635f57afc7adaaee66d7ade56e2ce3a5fa5295094c4b0b5fc0",
+    "scisa-2025-state-championships-teams:92d732266cf98fa5f0bee7246d2b4b8d65a0ee75c1ddbb4cb79addfd1bad65df",
+    "scisa-2026-state-championships-c1:dd5fcba2e6881636d171b95053ea9005ff99cb0b1fa83c9dc7276bd3a7707da6",
+    "tisca-2023-state-championships:ff31dcc3686494545675e9267287aee640f01a53f41c1ffa01d1004d6856d199",
+    "tisca-2024-state-scores:757f44c1084f581d0341ee87463e5be0be1a358032c273a07410e64afab16bd6",
+    "tisca-2025-state-championships:c5fd37ead95bf25e14c73562c5d0dbf93af19d98ff0151a443fc91355aee7657",
+    "tisca-2026-state-championships:b76eea8d534f45534bc9e02bf05dd6d23fae0f13f397bc5361e4126457bb7f6a",
+    "uhsaa-boys-swimming-teams:a60f30890a30741fbe8562224623c7c8f5f2ebbc04e78e0a6838c3a716b385cf",
+    "uhsaa-girls-swimming-teams:7a1d148ff1359da2867b527294c97dc899246824caead9e0d6f819b62d678a10",
+    "vhsl-2019-class3-state-scores:35da0ad288779f13aca348c9f0b05a803ebe5ba01853f49bf885dc0532262514",
+    "vhsl-2023-class1-2-state-championships:dbc2ac5708b3d37fc857723b4263a9dc1723636276b292c1b83437455d9e777d",
+    "vhsl-2025-class3-state-championships:98a55c02b824963d2fef300a5c2b8874072baef753457069d1cf39564ba799a8",
+    "vhsl-2025-class6-state-by-gender:bffaf80405584ba0b66d45fa885ecb02a9be2f1fa033b97540d485697ca4165a",
+    "vhsl-2025-region-1c-2c-championships:060bc2bf7a32e2680bf68c8e06a3756a8852066e235cec7b1ce07ef258fa3fba",
+    "vhsl-2025-region5d:7395f90a51273d067fa494a9ded58a3321b9c9b76da569e4daf532e2919b89d9",
+    "vhsl-2025-state-class4:1e0fa47ff44769217e1459c41ad5bcce25c05a00eee2270f7eb90a429dffb321",
+    "vhsl-2025-state-class5:85cfad7aa8375ccc1e2853f8a37384f6a93e56074773eec3cf597d3638521f49",
+    "vhsl-2025-state-class6:bffaf80405584ba0b66d45fa885ecb02a9be2f1fa033b97540d485697ca4165a",
+    "vhsl-2026-region4c:8310d8b690eb5375c9c5b11f66609f621ca3ca24eda5934085856f7e7a7c7958",
+    "vhsl-2026-region6d:169bf8abdb208fccec27da1e440acc810aa7a6fd33d8d5d4c09eb8fe960dcf57",
+    "vhsl-concorde-district-2026:2e44bf548cf7b44b993ad8f9f4aab4ef38c91722b7b4a9213ee84f4e159f8460",
+    "vhsl-liberty-district-2026:564655d99e0915fa911edab49408de1a233859b17d698c23367003ccc154cc68",
+    "vhsl-national-district-2026:dc5d10aa8ec7e19d22aebe28e414b9f20bd84f531d79964cb285211c6c32d4ac",
+    "vhsl-patriot-district-2026:65060fe5ce117d8cba2b28623074fb7b625a25f04fbea6ecccbe0bd890afd124",
+    "visaa-boys-swimming-divisions-2026-28:6f23575073799efa5fcce07ef2c6be6ddbb1c34ddb9f871d2bd2eff307221ba7",
+    "visaa-girls-swimming-divisions-2026-28:95a792601364cd6afc2e404c7115e7af86517ff8ad969427c95abe4b3198e54d",
+    "whsaa-swimming-2025-26-3a-boys:b635a24aa85d49cbe9401c14d879a7bbbeba479e8bf2250986b9412d529e8257",
+    "whsaa-swimming-2025-26-3a-girls:6fb0efaaaabcdf98b19b667d6dd08a4087838212f4178eb824d2d71a22818e6d",
+    "whsaa-swimming-2025-26-4a-boys:1f036437410d133e674ac20abcc26101eb7f369d26ec9f2e1814709ead629c77",
+    "whsaa-swimming-2025-26-4a-girls:bd42c4ba1afc35cd6814ff708f6bf35635f9d31d4662d97227933cf1a8ee4b0d",
+    "wiaa-wpa-boys-swimming-2026-27-1a:67c7a9011e038b99ebb67a37ba81523d552b72b1d3b140236346179479a56ec2",
+    "wiaa-wpa-boys-swimming-2026-27-2a:ca33a3a565a027d7951c13263096d6e3e9ceea001dfef33016619d164bc9d08f",
+    "wiaa-wpa-boys-swimming-2026-27-3a:fdb87187f0c4772dc54ee097867cacced62b5b72a96a4fabbb1c6c7638460028",
+    "wiaa-wpa-boys-swimming-2026-27-4a:d7e87895fa1732b0b2a807c6f8c87dad5dfb6df546a41e4adea25efdd7eed18c",
+    "wiaa-wpa-girls-swimming-2026-27-1a:150d9c9722672508fad9d88658218014623e1e767750a8aaa71402af4fc23e2b",
+    "wiaa-wpa-girls-swimming-2026-27-2a:a70bafc471167f7704d041077a5be7d9d24d9cf3a1f613d9836352ed3563e8fd",
+    "wiaa-wpa-girls-swimming-2026-27-3a:d137edce031739c77db0984c5af02a7268fd5dbd6d7d9e09956f88a530db6464",
+    "wiaa-wpa-girls-swimming-2026-27-4a:defe203aba6e6b43e80a5c3704dc6bec156f11b319e90f0d28b99185f407c07a",
+    "wmpssdl-md-championships-2026:bc6912e0416901daec509e31588b37f9a86931c3427af06f4f4613bb2e6b87c5"
+  ],
+  "new_school_program_listings": 5113,
+  "source_rows": [
+    {
+      "source_id": "3c2a-swimming-programs-2024-26:5cb90d030ca4572f99d955229847c8717ea38c27d56214305757c14b3bebf5cf",
+      "state": "CA",
+      "category": "men",
+      "listings": 53
+    },
+    {
+      "source_id": "3c2a-swimming-programs-2024-26:5cb90d030ca4572f99d955229847c8717ea38c27d56214305757c14b3bebf5cf",
+      "state": "CA",
+      "category": "women",
+      "listings": 57
+    },
+    {
+      "source_id": "aaa-swimming-conferences:6d49f37a4ad8e4d048a1cd72cc8f9b0286eb2aa260be3848d4072b3d4adb3374",
+      "state": "AR",
+      "category": "unknown",
+      "listings": 72
+    },
+    {
+      "source_id": "adirondack-lsc-clubs:d46af9fb0ba7eee1930330e7674c26b70ab26758ca07710102cf40257fee084c",
+      "state": "",
+      "category": "unknown",
+      "listings": 19
+    },
+    {
+      "source_id": "adirondack-masters-places:cd3c95e8cf782561c59288bb3289908ca28f2d675f234905ffd079bc2afa3bf9",
+      "state": "MA",
+      "category": "mixed",
+      "listings": 2
+    },
+    {
+      "source_id": "adirondack-masters-places:cd3c95e8cf782561c59288bb3289908ca28f2d675f234905ffd079bc2afa3bf9",
+      "state": "NY",
+      "category": "mixed",
+      "listings": 14
+    },
+    {
+      "source_id": "adirondack-masters-places:cd3c95e8cf782561c59288bb3289908ca28f2d675f234905ffd079bc2afa3bf9",
+      "state": "VT",
+      "category": "mixed",
+      "listings": 1
+    },
+    {
+      "source_id": "ahsaa-2017-north-sectional:ff10872e4366d11005f6d026cfc5b787db2d1839eb4ee52d6eaecf11446fdc0e",
+      "state": "AL",
+      "category": "unknown",
+      "listings": 5
+    },
+    {
+      "source_id": "ahsaa-2017-state-championship:523d2ae61131a3aae6734b407589248d5217865c371d1ea95bd774859b38c6aa",
+      "state": "AL",
+      "category": "unknown",
+      "listings": 12
+    },
+    {
+      "source_id": "ahsaa-2020-state-championship:a1e9cbe2110365637abde54c88ba70aa13854ccfda9ec0bf8d2a51bf5c221c1e",
+      "state": "AL",
+      "category": "unknown",
+      "listings": 63
+    },
+    {
+      "source_id": "ak-lmsc-workout-groups:4f6aea8f398f51187c1e20d5030b79dd1c8a2ef17aff9250db5f7f26001604aa",
+      "state": "AK",
+      "category": "mixed",
+      "listings": 10
+    },
+    {
+      "source_id": "ar-lmsc-places-to-swim:0cfdea0f3897b1681901290b4a3c4ff5a15df3a40a2df0dfbbbcfd88b126700e",
+      "state": "AR",
+      "category": "mixed",
+      "listings": 8
+    },
+    {
+      "source_id": "az-lmsc-where-to-swim:56137484d160dfa1fa7f9131e856df028c184e502a2d702701a09517b2672596",
+      "state": "AZ",
+      "category": "mixed",
+      "listings": 21
+    },
+    {
+      "source_id": "chsaa-cloc-boys-swimming:fce508a32af5ff0d0684c3179c44a1c4c41aadbba7c00282cb54d4dab436cee4",
+      "state": "CO",
+      "category": "men",
+      "listings": 70
+    },
+    {
+      "source_id": "chsaa-cloc-girls-swimming:aa1446d7441df50b8a57dc05ec5f9dd301646a673fd46db499e9a7b29dfd06dc",
+      "state": "CO",
+      "category": "women",
+      "listings": 119
+    },
+    {
+      "source_id": "ciac-swimming-boys:8eb6b0e7e8aa89c07bfa7b688036fd1dfed715e52b6fbc59b32f0e0dc82a3926",
+      "state": "CT",
+      "category": "men",
+      "listings": 94
+    },
+    {
+      "source_id": "cif-cs-2026-d1-championships:c316f12fdd9eee42b6370666d4b8f7f29cc86e75f3f58d484a5a60ce5b6a20d6",
+      "state": "CA",
+      "category": "unknown",
+      "listings": 32
+    },
+    {
+      "source_id": "cif-ncs-championship-history:0c9cb6e525ac48fe94da262bdb725352a214e4df1fc26e1bf003b76ba0224c71",
+      "state": "CA",
+      "category": "unknown",
+      "listings": 15
+    },
+    {
+      "source_id": "cif-os-2025-26-blue-pages:ebaa02028b4bf3605bf27b37986c38d9841debb4954c16ba1f9900c00e84132e",
+      "state": "CA",
+      "category": "unknown",
+      "listings": 9
+    },
+    {
+      "source_id": "cif-sds-swimming-alignment-city:4c83847a3f6c602ac0cc38031e915f0122757a9446244291faf3cfcbfb868315",
+      "state": "CA",
+      "category": "men",
+      "listings": 19
+    },
+    {
+      "source_id": "cif-sds-swimming-alignment-city:4c83847a3f6c602ac0cc38031e915f0122757a9446244291faf3cfcbfb868315",
+      "state": "CA",
+      "category": "women",
+      "listings": 19
+    },
+    {
+      "source_id": "cif-sds-swimming-alignment-coastal:f5abb4f728ee10c82e776bcfdbf40d4b43d91cfb97387c1221ed2535f9595030",
+      "state": "CA",
+      "category": "men",
+      "listings": 7
+    },
+    {
+      "source_id": "cif-sds-swimming-alignment-coastal:f5abb4f728ee10c82e776bcfdbf40d4b43d91cfb97387c1221ed2535f9595030",
+      "state": "CA",
+      "category": "women",
+      "listings": 7
+    },
+    {
+      "source_id": "cif-sds-swimming-alignment-frontier:f0e49b1a33e544c50009b991388f8883796a386a6ae87c9e79875dade4f8a7ba",
+      "state": "CA",
+      "category": "men",
+      "listings": 4
+    },
+    {
+      "source_id": "cif-sds-swimming-alignment-frontier:f0e49b1a33e544c50009b991388f8883796a386a6ae87c9e79875dade4f8a7ba",
+      "state": "CA",
+      "category": "women",
+      "listings": 4
+    },
+    {
+      "source_id": "cif-sds-swimming-alignment-grossmont:13f14f00637ee38eafb9aff229307b3b2a0b74f52aa41314cd338020e972d872",
+      "state": "CA",
+      "category": "men",
+      "listings": 11
+    },
+    {
+      "source_id": "cif-sds-swimming-alignment-grossmont:13f14f00637ee38eafb9aff229307b3b2a0b74f52aa41314cd338020e972d872",
+      "state": "CA",
+      "category": "women",
+      "listings": 11
+    },
+    {
+      "source_id": "cif-sds-swimming-alignment-metro:fbc1d9ea491e2bd7035435941f90d3c3959d6fa9fae211e412a254403ba29273",
+      "state": "CA",
+      "category": "men",
+      "listings": 13
+    },
+    {
+      "source_id": "cif-sds-swimming-alignment-metro:fbc1d9ea491e2bd7035435941f90d3c3959d6fa9fae211e412a254403ba29273",
+      "state": "CA",
+      "category": "women",
+      "listings": 13
+    },
+    {
+      "source_id": "cif-sds-swimming-alignment-north-county:fa2dc24c73b9fe9b20e74e8f554e0b1401f3eae46f06e3d69851edbdfdff5dc2",
+      "state": "CA",
+      "category": "men",
+      "listings": 23
+    },
+    {
+      "source_id": "cif-sds-swimming-alignment-north-county:fa2dc24c73b9fe9b20e74e8f554e0b1401f3eae46f06e3d69851edbdfdff5dc2",
+      "state": "CA",
+      "category": "women",
+      "listings": 23
+    },
+    {
+      "source_id": "cif-sds-swimming-alignment-southeastern:9fd8f7c68dca369c6930295981cb224f205958064815b14435bc2c174dd14d88",
+      "state": "CA",
+      "category": "men",
+      "listings": 9
+    },
+    {
+      "source_id": "cif-sds-swimming-alignment-southeastern:9fd8f7c68dca369c6930295981cb224f205958064815b14435bc2c174dd14d88",
+      "state": "CA",
+      "category": "women",
+      "listings": 9
+    },
+    {
+      "source_id": "cif-sfs-aaa-swimming-champions:59e46c28b267b6a75447fc25a54e0b9fd569b2ed6d7d48a03c5a0bee2714e482",
+      "state": "CA",
+      "category": "men",
+      "listings": 8
+    },
+    {
+      "source_id": "cif-sfs-aaa-swimming-champions:59e46c28b267b6a75447fc25a54e0b9fd569b2ed6d7d48a03c5a0bee2714e482",
+      "state": "CA",
+      "category": "women",
+      "listings": 8
+    },
+    {
+      "source_id": "cmsl-locations-and-standings:8b0506f03e91eee9b00b8c52bb215b58d22535280c9950426a404b7aa67f05c8",
+      "state": "MD",
+      "category": "mixed",
+      "listings": 48
+    },
+    {
+      "source_id": "colorado-swimming-lsc-clubs:f4fe1ef2dcc4b8637cf7748737ea8866cd9713521b36dc86875299f464acad30",
+      "state": "CO",
+      "category": "mixed",
+      "listings": 69
+    },
+    {
+      "source_id": "ct-lmsc-places-to-swim:b22cf3e79be5bb349e93d1f55f34df8e6303e00073d95f6ce84f47ef436a41e4",
+      "state": "CT",
+      "category": "mixed",
+      "listings": 23
+    },
+    {
+      "source_id": "dcsaa-state-championships-2026:3b4ab95b8ab9a051ecb548a049a74df886f5c3b38a6bb16960df466e2dce1046",
+      "state": "DC",
+      "category": "men",
+      "listings": 15
+    },
+    {
+      "source_id": "dcsaa-state-championships-2026:3b4ab95b8ab9a051ecb548a049a74df886f5c3b38a6bb16960df466e2dce1046",
+      "state": "DC",
+      "category": "women",
+      "listings": 14
+    },
+    {
+      "source_id": "diaa-2026-boys-relays:6fd4dd3d73fdce2057dc8ab5e3a505a35c195eae2761d7725f849047f39625dc",
+      "state": "DE",
+      "category": "men",
+      "listings": 6
+    },
+    {
+      "source_id": "diaa-2026-girls-relays:a37beb772af6d996dabf8db6746357dbe6fb4e7f2f69287729c93db1bbf9cb23",
+      "state": "DE",
+      "category": "women",
+      "listings": 29
+    },
+    {
+      "source_id": "diaa-boys-state-finals:1790554a4e049a85d53a44ff67b28cd53fa2ad44212f59e414a4c7df430b0820",
+      "state": "DE",
+      "category": "men",
+      "listings": 9
+    },
+    {
+      "source_id": "diaa-girls-state-finals:f5cbd44536deea93cc215afb9fe918c561edad9f0f41e447d7091a6be3da8873",
+      "state": "DE",
+      "category": "women",
+      "listings": 2
+    },
+    {
+      "source_id": "fgc-lmsc-directory:f3d3cf7e30e29fe7ab19135bd083f7db5e3a1fb362ee0a63b4663b21e2199d1e",
+      "state": "FL",
+      "category": "mixed",
+      "listings": 24
+    },
+    {
+      "source_id": "fhsaa-boys-swimming-hierarchy-2026-27:bf021b622c4de95e6d07b648a7de0851eea1a86b67be02e677d656d3ce095464",
+      "state": "FL",
+      "category": "men",
+      "listings": 468
+    },
+    {
+      "source_id": "fhsaa-girls-swimming-hierarchy-2026-27:7ea683fb61ce7c36c032efe3bafde5b3c360aefa9940117c071ee8d93eae67d2",
+      "state": "FL",
+      "category": "women",
+      "listings": 470
+    },
+    {
+      "source_id": "florida-swimming-lsc-seasonal-clubs:2419a1fa6837449d01eb7d5c036d36097d2698377260c40f5bb5681ab34f7eaa",
+      "state": "FL",
+      "category": "mixed",
+      "listings": 2
+    },
+    {
+      "source_id": "florida-swimming-lsc-year-round-clubs:53d11cb4af107144ec483ca425e459e4f155a08c32c0795449b5d0ef798af63c",
+      "state": "FL",
+      "category": "mixed",
+      "listings": 92
+    },
+    {
+      "source_id": "gcsl-divisions-directory:cd186af4b585da2ceac4939c86e180af062f75efb3176793a2c9a2f7f6e93f3c",
+      "state": "GA",
+      "category": "mixed",
+      "listings": 38
+    },
+    {
+      "source_id": "georgia-swimming-lsc-clubs:d470f69c90f47350e6c67e2bf83b6a0df8aa91df781c680616c45a72346cbca7",
+      "state": "GA",
+      "category": "mixed",
+      "listings": 58
+    },
+    {
+      "source_id": "great-lakes-ymca-zone-championship-2026:4de7671161187f4033c22faef9eee1b4e202c70c01019376a1f3aa1a6e9280b3",
+      "state": "IN",
+      "category": "mixed",
+      "listings": 6
+    },
+    {
+      "source_id": "great-lakes-ymca-zone-championship-2026:4de7671161187f4033c22faef9eee1b4e202c70c01019376a1f3aa1a6e9280b3",
+      "state": "KY",
+      "category": "mixed",
+      "listings": 5
+    },
+    {
+      "source_id": "great-lakes-ymca-zone-championship-2026:4de7671161187f4033c22faef9eee1b4e202c70c01019376a1f3aa1a6e9280b3",
+      "state": "MI",
+      "category": "mixed",
+      "listings": 9
+    },
+    {
+      "source_id": "great-lakes-ymca-zone-championship-2026:4de7671161187f4033c22faef9eee1b4e202c70c01019376a1f3aa1a6e9280b3",
+      "state": "OH",
+      "category": "mixed",
+      "listings": 48
+    },
+    {
+      "source_id": "great-lakes-ymca-zone-championship-2026:4de7671161187f4033c22faef9eee1b4e202c70c01019376a1f3aa1a6e9280b3",
+      "state": "WV",
+      "category": "mixed",
+      "listings": 4
+    },
+    {
+      "source_id": "hawaiian-lsc-clubs:0280bfee56a71fa9238f80f37a4f28e3c0172ab25bf6ffbf3fa5b4f5608ae5e8",
+      "state": "HI",
+      "category": "mixed",
+      "listings": 27
+    },
+    {
+      "source_id": "il-lmsc-workout-groups:3303534c76dcc2767f4b16bdb805bae5f6692f606ea818a743e013601a2ff2c7",
+      "state": "IL",
+      "category": "mixed",
+      "listings": 28
+    },
+    {
+      "source_id": "illinois-swimming-lsc-clubs:c147cab1d92cdf02f871ed3b272a353aaccb0f29ffe936bdf83accb22d8696aa",
+      "state": "IL",
+      "category": "mixed",
+      "listings": 107
+    },
+    {
+      "source_id": "illinois-ymca-state-championship-2026:e5d0274dd5e310bf15782e9b0506a57ab06110eafde57f54d764fed093d86c46",
+      "state": "IL",
+      "category": "mixed",
+      "listings": 33
+    },
+    {
+      "source_id": "in-lmsc-where-to-swim:3c763e897266767639bb9896524c6e51ed6ff2469e118b5787df470a3bcc94b0",
+      "state": "IN",
+      "category": "mixed",
+      "listings": 26
+    },
+    {
+      "source_id": "indiana-swimming-lsc-clubs:714f53ef3ffcbaead12118af9881c71d850d2ff4cdd6b9aea0b3bea3ee9fce1e",
+      "state": "IN",
+      "category": "mixed",
+      "listings": 108
+    },
+    {
+      "source_id": "indiana-ymca-state-championship-2024:4a9c0e48305660c082db0414a487328757321f78a30c616f2faa7858f911fb21",
+      "state": "IN",
+      "category": "mixed",
+      "listings": 9
+    },
+    {
+      "source_id": "inw-lmsc-clubs:e161e9ce4cd35d69e08fb08ab3025bff3cbd353d217f9a1ca8138c93890fe3bb",
+      "state": "ID",
+      "category": "mixed",
+      "listings": 3
+    },
+    {
+      "source_id": "inw-lmsc-clubs:e161e9ce4cd35d69e08fb08ab3025bff3cbd353d217f9a1ca8138c93890fe3bb",
+      "state": "WA",
+      "category": "mixed",
+      "listings": 10
+    },
+    {
+      "source_id": "kisl-2026-city-championship-c1:7be68a5df6f0f85792b91d2207858451afccab6f41a276a39f128a9f74b5de2e",
+      "state": "TN",
+      "category": "men",
+      "listings": 5
+    },
+    {
+      "source_id": "kisl-2026-city-championship-c1:7be68a5df6f0f85792b91d2207858451afccab6f41a276a39f128a9f74b5de2e",
+      "state": "TN",
+      "category": "women",
+      "listings": 11
+    },
+    {
+      "source_id": "kshsaa-boys-swimming-programs:bbc9552042ffef185499c340526f8f19c5ae5602aa946fe1abb2a0b109a33355",
+      "state": "KS",
+      "category": "men",
+      "listings": 65
+    },
+    {
+      "source_id": "kshsaa-girls-swimming-programs:688b8c0758a103cefd4de8b1e4dd14bf86c0dab8bd0f880d12ad942233f3a448",
+      "state": "KS",
+      "category": "women",
+      "listings": 70
+    },
+    {
+      "source_id": "ky-lmsc-teams:5fbf000741ea5933ab5545249aa89ced6dba19219c45701cb2a68321474af6f2",
+      "state": "KY",
+      "category": "mixed",
+      "listings": 10
+    },
+    {
+      "source_id": "lhsaa-2023-d2-finals:03ea3cc27166cea9797650b9d02ba609ab008a5af61df91f8ca22fe07ef2c1d8",
+      "state": "LA",
+      "category": "unknown",
+      "listings": 13
+    },
+    {
+      "source_id": "lhsaa-2023-d3-finals:430f91fa52ca17c4d322871c06f703af00e74b0f85a166cef10d4db4b25817a1",
+      "state": "LA",
+      "category": "unknown",
+      "listings": 13
+    },
+    {
+      "source_id": "lhsaa-d1-state-scores:84588fef8e5d14b9d17b18bc83176eb42fe5687bc17caf84f487c9c280248252",
+      "state": "LA",
+      "category": "unknown",
+      "listings": 7
+    },
+    {
+      "source_id": "lhsaa-swimming-divisions-plan:3b3df9502f3a9406a17d43064605844f5946011d6d0c4ddc3f3eefb73abd2240",
+      "state": "LA",
+      "category": "unknown",
+      "listings": 162
+    },
+    {
+      "source_id": "mcsl-team-directory:10ba4e392e64a3bbe0416d288ff6c685f7f6b4c5437bcef5be8ac070ab36d1e2",
+      "state": "MD",
+      "category": "mixed",
+      "listings": 90
+    },
+    {
+      "source_id": "md-lmsc-clubs:bd669ffecb3a2385b7ec91adedca1420612bb9fabc2f61d8c2224efe26379b79",
+      "state": "MD",
+      "category": "mixed",
+      "listings": 5
+    },
+    {
+      "source_id": "mhsaa-lp-d1-boys-2026:51e8ce3eae205ca305a6cb1b59a1474637629b7943c51ec6ff2a315ea304b985",
+      "state": "MI",
+      "category": "men",
+      "listings": 47
+    },
+    {
+      "source_id": "mhsaa-lp-d1-girls-2025:5d832eb57572eaf044adc1e8b15666284a841621a68d0527b7f22c75460aaf31",
+      "state": "MI",
+      "category": "women",
+      "listings": 52
+    },
+    {
+      "source_id": "mhsaa-lp-d2-boys-2026:836334bb3443480ac7b4ff491262d65edb1fb8d5c5420ddcd5daf80e6412f316",
+      "state": "MI",
+      "category": "men",
+      "listings": 46
+    },
+    {
+      "source_id": "mhsaa-lp-d2-girls-2025:52ec6631458c66e5c8a1c0c1ad0cb3a4fea9cee31e84270d405fcda74a9e23c4",
+      "state": "MI",
+      "category": "women",
+      "listings": 43
+    },
+    {
+      "source_id": "mhsaa-lp-d3-boys-2026:6d24bcd3071c2e65178d0cade8d12ed1b22c7e60fdb6ea0d094dc9764413ec61",
+      "state": "MI",
+      "category": "men",
+      "listings": 52
+    },
+    {
+      "source_id": "mhsaa-lp-d3-girls-2025:1e1abdd7beeba65f6d1f11dcd46760bc3a25cb5f83a8db571dd039739cf6162a",
+      "state": "MI",
+      "category": "women",
+      "listings": 50
+    },
+    {
+      "source_id": "mhsaa-up-finals-2026:aa253a07e3f3c96a5c56effa18b3fc966f762c15c2c030619c624f0ec5c41b3e",
+      "state": "MI",
+      "category": "men",
+      "listings": 9
+    },
+    {
+      "source_id": "mhsaa-up-finals-2026:aa253a07e3f3c96a5c56effa18b3fc966f762c15c2c030619c624f0ec5c41b3e",
+      "state": "MI",
+      "category": "women",
+      "listings": 9
+    },
+    {
+      "source_id": "mi-lmsc-clubs-and-facilities:63b650b5cae1ff81fe9f9a4e85ca861c4f66f12d8a08bc1f5e4020a45e2b4a9b",
+      "state": "MI",
+      "category": "mixed",
+      "listings": 19
+    },
+    {
+      "source_id": "minnesota-ymca-state-championship-2025:70f00da922b3003a1e2fb73f04ebc284d434c3a704d57c332fea8513a7181e8d",
+      "state": "MN",
+      "category": "mixed",
+      "listings": 11
+    },
+    {
+      "source_id": "minnesota-ymca-state-championship-2025:70f00da922b3003a1e2fb73f04ebc284d434c3a704d57c332fea8513a7181e8d",
+      "state": "WI",
+      "category": "mixed",
+      "listings": 1
+    },
+    {
+      "source_id": "montana-masters-clubs:9a28772e9be493e5df2dbe240be2155f2fafb9ea8a24789507a4b3bb7aee4187",
+      "state": "MT",
+      "category": "mixed",
+      "listings": 6
+    },
+    {
+      "source_id": "mpssaa-state-3a2a1a-2025:92a47ce72e0fabd759b5cd270b2fb456e2382254ba94286aaea5ee0cf2702374",
+      "state": "MD",
+      "category": "men",
+      "listings": 39
+    },
+    {
+      "source_id": "mpssaa-state-3a2a1a-2025:92a47ce72e0fabd759b5cd270b2fb456e2382254ba94286aaea5ee0cf2702374",
+      "state": "MD",
+      "category": "women",
+      "listings": 31
+    },
+    {
+      "source_id": "mpssaa-state-4a3a-2025:abe6705059c6f1b5c87f93c362e5559c62ccec440c1b30b5cb003de3eb2beb77",
+      "state": "MD",
+      "category": "men",
+      "listings": 35
+    },
+    {
+      "source_id": "mpssaa-state-4a3a-2025:abe6705059c6f1b5c87f93c362e5559c62ccec440c1b30b5cb003de3eb2beb77",
+      "state": "MD",
+      "category": "women",
+      "listings": 36
+    },
+    {
+      "source_id": "mthssa-2024-regionals:e9ee487771e6eda6cbcc575614d43c51afe76f28e74c1eba0e94439c449b5a40",
+      "state": "TN",
+      "category": "men",
+      "listings": 8
+    },
+    {
+      "source_id": "mthssa-2024-regionals:e9ee487771e6eda6cbcc575614d43c51afe76f28e74c1eba0e94439c449b5a40",
+      "state": "TN",
+      "category": "women",
+      "listings": 7
+    },
+    {
+      "source_id": "mthssa-2025-regionals:df7333d85e25c75d3c0a13f6777888a11fdb14fec3768977ffd910bc8d484826",
+      "state": "TN",
+      "category": "men",
+      "listings": 21
+    },
+    {
+      "source_id": "mthssa-2025-regionals:df7333d85e25c75d3c0a13f6777888a11fdb14fec3768977ffd910bc8d484826",
+      "state": "TN",
+      "category": "women",
+      "listings": 15
+    },
+    {
+      "source_id": "naia-swimming-2026-qualifiers-men:f47cf9cc22aaa8257d30a06852e341ee0ce26759b4864cd02236746db167a268",
+      "state": "",
+      "category": "men",
+      "listings": 18
+    },
+    {
+      "source_id": "naia-swimming-2026-qualifiers-men:f47cf9cc22aaa8257d30a06852e341ee0ce26759b4864cd02236746db167a268",
+      "state": "AZ",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-swimming-2026-qualifiers-men:f47cf9cc22aaa8257d30a06852e341ee0ce26759b4864cd02236746db167a268",
+      "state": "FL",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-swimming-2026-qualifiers-men:f47cf9cc22aaa8257d30a06852e341ee0ce26759b4864cd02236746db167a268",
+      "state": "ID",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-swimming-2026-qualifiers-men:f47cf9cc22aaa8257d30a06852e341ee0ce26759b4864cd02236746db167a268",
+      "state": "IN",
+      "category": "men",
+      "listings": 2
+    },
+    {
+      "source_id": "naia-swimming-2026-qualifiers-men:f47cf9cc22aaa8257d30a06852e341ee0ce26759b4864cd02236746db167a268",
+      "state": "KS",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-swimming-2026-qualifiers-men:f47cf9cc22aaa8257d30a06852e341ee0ce26759b4864cd02236746db167a268",
+      "state": "TN",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-swimming-2026-qualifiers-men:f47cf9cc22aaa8257d30a06852e341ee0ce26759b4864cd02236746db167a268",
+      "state": "WV",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-swimming-2026-qualifiers-women:d03a9efcc08fe1d3c7e5098164dd9f236e72d472fcabb64544793ac2c85ffc0f",
+      "state": "",
+      "category": "women",
+      "listings": 19
+    },
+    {
+      "source_id": "naia-swimming-2026-qualifiers-women:d03a9efcc08fe1d3c7e5098164dd9f236e72d472fcabb64544793ac2c85ffc0f",
+      "state": "AZ",
+      "category": "women",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-swimming-2026-qualifiers-women:d03a9efcc08fe1d3c7e5098164dd9f236e72d472fcabb64544793ac2c85ffc0f",
+      "state": "FL",
+      "category": "women",
+      "listings": 2
+    },
+    {
+      "source_id": "naia-swimming-2026-qualifiers-women:d03a9efcc08fe1d3c7e5098164dd9f236e72d472fcabb64544793ac2c85ffc0f",
+      "state": "IN",
+      "category": "women",
+      "listings": 2
+    },
+    {
+      "source_id": "naia-swimming-2026-qualifiers-women:d03a9efcc08fe1d3c7e5098164dd9f236e72d472fcabb64544793ac2c85ffc0f",
+      "state": "KS",
+      "category": "women",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-swimming-2026-qualifiers-women:d03a9efcc08fe1d3c7e5098164dd9f236e72d472fcabb64544793ac2c85ffc0f",
+      "state": "NE",
+      "category": "women",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-swimming-2026-qualifiers-women:d03a9efcc08fe1d3c7e5098164dd9f236e72d472fcabb64544793ac2c85ffc0f",
+      "state": "SC",
+      "category": "women",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-swimming-2026-qualifiers-women:d03a9efcc08fe1d3c7e5098164dd9f236e72d472fcabb64544793ac2c85ffc0f",
+      "state": "WV",
+      "category": "women",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "AR",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "AR",
+      "category": "women",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "AZ",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "AZ",
+      "category": "women",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "CA",
+      "category": "men",
+      "listings": 3
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "CA",
+      "category": "women",
+      "listings": 3
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "FL",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "GA",
+      "category": "men",
+      "listings": 2
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "GA",
+      "category": "women",
+      "listings": 2
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "IA",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "IA",
+      "category": "women",
+      "listings": 3
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "ID",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "ID",
+      "category": "women",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "KS",
+      "category": "men",
+      "listings": 2
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "KS",
+      "category": "women",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "KY",
+      "category": "men",
+      "listings": 5
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "KY",
+      "category": "women",
+      "listings": 3
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "LA",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "LA",
+      "category": "women",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "ND",
+      "category": "women",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "NE",
+      "category": "women",
+      "listings": 2
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "OH",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "SC",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "TN",
+      "category": "men",
+      "listings": 2
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "TN",
+      "category": "women",
+      "listings": 2
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "WV",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "naia-varsity-swimming-complete-2025-26:74affc11c012e8d80b3424cc49c6f5d0cdb485f84fdbcfe05912c851174e3c0b",
+      "state": "WV",
+      "category": "women",
+      "listings": 1
+    },
+    {
+      "source_id": "nchsaa-2026-123a:d6d14488789ecf723b06ce7cf1baa128aa4fabc50dc2f9da02388b2b206562a5",
+      "state": "NC",
+      "category": "unknown",
+      "listings": 45
+    },
+    {
+      "source_id": "nchsaa-2026-4a-by-gender:5926f781645ebbe7b5aaa6d25bbc477664d894f3b15b1e46301a0cf9ba18b041",
+      "state": "NC",
+      "category": "women",
+      "listings": 3
+    },
+    {
+      "source_id": "nchsaa-2026-4a:5926f781645ebbe7b5aaa6d25bbc477664d894f3b15b1e46301a0cf9ba18b041",
+      "state": "NC",
+      "category": "unknown",
+      "listings": 31
+    },
+    {
+      "source_id": "nchsaa-2026-5a-by-gender:50a93311f60d110a4ebc52dc9f2bd459c88fbbb6206b962976661aee1b986de8",
+      "state": "NC",
+      "category": "women",
+      "listings": 8
+    },
+    {
+      "source_id": "nchsaa-2026-5a:50a93311f60d110a4ebc52dc9f2bd459c88fbbb6206b962976661aee1b986de8",
+      "state": "NC",
+      "category": "unknown",
+      "listings": 29
+    },
+    {
+      "source_id": "nchsaa-2026-6a:dce08f592b2ad8074dde6aa647e6ff0044f8eb2e1461d8965a6c7493d9e74f08",
+      "state": "NC",
+      "category": "unknown",
+      "listings": 31
+    },
+    {
+      "source_id": "nchsaa-2026-7a:a5a2000bdc10eb2e1b993814b085d34d5033f3642218126c5dce0c96cb7e8f52",
+      "state": "NC",
+      "category": "unknown",
+      "listings": 37
+    },
+    {
+      "source_id": "nchsaa-2026-8a:efd533581c3077d626da97ca51aeafd95aae4a9fcc631c82e3910f0628e75d37",
+      "state": "NC",
+      "category": "unknown",
+      "listings": 24
+    },
+    {
+      "source_id": "ncisaa-2025-d1:2c3a733ff3432fdaceab02538d2cb2ea3d39f6b7e86aa8e9209b42c1570ca3a8",
+      "state": "NC",
+      "category": "unknown",
+      "listings": 17
+    },
+    {
+      "source_id": "ncisaa-2025-d2:1f8c26c15e1c13fe20d665760f4f084aee7f2110e5af3290ca0001253521b51d",
+      "state": "NC",
+      "category": "unknown",
+      "listings": 24
+    },
+    {
+      "source_id": "ncisaa-2025-d3:cc727d50df7127639d2eeb7b8f3169aec5a2545ca50ffe0133ca3f46cc95420d",
+      "state": "NC",
+      "category": "unknown",
+      "listings": 23
+    },
+    {
+      "source_id": "nd-lmsc-clubs:9e290fbc59c573e86ef6abf1e10be748c48f278b696553218b0f20edd7cda488",
+      "state": "ND",
+      "category": "mixed",
+      "listings": 2
+    },
+    {
+      "source_id": "ndhsaa-swimming-girls:ec9d05078a3c6ca5aca0fab83df311019a6137fedac5a6116dd8521b06bf888f",
+      "state": "ND",
+      "category": "women",
+      "listings": 19
+    },
+    {
+      "source_id": "ne-lmsc-clubs:b542a390ed85393b9f1eb595f234099eb7a5cd52be13a8a83636c946ff6cc349",
+      "state": "MA",
+      "category": "mixed",
+      "listings": 3
+    },
+    {
+      "source_id": "ne-lmsc-clubs:b542a390ed85393b9f1eb595f234099eb7a5cd52be13a8a83636c946ff6cc349",
+      "state": "ME",
+      "category": "mixed",
+      "listings": 1
+    },
+    {
+      "source_id": "ne-lmsc-clubs:b542a390ed85393b9f1eb595f234099eb7a5cd52be13a8a83636c946ff6cc349",
+      "state": "NH",
+      "category": "mixed",
+      "listings": 1
+    },
+    {
+      "source_id": "ne-lmsc-clubs:b542a390ed85393b9f1eb595f234099eb7a5cd52be13a8a83636c946ff6cc349",
+      "state": "RI",
+      "category": "mixed",
+      "listings": 1
+    },
+    {
+      "source_id": "ne-lmsc-clubs:b542a390ed85393b9f1eb595f234099eb7a5cd52be13a8a83636c946ff6cc349",
+      "state": "VT",
+      "category": "mixed",
+      "listings": 1
+    },
+    {
+      "source_id": "new-england-swimming-lsc-clubs:581c552b49dc24e072084862fe7cffe235976f3efa0eaa02b3278d8857344245",
+      "state": "MA",
+      "category": "mixed",
+      "listings": 59
+    },
+    {
+      "source_id": "new-england-swimming-lsc-clubs:581c552b49dc24e072084862fe7cffe235976f3efa0eaa02b3278d8857344245",
+      "state": "ME",
+      "category": "mixed",
+      "listings": 16
+    },
+    {
+      "source_id": "new-england-swimming-lsc-clubs:581c552b49dc24e072084862fe7cffe235976f3efa0eaa02b3278d8857344245",
+      "state": "NH",
+      "category": "mixed",
+      "listings": 15
+    },
+    {
+      "source_id": "new-england-swimming-lsc-clubs:581c552b49dc24e072084862fe7cffe235976f3efa0eaa02b3278d8857344245",
+      "state": "RI",
+      "category": "mixed",
+      "listings": 16
+    },
+    {
+      "source_id": "new-england-swimming-lsc-clubs:581c552b49dc24e072084862fe7cffe235976f3efa0eaa02b3278d8857344245",
+      "state": "VT",
+      "category": "mixed",
+      "listings": 12
+    },
+    {
+      "source_id": "new-england-ymca-swimming-championship-2026:0b1a6f794b70b042117236cfa3c150630e0940b7e9708dcc80d6eb355dde58a9",
+      "state": "CT",
+      "category": "mixed",
+      "listings": 11
+    },
+    {
+      "source_id": "new-england-ymca-swimming-championship-2026:0b1a6f794b70b042117236cfa3c150630e0940b7e9708dcc80d6eb355dde58a9",
+      "state": "MA",
+      "category": "mixed",
+      "listings": 21
+    },
+    {
+      "source_id": "new-england-ymca-swimming-championship-2026:0b1a6f794b70b042117236cfa3c150630e0940b7e9708dcc80d6eb355dde58a9",
+      "state": "ME",
+      "category": "mixed",
+      "listings": 6
+    },
+    {
+      "source_id": "new-england-ymca-swimming-championship-2026:0b1a6f794b70b042117236cfa3c150630e0940b7e9708dcc80d6eb355dde58a9",
+      "state": "NH",
+      "category": "mixed",
+      "listings": 1
+    },
+    {
+      "source_id": "new-england-ymca-swimming-championship-2026:0b1a6f794b70b042117236cfa3c150630e0940b7e9708dcc80d6eb355dde58a9",
+      "state": "RI",
+      "category": "mixed",
+      "listings": 7
+    },
+    {
+      "source_id": "new-jersey-ymca-state-championship-2024:437b973a7686310ac426b44201958c1c95c508f969d9a13737e94ef6529f1f0a",
+      "state": "NJ",
+      "category": "mixed",
+      "listings": 24
+    },
+    {
+      "source_id": "new-york-north-country-ymca-league-championship:46dd7c6c6710ad0cc0094391716ad3ce84653a54b5bc4f831106d73f23c56f65",
+      "state": "NY",
+      "category": "mixed",
+      "listings": 9
+    },
+    {
+      "source_id": "nhiaa-bylaw-swimming-2025-26:738924b98f41083f22a5ea9775f42037a38af7e2ff324106111fa76fd4645217",
+      "state": "NH",
+      "category": "men",
+      "listings": 47
+    },
+    {
+      "source_id": "nhiaa-bylaw-swimming-2025-26:738924b98f41083f22a5ea9775f42037a38af7e2ff324106111fa76fd4645217",
+      "state": "NH",
+      "category": "women",
+      "listings": 50
+    },
+    {
+      "source_id": "niaa-swimming-alignment-26-28:7e9bd0a52419c688affebb6e040fd388c0a2cbac55cd7b47ead70fe74d153c08",
+      "state": "NV",
+      "category": "unknown",
+      "listings": 68
+    },
+    {
+      "source_id": "niagara-masters-clubs:0260082d481a5ccdce1c1f40c00feac51541bf4bf69bdbe4841945267762ca07",
+      "state": "NY",
+      "category": "mixed",
+      "listings": 3
+    },
+    {
+      "source_id": "njcaa-swimming-programs-2025-26:9625e5c10cd06e92dca1833274ab0a3139070ea4b385c4610389db77e71f98bf",
+      "state": "FL",
+      "category": "men",
+      "listings": 2
+    },
+    {
+      "source_id": "njcaa-swimming-programs-2025-26:9625e5c10cd06e92dca1833274ab0a3139070ea4b385c4610389db77e71f98bf",
+      "state": "FL",
+      "category": "women",
+      "listings": 2
+    },
+    {
+      "source_id": "njcaa-swimming-programs-2025-26:9625e5c10cd06e92dca1833274ab0a3139070ea4b385c4610389db77e71f98bf",
+      "state": "IA",
+      "category": "men",
+      "listings": 3
+    },
+    {
+      "source_id": "njcaa-swimming-programs-2025-26:9625e5c10cd06e92dca1833274ab0a3139070ea4b385c4610389db77e71f98bf",
+      "state": "IA",
+      "category": "women",
+      "listings": 3
+    },
+    {
+      "source_id": "njcaa-swimming-programs-2025-26:9625e5c10cd06e92dca1833274ab0a3139070ea4b385c4610389db77e71f98bf",
+      "state": "KS",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "njcaa-swimming-programs-2025-26:9625e5c10cd06e92dca1833274ab0a3139070ea4b385c4610389db77e71f98bf",
+      "state": "KS",
+      "category": "women",
+      "listings": 1
+    },
+    {
+      "source_id": "njcaa-swimming-programs-2025-26:9625e5c10cd06e92dca1833274ab0a3139070ea4b385c4610389db77e71f98bf",
+      "state": "MS",
+      "category": "men",
+      "listings": 2
+    },
+    {
+      "source_id": "njcaa-swimming-programs-2025-26:9625e5c10cd06e92dca1833274ab0a3139070ea4b385c4610389db77e71f98bf",
+      "state": "MS",
+      "category": "women",
+      "listings": 2
+    },
+    {
+      "source_id": "njcaa-swimming-programs-2025-26:9625e5c10cd06e92dca1833274ab0a3139070ea4b385c4610389db77e71f98bf",
+      "state": "NY",
+      "category": "men",
+      "listings": 5
+    },
+    {
+      "source_id": "njcaa-swimming-programs-2025-26:9625e5c10cd06e92dca1833274ab0a3139070ea4b385c4610389db77e71f98bf",
+      "state": "NY",
+      "category": "women",
+      "listings": 5
+    },
+    {
+      "source_id": "njcaa-swimming-programs-2025-26:9625e5c10cd06e92dca1833274ab0a3139070ea4b385c4610389db77e71f98bf",
+      "state": "OR",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "njcaa-swimming-programs-2025-26:9625e5c10cd06e92dca1833274ab0a3139070ea4b385c4610389db77e71f98bf",
+      "state": "OR",
+      "category": "women",
+      "listings": 1
+    },
+    {
+      "source_id": "njsiaa-moc-2025:bdf405d5f6b348126de3ea1cc545e4ee468538958ea40f83f27fd44968ed03bc",
+      "state": "NJ",
+      "category": "unknown",
+      "listings": 39
+    },
+    {
+      "source_id": "njsiaa-moc-2026:188ecd0711f2fa5a1c949e41c80302a492d0ef325385a68d18243ec66075bade",
+      "state": "NJ",
+      "category": "unknown",
+      "listings": 114
+    },
+    {
+      "source_id": "north-carolina-swimming-lsc-clubs:b3529c2d1a81b22dfa20b491e2dfde90d2647f126096130e60c65ec0d1227496",
+      "state": "NC",
+      "category": "mixed",
+      "listings": 70
+    },
+    {
+      "source_id": "northwest-ohio-ymca-swim-league-2025:84a15b1b02ea010970c3b18c08743b2e68f0e2a6fb010f31d104c3f4a8f6b67d",
+      "state": "MI",
+      "category": "mixed",
+      "listings": 2
+    },
+    {
+      "source_id": "northwest-ohio-ymca-swim-league-2025:84a15b1b02ea010970c3b18c08743b2e68f0e2a6fb010f31d104c3f4a8f6b67d",
+      "state": "OH",
+      "category": "mixed",
+      "listings": 17
+    },
+    {
+      "source_id": "nsaa-swimming-registered-2026-27:ebd2837409c131f649d50e0b2d22ae0216d66acaaa95cb4b2c7311e0437a3b1c",
+      "state": "NE",
+      "category": "men",
+      "listings": 41
+    },
+    {
+      "source_id": "nsaa-swimming-registered-2026-27:ebd2837409c131f649d50e0b2d22ae0216d66acaaa95cb4b2c7311e0437a3b1c",
+      "state": "NE",
+      "category": "women",
+      "listings": 41
+    },
+    {
+      "source_id": "nvsl-handbook-2026:ec5084d874112019e8d4e39fc0089417f2556e8635dde25269d20a3a59d8a15d",
+      "state": "VA",
+      "category": "mixed",
+      "listings": 102
+    },
+    {
+      "source_id": "nwal-standings-directory:e5da22fd341fa278cc37857d2d57bb7df3114386f846d92672740ff27c68045b",
+      "state": "TX",
+      "category": "mixed",
+      "listings": 90
+    },
+    {
+      "source_id": "nys-federation-2025-boys-finals:b248db511149bb64f5b32bb8e517fac110be242a1b87ac11bc23ec181b11d8cb",
+      "state": "NY",
+      "category": "men",
+      "listings": 60
+    },
+    {
+      "source_id": "nys-federation-2025-girls-scores:a0fe02a7309f299d21679edacb301069001fc80484844eef4eb3302d92a2688d",
+      "state": "NY",
+      "category": "women",
+      "listings": 6
+    },
+    {
+      "source_id": "nysphsaa-2025-boys-section-scores:df227c3c00de18a75523e1afc2466ab473540d7c7a913e930418b045a29b19cc",
+      "state": "NY",
+      "category": "men",
+      "listings": 46
+    },
+    {
+      "source_id": "nysphsaa-2025-girls-finals:27f06132a6ff522beceb85b2b4dc29fa0174d059b7b75b659eb82cb9bd6f0fc8",
+      "state": "NY",
+      "category": "women",
+      "listings": 8
+    },
+    {
+      "source_id": "nysphsaa-2025-girls-scores:d39a989101227c943e2464e7112b8dc7207801ad8b355e9ab05daf0618c9721e",
+      "state": "NY",
+      "category": "women",
+      "listings": 84
+    },
+    {
+      "source_id": "nysphsaa-section-1-girls-championships:553db2ae0372da50a547e2a57a47398a22600990466b9218a9bc75812fd6e784",
+      "state": "NY",
+      "category": "women",
+      "listings": 33
+    },
+    {
+      "source_id": "nysphsaa-section-4-boys-champions:3ef0c3c577e12ea417f6bce3571223953ca7b27ad66a94bc24bcc47c43a6abc5",
+      "state": "NY",
+      "category": "men",
+      "listings": 3
+    },
+    {
+      "source_id": "nysphsaa-section-4-girls-champions:637cb7c458e544d683518d8505fb98c8ff40f5bcf51422dbcacbdd56b0b3c105",
+      "state": "NY",
+      "category": "women",
+      "listings": 3
+    },
+    {
+      "source_id": "nysphsaa-section-7-10-boys-swimming:e1af00032d323260fed3ff527a7ccffb6afdd06303c6f405006fc702011823bb",
+      "state": "NY",
+      "category": "men",
+      "listings": 9
+    },
+    {
+      "source_id": "nysphsaa-section-7-10-girls-swimming:f0b65052d70b6a98aae07a7ccd55253c09684e7425873d23611c165e12589196",
+      "state": "NY",
+      "category": "women",
+      "listings": 13
+    },
+    {
+      "source_id": "nysphsaa-section-9-2026-handbook:64890c3c2eb51aeb53aa59117f19940d2c4cab4403b70b5a1159b21e7b08eae7",
+      "state": "NY",
+      "category": "men",
+      "listings": 11
+    },
+    {
+      "source_id": "nysphsaa-section-9-2026-handbook:64890c3c2eb51aeb53aa59117f19940d2c4cab4403b70b5a1159b21e7b08eae7",
+      "state": "NY",
+      "category": "women",
+      "listings": 14
+    },
+    {
+      "source_id": "ossaa-boys-swimming-classifications-2026-27:bf11c9fe30cc819374754fca73251a7808bc30662ce7c9bbf0ba07ffda58a57a",
+      "state": "OK",
+      "category": "men",
+      "listings": 64
+    },
+    {
+      "source_id": "ossaa-girls-swimming-classifications-2026-27:0a658d25e4e952bb3b3a3bcafd4cda110a388767d30b2e0de2c2d49e31bb3f4a",
+      "state": "OK",
+      "category": "women",
+      "listings": 63
+    },
+    {
+      "source_id": "pa-ymca-registered-teams-2025-26:b042406f35af8de32384b926fc3d4f29d63e5ded1c375b9ba578367b6ba8b65d",
+      "state": "NY",
+      "category": "mixed",
+      "listings": 1
+    },
+    {
+      "source_id": "pa-ymca-registered-teams-2025-26:b042406f35af8de32384b926fc3d4f29d63e5ded1c375b9ba578367b6ba8b65d",
+      "state": "PA",
+      "category": "mixed",
+      "listings": 67
+    },
+    {
+      "source_id": "pa-ymca-west-district-championship-2026:3e102315839f910cde877af8779142a331eb5fefe697dbde44d6a8cd4702e61f",
+      "state": "PA",
+      "category": "mixed",
+      "listings": 3
+    },
+    {
+      "source_id": "penn-del-ymca-swim-league-members-2025-26:9f2fc43126af0b2096be8e5ebe282558cfa25c4b6c9df0531dcc32392315a2d5",
+      "state": "DE",
+      "category": "mixed",
+      "listings": 2
+    },
+    {
+      "source_id": "penn-del-ymca-swim-league-members-2025-26:9f2fc43126af0b2096be8e5ebe282558cfa25c4b6c9df0531dcc32392315a2d5",
+      "state": "PA",
+      "category": "mixed",
+      "listings": 19
+    },
+    {
+      "source_id": "pmsl-handbook-2026:14216bbbea9d3b612d9c0bc801bafaefac060e00f8aad5055cde262261f6d1bc",
+      "state": "DC",
+      "category": "mixed",
+      "listings": 1
+    },
+    {
+      "source_id": "pmsl-handbook-2026:14216bbbea9d3b612d9c0bc801bafaefac060e00f8aad5055cde262261f6d1bc",
+      "state": "MD",
+      "category": "mixed",
+      "listings": 33
+    },
+    {
+      "source_id": "pns-lsc-clubs:522491f7adbc011224a1a09ac9a9c15a7b780a5f66d9e463bd7bc35639c0ab6e",
+      "state": "WA",
+      "category": "mixed",
+      "listings": 43
+    },
+    {
+      "source_id": "pv-lmsc-clubs:0c6c275e3a913f37facd0a64299320655612d82362b6459b6f87854afc0b7d4c",
+      "state": "DC",
+      "category": "mixed",
+      "listings": 5
+    },
+    {
+      "source_id": "pv-lmsc-clubs:0c6c275e3a913f37facd0a64299320655612d82362b6459b6f87854afc0b7d4c",
+      "state": "MD",
+      "category": "mixed",
+      "listings": 10
+    },
+    {
+      "source_id": "pv-lmsc-clubs:0c6c275e3a913f37facd0a64299320655612d82362b6459b6f87854afc0b7d4c",
+      "state": "VA",
+      "category": "mixed",
+      "listings": 16
+    },
+    {
+      "source_id": "sal-teams-directory:d0a79d80e2e953d76aa650ff4f72680984b22a9e3ca78b006427132521f3c858",
+      "state": "PA",
+      "category": "mixed",
+      "listings": 20
+    },
+    {
+      "source_id": "sc-lmsc-adult-programs:df463bb31b41a6b178e12ecaac683bfc12a745ee006316a45073762e0f73b17f",
+      "state": "SC",
+      "category": "mixed",
+      "listings": 15
+    },
+    {
+      "source_id": "schsl-swimming-2026-boys-3a:578200630c345238d33c2892a38e4e2fa88c46ed5ea0647696843dcf1413aced",
+      "state": "SC",
+      "category": "men",
+      "listings": 28
+    },
+    {
+      "source_id": "schsl-swimming-2026-boys-4a:f25775447820463bdc985c1bf0a4a32a15c2e86defc1d0d935d844b907ea5105",
+      "state": "SC",
+      "category": "men",
+      "listings": 29
+    },
+    {
+      "source_id": "schsl-swimming-2026-boys-5a:8960c4ea81b93ca2250b4984dcb4ccbbe4259c8c2fc4aa5dbdb60825328b1e9c",
+      "state": "SC",
+      "category": "men",
+      "listings": 26
+    },
+    {
+      "source_id": "schsl-swimming-2026-girls-3a:1f031d6e68ea436e4bd341fbde8f38fe09e6b839de5b2f7563d7f7f0f5ac0888",
+      "state": "SC",
+      "category": "women",
+      "listings": 28
+    },
+    {
+      "source_id": "schsl-swimming-2026-girls-4a:833db5c1a74ddee5018b75ea40d2d0276c8f29188669238bb1f4564fa1a9fd4b",
+      "state": "SC",
+      "category": "women",
+      "listings": 28
+    },
+    {
+      "source_id": "schsl-swimming-2026-girls-5a:eb31b69a3c84922e06c87159be0f2ad4b42c6a58348116c2c77a83951f653008",
+      "state": "SC",
+      "category": "women",
+      "listings": 26
+    },
+    {
+      "source_id": "scisa-2024-state-championship-scores:a08c068f25a312635f57afc7adaaee66d7ade56e2ce3a5fa5295094c4b0b5fc0",
+      "state": "SC",
+      "category": "men",
+      "listings": 4
+    },
+    {
+      "source_id": "scisa-2024-state-championship-scores:a08c068f25a312635f57afc7adaaee66d7ade56e2ce3a5fa5295094c4b0b5fc0",
+      "state": "SC",
+      "category": "women",
+      "listings": 5
+    },
+    {
+      "source_id": "scisa-2025-state-championships-teams:92d732266cf98fa5f0bee7246d2b4b8d65a0ee75c1ddbb4cb79addfd1bad65df",
+      "state": "SC",
+      "category": "men",
+      "listings": 13
+    },
+    {
+      "source_id": "scisa-2025-state-championships-teams:92d732266cf98fa5f0bee7246d2b4b8d65a0ee75c1ddbb4cb79addfd1bad65df",
+      "state": "SC",
+      "category": "women",
+      "listings": 13
+    },
+    {
+      "source_id": "scisa-2026-state-championships-c1:dd5fcba2e6881636d171b95053ea9005ff99cb0b1fa83c9dc7276bd3a7707da6",
+      "state": "SC",
+      "category": "men",
+      "listings": 26
+    },
+    {
+      "source_id": "scisa-2026-state-championships-c1:dd5fcba2e6881636d171b95053ea9005ff99cb0b1fa83c9dc7276bd3a7707da6",
+      "state": "SC",
+      "category": "women",
+      "listings": 27
+    },
+    {
+      "source_id": "scs-lsc-clubs-coastal:6c028e847ac68ce2e5fbfffb0415b00f2d1286f453bd96f405cda3fd7257cb8a",
+      "state": "CA",
+      "category": "mixed",
+      "listings": 31
+    },
+    {
+      "source_id": "scs-lsc-clubs-desert:4a018540312d60339a54c1185ddd72281e76d3d908cd4ccc7d914ccaf6eb99e7",
+      "state": "NV",
+      "category": "mixed",
+      "listings": 7
+    },
+    {
+      "source_id": "scs-lsc-clubs-eastern:83ca85ce06004e7b0a4cc5f188199392cb461aec036de99b3c2daf6604c1d1b9",
+      "state": "CA",
+      "category": "mixed",
+      "listings": 24
+    },
+    {
+      "source_id": "scs-lsc-clubs-metro:bfa83831cb8d9c310641f70d9427ef58e7399d145f51c7c10d505f973032ba85",
+      "state": "CA",
+      "category": "mixed",
+      "listings": 22
+    },
+    {
+      "source_id": "scs-lsc-clubs-orange:1115abfb459f4c978f532bf76e520fc70d479097d0cd1948e1d5bf4c1c55ada3",
+      "state": "CA",
+      "category": "mixed",
+      "listings": 34
+    },
+    {
+      "source_id": "scs-lsc-clubs-pacific:03565bf0948f27790572b28b2e6365a425f7ea371c26d11ad4da40ce319c6720",
+      "state": "CA",
+      "category": "mixed",
+      "listings": 28
+    },
+    {
+      "source_id": "snake-river-masters-places:cfb044ac1b962776669bf3372dcca6c6658702768d9ead9b0d7690b1ebd2b73d",
+      "state": "ID",
+      "category": "mixed",
+      "listings": 5
+    },
+    {
+      "source_id": "snake-river-masters-places:cfb044ac1b962776669bf3372dcca6c6658702768d9ead9b0d7690b1ebd2b73d",
+      "state": "NV",
+      "category": "mixed",
+      "listings": 1
+    },
+    {
+      "source_id": "south-dakota-masters-places:618da8a0415d93ca99565ebc843a9a26f79932384f482e28c89b6627eadcf545",
+      "state": "SD",
+      "category": "mixed",
+      "listings": 12
+    },
+    {
+      "source_id": "southeast-sunbelt-and-national-ymca-swim-teams-2025-26:479b126bc4561ffbd8991d1e4751ea2385b7b5dc6fead5ee2cf3644fcf22b7dd",
+      "state": "DE",
+      "category": "mixed",
+      "listings": 1
+    },
+    {
+      "source_id": "southeast-sunbelt-and-national-ymca-swim-teams-2025-26:479b126bc4561ffbd8991d1e4751ea2385b7b5dc6fead5ee2cf3644fcf22b7dd",
+      "state": "FL",
+      "category": "mixed",
+      "listings": 16
+    },
+    {
+      "source_id": "southeast-sunbelt-and-national-ymca-swim-teams-2025-26:479b126bc4561ffbd8991d1e4751ea2385b7b5dc6fead5ee2cf3644fcf22b7dd",
+      "state": "GA",
+      "category": "mixed",
+      "listings": 12
+    },
+    {
+      "source_id": "southeast-sunbelt-and-national-ymca-swim-teams-2025-26:479b126bc4561ffbd8991d1e4751ea2385b7b5dc6fead5ee2cf3644fcf22b7dd",
+      "state": "MD",
+      "category": "mixed",
+      "listings": 5
+    },
+    {
+      "source_id": "southeast-sunbelt-and-national-ymca-swim-teams-2025-26:479b126bc4561ffbd8991d1e4751ea2385b7b5dc6fead5ee2cf3644fcf22b7dd",
+      "state": "NC",
+      "category": "mixed",
+      "listings": 20
+    },
+    {
+      "source_id": "southeast-sunbelt-and-national-ymca-swim-teams-2025-26:479b126bc4561ffbd8991d1e4751ea2385b7b5dc6fead5ee2cf3644fcf22b7dd",
+      "state": "SC",
+      "category": "mixed",
+      "listings": 10
+    },
+    {
+      "source_id": "southeast-sunbelt-and-national-ymca-swim-teams-2025-26:479b126bc4561ffbd8991d1e4751ea2385b7b5dc6fead5ee2cf3644fcf22b7dd",
+      "state": "TN",
+      "category": "mixed",
+      "listings": 3
+    },
+    {
+      "source_id": "southeast-sunbelt-and-national-ymca-swim-teams-2025-26:479b126bc4561ffbd8991d1e4751ea2385b7b5dc6fead5ee2cf3644fcf22b7dd",
+      "state": "VA",
+      "category": "mixed",
+      "listings": 9
+    },
+    {
+      "source_id": "ssl-de-teams-and-pools:e19f67960047aa6faf4326a2a62ca9cde2cf7efd290fc2fd65b04e47f6d49382",
+      "state": "DE",
+      "category": "mixed",
+      "listings": 17
+    },
+    {
+      "source_id": "tcsl-member-teams:8683ae9d0ac32028965be1e18f91efb4a98841cfa0395e3391084e553e9070b1",
+      "state": "NJ",
+      "category": "mixed",
+      "listings": 34
+    },
+    {
+      "source_id": "tisca-2023-state-championships:ff31dcc3686494545675e9267287aee640f01a53f41c1ffa01d1004d6856d199",
+      "state": "TN",
+      "category": "men",
+      "listings": 44
+    },
+    {
+      "source_id": "tisca-2023-state-championships:ff31dcc3686494545675e9267287aee640f01a53f41c1ffa01d1004d6856d199",
+      "state": "TN",
+      "category": "women",
+      "listings": 32
+    },
+    {
+      "source_id": "tisca-2024-state-scores:757f44c1084f581d0341ee87463e5be0be1a358032c273a07410e64afab16bd6",
+      "state": "TN",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "tisca-2025-state-championships:c5fd37ead95bf25e14c73562c5d0dbf93af19d98ff0151a443fc91355aee7657",
+      "state": "TN",
+      "category": "men",
+      "listings": 49
+    },
+    {
+      "source_id": "tisca-2025-state-championships:c5fd37ead95bf25e14c73562c5d0dbf93af19d98ff0151a443fc91355aee7657",
+      "state": "TN",
+      "category": "women",
+      "listings": 59
+    },
+    {
+      "source_id": "tisca-2026-state-championships:b76eea8d534f45534bc9e02bf05dd6d23fae0f13f397bc5361e4126457bb7f6a",
+      "state": "TN",
+      "category": "men",
+      "listings": 45
+    },
+    {
+      "source_id": "tisca-2026-state-championships:b76eea8d534f45534bc9e02bf05dd6d23fae0f13f397bc5361e4126457bb7f6a",
+      "state": "TN",
+      "category": "women",
+      "listings": 44
+    },
+    {
+      "source_id": "uhsaa-boys-swimming-teams:a60f30890a30741fbe8562224623c7c8f5f2ebbc04e78e0a6838c3a716b385cf",
+      "state": "UT",
+      "category": "men",
+      "listings": 112
+    },
+    {
+      "source_id": "uhsaa-girls-swimming-teams:7a1d148ff1359da2867b527294c97dc899246824caead9e0d6f819b62d678a10",
+      "state": "UT",
+      "category": "women",
+      "listings": 114
+    },
+    {
+      "source_id": "vhsl-2019-class3-state-scores:35da0ad288779f13aca348c9f0b05a803ebe5ba01853f49bf885dc0532262514",
+      "state": "VA",
+      "category": "men",
+      "listings": 1
+    },
+    {
+      "source_id": "vhsl-2019-class3-state-scores:35da0ad288779f13aca348c9f0b05a803ebe5ba01853f49bf885dc0532262514",
+      "state": "VA",
+      "category": "women",
+      "listings": 2
+    },
+    {
+      "source_id": "vhsl-2023-class1-2-state-championships:dbc2ac5708b3d37fc857723b4263a9dc1723636276b292c1b83437455d9e777d",
+      "state": "VA",
+      "category": "men",
+      "listings": 27
+    },
+    {
+      "source_id": "vhsl-2023-class1-2-state-championships:dbc2ac5708b3d37fc857723b4263a9dc1723636276b292c1b83437455d9e777d",
+      "state": "VA",
+      "category": "women",
+      "listings": 30
+    },
+    {
+      "source_id": "vhsl-2025-class3-state-championships:98a55c02b824963d2fef300a5c2b8874072baef753457069d1cf39564ba799a8",
+      "state": "VA",
+      "category": "men",
+      "listings": 32
+    },
+    {
+      "source_id": "vhsl-2025-class3-state-championships:98a55c02b824963d2fef300a5c2b8874072baef753457069d1cf39564ba799a8",
+      "state": "VA",
+      "category": "women",
+      "listings": 26
+    },
+    {
+      "source_id": "vhsl-2025-class6-state-by-gender:bffaf80405584ba0b66d45fa885ecb02a9be2f1fa033b97540d485697ca4165a",
+      "state": "VA",
+      "category": "men",
+      "listings": 2
+    },
+    {
+      "source_id": "vhsl-2025-class6-state-by-gender:bffaf80405584ba0b66d45fa885ecb02a9be2f1fa033b97540d485697ca4165a",
+      "state": "VA",
+      "category": "women",
+      "listings": 2
+    },
+    {
+      "source_id": "vhsl-2025-region-1c-2c-championships:060bc2bf7a32e2680bf68c8e06a3756a8852066e235cec7b1ce07ef258fa3fba",
+      "state": "VA",
+      "category": "men",
+      "listings": 2
+    },
+    {
+      "source_id": "vhsl-2025-region-1c-2c-championships:060bc2bf7a32e2680bf68c8e06a3756a8852066e235cec7b1ce07ef258fa3fba",
+      "state": "VA",
+      "category": "women",
+      "listings": 1
+    },
+    {
+      "source_id": "vhsl-2025-region5d:7395f90a51273d067fa494a9ded58a3321b9c9b76da569e4daf532e2919b89d9",
+      "state": "VA",
+      "category": "unknown",
+      "listings": 2
+    },
+    {
+      "source_id": "vhsl-2025-state-class4:1e0fa47ff44769217e1459c41ad5bcce25c05a00eee2270f7eb90a429dffb321",
+      "state": "VA",
+      "category": "unknown",
+      "listings": 32
+    },
+    {
+      "source_id": "vhsl-2025-state-class5:85cfad7aa8375ccc1e2853f8a37384f6a93e56074773eec3cf597d3638521f49",
+      "state": "VA",
+      "category": "unknown",
+      "listings": 31
+    },
+    {
+      "source_id": "vhsl-2025-state-class6:bffaf80405584ba0b66d45fa885ecb02a9be2f1fa033b97540d485697ca4165a",
+      "state": "VA",
+      "category": "unknown",
+      "listings": 46
+    },
+    {
+      "source_id": "vhsl-2026-region4c:8310d8b690eb5375c9c5b11f66609f621ca3ca24eda5934085856f7e7a7c7958",
+      "state": "VA",
+      "category": "unknown",
+      "listings": 3
+    },
+    {
+      "source_id": "vhsl-2026-region6d:169bf8abdb208fccec27da1e440acc810aa7a6fd33d8d5d4c09eb8fe960dcf57",
+      "state": "VA",
+      "category": "unknown",
+      "listings": 3
+    },
+    {
+      "source_id": "vhsl-concorde-district-2026:2e44bf548cf7b44b993ad8f9f4aab4ef38c91722b7b4a9213ee84f4e159f8460",
+      "state": "VA",
+      "category": "men",
+      "listings": 6
+    },
+    {
+      "source_id": "vhsl-concorde-district-2026:2e44bf548cf7b44b993ad8f9f4aab4ef38c91722b7b4a9213ee84f4e159f8460",
+      "state": "VA",
+      "category": "women",
+      "listings": 6
+    },
+    {
+      "source_id": "vhsl-liberty-district-2026:564655d99e0915fa911edab49408de1a233859b17d698c23367003ccc154cc68",
+      "state": "VA",
+      "category": "men",
+      "listings": 7
+    },
+    {
+      "source_id": "vhsl-liberty-district-2026:564655d99e0915fa911edab49408de1a233859b17d698c23367003ccc154cc68",
+      "state": "VA",
+      "category": "women",
+      "listings": 7
+    },
+    {
+      "source_id": "vhsl-national-district-2026:dc5d10aa8ec7e19d22aebe28e414b9f20bd84f531d79964cb285211c6c32d4ac",
+      "state": "VA",
+      "category": "men",
+      "listings": 8
+    },
+    {
+      "source_id": "vhsl-national-district-2026:dc5d10aa8ec7e19d22aebe28e414b9f20bd84f531d79964cb285211c6c32d4ac",
+      "state": "VA",
+      "category": "women",
+      "listings": 8
+    },
+    {
+      "source_id": "vhsl-patriot-district-2026:65060fe5ce117d8cba2b28623074fb7b625a25f04fbea6ecccbe0bd890afd124",
+      "state": "VA",
+      "category": "men",
+      "listings": 8
+    },
+    {
+      "source_id": "vhsl-patriot-district-2026:65060fe5ce117d8cba2b28623074fb7b625a25f04fbea6ecccbe0bd890afd124",
+      "state": "VA",
+      "category": "women",
+      "listings": 8
+    },
+    {
+      "source_id": "visaa-boys-swimming-divisions-2026-28:6f23575073799efa5fcce07ef2c6be6ddbb1c34ddb9f871d2bd2eff307221ba7",
+      "state": "VA",
+      "category": "men",
+      "listings": 52
+    },
+    {
+      "source_id": "visaa-girls-swimming-divisions-2026-28:95a792601364cd6afc2e404c7115e7af86517ff8ad969427c95abe4b3198e54d",
+      "state": "VA",
+      "category": "women",
+      "listings": 52
+    },
+    {
+      "source_id": "whsaa-swimming-2025-26-3a-boys:b635a24aa85d49cbe9401c14d879a7bbbeba479e8bf2250986b9412d529e8257",
+      "state": "WY",
+      "category": "men",
+      "listings": 11
+    },
+    {
+      "source_id": "whsaa-swimming-2025-26-3a-girls:6fb0efaaaabcdf98b19b667d6dd08a4087838212f4178eb824d2d71a22818e6d",
+      "state": "WY",
+      "category": "women",
+      "listings": 11
+    },
+    {
+      "source_id": "whsaa-swimming-2025-26-4a-boys:1f036437410d133e674ac20abcc26101eb7f369d26ec9f2e1814709ead629c77",
+      "state": "WY",
+      "category": "men",
+      "listings": 14
+    },
+    {
+      "source_id": "whsaa-swimming-2025-26-4a-girls:bd42c4ba1afc35cd6814ff708f6bf35635f9d31d4662d97227933cf1a8ee4b0d",
+      "state": "WY",
+      "category": "women",
+      "listings": 14
+    },
+    {
+      "source_id": "wiaa-wpa-boys-swimming-2026-27-1a:67c7a9011e038b99ebb67a37ba81523d552b72b1d3b140236346179479a56ec2",
+      "state": "WA",
+      "category": "men",
+      "listings": 2
+    },
+    {
+      "source_id": "wiaa-wpa-boys-swimming-2026-27-2a:ca33a3a565a027d7951c13263096d6e3e9ceea001dfef33016619d164bc9d08f",
+      "state": "WA",
+      "category": "men",
+      "listings": 36
+    },
+    {
+      "source_id": "wiaa-wpa-boys-swimming-2026-27-3a:fdb87187f0c4772dc54ee097867cacced62b5b72a96a4fabbb1c6c7638460028",
+      "state": "WA",
+      "category": "men",
+      "listings": 45
+    },
+    {
+      "source_id": "wiaa-wpa-boys-swimming-2026-27-4a:d7e87895fa1732b0b2a807c6f8c87dad5dfb6df546a41e4adea25efdd7eed18c",
+      "state": "WA",
+      "category": "men",
+      "listings": 26
+    },
+    {
+      "source_id": "wiaa-wpa-girls-swimming-2026-27-1a:150d9c9722672508fad9d88658218014623e1e767750a8aaa71402af4fc23e2b",
+      "state": "WA",
+      "category": "women",
+      "listings": 2
+    },
+    {
+      "source_id": "wiaa-wpa-girls-swimming-2026-27-2a:a70bafc471167f7704d041077a5be7d9d24d9cf3a1f613d9836352ed3563e8fd",
+      "state": "WA",
+      "category": "women",
+      "listings": 29
+    },
+    {
+      "source_id": "wiaa-wpa-girls-swimming-2026-27-3a:d137edce031739c77db0984c5af02a7268fd5dbd6d7d9e09956f88a530db6464",
+      "state": "WA",
+      "category": "women",
+      "listings": 60
+    },
+    {
+      "source_id": "wiaa-wpa-girls-swimming-2026-27-4a:defe203aba6e6b43e80a5c3704dc6bec156f11b319e90f0d28b99185f407c07a",
+      "state": "WA",
+      "category": "women",
+      "listings": 41
+    },
+    {
+      "source_id": "wisconsin-ymca-state-championship-2024:7669a332f6394e99bbe73b85510025781a83a906ab72067d4a402cdcf95a21bc",
+      "state": "MI",
+      "category": "mixed",
+      "listings": 2
+    },
+    {
+      "source_id": "wisconsin-ymca-state-championship-2024:7669a332f6394e99bbe73b85510025781a83a906ab72067d4a402cdcf95a21bc",
+      "state": "WI",
+      "category": "mixed",
+      "listings": 18
+    },
+    {
+      "source_id": "wmpssdl-md-championships-2026:bc6912e0416901daec509e31588b37f9a86931c3427af06f4f4613bb2e6b87c5",
+      "state": "MD",
+      "category": "men",
+      "listings": 9
+    },
+    {
+      "source_id": "wmpssdl-md-championships-2026:bc6912e0416901daec509e31588b37f9a86931c3427af06f4f4613bb2e6b87c5",
+      "state": "MD",
+      "category": "women",
+      "listings": 10
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "",
+      "category": "mixed",
+      "listings": 2
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "AL",
+      "category": "mixed",
+      "listings": 1
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "CA",
+      "category": "mixed",
+      "listings": 1
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "CT",
+      "category": "mixed",
+      "listings": 15
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "DE",
+      "category": "mixed",
+      "listings": 1
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "GA",
+      "category": "mixed",
+      "listings": 3
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "IA",
+      "category": "mixed",
+      "listings": 4
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "ID",
+      "category": "mixed",
+      "listings": 2
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "IL",
+      "category": "mixed",
+      "listings": 11
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "IN",
+      "category": "mixed",
+      "listings": 1
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "KY",
+      "category": "mixed",
+      "listings": 5
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "MA",
+      "category": "mixed",
+      "listings": 6
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "MD",
+      "category": "mixed",
+      "listings": 7
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "ME",
+      "category": "mixed",
+      "listings": 9
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "MI",
+      "category": "mixed",
+      "listings": 8
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "MN",
+      "category": "mixed",
+      "listings": 3
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "MO",
+      "category": "mixed",
+      "listings": 6
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "MT",
+      "category": "mixed",
+      "listings": 1
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "NC",
+      "category": "mixed",
+      "listings": 12
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "NE",
+      "category": "mixed",
+      "listings": 2
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "NH",
+      "category": "mixed",
+      "listings": 1
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "NJ",
+      "category": "mixed",
+      "listings": 19
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "NY",
+      "category": "mixed",
+      "listings": 11
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "OH",
+      "category": "mixed",
+      "listings": 33
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "OR",
+      "category": "mixed",
+      "listings": 2
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "PA",
+      "category": "mixed",
+      "listings": 56
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "RI",
+      "category": "mixed",
+      "listings": 5
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "SC",
+      "category": "mixed",
+      "listings": 7
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "TX",
+      "category": "mixed",
+      "listings": 2
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "VA",
+      "category": "mixed",
+      "listings": 5
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "WA",
+      "category": "mixed",
+      "listings": 4
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "WI",
+      "category": "mixed",
+      "listings": 13
+    },
+    {
+      "source_id": "ymca-competitive-associations-2025-26:577e1abb68c0530c43b20232833a7ff4d2b27247f54299aa4b84973e4f641da2",
+      "state": "WV",
+      "category": "mixed",
+      "listings": 4
+    },
+    {
+      "source_id": "ymca-nationals-scoring-teams-2025-26:9ceb125cf03055d1a38e87a449e901e81b974795c77da6e4b54f19c5a061a2dd",
+      "state": "",
+      "category": "men",
+      "listings": 93
+    },
+    {
+      "source_id": "ymca-nationals-scoring-teams-2025-26:9ceb125cf03055d1a38e87a449e901e81b974795c77da6e4b54f19c5a061a2dd",
+      "state": "",
+      "category": "women",
+      "listings": 86
+    }
+  ],
+  "individual_entry_only_school_listings": 154,
+  "verified_non_sponsoring_school_states": [
+    "SD",
+    "TN",
+    "VT"
+  ],
+  "national_membership_or_activity_completeness_verified": false,
+  "cross_source_entities_merged": false,
+  "new_races_in_this_metadata_pass": 0
+}

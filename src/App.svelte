@@ -1,6 +1,9 @@
 <script lang="ts">
   import { coloradoDistanceCaveat } from "./lib/calculation-copy";
-  import { benchmarkPreview } from "./lib/benchmark-preview";
+  import {
+    benchmarkPreview,
+    benchmarkTimeStandardChoices,
+  } from "./lib/benchmark-preview";
   import MethodComparison from "./lib/MethodComparison.svelte";
   import { onMount, tick } from "svelte";
   import Icon from "./lib/Icon.svelte";
@@ -9,6 +12,7 @@
   import NationalStandards from "./lib/NationalStandards.svelte";
   import { getNationalStandardPrograms } from "@turnmark/sdk";
   const nationalPrograms = getNationalStandardPrograms();
+  const timeStandardChoices = benchmarkTimeStandardChoices();
   import Install from "./lib/Install.svelte";
   import Theme from "./lib/Theme.svelte";
   import { site, faqs } from "./data/site";
@@ -18,6 +22,7 @@
     adjustAltitude,
     conversionMethods,
     coloradoMethod,
+    empiricalMethod,
     altitudePolicies,
   } from "@turnmark/sdk/conversion";
   import { readPreferences, type SwimPreferences } from "./lib/preferences";
@@ -106,7 +111,8 @@
       calculationOpen = true;
       altitudeEnabled = true;
     }
-    if (form.method === coloradoMethod) calculationOpen = true;
+    if (form.method === coloradoMethod || form.method === empiricalMethod)
+      calculationOpen = true;
   });
   $effect(() => {
     if (!mounted || !altitudeValid) return;
@@ -469,7 +475,10 @@
   }
   function restoreCalculationOptions() {
     altitudeEnabled = form.altitude > 0;
-    calculationOpen = altitudeEnabled || form.method === coloradoMethod;
+    calculationOpen =
+      altitudeEnabled ||
+      form.method === coloradoMethod ||
+      form.method === empiricalMethod;
   }
   function reset() {
     form = { ...defaultState, time: "" };
@@ -742,7 +751,9 @@
             ><span class="summary-elevation"
               >{form.method === coloradoMethod
                 ? "Colorado"
-                : "NCAA"}{#if altitudeValid && form.altitude > 0}
+                : form.method === empiricalMethod
+                  ? "Empirical"
+                  : "NCAA"}{#if altitudeValid && form.altitude > 0}
                 · {elevationLabel}{/if}</span
             ></summary
           >
@@ -1006,6 +1017,9 @@
               converter={{ convert: convertSwim, adjustAltitude }}
               adjusted={adjustment > 0}
               selected={form.method}
+              onSelect={(m) => {
+                form.method = m;
+              }}
               request={{
                 swim: swimRequest(form),
                 to: focus,
@@ -1114,14 +1128,8 @@
               }}
             >
               <optgroup label="Time standards">
-                <option value="youth">USA Swimming · Youth</option>
-                <option value="masters">USMS · Masters</option>
-                {#each nationalPrograms as program}
-                  <option value={program.system}
-                    >{program.system === "juniors"
-                      ? "Junior Nationals"
-                      : program.label}</option
-                  >
+                {#each timeStandardChoices as choice}
+                  <option value={choice.id}>{choice.label}</option>
                 {/each}
               </optgroup>
               <optgroup label="Points">

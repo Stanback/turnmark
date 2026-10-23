@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "kind": "published_equivalence_examples",
+  "source_url": "https://swimswam.com/swimming-real-time-converter/",
+  "source_published": "2018-01-19",
+  "source_checked": "2026-10-20",
+  "reference_method": "Swimulator distribution/percentile matching",
+  "target_is_observed_swim": false,
+  "use": "Elite-edge illustrative comparisons; not held-out labels, model-accuracy targets or required NCAA/Colorado outputs. The article does not supply age settings or fitted parameters for reproducing these outputs.",
+  "cases": [
+    {
+      "id": "simone-manuel-100-free",
+      "athlete": "Simone Manuel",
+      "input": {
+        "swim": {
+          "time": "45.56",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "women"
+      },
+      "age_years": null,
+      "published_equivalent_time": "51.76"
+    },
+    {
+      "id": "will-licon-200-breast",
+      "athlete": "Will Licon",
+      "input": {
+        "swim": {
+          "time": "1:47.91",
+          "event": {
+            "distance": 200,
+            "stroke": "breaststroke",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "men"
+      },
+      "age_years": null,
+      "published_equivalent_time": "2:03.86",
+      "published_equivalent_time_literal": "2:03:86"
+    },
+    {
+      "id": "sarah-sjostrom-100-free",
+      "athlete": "Sarah Sjostrom",
+      "input": {
+        "swim": {
+          "time": "51.71",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "LCM"
+          }
+        },
+        "to": "SCY",
+        "table": "women"
+      },
+      "age_years": null,
+      "published_equivalent_time": "45.52"
+    },
+    {
+      "id": "ryan-lochte-200-im",
+      "athlete": "Ryan Lochte",
+      "input": {
+        "swim": {
+          "time": "1:49.63",
+          "event": {
+            "distance": 200,
+            "stroke": "individual-medley",
+            "course": "SCM"
+          }
+        },
+        "to": "LCM",
+        "table": "men"
+      },
+      "age_years": null,
+      "published_equivalent_time": "1:53.36"
+    }
+  ]
+}

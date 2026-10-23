@@ -3,17 +3,33 @@ import {
   conversionSource,
   altitudeSource,
   coloradoSource,
+  empiricalSource,
   ncaaAltitudeSource,
 } from "./data/conversions.js";
 import type { Provenance } from "./contracts.js";
-export { conversionSource, altitudeSource, coloradoSource, ncaaAltitudeSource };
+export {
+  conversionSource,
+  altitudeSource,
+  coloradoSource,
+  empiricalSource,
+  ncaaAltitudeSource,
+};
 
 export const conversionMethod = "ncaa-2025-27";
 export const coloradoMethod = "colorado-teamunify-2026";
-export type ConversionMethod = typeof conversionMethod | typeof coloradoMethod;
+export const empiricalMethod = "turnmark-empirical-2026";
+export type ConversionMethod =
+  | typeof conversionMethod
+  | typeof coloradoMethod
+  | typeof empiricalMethod;
 export const conversionMethods = [
   { id: conversionMethod, label: "NCAA (default)", source: conversionSource },
   { id: coloradoMethod, label: "Colorado Timing", source: coloradoSource },
+  {
+    id: empiricalMethod,
+    label: "Turnmark Empirical",
+    source: empiricalSource,
+  },
 ] as const;
 export const conversionProvenance: Readonly<Provenance> = Object.freeze({
   id: conversionMethod,

@@ -249,7 +249,11 @@ export function createServer(engine: Engine) {
                   (typeof altitudePolicies)[number]["id"] | undefined,
               }),
       }));
-      const [ncaa, colorado] = methodComparison.map((item) => item.result);
+      const [ncaa, colorado, empirical] = methodComparison.map(
+        (item) => item.result,
+      );
+      const compared =
+        input.method === "turnmark-empirical-2026" ? empirical : colorado;
       return result({
         ...primary,
         methodComparison,
@@ -266,10 +270,10 @@ export function createServer(engine: Engine) {
               })),
             }
           : {}),
-        ...(ncaa.status === "available" && colorado.status === "available"
+        ...(ncaa.status === "available" && compared?.status === "available"
           ? {
               methodDifferenceSeconds:
-                Math.abs(ncaa.value.hundredths - colorado.value.hundredths) /
+                Math.abs(ncaa.value.hundredths - compared.value.hundredths) /
                 100,
             }
           : {}),

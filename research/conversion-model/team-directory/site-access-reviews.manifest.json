@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "scope": "observed-site-access-signals",
+  "rows": 14,
+  "origins": 12,
+  "sha256": "0aea2e5ab069ef0f8399dc847f45a30602cffa9f0de99bfed3a518e292b54c42",
+  "collection": "Cache-only review; no new network requests. Index/robots response examples, status-only blocked receipts and one independently verified USMS public MeetID challenge response. No athlete records or arbitrary query parameters.",
+  "limitations": [
+    "Not a comprehensive WAF inventory or detector; observations are URL/time-specific.",
+    "403 alone does not identify WAF/provider; Cloudflare edge headers do not confirm a WAF rule.",
+    "Historical denied responses did not retain headers/body; unknowns are not reconstructed.",
+    "Manual browser checks are recorded separately from automated HTTP status outcomes and never reset collector cooldowns."
+  ],
+  "signal_reference": "https://developers.cloudflare.com/cloudflare-challenges/challenge-types/challenge-pages/detect-response/"
+}

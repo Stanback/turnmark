@@ -53,7 +53,15 @@ The final `engine-ci` gate requires every selected job to succeed and only
 accepts skips for jobs explicitly not selected.
 
 Website hosting configuration (`wrangler.jsonc`) and isolated deployment tooling
-under `deployment/` select web checks only. Workflow changes still select all.
+under `deployment/` select web checks only. Product workflow changes still select all.
+
+The isolated `research/conversion-model/` experiment and its dedicated
+`conversion-research.yml` workflow select no product consumers. That workflow
+installs hashed Python dependencies and runs synthetic import/audit/Iceberg
+integration tests on Python 3.12. It has no real dataset, scraper, account or
+deployment credentials, and uploads no research data. Unknown research paths
+still select all product checks. Keep this exception narrow; product code must
+not import the experiment. See the [local setup](../research/conversion-model/README.md).
 
 The web app and JS SDK still compile their Wasm dependency when selected.
 Native jobs generate and package their Rust SDK dependency on a clean runner;

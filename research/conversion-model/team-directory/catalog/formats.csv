@@ -1,0 +1,11 @@
+format_id,name,kind,public_adapter,adapter_scope,limitations,specification_url
+delimited,CSV / TSV,directory,directory_rows.py:csv_columns,Explicit normalized directory columns,Encoding/dialect and identity field maps require review; not a universal result parser.,
+html-page,HTML links / prose,discovery,,Reviewed source-specific projection remains local,No general scraper; page text requires explicit evidence review.,
+html-table,HTML tables,directory,directory_rows.py:html_table_columns,One explicitly selected ordinary table,Merged/nested tables rejected; links require explicit selection.,
+hytek,HY-TEK proprietary exports (.hy3 / .hyv),meet interchange,,Discovery/review only,Not SDIF merely because exported by HY-TEK; entries/events are not results; unsupported until a verified interchange contract exists.,
+json,JSON rows,directory,directory_rows.py:embedded_json_columns,JSON arrays and embedded literal JSON following one exact marker; explicit field pointers. Ordinary JSON files use json_columns.,Observed frontend endpoints are not necessarily documented or stable public APIs.,
+lenex,LENEX XML,meet interchange,,Candidate future common-format adapter,Not implemented or claimed as imported. Distinguish individual finishes from entries/splits.,https://wiki.swimrankings.net/index.php/swimrankings%3ALenex
+pdf-layout,PDF layout text,directory,directory_rows.py:text_columns,Strict expected-count text rows after local PDF extraction,Not OCR; PDFs/images with changed or ambiguous layout fail for review.,
+sdif,SDIF 3 (.sd3 / .cl2),meet interchange,sdif_venue.py:parse_meet_header,Public B1 venue/altitude-header projection only,Full finish parser is local; seeds/splits/relays/DQs are not individual-finish labels. Zero altitude requires review.,https://www.usms.org/admin/sdifv3f.txt
+xlsx,XLSX workbook,directory,,Discovered NCAA historical sponsorship workbook only,No generic workbook importer implemented.,
+zip,ZIP archive,container,,Local bounded archive handling only,Container is not a result format. Inspect members; reject ambiguous/multiple result files and decompression hazards.,

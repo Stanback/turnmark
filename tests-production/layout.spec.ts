@@ -158,7 +158,14 @@ test("mobile benchmark selector follows the swim choice and navigation paints th
     exact: true,
   });
   await expect(selector).toHaveCount(1);
-  await expect(selector.locator("option")).toHaveCount(6);
+  await expect(selector.locator("option")).toHaveText([
+    "USA Swimming · Youth",
+    "USA Swimming · Futures",
+    "Junior Nationals",
+    "NISCA · All-America",
+    "USMS · Masters",
+    "World Aquatics points",
+  ]);
   const basis = (await page
     .getByRole("group", { name: "Compare using", exact: true })
     .boundingBox())!;

@@ -1,0 +1,1004 @@
+{
+  "schema_version": 1,
+  "scope": "governing-body-discovery-only",
+  "governing_bodies": 161,
+  "programs_added": 0,
+  "file": {
+    "path": "governing-bodies.csv",
+    "sha256": "48f4d35bb503b46a4c84dce67716408497e4ac785b5955201bf0617a210163a1"
+  },
+  "sources": [
+    {
+      "source_id": "nfhs-member-state-associations",
+      "governing_bodies": 51,
+      "source_url": "https://nfhs.org/about/state-association-directory",
+      "source_listing": "NFHS Member State Associations",
+      "listing_checked": "2026-10-20T16:59:12.222685+00:00",
+      "source_content_sha256": "4fc59174ff8309a15e63b75d33f8cb57c6b6363dea89f3f63e1e479f904199e9"
+    },
+    {
+      "source_id": "usa-lsc-websites",
+      "governing_bodies": 59,
+      "source_url": "https://www.usaswimming.org/about/lsc-websites",
+      "source_listing": "USA Swimming LSC Websites",
+      "listing_checked": "2026-10-20T17:02:17.490440+00:00",
+      "source_content_sha256": "9a1fb70457e0721185ccd543aeb08a7d868cc14b63fddf9599b1a61d51c940ab"
+    },
+    {
+      "source_id": "usms-lmsc-map",
+      "source_url": "https://www.usms.org/volunteer-central/lmscs/lmsc-map",
+      "source_listing": "USMS Local Programs Map / LMSC listing",
+      "listing_checked": "2026-10-20T22:38:42.906897+00:00",
+      "source_content_sha256": "dcd11c9bd858e8be69b36945e2c87f2ae64b8864dc8d4ab481281a4a26efad7c",
+      "governing_bodies": 51,
+      "supporting_sources": [
+        {
+          "source_id": "usms-lmsc-websites",
+          "source_url": "https://www.usms.org/links/lmscwebsites.php",
+          "source_listing": "USMS Zone and LMSC Web Sites",
+          "listing_checked": "2026-10-20T22:41:28.419697+00:00",
+          "source_content_sha256": "86cf281903c7dfaffbff93cff1aa46898232ad997863be5afa4e977dc8471465"
+        }
+      ],
+      "identity_notes": "LMSCID values are preserved from published LMSC information links. Regional names are matched only between the two USMS lists, with whitespace/dash normalization and a complete bijection check. No child/member/contact links fetched. Published website links remain unverified source assertions."
+    }
+  ],
+  "notes": "Organizational names and published websites only; no contacts or addresses. Source listings do not establish current activity or swimming-team counts. The 51 NFHS member-state associations exclude affiliates and other school authorities. The 59 LSC links retain source-published HTTP and legacy URLs; destination websites and all club directories still require review. Opaque LSC listing keys are derived from source labels, not official LSC codes; never join team affiliations by these keys. No assertion of national directory completeness. The 51 USMS LMSCs extend regional discovery only, with source-provided numeric LMSCIDs and website evidence from the official USMS index. LMSCs are distinct from USA Swimming LSCs. No club, workout-group or facility rows are inferred; no roster or contact pages were fetched.",
+  "program_listing_reviews": [
+    {
+      "authority_id": "nfhs-member-state:516a2c10-ba85-4864-ba41-dece44ff166f",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "ohsaa-swimming-B-1:3e85853c5062e5f63542952fef6110adb398e7b416495faae2f41c8d3a0d7f81",
+        "ohsaa-swimming-B-2:5186858e900974909c3eaa67d4250f89a6ca927151ebf7565de619b678655f55",
+        "ohsaa-swimming-G-1:4edbbff5482fe0c475d28ba77c74f19a3761ae7324a3ad37da3cf5ac413241f8",
+        "ohsaa-swimming-G-2:d865c7ba35ff7d26e7687b3c9bed3b0ddfee71ae6bc31c9c354fa91450d6488f"
+      ],
+      "scope": "2026-27/2027-28 alignments based on 2025-26 first-round teams; individual-only schools excluded",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usa-lsc-listing:55cdfdc841a6fbbf85cf820e",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "pvs-clubs:09d722835f0d6664e210dfb75ab9a6a81595323a52ddf5094f621249760899e6"
+      ],
+      "scope": "Visible PVS club directory anchors; facilities excluded; national finder overlaps unresolved",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:14",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "florida-masters-2026:f8056cb87dacf40c7ceb18f59b3c3b08913083818b0f9a9eabdb4f956c38df59"
+      ],
+      "scope": "2026 club-key subset only; missing/ambiguous keys, workout group and unattached entries excluded",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:62ff579a-ce7b-4145-9f77-9eccf63122ed",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "osaa-swimming-b:dbd3e7f1d6e58a9705809c78d2edf38c7e640989595c0613828ed1b42d4b00c9",
+        "osaa-swimming-g:15417f58c0eb1a29f84114c5742cf486ed7f15ff722a058fb87739783b95c719"
+      ],
+      "scope": "2026-27 261 category-specific program IDs; not institution IDs; no school-index names-only merges",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:9fe0baac-af01-4495-ae9c-2c8ea5ae39a0",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "ihsa-swimming-b:8c55af445f59acb32106e32d629380b7d53f933f9f8f1aa480ac1e790735cca3",
+        "ihsa-swimming-g:1640e5e8b37ced2550fb7a84cc5fb2f1138924282e4d0828000d383feaba0142"
+      ],
+      "scope": "Boys 2025-26 and girls 2026-27: 491 listings; includes 146 individual-entry-only entries and explicit co-ops, not verified full teams",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:f56dff26-94f1-40a8-884b-e4acf383997f",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "uil-swimming-4:371cd57f59067737162453e69e1cca52b24ae30aa99dd220d916ff32ddfa129b",
+        "uil-swimming-5:03a8f571e762c4316af753c20776a84e89b6c60fee7dea0c4152b8aba711152b",
+        "uil-swimming-6:5e2b9f41cbebbc8cdeaa3851b5c8dcb5197ac90a559fc5f713d8dac33fd36b57"
+      ],
+      "scope": "2026-27 4A/5A/6A alignments: 564 rows, 1111 category programs; 80 districts; publication-scoped institution identity",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:d9a33996-b02c-438f-af9a-e1611482b043",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "misshsaa-swimming-boys:162a13a2e6cb6c32a9fe3e3b5653163e6da6b8c4c8cfaf598c92d5d9e6307358",
+        "misshsaa-swimming-girls:7528bb4684b0f6b02ab0a4c41e59ac4e39f6cd0a2012781670e6fb9c8fd0276b"
+      ],
+      "scope": "2025-27 region tables: 64 boys and 65 girls rows; source Class/Region preserved; category/document identities unresolved",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:4598f915-cf9b-474f-897a-e5e82900eebe",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "miaa-swimming-boys:719d3aacabb2f50586131723d0fc7b2afcb65ccc855dcb67aff65823c6fd0022",
+        "miaa-swimming-girls:0f3e8623afde25966cafbbd5b7a76b6fde3d11b8e91bfb572df553bc5e464e5d"
+      ],
+      "scope": "268 winter 2025-26/2026-27 alignment listings with division counts matched; source ExpDate/co-op/appeal context preserved; institutional identity unresolved across categories",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:17340cad-8e6f-4dcd-a5cc-afb2677cdfdb",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "aia-swimming-boys:7428b75e2d6592efc2eeda61f6a07b644299772557efe4b91927c7ce79b698ca",
+        "aia-swimming-girls:9eaab7ec8bb07630098321732874c3233f591d12624949e5c3d491f0269c8234"
+      ],
+      "scope": "339 source 2027-2028 swimming alignment listings; all division totals matched; future placement not verified current activity.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:cc39807b-fe9d-4017-849e-3a318b770efd",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "cif-cs-2026-d1-championships:c316f12fdd9eee42b6370666d4b8f7f29cc86e75f3f58d484a5a60ce5b6a20d6",
+        "cif-ncs-championship-history:0c9cb6e525ac48fe94da262bdb725352a214e4df1fc26e1bf003b76ba0224c71",
+        "cif-os-2025-26-blue-pages:ebaa02028b4bf3605bf27b37986c38d9841debb4954c16ba1f9900c00e84132e",
+        "cif-sds-swimming-alignment-city:4c83847a3f6c602ac0cc38031e915f0122757a9446244291faf3cfcbfb868315",
+        "cif-sds-swimming-alignment-coastal:f5abb4f728ee10c82e776bcfdbf40d4b43d91cfb97387c1221ed2535f9595030",
+        "cif-sds-swimming-alignment-frontier:f0e49b1a33e544c50009b991388f8883796a386a6ae87c9e79875dade4f8a7ba",
+        "cif-sds-swimming-alignment-grossmont:13f14f00637ee38eafb9aff229307b3b2a0b74f52aa41314cd338020e972d872",
+        "cif-sds-swimming-alignment-metro:fbc1d9ea491e2bd7035435941f90d3c3959d6fa9fae211e412a254403ba29273",
+        "cif-sds-swimming-alignment-north-county:fa2dc24c73b9fe9b20e74e8f554e0b1401f3eae46f06e3d69851edbdfdff5dc2",
+        "cif-sds-swimming-alignment-southeastern:9fd8f7c68dca369c6930295981cb224f205958064815b14435bc2c174dd14d88",
+        "cif-sfs-aaa-swimming-champions:59e46c28b267b6a75447fc25a54e0b9fd569b2ed6d7d48a03c5a0bee2714e482",
+        "cifss-swimming-divisions:8b842ef38e577299e58d32baa0915a407813ec0fdad65273be56e00e8b56d7cc"
+      ],
+      "scope": "All 10/10 CIF sections represented: CIF-SS (686), CIF-SDS conference alignments (172), CIF-NCS (135), CIF-CS (148), CIF-SJS (54), CIF-CCS (40), CIF-LAS (22), CIF-OS (18), CIF-SFS (16), and CIF-NS (16).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:a4ac8aaf-dc8f-41ae-a87d-c497b53e866e",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "ihsaa-swimming-boys:e8a794d491a4af1d79a13a99a4bdd558eff53cb742a37192e116fbe57b9c98b3",
+        "ihsaa-swimming-girls:48af5dd79b0f1cf6c809ce0d31798ccc581d324cd11ab49df2abe9676835a6d3"
+      ],
+      "scope": "501 category-specific 2025-26 sectional school listings; all 40 published sectional counts matched.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:408a0736-2e09-4762-9053-006f6fe0d6ee",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "khsaa-swimming-alignment:3981a51de69e86d4f85f2d0e14770fc908fd776e3f7fedf7b54994d107c48232"
+      ],
+      "scope": "167 published swimming-alignment listings across nine regions; edition/category unknown; no independent sponsorship verification.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:a0859c76-608c-4121-9d2f-0c8894328449",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "mshsaa-swimming-boys-class1:9bf2bc1b39bdb8c65ac54930ef1792d6114e5dc4c27dc045d3f5c8af5b376039",
+        "mshsaa-swimming-men-class2:5a05907f2c373aec826c520445e26c24efc067e899db97fa31166c71132b1df3",
+        "mshsaa-swimming-women-class1:2d474aca793a964f68fb2a0a77e4f646127d75ae9509a822b80040b8c0a8f347",
+        "mshsaa-swimming-women-class2:70680036a99d59d83173ba46c10a47aca5f8cc6b480d005d4a2150631d52caf7"
+      ],
+      "scope": "245 2026-heading programs in Classes 1/2 and both categories; girls season selector 2025-26, 2026-27 not released; boys source year parameter 2026.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:b05cc0d2-d378-4760-a2bc-31f3973250a9",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "piaa-swimming-boys-district-10:0c02312a157a0895d9661b600f7fd8533647734da387c5bd2659d4a0b6648e4d",
+        "piaa-swimming-boys-district-11:e11394d0bbdbd7fdc2a7b3681d456d2b6f5459d28153e7ed9b7b7f2be91daa6c",
+        "piaa-swimming-boys-district-12:494a188aa23222828615315e81a6a8db66c7c73b25f270befc9983ecb741a3f1",
+        "piaa-swimming-boys-district-1:30dd657bd759e76c5ced4add094ec34add5b8523a42ed50391af197351ea859d",
+        "piaa-swimming-boys-district-2:4bace567572f175f885cb53f90b6f40669cb3d6f6a53ffcb3ffe7822c221f196",
+        "piaa-swimming-boys-district-3:61e6afd34c0444478f179ba336b1e4b2a58e3354640f467825208b99a3075ce4",
+        "piaa-swimming-boys-district-4:24466e2419fdfc8b521eec847423c1a74bfa567e0147c3dc6078d0a3372b3887",
+        "piaa-swimming-boys-district-5:cf8b7731af575b4b3137618113af2a671f72e87a6a2dfbbf344164e688604e4b",
+        "piaa-swimming-boys-district-6:2f5117d357376784006732bb9a894a43ec90e4fde764bc4bd8d2de2b30432a27",
+        "piaa-swimming-boys-district-7:18ad56b0bd17fb3308a616d57c304f0eb3c5fd544ab6029b0d83a6c4eb93c2db",
+        "piaa-swimming-boys-district-8:96e06fe43dce0b924f61cb7fc72dec526f2f736c45ca80a4682a1e5c811a0a95",
+        "piaa-swimming-boys-district-9:56316dba3293b248780964ef4a7354eb2f7785e4a14b459cacb513b2247cd3a5",
+        "piaa-swimming-girls-district-10:dc2b031d09ca335392e868f14b6475c95acd45791a4008bbab4474292dc31b88",
+        "piaa-swimming-girls-district-11:0e21f438c6c3ddd6ca750529babeca5bf6eeeee24156c5d5609ac7c433c28610",
+        "piaa-swimming-girls-district-12:16c834662635e11568e59347d210515e7c25bea6dd9f3c96e21003d09f887864",
+        "piaa-swimming-girls-district-1:df64c9f96130ad9f7c9c1c3c5d35f04872c876d0a603425fde8cdbab96591ca8",
+        "piaa-swimming-girls-district-2:892e25cb6eabc392baefeb57a275ded9e1ec07f0b1b3854a716ca7c284fe381a",
+        "piaa-swimming-girls-district-3:278bf4d72b03200bca3b6c388d7883b58ee9a1bf16f3c98550677d653bc0205e",
+        "piaa-swimming-girls-district-4:9e7834b93b1b4f359fe23e30b631f2dc6f372c7a1ddc4c8bb62347d1dc06e315",
+        "piaa-swimming-girls-district-5:e78c2026372c4bc6fefd8de42916527e91f75122877ea97579ec789d381cf6ad",
+        "piaa-swimming-girls-district-6:a042365ff99db38b28a381d11b8c6a7cafcba9b86569dd838986b98f62391d5a",
+        "piaa-swimming-girls-district-7:166f86c4ac0d719c2e2a97ebb3b662ab22bac9d2d45c73169e28aac7a87d2c0f",
+        "piaa-swimming-girls-district-8:562613a6e02b6041b5eef0013559d1e4a8736cb0561d79ee1a8287503eac277c",
+        "piaa-swimming-girls-district-9:0e78f8464829503326e0a3a859c69ec9993b4b53fcf812a99f91fc2729548fe2"
+      ],
+      "scope": "676 detailed swim classifications, 26/27; all 12 districts/category captured; district 3 has one more detail entry/category than summary; no statewide membership/activity completeness claim.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:08db961a-14b6-4059-9e84-9e3c8ccebf5d",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "wiaawi-swimming-boys-d1:ae09b1ec80e844ef9a59e6bfe89c5d38ec1e91877c005f01277a68a0019ccf54",
+        "wiaawi-swimming-boys-d2:7b3203617f083dd2b1729bc9c06ff2c6fb093eb9884d5195350943dd63f0dd69",
+        "wiaawi-swimming-girls-d1:fe6c20aa18caca3875884e203424269d5ec03ca514b4dcb20b4fe6c63935e862",
+        "wiaawi-swimming-girls-d2:f161f8a86267a38186f2f409e8a696637c2d9a809c8fc0074c1725a790be3986"
+      ],
+      "scope": "249 girls 2026 / boys 2027 swimming assignments in both divisions; two struck-out entries excluded; co-op labels intact.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:63de6e4f-8c75-43fb-9fcc-8cf6c9c97044",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "ciac-swimming-boys:8eb6b0e7e8aa89c07bfa7b688036fd1dfed715e52b6fbc59b32f0e0dc82a3926",
+        "ciac-swimming-girls:f84171a523dfec53f99a44653b5c8d1fda5884b4cdf6d82c7b366cc413c20b28"
+      ],
+      "scope": "179 2026-27 division listings: 85 girls (TournamentID=7) and 94 boys (TournamentID=105); all published class totals matched; co-op labels retained.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:43853916-cfaf-4c2a-b17f-f9b019602f6e",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "ndhsaa-swimming-boys:8f658396c971957303ca411aa9fa8f9dbac7b4cc78fb9bf4ac96ee72c5b79c6f",
+        "ndhsaa-swimming-girls:ec9d05078a3c6ca5aca0fab83df311019a6137fedac5a6116dd8521b06bf888f"
+      ],
+      "scope": "35 team IDs: 16 boys and 19 girls; responsive duplicate links checked; program IDs not institution IDs; edition unspecified.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:13ca3ce5-d5d2-4fe0-9b8c-89e6c45a3320",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "nmaa-swimming-alignment:beb83d251db53a6c2dad14259bf91e7d0564b68f0aed37cad9b2d8ca2fe5e26e"
+      ],
+      "scope": "52 swimming alignment rows, 2026-28; category not specified; published total matched.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:9b6d363d-87ce-4122-a36e-db382b9a8e1e",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "iahsaa-swimming-boys:52a87723a66254064fef621d9c538e19dbfa7ef83ce5a40dd04a49f2faa14dee"
+      ],
+      "scope": "50 IHSAA boys 2026 district listings. Separately captured IGHSAU girls are a different authority and are not attributed to IHSAA.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:4555cc94-1dce-440e-894d-10fc7a2b1dc8",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "riil-swimming-divisions:a8a75ace1212f51b557d67486e3ea11c970696c0bd5d95a358dbef651f0847ed"
+      ],
+      "scope": "43 boys/girls program flags from 24 school/co-op rows, Winter 2026-27; all division/category totals matched visually.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:a32d0467-2725-46d8-953a-c56a3e867bcd",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "asaa-swimming-conferences:1957478c7ca82bf0f49321901e0329618725856d125c3a622bafd7037f4ba5d4"
+      ],
+      "scope": "35 school/conference rows, 2026-27 handbook p.184; category unspecified.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:d8b6b325-ff51-4267-a6fd-3de8838392a1",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "mhsa-swimming-alignment:3bef333d5386807ce131847eac706a9973e2ea2b7bd091763becfc5a422d5ee6"
+      ],
+      "scope": "25 school/co-op rows, 2026-27 AA/A alignments; scoring abbreviations not institution IDs; category unspecified.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:7c818c89-111c-4d62-aa12-c416689864b3",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "wvssac-swimming-alignment:9f92243460fdbe2cf192ce8787abc86fe24151294032efa0df37c88c64f7fbbb"
+      ],
+      "scope": "56 school/region rows, revised August 14 2026 alignment p.20; category unspecified.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:45dc4069-50c1-48cd-bb72-aff42b2fa31c",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "mpa-swimming-classification:2f86a4d02c220d41af5e6a51d057fa4bc71077421b4de45b05177e461b8255bf"
+      ],
+      "scope": "45 classification rows, 2026-27 bulletin p.8; eight individual-only; only explicit B/G entries get a category; co-ops not split.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usa-lsc-listing:5975941e3619ed677167e5f9",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "middle-atlantic-lsc-clubs:f6268f0ed1e6b18df8e6255e64647d16a2c26bcfeeceb1892234cc906ca6d111"
+      ],
+      "scope": "118 captured member-club directory entries; per-program locations unspecified; national overlap unresolved.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usa-lsc-listing:23d87179ded396190ae48f8f",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "south-texas-lsc-clubs:f4592128033c4fd3fbf26d876257cf9e69399cc01f878fa312dd60e44e951344"
+      ],
+      "scope": "50 top-level club directory entries; localities retained as source claims; national overlap unresolved.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usa-lsc-listing:9df49b1aeb374163283238dd",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "pacswim-z1n-clubs:bf5b9a0ead012f8b0390fb37a5aed0fb20dac5d016fb0b5058b9a6521aabd54e",
+        "pacswim-z1s-clubs:f436f4d0181bd4696e33d308fb8d6645411dc9cfbe6bd73dac7eb634f774107f",
+        "pacswim-z2-clubs:8edc881b37644139b43a333e0a9cde9f47388260023b1b4b8abfbfc083417663",
+        "pacswim-z3-clubs:3dbec75b34c064e8ec4048a62a195c338793aa2bc0ba312df24da63ce1fdc9ce",
+        "pacswim-z4-clubs:dc003f86342c7bb8f4f45bd54de4904fb6765bfae5bfdcc7e3736bb72a4608e4"
+      ],
+      "scope": "107 distinct source codes across five zone pages; within-page duplicate labels reviewed; mailing cities not basin locations. No national-identity join.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:30",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "minnesota-masters-clubs:b092a298e6d4bce6cca09abc5aa0d34959d3506008cf66d3f91c9fc5047cf733"
+      ],
+      "scope": "21 Find a Place to Swim directory rows, including one WI entry; registration and parent roles unresolved; one unconfirmed hyperlink withheld.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:36",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "pna-masters-directory:bbcc152456543d046986ae5a455b595a7061ca240a61f1278a4a272d65550be6"
+      ],
+      "scope": "19 directory rows, February 2025 PDF; workout-group role retained where explicit; four inferred/single city claims withheld; no activity update inferred.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:26",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "north-texas-masters-teams:ed66d029937db44853a6ceb092a822ca08d7a862dbf620f15996fc0d058320ef"
+      ],
+      "scope": "15 directory entries; source abbreviations retained without cross-provider joins or activity verification.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:11",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "allegheny-mountain-masters-teams:10cedd81fddcf8c2e72c68bc9850a5e6928f8984cad9174fd4c7913b2d93b981"
+      ],
+      "scope": "11 directory entries; multistate jurisdiction not per-program geography; source labels not official institution IDs.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:29",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "nebraska-masters-clubs:74dba22f5116a38cb9e0ffa38d209cb49a5a1d8133a7d735c91e5387ca81e33d"
+      ],
+      "scope": "Eight source-described registered clubs for 2026; registration is not independent practice verification.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:22",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "ozark-masters-clubs:1d9fb1e837d5b64dca1cef6b156b81aea17ebd1c7471a625d5aebc7cf3051606"
+      ],
+      "scope": "Four source-described registered clubs and three workout groups under SLAM; roles intact, synthetic group labels not official registration codes.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:280908be-f74d-41a9-8af3-274702b18362",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "mshsl-boys-swimming-schools-p0:088037b4ae6d2ceff9f1119bf784728a21d104f88fbb20b5f95ddf89e160ce55",
+        "mshsl-boys-swimming-schools-p1:152d7ee05240ff19af1ef0fa07b3c4ebee88f4e0c7a3a49b4f931d3df669aaf9",
+        "mshsl-boys-swimming-schools-p2:de7a659f9e672f480e20b6ca4546828b8248f4bbf8c4acb74ab9f7f63eb94619",
+        "mshsl-girls-swimming-schools-p0:02fd519c178a8185dc5e193647247b6c3d56f59d3e9d0380a7a6dc33d1b21ef7",
+        "mshsl-girls-swimming-schools-p1:f95b354c186deb3cab187eb43effcba99888547a47b77619bdbfb785c33539c8",
+        "mshsl-girls-swimming-schools-p2:bf2723d1f4cc58f6534782cfecf84aba2cb11f1b77e8f02be674e691fc9caa8e",
+        "mshsl-girls-swimming-schools-p3:baf049e5128d8f6f0722adf16c80713e310469ee3aef9bee5a4353e37403cdd2"
+      ],
+      "scope": "294 school-activity rows, 129 boys (2026-27) and 165 girls (2026); seven paginated pages. Co-op member cards can link to host team pages; 13 links have no active season subpath. No unique-team or current-activity completeness claim.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:170459ca-515d-4795-a0be-50e35ac97920",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "idhsaa-swimming-alignment-26-28:4c8ceb4188dd0721f4f97915ddd891fe39472550a0e47552febab11cfa504cea"
+      ],
+      "scope": "63 source school rows, 2026-28 alignment p.4; 22 regular-season collective co-op markers; group membership not inferred. Only two explicit category markers; others unknown; published 62 B/62 G totals not expanded into duplicate rows.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:2018c443-ff0c-49d0-bf8b-2b1e565907f2",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "hhsaa-swimming-team-scores-2026:c7fe77377ea8ab7fd755153b54b756255c35caaf2387031c07d6ecfd179163ea"
+      ],
+      "scope": "2026 state championship scoring participation only: 13 girls and 15 boys rows, 19 school names. Non-scoring qualifiers and league-only programs absent; not a statewide sponsorship directory.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:38be5910-b02a-4428-888d-9f3f5dccbff1",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "ghsa-swimming-participation-2024-25:9591437e772326cceb1b0058694830453552c864b208d3bfe05d2183617b7929"
+      ],
+      "scope": "Official GHSA 2024-25 participation survey pp.37-53. All positive swimming rows: 261 boys and 264 girls, and participant-column sums matched published p.53 totals. Positive participation does not establish an independent full team or current operation. No contacts, athlete names or participant counts projected. Source names preserved; one intra-word line wrap visually joined. Raw PDF local; no redistribution license asserted.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:a6778502-632b-467c-bbb2-f5c1f26b455e",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "aaa-swimming-conferences:6d49f37a4ad8e4d048a1cd72cc8f9b0286eb2aa260be3848d4072b3d4adb3374"
+      ],
+      "scope": "72 2026-27 6A/5A/4A conference assignment rows across 10 conference tables; category unspecified; document-row identity retained.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:4979bcd0-fa21-47b9-a365-2c2540db0e17",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "fhsaa-boys-swimming-hierarchy-2026-27:bf021b622c4de95e6d07b648a7de0851eea1a86b67be02e677d656d3ce095464",
+        "fhsaa-girls-swimming-hierarchy-2026-27:7ea683fb61ce7c36c032efe3bafde5b3c360aefa9940117c071ee8d93eae67d2"
+      ],
+      "scope": "938 2026-27 FHSAA HomeCampus public hierarchy rows: 468 boys (sport_id=284) and 470 girls (sport_id=285) across Classes 1A-4A; document-scoped school IDs and cities retained.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:666b79bd-6535-4c5a-9aa9-f17d2939579c",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "nsaa-swimming-registered-2026-27:ebd2837409c131f649d50e0b2d22ae0216d66acaaa95cb4b2c7311e0437a3b1c"
+      ],
+      "scope": "82 2026-27 registered school rows (41 boys, 41 girls) from official NSAA static HTML template; co-op member school lists preserved in jurisdiction.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:ef710520-9726-42f3-90f5-b4aca3f12a0d",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "niaa-swimming-alignment-26-28:7e9bd0a52419c688affebb6e040fd388c0a2cbac55cd7b47ead70fe74d153c08"
+      ],
+      "scope": "68 2026-28 combined boys/girls swimming alignment rows across Class 5A/4A/3A leagues; all six published league totals matched; category unspecified; includes NIAA border-member schools.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:7d9c9ef8-0bb1-46da-99ba-358b29a936fd",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "ossaa-boys-swimming-classifications-2026-27:bf11c9fe30cc819374754fca73251a7808bc30662ce7c9bbf0ba07ffda58a57a",
+        "ossaa-girls-swimming-classifications-2026-27:0a658d25e4e952bb3b3a3bcafd4cda110a388767d30b2e0de2c2d49e31bb3f4a"
+      ],
+      "scope": "127 2026-27 Class 6A/5A swimming classification rows: 64 boys (32 6A, 32 5A) and 63 girls (32 6A, 31 5A); document-row identities retained.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:584628f4-8f65-4d78-a3dd-ccd54c1de98b",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "wiaa-wpa-boys-swimming-2026-27-1a:67c7a9011e038b99ebb67a37ba81523d552b72b1d3b140236346179479a56ec2",
+        "wiaa-wpa-boys-swimming-2026-27-2a:ca33a3a565a027d7951c13263096d6e3e9ceea001dfef33016619d164bc9d08f",
+        "wiaa-wpa-boys-swimming-2026-27-3a:fdb87187f0c4772dc54ee097867cacced62b5b72a96a4fabbb1c6c7638460028",
+        "wiaa-wpa-boys-swimming-2026-27-4a:d7e87895fa1732b0b2a807c6f8c87dad5dfb6df546a41e4adea25efdd7eed18c",
+        "wiaa-wpa-girls-swimming-2026-27-1a:150d9c9722672508fad9d88658218014623e1e767750a8aaa71402af4fc23e2b",
+        "wiaa-wpa-girls-swimming-2026-27-2a:a70bafc471167f7704d041077a5be7d9d24d9cf3a1f613d9836352ed3563e8fd",
+        "wiaa-wpa-girls-swimming-2026-27-3a:d137edce031739c77db0984c5af02a7268fd5dbd6d7d9e09956f88a530db6464",
+        "wiaa-wpa-girls-swimming-2026-27-4a:defe203aba6e6b43e80a5c3704dc6bec156f11b319e90f0d28b99185f407c07a"
+      ],
+      "scope": "241 2026-27 WIAA league standings rows across eight 4A/3A/2A/1A widgets: 109 boys and 132 girls; WPA Network team IDs retained per document.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usa-lsc-listing:1276d9365a4e1d5a0e9caa97",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "adirondack-lsc-clubs:d46af9fb0ba7eee1930330e7674c26b70ab26758ca07710102cf40257fee084c"
+      ],
+      "scope": "19 registered member club entries (excluding AD LSC and UN unattached rows); per-row city/state unspecified; personal contacts and one unreviewed query-parameter URL withheld.",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:89d95c7c-152a-43cc-ba06-51c42c5142e8",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "vhsl-2019-class3-state-scores:35da0ad288779f13aca348c9f0b05a803ebe5ba01853f49bf885dc0532262514",
+        "vhsl-2023-class1-2-state-championships:dbc2ac5708b3d37fc857723b4263a9dc1723636276b292c1b83437455d9e777d",
+        "vhsl-2025-class3-state-championships:98a55c02b824963d2fef300a5c2b8874072baef753457069d1cf39564ba799a8",
+        "vhsl-2025-class6-state-by-gender:bffaf80405584ba0b66d45fa885ecb02a9be2f1fa033b97540d485697ca4165a",
+        "vhsl-2025-region-1c-2c-championships:060bc2bf7a32e2680bf68c8e06a3756a8852066e235cec7b1ce07ef258fa3fba",
+        "vhsl-2025-region5d:7395f90a51273d067fa494a9ded58a3321b9c9b76da569e4daf532e2919b89d9",
+        "vhsl-2025-state-class4:1e0fa47ff44769217e1459c41ad5bcce25c05a00eee2270f7eb90a429dffb321",
+        "vhsl-2025-state-class5:85cfad7aa8375ccc1e2853f8a37384f6a93e56074773eec3cf597d3638521f49",
+        "vhsl-2025-state-class6:bffaf80405584ba0b66d45fa885ecb02a9be2f1fa033b97540d485697ca4165a",
+        "vhsl-2026-region4c:8310d8b690eb5375c9c5b11f66609f621ca3ca24eda5934085856f7e7a7c7958",
+        "vhsl-2026-region6d:169bf8abdb208fccec27da1e440acc810aa7a6fd33d8d5d4c09eb8fe960dcf57",
+        "vhsl-concorde-district-2026:2e44bf548cf7b44b993ad8f9f4aab4ef38c91722b7b4a9213ee84f4e159f8460",
+        "vhsl-liberty-district-2026:564655d99e0915fa911edab49408de1a233859b17d698c23367003ccc154cc68",
+        "vhsl-national-district-2026:dc5d10aa8ec7e19d22aebe28e414b9f20bd84f531d79964cb285211c6c32d4ac",
+        "vhsl-patriot-district-2026:65060fe5ce117d8cba2b28623074fb7b625a25f04fbea6ecccbe0bd890afd124",
+        "visaa-boys-swimming-divisions-2026-28:6f23575073799efa5fcce07ef2c6be6ddbb1c34ddb9f871d2bd2eff307221ba7",
+        "visaa-girls-swimming-divisions-2026-28:95a792601364cd6afc2e404c7115e7af86517ff8ad969427c95abe4b3198e54d"
+      ],
+      "scope": "VISAA Div I/II alignments (104), VHSL Northern Virginia District C1 records (58), and statewide VHSL Classes 1-6 State & Region Championships (321 net-new category listings).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:29b177ae-0351-4ba9-98f1-08653613bc08",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "whsaa-swimming-2025-26-3a-boys:b635a24aa85d49cbe9401c14d879a7bbbeba479e8bf2250986b9412d529e8257",
+        "whsaa-swimming-2025-26-3a-girls:6fb0efaaaabcdf98b19b667d6dd08a4087838212f4178eb824d2d71a22818e6d",
+        "whsaa-swimming-2025-26-4a-boys:1f036437410d133e674ac20abcc26101eb7f369d26ec9f2e1814709ead629c77",
+        "whsaa-swimming-2025-26-4a-girls:bd42c4ba1afc35cd6814ff708f6bf35635f9d31d4662d97227933cf1a8ee4b0d"
+      ],
+      "scope": "WHSAA 2025-26 Class 3A and 4A Boys (25) and Girls (25) State Swimming & Diving Championship Team Rankings tables (50 category listings across all 25 Wyoming 3A/4A swimming schools).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:8818f1e8-2689-49a7-aa8d-eed830ed8d0a",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "schsl-swimming-2026-boys-3a:578200630c345238d33c2892a38e4e2fa88c46ed5ea0647696843dcf1413aced",
+        "schsl-swimming-2026-boys-4a:f25775447820463bdc985c1bf0a4a32a15c2e86defc1d0d935d844b907ea5105",
+        "schsl-swimming-2026-boys-5a:8960c4ea81b93ca2250b4984dcb4ccbbe4259c8c2fc4aa5dbdb60825328b1e9c",
+        "schsl-swimming-2026-girls-3a:1f031d6e68ea436e4bd341fbde8f38fe09e6b839de5b2f7563d7f7f0f5ac0888",
+        "schsl-swimming-2026-girls-4a:833db5c1a74ddee5018b75ea40d2d0276c8f29188669238bb1f4564fa1a9fd4b",
+        "schsl-swimming-2026-girls-5a:eb31b69a3c84922e06c87159be0f2ad4b42c6a58348116c2c77a83951f653008",
+        "scisa-2024-state-championship-scores:a08c068f25a312635f57afc7adaaee66d7ade56e2ce3a5fa5295094c4b0b5fc0",
+        "scisa-2025-state-championships-teams:92d732266cf98fa5f0bee7246d2b4b8d65a0ee75c1ddbb4cb79addfd1bad65df",
+        "scisa-2026-state-championships-c1:dd5fcba2e6881636d171b95053ea9005ff99cb0b1fa83c9dc7276bd3a7707da6"
+      ],
+      "scope": "SCHSL 3A/4A/5A State Championships (165) plus SCISA Independent Schools State Championships and SDIF C1 records (92 net-new listings).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:0971cdd8-774e-4275-8392-96b9fb951e5c",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "mhsaa-lp-d1-boys-2026:51e8ce3eae205ca305a6cb1b59a1474637629b7943c51ec6ff2a315ea304b985",
+        "mhsaa-lp-d1-girls-2025:5d832eb57572eaf044adc1e8b15666284a841621a68d0527b7f22c75460aaf31",
+        "mhsaa-lp-d2-boys-2026:836334bb3443480ac7b4ff491262d65edb1fb8d5c5420ddcd5daf80e6412f316",
+        "mhsaa-lp-d2-girls-2025:52ec6631458c66e5c8a1c0c1ad0cb3a4fea9cee31e84270d405fcda74a9e23c4",
+        "mhsaa-lp-d3-boys-2026:6d24bcd3071c2e65178d0cade8d12ed1b22c7e60fdb6ea0d094dc9764413ec61",
+        "mhsaa-lp-d3-girls-2025:1e1abdd7beeba65f6d1f11dcd46760bc3a25cb5f83a8db571dd039739cf6162a",
+        "mhsaa-up-finals-2026:aa253a07e3f3c96a5c56effa18b3fc966f762c15c2c030619c624f0ec5c41b3e"
+      ],
+      "scope": "MHSAA 2025-26 Lower Peninsula Divisions 1, 2, 3 Girls & Boys and Upper Peninsula State Finals SDIF C1 institutional team records (308 category listings).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:efca51c4-9f4c-4699-945c-890bfca0bb07",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "mpssaa-state-3a2a1a-2025:92a47ce72e0fabd759b5cd270b2fb456e2382254ba94286aaea5ee0cf2702374",
+        "mpssaa-state-4a3a-2025:abe6705059c6f1b5c87f93c362e5559c62ccec440c1b30b5cb003de3eb2beb77",
+        "wmpssdl-md-championships-2026:bc6912e0416901daec509e31588b37f9a86931c3427af06f4f4613bb2e6b87c5"
+      ],
+      "scope": "MPSSAA 2025 Class 4A/3A and 3A/2A/1A State Championship SDIF C1 institutional team records (133 public school category listings) plus 2026 WMPSSDL Maryland independent/Catholic school C1 records (20 listings).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:8316d4b9-3a90-4cff-96e6-c39c328934c3",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "dcsaa-state-championships-2026:3b4ab95b8ab9a051ecb548a049a74df886f5c3b38a6bb16960df466e2dce1046"
+      ],
+      "scope": "DCSAA 2026 State Swimming & Diving Championship SDIF C1 institutional team records (17 DC high schools, 29 category listings).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:cebd6d3f-21b2-47c4-8c34-475e39fb9f69",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "nhiaa-bylaw-swimming-2025-26:738924b98f41083f22a5ea9775f42037a38af7e2ff324106111fa76fd4645217"
+      ],
+      "scope": "2025-26 NHIAA Handbook By-Law Article XXXIV Swimming & Diving Sect. 4 Divisional Alignment (50 NH schools across Divisions I and II, 99 category listings).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:67c951ff-d5dd-4687-b1ef-957ae529a93c",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "njsiaa-moc-2025:bdf405d5f6b348126de3ea1cc545e4ee468538958ea40f83f27fd44968ed03bc",
+        "njsiaa-moc-2026:188ecd0711f2fa5a1c949e41c80302a492d0ef325385a68d18243ec66075bade"
+      ],
+      "scope": "2025 and 2026 NJSIAA Meet of Champions SDIF C1 institutional team records hosted by BeSmartt Inc. (167 NJ high schools).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:25b87347-9e5d-4cdd-9af9-6781f18b3f43",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "nchsaa-2026-123a:d6d14488789ecf723b06ce7cf1baa128aa4fabc50dc2f9da02388b2b206562a5",
+        "nchsaa-2026-4a-by-gender:5926f781645ebbe7b5aaa6d25bbc477664d894f3b15b1e46301a0cf9ba18b041",
+        "nchsaa-2026-4a:5926f781645ebbe7b5aaa6d25bbc477664d894f3b15b1e46301a0cf9ba18b041",
+        "nchsaa-2026-5a-by-gender:50a93311f60d110a4ebc52dc9f2bd459c88fbbb6206b962976661aee1b986de8",
+        "nchsaa-2026-5a:50a93311f60d110a4ebc52dc9f2bd459c88fbbb6206b962976661aee1b986de8",
+        "nchsaa-2026-6a:dce08f592b2ad8074dde6aa647e6ff0044f8eb2e1461d8965a6c7493d9e74f08",
+        "nchsaa-2026-7a:a5a2000bdc10eb2e1b993814b085d34d5033f3642218126c5dce0c96cb7e8f52",
+        "nchsaa-2026-8a:efd533581c3077d626da97ca51aeafd95aae4a9fcc631c82e3910f0628e75d37",
+        "ncisaa-2025-d1:2c3a733ff3432fdaceab02538d2cb2ea3d39f6b7e86aa8e9209b42c1570ca3a8",
+        "ncisaa-2025-d2:1f8c26c15e1c13fe20d665760f4f084aee7f2110e5af3290ca0001253521b51d",
+        "ncisaa-2025-d3:cc727d50df7127639d2eeb7b8f3169aec5a2545ca50ffe0133ca3f46cc95420d"
+      ],
+      "scope": "NCHSAA 1A-8A State & Regional Championships plus NCISAA Div I-III Independent Schools State Championships (616 NC school listings).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:2f88f7d4-edb9-4926-8e21-b103013b88a3",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "diaa-2026-boys-relays:6fd4dd3d73fdce2057dc8ab5e3a505a35c195eae2761d7725f849047f39625dc",
+        "diaa-2026-girls-relays:a37beb772af6d996dabf8db6746357dbe6fb4e7f2f69287729c93db1bbf9cb23",
+        "diaa-boys-state-finals:1790554a4e049a85d53a44ff67b28cd53fa2ad44212f59e414a4c7df430b0820",
+        "diaa-girls-state-finals:f5cbd44536deea93cc215afb9fe918c561edad9f0f41e447d7091a6be3da8873"
+      ],
+      "scope": "2026 DIAA Boys & Girls State Swimming & Diving Championship relay/final entries and archived DIAA State Finals team rankings (46 DE school listings).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:c72a4a1a-5571-4bd2-a310-221973b1c0a7",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "nys-federation-2025-boys-finals:b248db511149bb64f5b32bb8e517fac110be242a1b87ac11bc23ec181b11d8cb",
+        "nys-federation-2025-girls-scores:a0fe02a7309f299d21679edacb301069001fc80484844eef4eb3302d92a2688d",
+        "nysphsaa-2025-boys-section-scores:df227c3c00de18a75523e1afc2466ab473540d7c7a913e930418b045a29b19cc",
+        "nysphsaa-2025-girls-finals:27f06132a6ff522beceb85b2b4dc29fa0174d059b7b75b659eb82cb9bd6f0fc8",
+        "nysphsaa-2025-girls-scores:d39a989101227c943e2464e7112b8dc7207801ad8b355e9ab05daf0618c9721e",
+        "nysphsaa-section-1-girls-championships:553db2ae0372da50a547e2a57a47398a22600990466b9218a9bc75812fd6e784",
+        "nysphsaa-section-4-boys-champions:3ef0c3c577e12ea417f6bce3571223953ca7b27ad66a94bc24bcc47c43a6abc5",
+        "nysphsaa-section-4-girls-champions:637cb7c458e544d683518d8505fb98c8ff40f5bcf51422dbcacbdd56b0b3c105",
+        "nysphsaa-section-7-10-boys-swimming:e1af00032d323260fed3ff527a7ccffb6afdd06303c6f405006fc702011823bb",
+        "nysphsaa-section-7-10-girls-swimming:f0b65052d70b6a98aae07a7ccd55253c09684e7425873d23611c165e12589196",
+        "nysphsaa-section-9-2026-handbook:64890c3c2eb51aeb53aa59117f19940d2c4cab4403b70b5a1159b21e7b08eae7"
+      ],
+      "scope": "NYSPHSAA and NYS Federation (CHSAA, PSAL, AIS) State & Sectional Championships across Sections I-XI (347 NY school listings).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:dba25641-b234-413d-b5c6-a3632570788a",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "lhsaa-2023-d2-finals:03ea3cc27166cea9797650b9d02ba609ab008a5af61df91f8ca22fe07ef2c1d8",
+        "lhsaa-2023-d3-finals:430f91fa52ca17c4d322871c06f703af00e74b0f85a166cef10d4db4b25817a1",
+        "lhsaa-d1-state-scores:84588fef8e5d14b9d17b18bc83176eb42fe5687bc17caf84f487c9c280248252",
+        "lhsaa-swimming-divisions-plan:3b3df9502f3a9406a17d43064605844f5946011d6d0c4ddc3f3eefb73abd2240"
+      ],
+      "scope": "Official LHSAA Swimming Divisions Final Plan (162 schools across Divisions I-IV) plus LHSAA State Championship Finals/Scores PDFs (238 LA school listings).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:4c6832f9-312c-432a-834d-523df48c30af",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "ahsaa-2017-north-sectional:ff10872e4366d11005f6d026cfc5b787db2d1839eb4ee52d6eaecf11446fdc0e",
+        "ahsaa-2017-state-championship:523d2ae61131a3aae6734b407589248d5217865c371d1ea95bd774859b38c6aa",
+        "ahsaa-2020-state-championship:a1e9cbe2110365637abde54c88ba70aa13854ccfda9ec0bf8d2a51bf5c221c1e"
+      ],
+      "scope": "Official AHSAA 1A-5A and 6A-7A State Swimming & Diving Championship and North Sectional team score/results PDFs (83 AL school listings).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:2d2ba264-1533-4458-bac2-580f9d97e87b",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "chsaa-cloc-boys-swimming:fce508a32af5ff0d0684c3179c44a1c4c41aadbba7c00282cb54d4dab436cee4",
+        "chsaa-cloc-girls-swimming:aa1446d7441df50b8a57dc05ec5f9dd301646a673fd46db499e9a7b29dfd06dc"
+      ],
+      "scope": "CHSAA 2024-26 CLOC Girls (119 across 5A/4A/3A) and Boys (70 across 5A/4A) Swimming & Diving classification tables (189 category listings across 121 CO schools and 8 co-ops).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:7502e2a6-8931-42a5-9980-4880f4299b08",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "uhsaa-boys-swimming-teams:a60f30890a30741fbe8562224623c7c8f5f2ebbc04e78e0a6838c3a716b385cf",
+        "uhsaa-girls-swimming-teams:7a1d148ff1359da2867b527294c97dc899246824caead9e0d6f819b62d678a10"
+      ],
+      "scope": "UHSAA Winter Boys (111) and Girls (111) Swimming team directories across Classes 2A-6A (222 category listings across 115 UT high schools).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "nfhs-member-state:ff45ef0f-a3a7-480a-a4bd-f56a1f5bfe68",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "kshsaa-boys-swimming-programs:bbc9552042ffef185499c340526f8f19c5ae5602aa946fe1abb2a0b109a33355",
+        "kshsaa-girls-swimming-programs:688b8c0758a103cefd4de8b1e4dd14bf86c0dab8bd0f880d12ad942233f3a448"
+      ],
+      "scope": "KSHSAA 2025-26 Boys (59) and Girls (78) Swimming & Diving participating programs from official Top 25 / Championship PDFs across Classes 6A and 5-1A (137 category listings across 81 KS schools).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usa-lsc-listing:316754a1428092255630b224",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "hawaiian-lsc-clubs:0280bfee56a71fa9238f80f37a4f28e3c0172ab25bf6ffbf3fa5b4f5608ae5e8"
+      ],
+      "scope": "Hawaiian Swimming LSC registered club directory across Oahu, Maui, Hawaii (Big Island), and Kauai (27 clubs).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usa-lsc-listing:8a3f6aa7eefe9c147c268992",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "pns-lsc-clubs:522491f7adbc011224a1a09ac9a9c15a7b780a5f66d9e463bd7bc35639c0ab6e"
+      ],
+      "scope": "Pacific Northwest Swimming LSC registered club directory in Washington (43 clubs).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:3",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "adirondack-masters-places:cd3c95e8cf782561c59288bb3289908ca28f2d675f234905ffd079bc2afa3bf9"
+      ],
+      "scope": "Adirondack LMSC Local Places to Swim directory (17 Masters clubs/workout groups in NY, MA, and VT).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:59",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "snake-river-masters-places:cfb044ac1b962776669bf3372dcca6c6658702768d9ead9b0d7690b1ebd2b73d"
+      ],
+      "scope": "Snake River LMSC Places to Swim directory (6 Masters clubs/workout groups in ID and NV).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:54",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "south-dakota-masters-places:618da8a0415d93ca99565ebc843a9a26f79932384f482e28c89b6627eadcf545"
+      ],
+      "scope": "South Dakota LMSC Places to Swim directory (12 Masters clubs/workout groups in SD).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:4",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "niagara-masters-clubs:0260082d481a5ccdce1c1f40c00feac51541bf4bf69bdbe4841945267762ca07"
+      ],
+      "scope": "Niagara LMSC Clubs directory (3 Masters clubs in NY).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:31",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "montana-masters-clubs:9a28772e9be493e5df2dbe240be2155f2fafb9ea8a24789507a4b3bb7aee4187"
+      ],
+      "scope": "Montana LMSC Clubs & Workout Groups directory (6 Masters clubs/workout groups in MT).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usa-lsc-listing:5cdb3ffea937d30bcfda91e7",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "scs-lsc-clubs-coastal:6c028e847ac68ce2e5fbfffb0415b00f2d1286f453bd96f405cda3fd7257cb8a",
+        "scs-lsc-clubs-desert:4a018540312d60339a54c1185ddd72281e76d3d908cd4ccc7d914ccaf6eb99e7",
+        "scs-lsc-clubs-eastern:83ca85ce06004e7b0a4cc5f188199392cb461aec036de99b3c2daf6604c1d1b9",
+        "scs-lsc-clubs-metro:bfa83831cb8d9c310641f70d9427ef58e7399d145f51c7c10d505f973032ba85",
+        "scs-lsc-clubs-orange:1115abfb459f4c978f532bf76e520fc70d479097d0cd1948e1d5bf4c1c55ada3",
+        "scs-lsc-clubs-pacific:03565bf0948f27790572b28b2e6365a425f7ea371c26d11ad4da40ce319c6720"
+      ],
+      "scope": "Southern California Swimming LSC official club directory across all 6 geographic committees (Coastal, Desert, Eastern, Metro, Orange, Pacific: 148 clubs).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usa-lsc-listing:a904b5af251ed08eb1363eb9",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "florida-swimming-lsc-seasonal-clubs:2419a1fa6837449d01eb7d5c036d36097d2698377260c40f5bb5681ab34f7eaa",
+        "florida-swimming-lsc-year-round-clubs:53d11cb4af107144ec483ca425e459e4f155a08c32c0795449b5d0ef798af63c"
+      ],
+      "scope": "Florida Swimming LSC official year-round and seasonal club directories (96 clubs).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usa-lsc-listing:ab879740ece3ceeb002decdd",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "new-england-swimming-lsc-clubs:581c552b49dc24e072084862fe7cffe235976f3efa0eaa02b3278d8857344245"
+      ],
+      "scope": "New England Swimming LSC official club directory across MA, NH, VT, ME, and RI (118 clubs).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usa-lsc-listing:3bbb2f9a35c89c9931fecd7f",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "north-carolina-swimming-lsc-clubs:b3529c2d1a81b22dfa20b491e2dfde90d2647f126096130e60c65ec0d1227496"
+      ],
+      "scope": "North Carolina Swimming LSC official club directory (70 clubs).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usa-lsc-listing:7d6ebbe53b622dd84ee8d51e",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "georgia-swimming-lsc-clubs:d470f69c90f47350e6c67e2bf83b6a0df8aa91df781c680616c45a72346cbca7"
+      ],
+      "scope": "Georgia Swimming LSC official member club directory (58 clubs).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usa-lsc-listing:ae3c3bb6b132d2f9f84e995c",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "illinois-swimming-lsc-clubs:c147cab1d92cdf02f871ed3b272a353aaccb0f29ffe936bdf83accb22d8696aa"
+      ],
+      "scope": "Illinois Swimming LSC official club directory (107 clubs).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usa-lsc-listing:77993b9172a4bbd786b6ecd6",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "indiana-swimming-lsc-clubs:714f53ef3ffcbaead12118af9881c71d850d2ff4cdd6b9aea0b3bea3ee9fce1e"
+      ],
+      "scope": "Indiana Swimming LSC official club directory (109 clubs).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usa-lsc-listing:4472430e52edceddbb6db443",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "colorado-swimming-lsc-clubs:f4fe1ef2dcc4b8637cf7748737ea8866cd9713521b36dc86875299f464acad30"
+      ],
+      "scope": "Colorado Swimming LSC official club directory (69 clubs).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:21",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "il-lmsc-workout-groups:3303534c76dcc2767f4b16bdb805bae5f6692f606ea818a743e013601a2ff2c7"
+      ],
+      "scope": "Illinois LMSC (ILMSA) official workout groups and clubs directory (28 Masters programs and 25 facilities).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:19",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "mi-lmsc-clubs-and-facilities:63b650b5cae1ff81fe9f9a4e85ca861c4f66f12d8a08bc1f5e4020a45e2b4a9b"
+      ],
+      "scope": "Michigan LMSC official clubs, workout groups, and facilities directories (19 Masters programs, 55 facilities, 28 basins).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:5",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "ct-lmsc-places-to-swim:b22cf3e79be5bb349e93d1f55f34df8e6303e00073d95f6ce84f47ef436a41e4"
+      ],
+      "scope": "Connecticut LMSC official workout groups and places-to-swim directories (23 Masters programs, 34 facilities, 12 basins).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:50",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "fgc-lmsc-directory:f3d3cf7e30e29fe7ab19135bd083f7db5e3a1fb362ee0a63b4663b21e2199d1e"
+      ],
+      "scope": "Florida Gold Coast LMSC official clubs and workout groups directory (24 Masters programs, 24 facilities, 4 basins).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:10",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "pv-lmsc-clubs:0c6c275e3a913f37facd0a64299320655612d82362b6459b6f87854afc0b7d4c"
+      ],
+      "scope": "Potomac Valley LMSC official clubs directory across MD, VA, and DC (31 Masters programs and 31 facilities).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:16",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "in-lmsc-where-to-swim:3c763e897266767639bb9896524c6e51ed6ff2469e118b5787df470a3bcc94b0"
+      ],
+      "scope": "Indiana LMSC (GRIN) official where-to-swim directory (26 Masters programs, 26 facilities, 8 basins).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:48",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "az-lmsc-where-to-swim:56137484d160dfa1fa7f9131e856df028c184e502a2d702701a09517b2672596"
+      ],
+      "scope": "Arizona LMSC official Central, Southern, and Northern/Western Arizona places-to-swim directories (21 Masters programs).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:55",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "sc-lmsc-adult-programs:df463bb31b41a6b178e12ecaac683bfc12a745ee006316a45073762e0f73b17f"
+      ],
+      "scope": "South Carolina LMSC official adult swim programs directory (15 Masters programs).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:35",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "inw-lmsc-clubs:e161e9ce4cd35d69e08fb08ab3025bff3cbd353d217f9a1ca8138c93890fe3bb"
+      ],
+      "scope": "Inland Northwest LMSC official club listing across Eastern WA and Northern ID (13 Masters programs).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:23",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "ar-lmsc-places-to-swim:0cfdea0f3897b1681901290b4a3c4ff5a15df3a40a2df0dfbbbcfd88b126700e"
+      ],
+      "scope": "Arkansas LMSC official places-to-swim directory (8 Masters programs, 4 facilities, 5 basins).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:56",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "ak-lmsc-workout-groups:4f6aea8f398f51187c1e20d5030b79dd1c8a2ef17aff9250db5f7f26001604aa"
+      ],
+      "scope": "Alaska LMSC official workout groups directory (10 Masters programs and 10 facilities).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:41",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "ky-lmsc-teams:5fbf000741ea5933ab5545249aa89ced6dba19219c45701cb2a68321474af6f2"
+      ],
+      "scope": "Kentucky LMSC (KYLMSC) official teams directory (10 Masters programs).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:9",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "md-lmsc-clubs:bd669ffecb3a2385b7ec91adedca1420612bb9fabc2f61d8c2224efe26379b79"
+      ],
+      "scope": "Maryland LMSC official club websites directory (5 Masters programs).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:52",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "nd-lmsc-clubs:9e290fbc59c573e86ef6abf1e10be748c48f278b696553218b0f20edd7cda488"
+      ],
+      "scope": "North Dakota LMSC official clubs directory (2 Masters programs).",
+      "national_or_jurisdiction_completeness_verified": false
+    },
+    {
+      "authority_id": "usms-lmsc:2",
+      "status": "partial_swimming_imported",
+      "registry_source_ids": [
+        "ne-lmsc-clubs:b542a390ed85393b9f1eb595f234099eb7a5cd52be13a8a83636c946ff6cc349"
+      ],
+      "scope": "New England LMSC (NELMSC / NEM) official member clubs and workout groups directory (7 Masters programs).",
+      "national_or_jurisdiction_completeness_verified": false
+    }
+  ]
+}

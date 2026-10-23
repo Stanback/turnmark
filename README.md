@@ -153,7 +153,13 @@ for source editions, supported events and direction-specific formulas.
 The footer’s Resources section links to the SwimSwam converter, Swim Standards,
 USA Swimming, Swimcloud, USMS and World Aquatics. Turnmark stays focused on
 conversion and benchmarks; [the roadmap](docs/PLATFORM_PLAN.md#product-scope-and-anti-goals--october-19-2026)
-records the current scope and separate model-research follow-up.
+records the current scope and separate model-research follow-up. Separate
+offline [conversion-model research](research/conversion-model/README.md) and its
+[public U.S. team and facility catalog](research/conversion-model/team-directory/README.md)
+(`20,306` source-scoped program listings, `8,240` facilities and `1,295`
+competition pool basins) provide reusable groundwork for local model training
+and evaluation without bundling swimmer data or operating a hosted results
+service.
 
 ## Install and offline use
 

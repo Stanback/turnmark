@@ -1,6 +1,7 @@
 import {
   coloradoDistanceCaveat,
   ncaaMethodExplanation,
+  empiricalMethodExplanation,
   poolLengthExplanation,
   methodComparisonCaveat,
 } from "../../../src/lib/calculation-copy.js";
@@ -151,7 +152,9 @@ function render(value: unknown, request: ConversionRequest) {
       }[v.kind] +
         (v.kind !== "swum" && request.method === "colorado-teamunify-2026"
           ? " · Colorado Timing"
-          : ""),
+          : v.kind !== "swum" && request.method === "turnmark-empirical-2026"
+            ? " · Turnmark Empirical"
+            : ""),
       "kind",
     );
     if (v.caveat) line("p", coloradoDistanceCaveat, "muted");
@@ -191,6 +194,7 @@ function render(value: unknown, request: ConversionRequest) {
     const p = document.createElement("p");
     p.textContent = `${source.title} · ${source.id} · ${source.revision}`;
     const comparison = value as {
+      event?: { distance: number; course: string };
       methodComparison?: {
         method: string;
         label: string;
@@ -202,20 +206,133 @@ function render(value: unknown, request: ConversionRequest) {
       const heading = document.createElement("h2");
       heading.textContent = `Compare methods · ${request.to}`;
       details.append(heading);
+      const validMethods = comparison.methodComparison.filter((item) =>
+        [
+          "ncaa-2025-27",
+          "colorado-teamunify-2026",
+          "turnmark-empirical-2026",
+        ].includes(item.method),
+      );
+      const ncaaEntry = validMethods.find(
+        (item) => item.method === "ncaa-2025-27",
+      );
+      const ncaaH =
+        ncaaEntry?.result.status === "available"
+          ? ncaaEntry.result.value.hundredths
+          : null;
+      if (
+        comparison.event &&
+        request.swim?.event &&
+        request.swim.event.course !== comparison.event.course
+      ) {
+        const srcPool = request.swim.event.course === "LCM" ? 50 : 25;
+        const dstPool = comparison.event.course === "LCM" ? 50 : 25;
+        const srcTurns = Math.max(
+          0,
+          Math.round(request.swim.event.distance / srcPool) - 1,
+        );
+        const dstTurns = Math.max(
+          0,
+          Math.round(comparison.event.distance / dstPool) - 1,
+        );
+        const turnDelta = dstTurns - srcTurns;
+        const geo = document.createElement("p");
+        geo.className = "course-geometry";
+        geo.textContent = `${request.swim.event.distance} ${request.swim.event.course === "SCY" ? "yd" : "m"} ${request.swim.event.course} (${srcTurns} ${srcTurns === 1 ? "turn" : "turns"}) → ${comparison.event.distance} ${comparison.event.course === "SCY" ? "yd" : "m"} ${comparison.event.course} (${dstTurns} ${dstTurns === 1 ? "turn" : "turns"})${turnDelta !== 0 ? ` · ${turnDelta > 0 ? `+${turnDelta}` : `−${Math.abs(turnDelta)}`} ${Math.abs(turnDelta) === 1 ? "wall" : "walls"}` : ""}`;
+        details.append(geo);
+      }
+      const availMethods = validMethods.filter(
+        (
+          item,
+        ): item is typeof item & {
+          result: { status: "available"; value: ConversionValue };
+        } => item.result.status === "available",
+      );
+      if (
+        availMethods.length >= 2 &&
+        request.swim?.event?.course !== request.to
+      ) {
+        const hs = availMethods.map((item) => item.result.value.hundredths);
+        const minH = Math.min(...hs);
+        const maxH = Math.max(...hs);
+        const spanH = maxH - minH;
+        const spec = document.createElement("div");
+        spec.className = "method-spectrum";
+        const specTop = document.createElement("div");
+        specTop.className = "spectrum-labels";
+        const fastSpan = document.createElement("span");
+        fastSpan.textContent = "Faster";
+        const spreadSpan = document.createElement("span");
+        spreadSpan.textContent = `Method spread: ${(spanH / 100).toFixed(2)}s`;
+        const slowSpan = document.createElement("span");
+        slowSpan.textContent = "Slower";
+        specTop.append(fastSpan, spreadSpan, slowSpan);
+        const track = document.createElement("div");
+        track.className = "spectrum-track";
+        const rail = document.createElement("div");
+        rail.className = "spectrum-rail";
+        track.append(rail);
+        availMethods.forEach((item, idx) => {
+          const pct =
+            spanH > 0
+              ? 10 + ((item.result.value.hundredths - minH) / spanH) * 80
+              : 25 + idx * 25;
+          const pin = document.createElement("div");
+          pin.className = `spectrum-pin${item.method === (request.method ?? "ncaa-2025-27") ? " selected" : ""}`;
+          pin.style.left = `${pct.toFixed(1)}%`;
+          const dot = document.createElement("span");
+          dot.className = "pin-dot";
+          const lbl = document.createElement("span");
+          lbl.className = "pin-name";
+          lbl.textContent =
+            item.method === "ncaa-2025-27"
+              ? "NCAA"
+              : item.method === "colorado-teamunify-2026"
+                ? "Colorado"
+                : "Empirical";
+          pin.append(dot, lbl);
+          track.append(pin);
+        });
+        spec.append(specTop, track);
+        details.append(spec);
+      }
       const methods = document.createElement("dl");
       methods.className = "method-comparison";
-      for (const item of comparison.methodComparison) {
-        if (!["ncaa-2025-27", "colorado-teamunify-2026"].includes(item.method))
-          continue;
+      for (const item of validMethods) {
         const row = document.createElement("div");
         row.dataset.method = item.method;
         const name = document.createElement("dt");
-        name.textContent = `${item.label}${item.method === (request.method ?? "ncaa-2025-27") ? " · Selected" : ""}`;
+        const titleSpan = document.createElement("span");
+        titleSpan.textContent = `${item.label}${item.method === (request.method ?? "ncaa-2025-27") ? " · Selected" : ""}`;
+        name.append(titleSpan);
+        if (
+          item.result.status === "available" &&
+          item.result.value.kind !== "swum"
+        ) {
+          const formulaSpan = document.createElement("small");
+          formulaSpan.className = "method-formula";
+          const off = item.result.value.offsetSeconds;
+          formulaSpan.textContent = `× ${item.result.value.factor.toFixed(5)}${off ? ` ${off > 0 ? "+" : "−"} ${Math.abs(off).toFixed(2)}s` : ""}`;
+          name.append(formulaSpan);
+        }
         const time = document.createElement("dd");
-        time.textContent =
-          item.result.status === "available"
-            ? item.result.value.time
-            : "Unavailable for this event";
+        if (item.result.status === "available") {
+          const timeStrong = document.createElement("strong");
+          timeStrong.textContent = item.result.value.time;
+          time.append(timeStrong);
+          if (ncaaH !== null && request.swim?.event?.course !== request.to) {
+            const deltaH = item.result.value.hundredths - ncaaH;
+            const deltaSmall = document.createElement("small");
+            deltaSmall.className = "method-delta";
+            deltaSmall.textContent =
+              item.method === "ncaa-2025-27"
+                ? "NCAA baseline"
+                : `${deltaH >= 0 ? "+" : "−"}${(Math.abs(deltaH) / 100).toFixed(2)}s vs NCAA`;
+            time.append(deltaSmall);
+          }
+        } else {
+          time.textContent = "Unavailable for this event";
+        }
         row.append(name, time);
         methods.append(row);
       }
@@ -290,6 +407,7 @@ function render(value: unknown, request: ConversionRequest) {
         "Colorado Timing",
         "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.",
       ],
+      ["Turnmark Empirical", empiricalMethodExplanation],
       ["Pool length", poolLengthExplanation],
       [
         "Distance events",
@@ -350,7 +468,9 @@ app.ontoolinput = ({ arguments: args }) => {
   }
   original = structuredClone(args);
   $<HTMLDetailsElement>("calculation-options").open =
-    !!args.elevation || args.method === "colorado-teamunify-2026";
+    !!args.elevation ||
+    args.method === "colorado-teamunify-2026" ||
+    args.method === "turnmark-empirical-2026";
   altitudeEnabled.checked = !!args.elevation;
   $("altitude-fields").hidden = !args.elevation;
   elevation.value = String(args.elevation?.value ?? 0);
@@ -363,7 +483,10 @@ app.ontoolinput = ({ arguments: args }) => {
   time.value = args.swim.time;
   course.value = args.to;
   method.value =
-    args.method === "colorado-teamunify-2026" ? args.method : "ncaa-2025-27";
+    args.method === "colorado-teamunify-2026" ||
+    args.method === "turnmark-empirical-2026"
+      ? args.method
+      : "ncaa-2025-27";
   $("original").textContent = context(args.swim.event, args.table);
   message("Waiting for the conversion…");
   controls();

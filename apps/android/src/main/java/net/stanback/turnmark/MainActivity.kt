@@ -75,8 +75,16 @@ data class Draft(
     val altitudeText: String? = null, val elevationUnitIndex: Int = 0,
     val altitudePolicyId: String = "usa-swimming-altitude-2026",
 ) {
-    val method get() = if (methodId == "colorado-teamunify-2026") ConversionMethod.COLORADO else ConversionMethod.NCAA
-    val methodLabel get() = if (method == ConversionMethod.COLORADO) "Colorado Timing" else "NCAA"
+    val method get() = when (methodId) {
+        "colorado-teamunify-2026" -> ConversionMethod.COLORADO
+        "turnmark-empirical-2026" -> ConversionMethod.EMPIRICAL
+        else -> ConversionMethod.NCAA
+    }
+    val methodLabel get() = when (method) {
+        ConversionMethod.COLORADO -> "Colorado Timing"
+        ConversionMethod.EMPIRICAL -> "Turnmark Empirical"
+        ConversionMethod.NCAA -> "NCAA"
+    }
     val options get() = getEventOptions(courses[courseIndex], strokes[strokeIndex])
     val altitudePolicy get() = if (altitudePolicyId == "ncaa-altitude-2026-27-d1") AltitudePolicy.NCAA else AltitudePolicy.USA_SWIMMING
     val swim get() = Swim(time, SwimEvent(distance, strokes[strokeIndex], courses[courseIndex]))
@@ -89,8 +97,38 @@ data class Draft(
     }
     val methodDifference: String? get() {
         val ncaa = copy(methodId = "ncaa-2025-27").outcome as? ConversionOutcome.Available ?: return null
-        val colorado = copy(methodId = "colorado-teamunify-2026").outcome as? ConversionOutcome.Available ?: return null
-        return String.format(java.util.Locale.ROOT, "%.2fs", kotlin.math.abs(ncaa.value.hundredths.toDouble() - colorado.value.hundredths.toDouble()) / 100)
+        val otherId = if (method == ConversionMethod.EMPIRICAL) "turnmark-empirical-2026" else "colorado-teamunify-2026"
+        val other = copy(methodId = otherId).outcome as? ConversionOutcome.Available ?: return null
+        return String.format(java.util.Locale.ROOT, "%.2fs", kotlin.math.abs(ncaa.value.hundredths.toDouble() - other.value.hundredths.toDouble()) / 100)
+    }
+    val methodSpread: String? get() {
+        if (courseIndex == targetIndex) return null
+        val hs = listOf("ncaa-2025-27", "colorado-teamunify-2026", "turnmark-empirical-2026")
+            .mapNotNull { (copy(methodId = it).outcome as? ConversionOutcome.Available)?.value?.hundredths }
+        if (hs.size < 2) return null
+        return String.format(java.util.Locale.ROOT, "%.2fs", ((hs.maxOrNull() ?: 0uL) - (hs.minOrNull() ?: 0uL)).toDouble() / 100.0)
+    }
+    fun turnGeometrySummary(targetEvent: SwimEvent): String? {
+        if (courseIndex == targetIndex) return null
+        val srcPool = if (courses[courseIndex] == Course.LCM) 50u else 25u
+        val dstPool = if (targetEvent.course == Course.LCM) 50u else 25u
+        val srcTurns = kotlin.math.max(0, (distance / srcPool).toInt() - 1)
+        val dstTurns = kotlin.math.max(0, (targetEvent.distance / dstPool).toInt() - 1)
+        val delta = dstTurns - srcTurns
+        val deltaText = if (delta == 0) "" else " · ${if (delta > 0) "+$delta" else "−${kotlin.math.abs(delta)}"} ${if (kotlin.math.abs(delta) == 1) "wall" else "walls"}"
+        return "$distance $unit ${courses[courseIndex]} ($srcTurns ${if (srcTurns == 1) "turn" else "turns"}) → ${targetEvent.distance} ${if (targetEvent.course == Course.SCY) "yd" else "m"} ${courses[targetIndex]} ($dstTurns ${if (dstTurns == 1) "turn" else "turns"})$deltaText"
+    }
+    fun methodFormulaSummary(ncaaHundredths: ULong?): String? {
+        if (courseIndex == targetIndex) return null
+        val avail = outcome as? ConversionOutcome.Available ?: return null
+        if (avail.value.kind == ConversionKind.SWUM) return null
+        val off = avail.value.offsetSeconds
+        val offText = if (off == 0.0) "" else String.format(java.util.Locale.ROOT, " %s %.2fs", if (off > 0) "+" else "−", kotlin.math.abs(off))
+        val deltaText = if (ncaaHundredths == null) "" else if (method == ConversionMethod.NCAA) " · NCAA baseline" else {
+            val d = (avail.value.hundredths.toDouble() - ncaaHundredths.toDouble()) / 100.0
+            String.format(java.util.Locale.ROOT, " · %s%.2fs vs NCAA", if (d >= 0) "+" else "−", kotlin.math.abs(d))
+        }
+        return String.format(java.util.Locale.ROOT, "× %.5f%s%s", avail.value.factor, offText, deltaText)
     }
     val available get() = outcome is ConversionOutcome.Available
     val category get() = if (categoryIndex == 0) "Women" else "Men"
@@ -120,7 +158,7 @@ data class Draft(
             .appendQueryParameter("g", if (categoryIndex == 0) "women" else "men")
             .appendQueryParameter("h", if (altitudeText == null) "0" else (altitudeOutcome as? AltitudeOutcome.Available)?.value?.elevationFeet?.toString() ?: "0").apply {
                 if (altitudeText != null && altitudePolicy == AltitudePolicy.NCAA) appendQueryParameter("ap", altitudePolicyId)
-                if (method == ConversionMethod.COLORADO) appendQueryParameter("m", methodId)
+                if (method != ConversionMethod.NCAA) appendQueryParameter("m", methodId)
             }.build().encodedQuery
         return Uri.parse("https://turnmark.app/").buildUpon().encodedFragment(query).build().toString()
     }
@@ -411,13 +449,15 @@ private fun share(context: Context, draft: Draft) {
                     }
                 }
             }
-            var calculationExpanded by rememberSaveable { mutableStateOf(draft.altitudeText != null || draft.methodId == "colorado-teamunify-2026") }
+            var calculationExpanded by rememberSaveable { mutableStateOf(draft.altitudeText != null || draft.method != ConversionMethod.NCAA) }
             TextButton(onClick = { calculationExpanded = !calculationExpanded }, modifier = Modifier.testTag("calculationOptions")) {
                 Text("Calculation options"); Spacer(Modifier.width(8.dp)); Icon(Icons.Default.KeyboardArrowDown, null)
             }
             if (calculationExpanded) {
-                Choice("Course conversion", if (draft.methodId == "colorado-teamunify-2026") "Colorado Timing" else "NCAA (default)", listOf("NCAA (default)", "Colorado Timing"), Modifier.fillMaxWidth()) {
-                    update(draft.copy(methodId = if (it == 1) "colorado-teamunify-2026" else "ncaa-2025-27"))
+                val methodLabels = listOf("NCAA (default)", "Colorado Timing", "Turnmark Empirical")
+                val methodIds = listOf("ncaa-2025-27", "colorado-teamunify-2026", "turnmark-empirical-2026")
+                Choice("Course conversion", methodLabels[methodIds.indexOf(draft.methodId).coerceAtLeast(0)], methodLabels, Modifier.fillMaxWidth()) {
+                    update(draft.copy(methodId = methodIds[it]))
                 }
                 Row(Modifier.fillMaxWidth(), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                     Text("Adjust for altitude", modifier = Modifier.weight(1f))
@@ -663,7 +703,8 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
 @Composable private fun ConversionDetails(draft: Draft, result: ConversionOutcome, onClose: () -> Unit) {
     val context = LocalContext.current
     val c = LocalTurnmarkColors.current
-    val comparisons = listOf("ncaa-2025-27", "colorado-teamunify-2026").map { draft.copy(methodId = it) }
+    val comparisons = listOf("ncaa-2025-27", "colorado-teamunify-2026", "turnmark-empirical-2026").map { draft.copy(methodId = it) }
+    val ncaaHundredths = (comparisons.firstOrNull()?.outcome as? ConversionOutcome.Available)?.value?.hundredths
     Column(Modifier.fillMaxWidth()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
@@ -674,8 +715,12 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
             .padding(horizontal = 24.dp).padding(bottom = 32.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text("Compare methods · ${courses[draft.targetIndex]}", style = MaterialTheme.typography.titleMedium)
-                if (result is ConversionOutcome.Available) Text(draft.resultLabel(result.value.event),
-                    style = MaterialTheme.typography.bodySmall, color = c.textMuted)
+                if (result is ConversionOutcome.Available) {
+                    Text(draft.resultLabel(result.value.event), style = MaterialTheme.typography.bodySmall, color = c.textMuted)
+                    draft.turnGeometrySummary(result.value.event)?.let {
+                        Text(it, style = MaterialTheme.typography.labelSmall, color = c.textMuted)
+                    }
+                }
             }
             Surface(shape = RoundedCornerShape(TurnmarkTokens.radiusCard), color = c.surface,
                 border = BorderStroke(1.dp, c.borderSubtle)) {
@@ -684,9 +729,14 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
                         BoxWithConstraints(Modifier.fillMaxWidth().padding(vertical = 16.dp)) {
                             val stacked = maxWidth < 240.dp || LocalDensity.current.fontScale >= 1.5f
                             val label: @Composable () -> Unit = {
-                                Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                                    Text(comparison.methodLabel, style = MaterialTheme.typography.titleSmall)
-                                    if (comparison.method == draft.method) Icon(Icons.Default.Check, "Selected method", Modifier.size(18.dp), tint = c.accent)
+                                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                                        Text(comparison.methodLabel, style = MaterialTheme.typography.titleSmall)
+                                        if (comparison.method == draft.method) Icon(Icons.Default.Check, "Selected method", Modifier.size(18.dp), tint = c.accent)
+                                    }
+                                    comparison.methodFormulaSummary(ncaaHundredths)?.let {
+                                        Text(it, style = MaterialTheme.typography.bodySmall, color = c.textMuted)
+                                    }
                                 }
                             }
                             val clock: @Composable () -> Unit = {
@@ -706,6 +756,8 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
                     }
                     draft.methodDifference?.let { Text("Method difference: $it", style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier.padding(vertical = 16.dp).testTag("methodDifference")) }
+                    draft.methodSpread?.let { Text("Method spread (all 3): $it", style = MaterialTheme.typography.bodySmall,
+                        color = c.textMuted, modifier = Modifier.padding(bottom = 16.dp)) }
                 }
             }
             Text("Two conversion rules, not a prediction range or confidence interval. Use the method required by your meet.",
@@ -716,6 +768,7 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
             Text("Why the times differ", style = MaterialTheme.typography.titleMedium)
             CalculationExplanation("NCAA", "Factors vary by event and course, not age. Long-course factors use separate men’s and women’s tables; short-course meters-to-yards factors are shared. NCAA publishes metric-to-yards factors; reverse and SCM/LCM conversions are derived.")
             CalculationExplanation("Colorado Timing", "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.")
+            CalculationExplanation("Turnmark Empirical", "Pace-dependent quadratic offsets over NCAA base factors, fitted with Huber loss and empirical-Bayes shrinkage on paired 30-day competition transitions across 6.32M US swims (2010–2026).")
             CalculationExplanation("Pool length", "Shorter pools mean more turns and push-offs. These rules do not adjust for your starts, underwater skill, technique, endurance or individual development.")
             CalculationExplanation("Distance events", "500, 1000 and 1650 yards map to 400, 800 and 1500 meters.")
             if (result is ConversionOutcome.Available) {

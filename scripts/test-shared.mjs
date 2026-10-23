@@ -66,6 +66,12 @@ for (const course of ["SCY", "SCM", "LCM"])
               table,
               method: "colorado-teamunify-2026",
             });
+            add("convert", {
+              swim,
+              to,
+              table,
+              method: "turnmark-empirical-2026",
+            });
           }
           for (const value of [2999, 3000, 4250, 4251, 6500, 6501, 20000])
             add("altitude", { swim, elevation: { value, unit: "feet" } });

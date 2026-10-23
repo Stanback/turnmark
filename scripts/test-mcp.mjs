@@ -164,10 +164,14 @@ async function verify(transport, mode, label, ui = false) {
             );
         } else assert.equal(altitudeComparison, undefined);
         if (f.operation === "convert" && primary.status !== "invalid") {
-          assert.equal(methodComparison.length, 2);
+          assert.equal(methodComparison.length, 3);
           assert.deepEqual(
             methodComparison.map((item) => item.method),
-            ["ncaa-2025-27", "colorado-teamunify-2026"],
+            [
+              "ncaa-2025-27",
+              "colorado-teamunify-2026",
+              "turnmark-empirical-2026",
+            ],
           );
           for (const item of methodComparison)
             assert.deepEqual(

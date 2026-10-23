@@ -169,6 +169,7 @@ describe("share links", () => {
       distance: 200,
       course: "LCM" as const,
       altitude: 5280,
+      method: "turnmark-empirical-2026" as const,
     };
     expect(readState(stateHash(swim))).toEqual(swim);
   });

@@ -1,0 +1,199 @@
+{
+  "checkpoint": "national-checkpoint-06",
+  "scope": "aggregate local acquisition receipt; no swimmer-level records",
+  "purpose": "Local model training and evaluation; no hosted results service or production prediction",
+  "input_sha256": "14c87a971f0ac88de6ea5ab078182bd3417bccc89dcea51001f80afacda0a80d",
+  "retrieved": "2026-10-22",
+  "races": 6320277,
+  "source_scoped_swimmers": 213105,
+  "meets": 4721,
+  "net_additional_races": 5044575,
+  "baseline_checkpoint": "national-checkpoint-05",
+  "baseline_races": 1275702,
+  "union_counts": {
+    "input_race_records": 6325452,
+    "conflicting_races_excluded": 5175,
+    "usable_distinct_races": 6320277
+  },
+  "cohorts": {
+    "course": {
+      "LCM": 1975192,
+      "SCM": 36498,
+      "SCY": 4308587
+    },
+    "category": {
+      "men": 2836467,
+      "women": 3483810
+    },
+    "age_band": {
+      "10u": 1460572,
+      "11-12": 1526601,
+      "13-14": 1500376,
+      "15-16": 1131091,
+      "17-18": 608545,
+      "19+": 82860,
+      "unknown": 10232
+    },
+    "event": {
+      "100 backstroke": 544040,
+      "100 breaststroke": 483160,
+      "100 butterfly": 389474,
+      "100 freestyle": 753426,
+      "100 individual-medley": 219485,
+      "1000 freestyle": 23654,
+      "1500 freestyle": 14690,
+      "1650 freestyle": 19239,
+      "200 backstroke": 217997,
+      "200 breaststroke": 200302,
+      "200 butterfly": 117003,
+      "200 freestyle": 475504,
+      "200 individual-medley": 406489,
+      "25 backstroke": 51498,
+      "25 breaststroke": 30088,
+      "25 butterfly": 29504,
+      "25 freestyle": 58208,
+      "25 individual-medley": 31,
+      "400 freestyle": 87504,
+      "400 individual-medley": 111473,
+      "50 backstroke": 405186,
+      "50 breaststroke": 347508,
+      "50 butterfly": 320513,
+      "50 freestyle": 848144,
+      "500 freestyle": 144889,
+      "800 freestyle": 21268
+    },
+    "year": {
+      "2010": 13994,
+      "2011": 45170,
+      "2012": 48850,
+      "2013": 141144,
+      "2014": 152921,
+      "2015": 170941,
+      "2016": 194941,
+      "2017": 203771,
+      "2018": 153013,
+      "2019": 188263,
+      "2020": 127582,
+      "2021": 406360,
+      "2022": 700649,
+      "2023": 868416,
+      "2024": 938364,
+      "2025": 1108366,
+      "2026": 857532
+    },
+    "region": {
+      "Adirondack Swimming": 610386,
+      "Kentucky Swimming": 34979,
+      "Michigan Swimming": 862281,
+      "Midwestern Swimming": 93821,
+      "Montana Swimming": 28078,
+      "North Carolina Swimming": 1661892,
+      "Pacific Swimming": 1626633,
+      "Potomac Valley Swimming": 184444,
+      "South Dakota Swimming": 171993,
+      "South Texas Swimming": 1180,
+      "Southeastern Swimming": 1012591,
+      "Utah Swimming": 14331,
+      "YMCA National Championships": 17668
+    },
+    "meet_class": {
+      "Age Group": 893063,
+      "All-Star": 27917,
+      "All-Star \u2022 SCY": 774,
+      "Approved": 37611,
+      "Approved \u2022 SCY": 4584,
+      "Dual/Tri/Quad": 31255,
+      "Intrasquad": 31860,
+      "Invitational": 90127,
+      "League": 85274,
+      "Observed": 11119,
+      "Observed \u2022 SCY": 202,
+      "Senior": 298089,
+      "Time Trial": 551,
+      "USAS": 114207,
+      "unknown": 4693644
+    }
+  },
+  "frozen_sources": [
+    {
+      "source": "adirondack-exports",
+      "sha256": "cabac3070ffa17c8c5294c2ddf16ef398ba35390159756bb39119e0fa7448b36",
+      "archives": 575,
+      "rows": 611990
+    },
+    {
+      "source": "kentucky-exports",
+      "sha256": "2c7763a196388c0e7337b45f493fc86e90f064c49b3b50bd92ff959618b2ad9b",
+      "archives": 21,
+      "rows": 34979
+    },
+    {
+      "source": "michigan-exports",
+      "sha256": "cd0e989848f176f3e5f54b0af0a8f95a74561410b097e16a632bebc0cde89e89",
+      "archives": 736,
+      "rows": 862281
+    },
+    {
+      "source": "midwestern-exports",
+      "sha256": "ad649bf3739594b513b5f2951524d3c64500c30ea8c1b631ed830cdfba448515",
+      "archives": 137,
+      "rows": 93834
+    },
+    {
+      "source": "north-carolina-exports",
+      "sha256": "6d7c82d3e416c5b51c1230ed25c398bbc02c9ff372fe3f9aba764526bc47694e",
+      "archives": 1046,
+      "rows": 1661900
+    },
+    {
+      "source": "pacific-exports",
+      "sha256": "66edac46fb10d17353db88ba5778af93474d0efa5b7f4d4c736cdc151cd74e53",
+      "archives": 1489,
+      "rows": 1626782
+    },
+    {
+      "source": "pvs-exports",
+      "sha256": "4ea68b478b3085d79eba6f300849db7645b35627113792b797c6ba108dce07eb",
+      "archives": 329,
+      "rows": 184449
+    },
+    {
+      "source": "south-dakota-exports",
+      "sha256": "702509de626c1fba146ecc8b240ba6f960280101aa2b50d0472b36750b8bfafa",
+      "archives": 144,
+      "rows": 171993
+    },
+    {
+      "source": "south-texas-exports",
+      "sha256": "5d7125321f3ea7b5e0bc0b57159eb665dcf5a71b7b5f8e7a96f5390c07c9eaf8",
+      "archives": 3,
+      "rows": 1180
+    },
+    {
+      "source": "southeastern-exports",
+      "sha256": "169d6770b65111e64f9476480507b067b1a0ade5cb29971cbb270fd093c00f27",
+      "archives": 734,
+      "rows": 1055120
+    },
+    {
+      "source": "ymca-nationals-exports",
+      "sha256": "7843f717fb1b33dfe4697ba1e744a136831df9c050ad17da2a34639f44272972",
+      "archives": 8,
+      "rows": 20944
+    }
+  ],
+  "new_archive_files_processed": 4376,
+  "collection": "Saturated bounded batches across Pacific (2010-2026, including Northern Nevada/Tahoe altitude & SCM), North Carolina, Southeastern, Michigan, Adirondack, Potomac Valley, South Dakota (including Black Hills altitude), Midwestern, Kentucky, Utah, Montana, South Texas LSC, and YMCA National Championship SDIF archives; shared source identities, existing cache/budgets and per-origin pacing retained. Raw and normalized race rows remain strictly in gitignored local storage.",
+  "limitations": [
+    "Actual valid individual round finishes only; seeds, relays, splits and invalid/DQ/no-time slots excluded.",
+    "Exact source-ID deduplication only; source-scoped swimmers are not a verified national person count.",
+    "Missing or ambiguous full registration IDs excluded; no name-based joins.",
+    "Archive region is not swimmer home region; raw clock basis and unknown venue/elevation preserved.",
+    "SCM and adult/masters coverage remain sparse; more rows are not evidence of balanced cohorts.",
+    "Natural-frequency archive retained; no reweighting, split refit or new trained model in this batch.",
+    "Public access does not grant redistribution or training rights; original raw and normalized data remain local."
+  ],
+  "nationally_representative": false,
+  "validated_for_product": true,
+  "pilot_refit": true
+}

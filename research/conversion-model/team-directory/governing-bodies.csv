@@ -1,0 +1,162 @@
+authority_id,authority_name,country,jurisdiction,segment,website,program_listing_status,source_id
+nfhs-member-state:a32d0467-2725-46d8-953a-c56a3e867bcd,Alaska School Activities Association,US,AK,high_school,https://www.asaa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:4c6832f9-312c-432a-834d-523df48c30af,Alabama High School Athletic Association,US,AL,high_school,https://www.ahsaa.com,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:a6778502-632b-467c-bbb2-f5c1f26b455e,Arkansas Activities Association,US,AR,high_school,https://www.ahsaa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:17340cad-8e6f-4dcd-a5cc-afb2677cdfdb,Arizona Interscholastic Association,US,AZ,high_school,https://www.aiaonline.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:cc39807b-fe9d-4017-849e-3a318b770efd,California Interscholastic Federation,US,CA,high_school,https://www.cifstate.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:2d2ba264-1533-4458-bac2-580f9d97e87b,Colorado High School Activities Assn,US,CO,high_school,https://www.chsaanow.com,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:63de6e4f-8c75-43fb-9fcc-8cf6c9c97044,Connecticut Interscholastic Athletic Conference,US,CT,high_school,https://www.casciac.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:8316d4b9-3a90-4cff-96e6-c39c328934c3,District of Columbia State Athletic Association,US,DC,high_school,https://www.dcsaasports.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:2f88f7d4-edb9-4926-8e21-b103013b88a3,Delaware Interscholastic Athletic Association,US,DE,high_school,https://education.delaware.gov/diaa/,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:4979bcd0-fa21-47b9-a365-2c2540db0e17,Florida High School Athletic Association,US,FL,high_school,https://www.fhsaa.com,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:38be5910-b02a-4428-888d-9f3f5dccbff1,Georgia High School Association,US,GA,high_school,https://www.ghsa.net,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:2018c443-ff0c-49d0-bf8b-2b1e565907f2,Hawaii High School Athletic Association,US,HI,high_school,https://www.sportshigh.com,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:9b6d363d-87ce-4122-a36e-db382b9a8e1e,Iowa High School Athletic Association,US,IA,high_school,https://www.iahsaa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:170459ca-515d-4795-a0be-50e35ac97920,Idaho High School Activities Association,US,ID,high_school,https://www.idhsaa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:9fe0baac-af01-4495-ae9c-2c8ea5ae39a0,Illinois High School Association,US,IL,high_school,https://www.ihsa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:a4ac8aaf-dc8f-41ae-a87d-c497b53e866e,Indiana High School Athletic Association,US,IN,high_school,https://www.ihsaa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:ff45ef0f-a3a7-480a-a4bd-f56a1f5bfe68,Kansas State High School Activities Association,US,KS,high_school,https://www.kshsaa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:408a0736-2e09-4762-9053-006f6fe0d6ee,Kentucky High School Athletic Association,US,KY,high_school,https://www.khsaa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:dba25641-b234-413d-b5c6-a3632570788a,Louisiana High School Athletic Association,US,LA,high_school,https://www.lhsaa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:4598f915-cf9b-474f-897a-e5e82900eebe,Massachusetts Interscholastic Athletic Association,US,MA,high_school,https://www.miaa.net,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:efca51c4-9f4c-4699-945c-890bfca0bb07,Maryland Public Secondary Schools Athletic Association,US,MD,high_school,https://www.mpssaa.org/,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:45dc4069-50c1-48cd-bb72-aff42b2fa31c,Maine Principals' Association,US,ME,high_school,https://www.mpa.cc,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:0971cdd8-774e-4275-8392-96b9fb951e5c,Michigan High School Athletic Association,US,MI,high_school,https://www.mhsaa.com,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:280908be-f74d-41a9-8af3-274702b18362,Minnesota State High School League,US,MN,high_school,https://www.mshsl.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:a0859c76-608c-4121-9d2f-0c8894328449,Missouri State High School Activities Association,US,MO,high_school,https://www.mshsaa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:d9a33996-b02c-438f-af9a-e1611482b043,Mississippi High School Activities Association,US,MS,high_school,https://www.misshsaa.com,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:d8b6b325-ff51-4267-a6fd-3de8838392a1,Montana High School Association,US,MT,high_school,https://www.mhsa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:25b87347-9e5d-4cdd-9af9-6781f18b3f43,North Carolina High School Athletic Association,US,NC,high_school,https://www.nchsaa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:43853916-cfaf-4c2a-b17f-f9b019602f6e,North Dakota High School Activities Association,US,ND,high_school,https://www.ndhsaa.com,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:666b79bd-6535-4c5a-9aa9-f17d2939579c,Nebraska School Activities Association,US,NE,high_school,https://www.nsaahome.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:cebd6d3f-21b2-47c4-8c34-475e39fb9f69,New Hampshire Interscholastic Athletic Association,US,NH,high_school,https://www.nhiaa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:67c951ff-d5dd-4687-b1ef-957ae529a93c,New Jersey State Interscholastic Athletic Association,US,NJ,high_school,https://www.njsiaa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:13ca3ce5-d5d2-4fe0-9b8c-89e6c45a3320,New Mexico Activities Association,US,NM,high_school,https://www.nmact.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:ef710520-9726-42f3-90f5-b4aca3f12a0d,Nevada Interscholastic Activities Association,US,NV,high_school,https://www.niaa.com,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:c72a4a1a-5571-4bd2-a310-221973b1c0a7,New York State Public High School Athletic Association,US,NY,high_school,https://www.nysphsaa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:516a2c10-ba85-4864-ba41-dece44ff166f,Ohio High School Athletic Association,US,OH,high_school,https://www.ohsaa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:7d9c9ef8-0bb1-46da-99ba-358b29a936fd,Oklahoma Secondary School Activities Association,US,OK,high_school,https://www.ossaa.com,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:62ff579a-ce7b-4145-9f77-9eccf63122ed,Oregon School Activities Association,US,OR,high_school,https://www.osaa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:b05cc0d2-d378-4760-a2bc-31f3973250a9,Pennsylvania Interscholastic Athletic Association,US,PA,high_school,https://www.piaa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:4555cc94-1dce-440e-894d-10fc7a2b1dc8,Rhode Island Interscholastic League,US,RI,high_school,https://www.riil.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:8818f1e8-2689-49a7-aa8d-eed830ed8d0a,South Carolina High School League,US,SC,high_school,https://www.schsl.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:0dcd2200-546d-4a6f-bfca-8402e49e7a37,South Dakota High School Activities Association,US,SD,high_school,https://www.sdhsaa.com,swimming_not_reviewed,nfhs-member-state-associations
+nfhs-member-state:347861eb-bf99-4429-8208-667783a0edb3,Tennessee Secondary School Athletic Association,US,TN,high_school,https://www.tssaa.org,swimming_not_reviewed,nfhs-member-state-associations
+nfhs-member-state:f56dff26-94f1-40a8-884b-e4acf383997f,Texas University Interscholastic League,US,TX,high_school,https://www.uiltexas.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:7502e2a6-8931-42a5-9980-4880f4299b08,Utah High School Activities Association,US,UT,high_school,https://www.uhsaa.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:89d95c7c-152a-43cc-ba06-51c42c5142e8,Virginia High School League,US,VA,high_school,https://www.vhsl.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:f9fc6952-a10a-4bd5-8ad3-018fcbcacd8c,Vermont Principals Association,US,VT,high_school,https://www.vpaonline.org,swimming_not_reviewed,nfhs-member-state-associations
+nfhs-member-state:584628f4-8f65-4d78-a3dd-ccd54c1de98b,Washington Interscholastic Activities Association,US,WA,high_school,https://www.wiaa.com,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:08db961a-14b6-4059-9e84-9e3c8ccebf5d,Wisconsin Interscholastic Athletic Association,US,WI,high_school,https://www.wiaawi.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:7c818c89-111c-4d62-aa12-c416689864b3,West Virginia Secondary School Activities Commission,US,WV,high_school,https://www.wvssac.org,partial_swimming_imported,nfhs-member-state-associations
+nfhs-member-state:29b177ae-0351-4ba9-98f1-08653613bc08,Wyoming High School Activities Assoc,US,WY,high_school,https://www.whsaa.org,partial_swimming_imported,nfhs-member-state-associations
+usa-lsc-listing:1276d9365a4e1d5a0e9caa97,Adirondack Swimming,US,Adirondack Swimming,club_swimming,http://www.adirondackswimming.org/,partial_swimming_imported,usa-lsc-websites
+usa-lsc-listing:71394a91d0f93cfa8fd42f8e,Alaska Swimming,US,Alaska Swimming,club_swimming,http://www.akswimming.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:c8315adad4edcb24b0bc12f9,Allegheny Mountain Swimming,US,Allegheny Mountain Swimming,club_swimming,http://www.amswim.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:74e540e6424d8b4d7e4879e5,Arizona Swimming,US,Arizona Swimming,club_swimming,http://www.azswimming.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:8d267850a9a0db43eb25c5c6,Arkansas Swimming,US,Arkansas Swimming,club_swimming,http://www.teamunify.com/Home.jsp?team=czaslsc,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:c10f8f8c7a7d1061eaa6766a,Border Swimming,US,Border Swimming,club_swimming,https://www.teamunify.com/Home.jsp?team=szguslsc,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:f01e408979119f1275aee357,Central California Swimming,US,Central California Swimming,club_swimming,http://www.centralcalswim.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:4472430e52edceddbb6db443,Colorado Swimming,US,Colorado Swimming,club_swimming,http://www.swimcolorado.org/,partial_swimming_imported,usa-lsc-websites
+usa-lsc-listing:56b9ecca761bb5a05c1ee80e,Connecticut Swimming,US,Connecticut Swimming,club_swimming,https://www.ctswim.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:2bedb574b1ff4446eef059e7,Florida Gold Coast Swimming,US,Florida Gold Coast Swimming,club_swimming,http://www.fgcswim.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:a904b5af251ed08eb1363eb9,Florida Swimming,US,Florida Swimming,club_swimming,http://www.floridaswimming.org/,partial_swimming_imported,usa-lsc-websites
+usa-lsc-listing:7d6ebbe53b622dd84ee8d51e,Georgia Swimming,US,Georgia Swimming,club_swimming,http://www.gaswim.org/,partial_swimming_imported,usa-lsc-websites
+usa-lsc-listing:cd7fa992b16cc871c54ad075,Gulf Swimming,US,Gulf Swimming,club_swimming,https://www.gomotionapp.com/team/gslsc/page/home,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:316754a1428092255630b224,Hawaiian Swimming,US,Hawaiian Swimming,club_swimming,https://www.teamunify.com/Home.jsp?team=hslsc,partial_swimming_imported,usa-lsc-websites
+usa-lsc-listing:ae3c3bb6b132d2f9f84e995c,Illinois Swimming,US,Illinois Swimming,club_swimming,http://www.ilswim.org/Home.jsp?team=ilslsc,partial_swimming_imported,usa-lsc-websites
+usa-lsc-listing:77993b9172a4bbd786b6ecd6,Indiana Swimming,US,Indiana Swimming,club_swimming,http://www.inswimming.org/,partial_swimming_imported,usa-lsc-websites
+usa-lsc-listing:b9289044d5689cd2f14b274c,Inland Empire Swimming,US,Inland Empire Swimming,club_swimming,http://www.ieswim.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:0414dc0ce04b45c693f12db9,Iowa Swimming,US,Iowa Swimming,club_swimming,https://www.teamunify.com/team/lscis/page/home,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:87018f08c33bac5973bbda4c,Kentucky Swimming,US,Kentucky Swimming,club_swimming,http://www.kylsc.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:bfafd7eacb5abc69fb19d46e,Lake Erie Swimming,US,Lake Erie Swimming,club_swimming,http://www.lakeerieswimming.com/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:0551681a236c0b1befe668fa,Louisiana Swimming,US,Louisiana Swimming,club_swimming,http://www.louisianaswimming.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:4af0a0e0f097606d3afcfc2b,Maine Swimming,US,Maine Swimming,club_swimming,http://www.maineswimming.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:2b692508f4a0a56890c23b97,Maryland Swimming,US,Maryland Swimming,club_swimming,http://www.mdswim.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:4d942a7c48f30393a6d35a17,Metropolitan Swimming,US,Metropolitan Swimming,club_swimming,http://www.metroswimming.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:bb9e7ff9875d78e76010b319,Michigan Swimming,US,Michigan Swimming,club_swimming,https://www.miswim.org/page/home,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:5975941e3619ed677167e5f9,Middle Atlantic Swimming,US,Middle Atlantic Swimming,club_swimming,https://www.gomotionapp.com/team/ezmaslsc/page/home,partial_swimming_imported,usa-lsc-websites
+usa-lsc-listing:26650421241a9e8951ae4a2f,Midwestern Swimming,US,Midwestern Swimming,club_swimming,http://www.mwswim.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:7670dd2042bd73995e7a1006,Minnesota Swimming,US,Minnesota Swimming,club_swimming,http://www.mnswim.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:fcc51056047bb8c1119819ef,Mississippi Swimming,US,Mississippi Swimming,club_swimming,http://www.msswim.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:5516f25f07e9b6a5099dccd5,Missouri Valley Swimming,US,Missouri Valley Swimming,club_swimming,https://www.gomotionapp.com/team/mvslsc/page/home,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:8077fa83b0a632b43368556f,Montana Swimming,US,Montana Swimming,club_swimming,http://www.mtswimming.com/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:ab879740ece3ceeb002decdd,New England Swimming,US,New England Swimming,club_swimming,http://www.neswim.com/,partial_swimming_imported,usa-lsc-websites
+usa-lsc-listing:f2afe7fa4b3c85021319aff4,New Jersey Swimming,US,New Jersey Swimming,club_swimming,http://www.njswim.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:7717a465393f86c5454ab98e,New Mexico Swimming,US,New Mexico Swimming,club_swimming,https://www.gomotionapp.com/team/nmlsc/page/home,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:d320f36497d7bca84465d54c,Niagara Swimming,US,Niagara Swimming,club_swimming,http://www.niagaraswim.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:3bbb2f9a35c89c9931fecd7f,North Carolina Swimming,US,North Carolina Swimming,club_swimming,http://www.ncswim.org/,partial_swimming_imported,usa-lsc-websites
+usa-lsc-listing:833de0263fac369efb79752d,North Dakota Swimming,US,North Dakota Swimming,club_swimming,http://www.ndswimming.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:7d913b638959d8ad6d759cec,North Texas Swimming,US,North Texas Swimming,club_swimming,http://www.ntswim.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:ef896c663d8a0b4c192a7c56,Ohio Swimming,US,Ohio Swimming,club_swimming,http://www.swimohio.com/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:cea4020a040e0b6cda347591,Oklahoma Swimming,US,Oklahoma Swimming,club_swimming,http://www.oks.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:c9497a1c73e122895bf0b1ff,Oregon Swimming,US,Oregon Swimming,club_swimming,http://www.oregonswimming.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:86f9f06e3c9bc1b16e112c39,Ozark Swimming,US,Ozark Swimming,club_swimming,https://www.teamunify.com/Home.jsp?team=czoslsc,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:8a3f6aa7eefe9c147c268992,Pacific Northwest Swimming,US,Pacific Northwest Swimming,club_swimming,https://www.gomotionapp.com/team/pnws2/page/home,partial_swimming_imported,usa-lsc-websites
+usa-lsc-listing:9df49b1aeb374163283238dd,Pacific Swimming,US,Pacific Swimming,club_swimming,http://www.pacswim.org/,partial_swimming_imported,usa-lsc-websites
+usa-lsc-listing:55cdfdc841a6fbbf85cf820e,Potomac Valley Swimming,US,Potomac Valley Swimming,club_swimming,http://www.pvswim.org/,partial_swimming_imported,usa-lsc-websites
+usa-lsc-listing:3ccd216e7a90d19f46f5906a,San Diego-Imperial Swimming,US,San Diego-Imperial Swimming,club_swimming,http://www.si-swimming.com/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:870b84dc3e8cb2f93bdce902,Sierra Nevada Swimming,US,Sierra Nevada Swimming,club_swimming,https://www.teamunify.com/Home.jsp?team=snslsc,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:1562fb82833dfd4323d32fa2,Snake River Swimming,US,Snake River Swimming,club_swimming,http://www.snakeriverswimming.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:09dc9318b57d122cf3df6dd3,South Carolina Swimming,US,South Carolina Swimming,club_swimming,http://www.sc-swimming.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:b5b17fb34e4f3afd98665657,South Dakota Swimming,US,South Dakota Swimming,club_swimming,http://www.sdswimming.org/,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:23d87179ded396190ae48f8f,South Texas Swimming,US,South Texas Swimming,club_swimming,http://www.stswim.org/,partial_swimming_imported,usa-lsc-websites
+usa-lsc-listing:3f3462603e754976cf047937,Southeastern Swimming,US,Southeastern Swimming,club_swimming,https://www.teamunify.com/Home.jsp?team=szsslsc,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:5cdb3ffea937d30bcfda91e7,Southern California Swimming,US,Southern California Swimming,club_swimming,https://www.socalswim.org/,partial_swimming_imported,usa-lsc-websites
+usa-lsc-listing:b1cb2da0d865e634ae3f276c,Utah Swimming,US,Utah Swimming,club_swimming,https://www.teamunify.com/Home.jsp?team=lscuts,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:0ad47cac1a1df81a605aa4cf,Virginia Swimming,US,Virginia Swimming,club_swimming,https://www.gomotionapp.com/team/va/page/home,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:78d1f263435dc169e28385d0,West Texas Swimming,US,West Texas Swimming,club_swimming,https://www.teamunify.com/Home.jsp?team=wts,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:16769b55e363b8be078319b7,West Virginia Swimming,US,West Virginia Swimming,club_swimming,https://www.teamunify.com/Home.jsp?team=szwvslsc,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:005e8e78f83b5cb54041feb8,Wisconsin Swimming,US,Wisconsin Swimming,club_swimming,https://www.teamunify.com/Home.jsp?team=czwilsc,swimming_not_reviewed,usa-lsc-websites
+usa-lsc-listing:f212f4b190ebf6d6c3545a68,Wyoming Swimming,US,Wyoming Swimming,club_swimming,https://www.teamunify.com/Home.jsp?team=wzwyslsc,swimming_not_reviewed,usa-lsc-websites
+usms-lmsc:3,Adirondack LMSC,US,Adirondack,masters,http://www.adms.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:56,Alaska LMSC,US,Alaska,masters,http://www.akmswim.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:11,Allegheny Mountain LMSC,US,Allegheny Mountain,masters,https://www.alleghenymountainlmsc.org,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:48,Arizona LMSC,US,Arizona,masters,http://www.azlmsc.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:23,Arkansas LMSC,US,Arkansas,masters,http://www.arkansasmasters.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:32,Colorado LMSC,US,Colorado,masters,http://www.comsa.org/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:5,Connecticut LMSC,US,Connecticut,masters,http://www.connmastersswim.com/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:8,Delaware Valley LMSC,US,Delaware Valley,masters,http://www.DVMasters.org/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:14,Florida LMSC,US,Florida,masters,http://www.floridalmsc.org,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:50,Florida Gold Coast LMSC,US,Florida Gold Coast,masters,http://www.fgcmasters.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:45,Georgia LMSC,US,Georgia,masters,http://www.georgiamasters.org/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:25,Gulf LMSC,US,Gulf,masters,http://www.gulfmastersswim.org/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:39,Hawaii LMSC,US,Hawaii,masters,https://hawaiimastersswimming.org/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:21,Illinois LMSC,US,Illinois,masters,http://www.ilmsa.com/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:16,Indiana LMSC,US,Indiana,masters,http://www.grinswim.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:35,Inland Northwest LMSC,US,Inland Northwest,masters,http://www.inlandnwmasters.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:40,Iowa LMSC,US,Iowa,masters,https://iowamasters.us/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:41,Kentucky LMSC,US,Kentucky,masters,http://www.kylmsc.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:18,Lake Erie LMSC,US,Lake Erie,masters,https://lakeeriemastersswimming.org,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:9,Maryland LMSC,US,Maryland,masters,http://www.mdusms.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:6,Metropolitan LMSC,US,Metropolitan,masters,https://metromastersswimming.org/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:19,Michigan LMSC,US,Michigan,masters,http://www.michiganmasters.com/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:30,Minnesota LMSC,US,Minnesota,masters,http://www.minnesotamasters.com/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:28,Missouri Valley LMSC,US,Missouri Valley,masters,http://www.movymasters.com/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:31,Montana LMSC,US,Montana,masters,http://swimmontana.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:29,Nebraska LMSC,US,Nebraska,masters,http://www.nebraskamastersswimming.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:2,New England LMSC,US,New England,masters,https://www.nelmsc.org,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:7,New Jersey LMSC,US,New Jersey,masters,http://www.njmasters.org/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:42,New Mexico LMSC,US,New Mexico,masters,https://newmexicomastersswimming.com,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:4,Niagara LMSC,US,Niagara,masters,http://www.niagaramasters.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:13,North Carolina LMSC,US,North Carolina,masters,http://www.ncmasters.org/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:52,North Dakota LMSC,US,North Dakota,masters,http://www.northdakotamastersswimming.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:26,North Texas LMSC,US,North Texas,masters,http://www.northtexasmasters.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:17,Ohio LMSC,US,Ohio,masters,https://ohiomastersswimming.org/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:27,Oklahoma LMSC,US,Oklahoma,masters,http://okswim.org/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:37,Oregon LMSC,US,Oregon,masters,http://www.swimoregon.org/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:22,Ozark LMSC,US,Ozark,masters,http://www.ozarklmsc.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:38,Pacific LMSC,US,Pacific,masters,http://www.pacificmasters.org/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:36,Pacific Northwest LMSC,US,Pacific Northwest,masters,http://www.swimpna.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:10,Potomac Valley LMSC,US,Potomac Valley,masters,http://www.pvmasters.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:44,San Diego-Imperial LMSC,US,San Diego-Imperial,masters,http://www.simasterswim.org/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:59,Snake River LMSC,US,Snake River,masters,http://snakerivermasters.com/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:55,South Carolina LMSC,US,South Carolina,masters,http://www.scmastersswimming.org,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:54,South Dakota LMSC,US,South Dakota,masters,http://www.southdakotamasters.org/,partial_swimming_imported,usms-lmsc-map
+usms-lmsc:43,South Texas LMSC,US,South Texas,masters,http://www.southtexasmastersswimming.com/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:15,Southeastern LMSC,US,Southeastern,masters,http://www.southeasternlmsc.com/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:24,Southern LMSC,US,Southern,masters,http://www.southernmastersswimming.com/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:33,Southern Pacific LMSC,US,Southern Pacific,masters,https://www.SPMasterSwim.org,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:34,Utah LMSC,US,Utah,masters,http://www.utahmasters.org/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:12,Virginia LMSC,US,Virginia,masters,http://www.vaswim.org/,swimming_not_reviewed,usms-lmsc-map
+usms-lmsc:20,Wisconsin LMSC,US,Wisconsin,masters,https://www.wisconsinmastersswimming.com/,swimming_not_reviewed,usms-lmsc-map
