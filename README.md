@@ -9,7 +9,7 @@ Your offline swim companion: convert across pool courses, compare your times wit
 Available in the web app:
 
 - Live SCY / SCM / LCM comparisons with event-specific distance mapping
-- NCAA conversions by default, with a quiet documented Colorado Timing alternative and method comparison
+- NCAA conversions by default, with Colorado Timing and Turnmark Empirical pace-curve alternatives and method comparison
 - 2,892 published USA Swimming 2024–2028 motivational times, revised October 10, 2025
 - Original-course standards ladder with the next level and time gap
 - World Aquatics points from 70 published 2026 metric base times
@@ -35,7 +35,7 @@ and its NCAA course equivalents. Published standards and points follow in their 
 ![Turnmark web converter with editable inputs and SCY SCM LCM equivalents](docs/screenshots/web-converter-comparison-dark.png)
 
 [Light appearance](docs/screenshots/web-converter-comparison-light.png) ·
-[Colorado Timing example](docs/screenshots/web-converter-method-dark.png) ·
+[Method comparison & Turnmark Empirical example](docs/screenshots/web-converter-method-dark.png) ·
 [Layout review and mobile flow](docs/CONVERTER_LAYOUT_EXPLORATION.md)
 
 Fresh native installs start with a blank time and direct entry.
