@@ -143,7 +143,7 @@ Clients without MCP Apps continue to receive the same text and structured
 results. There is no separate UI endpoint to configure: use the same stdio
 server or Streamable HTTP URL. Published package `0.2.0` uses immutable resource
 `ui://turnmark/conversion/0.2.0.html`. The current source prepares `0.3.0` with SDK `0.2.0`, shared glyphs and
-separate Course conversion and altitude controls under collapsed Calculation options at `ui://turnmark/conversion/0.3.0-r8.html`.
+separate Course conversion and altitude controls under collapsed Calculation options at `ui://turnmark/conversion/0.3.0-r9.html`.
 Omitting `method` retains NCAA; `colorado-teamunify-2026` selects documented
 Colorado Timing formulas. `get_sources` lists both editions. These npm versions
 are not yet published; SDK 0.2.0 must publish before MCP 0.3.0. Both use `text/html;profile=mcp-app`. Local Apps require package `0.2.0` or later;

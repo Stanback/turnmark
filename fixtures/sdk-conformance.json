@@ -273,7 +273,8 @@
         "value": {
           "time": "52.44",
           "hundredths": 5244,
-          "kind": "published"
+          "kind": "published",
+          "formula": "multiplier"
         }
       },
       "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
@@ -332,7 +333,8 @@
             "distance": 100,
             "stroke": "freestyle",
             "course": "SCY"
-          }
+          },
+          "formula": "none"
         }
       },
       "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
@@ -358,7 +360,8 @@
         "value": {
           "time": "1:09.52",
           "hundredths": 6952,
-          "kind": "derived"
+          "kind": "derived",
+          "formula": "multiplier"
         }
       },
       "source": "https://ncaaorg.s3.amazonaws.com/championships/sports/swimdive/rules/PRXSW_RulesBook.pdf#page=125",
@@ -1527,7 +1530,8 @@
           "hundredths": 6633,
           "kind": "derived",
           "factor": 1.11,
-          "offsetSeconds": 1.6
+          "offsetSeconds": 1.6,
+          "formula": "multiplier-offset"
         },
         "provenance": {
           "id": "colorado-teamunify-2026"
@@ -1622,7 +1626,8 @@
           "time": "4:27.75",
           "hundredths": 26775,
           "kind": "derived",
-          "factor": 0.8925
+          "factor": 0.8925,
+          "formula": "multiplier"
         },
         "provenance": {
           "id": "colorado-teamunify-2026"
@@ -1653,7 +1658,8 @@
           "time": "5:33.00",
           "hundredths": 33300,
           "kind": "derived",
-          "factor": 1.11
+          "factor": 1.11,
+          "formula": "multiplier"
         },
         "provenance": {
           "id": "colorado-teamunify-2026"
@@ -1685,7 +1691,8 @@
           "hundredths": 30640,
           "kind": "derived",
           "factor": 1,
-          "offsetSeconds": 6.4
+          "offsetSeconds": 6.4,
+          "formula": "multiplier-offset"
         },
         "provenance": {
           "id": "colorado-teamunify-2026"
@@ -1805,6 +1812,37 @@
       },
       "source": "data/colorado.json; SportsEngine Motion USA Swimming teams formulas, 2026-08-06",
       "rationale": "Direction-specific documented affine formula; truncate only the final converted result."
+    },
+    {
+      "id": "equivalence-free-100-forward",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "58.32",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "women",
+        "method": "turnmark-empirical-2026"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "1:07.26",
+          "hundredths": 6726,
+          "kind": "derived",
+          "formula": "equivalent"
+        },
+        "provenance": {
+          "id": "turnmark-empirical-2026"
+        }
+      },
+      "source": "data/empirical.json 100-FR|women; research/conversion-model/REPORT.md",
+      "rationale": "The equivalence model reports its formula as an equivalent-time mapping, never a multiplier with an offset."
     },
     {
       "id": "ncaa-default-stays-same",

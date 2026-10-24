@@ -227,7 +227,9 @@ Omit `method` for the unchanged NCAA default, or pass
 Results carry the selected provenance. Colorado results add an optional
 `offsetSeconds` (absent when zero): the untruncated calculation is
 `inputSeconds × factor + offsetSeconds`. Colorado results are estimates and
-unsupported formulas remain unavailable.
+unsupported formulas remain unavailable. Every result's `formula` names the
+arithmetic: `none`, `multiplier`, `multiplier-offset` or `equivalent`; Colorado's
+distance-freestyle rules are `multiplier`.
 
 `turnmark-empirical-2026` is Turnmark Equivalence: a model-based estimate of the
 equivalent time in the other course. Each event and category has one linear map

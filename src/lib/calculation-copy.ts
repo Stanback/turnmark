@@ -16,6 +16,14 @@ export function caveatText(caveat: string | undefined): string {
   return "";
 }
 
+/** Short description of the engine-reported formula, or an empty string for the swum time. */
+export function formulaText(formula: string | undefined): string {
+  if (formula === "multiplier") return "flat multiplier";
+  if (formula === "multiplier-offset") return "fixed turn offset";
+  if (formula === "equivalent") return "equivalent time";
+  return "";
+}
+
 /** Selected-calculation note for Turnmark Equivalence, whose factor varies with the entered time. */
 export const empiricalCalculationNote =
   "Turnmark Equivalence: the model’s equivalent time in this course. The multiplier shown applies to this entered time.";

@@ -1,5 +1,6 @@
 import {
   caveatText,
+  formulaText,
   ncaaMethodExplanation,
   empiricalMethodExplanation,
   empiricalCalculationNote,
@@ -353,7 +354,8 @@ function render(value: unknown, request: ConversionRequest) {
           const formulaSpan = document.createElement("small");
           formulaSpan.className = "method-formula";
           const off = item.result.value.offsetSeconds;
-          formulaSpan.textContent = `× ${item.result.value.factor.toFixed(5)}${off ? ` ${off > 0 ? "+" : "−"} ${Math.abs(off).toFixed(2)}s` : ""}`;
+          const kind = formulaText(item.result.value.formula);
+          formulaSpan.textContent = `× ${item.result.value.factor.toFixed(5)}${off ? ` ${off > 0 ? "+" : "−"} ${Math.abs(off).toFixed(2)}s` : ""}${kind ? ` · ${kind}` : ""}`;
           name.append(formulaSpan);
         }
         const time = document.createElement("dd");

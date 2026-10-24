@@ -51,7 +51,7 @@ text, the clock fits one line and surrounding copy wraps normally:
   Only `convert_swim`
   advertises `_meta.ui.resourceUri`; the one static resource is registered
   independently of initialization capabilities for stateless HTTP compatibility.
-- Current source URI `ui://turnmark/conversion/0.3.0-r8.html`, MIME
+- Current source URI `ui://turnmark/conversion/0.3.0-r9.html`, MIME
   `text/html;profile=mcp-app`. Change the resource version for later view releases.
   The revised resource has a new URI to avoid reusing the previous view's cache
   key. The alternative-method release is not yet published to npm; published `0.2.0` keeps

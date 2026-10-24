@@ -82,7 +82,7 @@ async function verify(transport, mode, label, ui = false) {
       listed.map((t) => t.name).sort(),
       [...Object.values(tools), "get_sources"].sort(),
     );
-    const uri = "ui://turnmark/conversion/0.3.0-r8.html";
+    const uri = "ui://turnmark/conversion/0.3.0-r9.html";
     assert.equal(
       listed.find((t) => t.name === "convert_swim")._meta.ui.resourceUri,
       uri,
@@ -178,7 +178,14 @@ async function verify(transport, mode, label, ui = false) {
               item.result,
               engine.convert({ ...f.input, method: item.method }),
             );
-          const [a, b] = methodComparison.map((item) => item.result);
+          // NCAA against Colorado, or against Turnmark Equivalence when selected.
+          const [a, colorado, equivalence] = methodComparison.map(
+            (item) => item.result,
+          );
+          const b =
+            f.input.method === "turnmark-empirical-2026"
+              ? equivalence
+              : colorado;
           assert.equal(
             methodDifferenceSeconds,
             a.status === "available" && b.status === "available"
