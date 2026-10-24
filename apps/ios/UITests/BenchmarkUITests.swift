@@ -50,7 +50,7 @@ final class BenchmarkUITests: TurnmarkUITestCase {
         XCTAssertTrue(menu.isHittable, "The overflow menu must stay reachable")
         menu.tap(); app.buttons["converterAbout"].tap()
         XCTAssertTrue(app.staticTexts["How comparisons work"].waitForExistence(timeout: 5))
-        app.buttons["Done"].firstMatch.tap()
+        tapSheetBar(app.buttons["Done"].firstMatch, in: app)
         let benchmarkAction = app.buttons["openBenchmarks"]
         XCTAssertTrue(benchmarkAction.waitForExistence(timeout: 5))
         XCTAssertLessThan(benchmarkAction.frame.height, 80,
@@ -107,7 +107,7 @@ final class BenchmarkUITests: TurnmarkUITestCase {
         let category = app.segmentedControls["category"]
         reach(category, in: app, earlier: true); category.buttons["Men"].tap()
         reach(app.buttons["logSwim"], in: app); app.buttons["logSwim"].tap()
-        XCTAssertTrue(app.buttons["confirmLog"].waitForExistence(timeout: 5)); app.buttons["confirmLog"].tap()
+        XCTAssertTrue(app.buttons["confirmLog"].waitForExistence(timeout: 5)); tapSheetBar(app.buttons["confirmLog"], in: app)
         tab("My times", in: app); app.staticTexts["1:00.25"].tap()
         reach(app.buttons["recordBenchmarks"], in: app); app.buttons["recordBenchmarks"].tap()
         XCTAssertEqual(app.staticTexts["benchmarkOriginalTime"].label, "1:00.25")

@@ -95,10 +95,19 @@ class TurnmarkUITestCase: XCTestCase {
             }
         }
         let tabBottom = earlier ? viewport.maxY - 100 : viewport.maxY
-        let nativeList = app.collectionViews.element(boundBy: max(app.collectionViews.count - 1, 0))
+        // A presented sheet's list starts below the window top. Its AX order
+        // relative to the covered converter list varies by device (first on
+        // iPhone Duo), and the covered list can still report itself hittable.
+        let lists = app.collectionViews.allElementsBoundByIndex
+        let nativeList = lists.last { $0.frame.minY > viewport.minY && $0.frame.minY < viewport.midY } ??
+            app.collectionViews.element(boundBy: max(app.collectionViews.count - 1, 0))
         let editor = app.descendants(matching: .any)["swimEditorForm"].firstMatch
         let hasEditor = editor.exists
         var keyboard = entryKeyboard(in: app)
+        var reversed = false
+        // Drags start in the grouped list's side margin: a press-and-drag on a
+        // row's segmented control slides its selection instead of scrolling.
+        let gutter: CGFloat = 10
         for attempt in 0..<16 {
             // Scrolling may dismiss an existing keyboard; it cannot summon a
             // new one. Once absent, avoid probing stale system keyboard AX.
@@ -107,7 +116,12 @@ class TurnmarkUITestCase: XCTestCase {
             // Other callers can intentionally target native toolbar buttons.
             let keyboardTop = keyboard.flatMap { element -> CGFloat? in
                 let frame = element.frame
-                return frame.intersects(viewport) && frame.minY > visibleTop ? frame.minY : nil
+                guard frame.intersects(viewport) && frame.minY > visibleTop else { return nil }
+                // The app's entry toolbar row sits above the keyboard and takes
+                // touches across its full width, not only on its Done button.
+                let done = [app.buttons["dismissConverterKeyboard"], app.buttons["dismissSwimKeyboard"]]
+                    .first { $0.exists && $0.isHittable }
+                return min(frame.minY, done?.frame.minY ?? frame.minY)
             }
             let visibleBottom = min(keyboardTop ?? viewport.maxY - 40, tabBottom) - 16
             let exists = element.exists
@@ -122,32 +136,69 @@ class TurnmarkUITestCase: XCTestCase {
             let collection = exists && !element.identifier.isEmpty ? app.collectionViews.containing(.any, identifier: element.identifier).firstMatch : nativeList
             let scroll = hasEditor ? editor : (container.exists ? container : (collection.exists ? collection : (nativeList.exists ? nativeList : app)))
             // A grouped Form virtualizes rows that have scrolled away. When
-            // the target is absent, search both directions before failing;
-            // once its row is loaded, its actual geometry chooses direction.
-            let downward = exists ? frame.minY < visibleTop : earlier || attempt >= 6
+            // the target is absent, search toward its expected side until the
+            // list stops moving, then the other way; once its row is loaded,
+            // its actual geometry chooses direction. A sheet's list starts below
+            // the window top; dragging down at its top dismisses the sheet.
+            var downward = exists ? frame.minY < visibleTop : earlier != reversed
+            if !exists && downward && scroll.frame.minY > viewport.minY && atTop(scroll, in: app) {
+                reversed.toggle(); downward = false
+            }
+            let before = exists ? nil : landmark(scroll)
             if let keyboardTop {
                 // The form extends behind the keyboard. XCTest's default swipe
                 // can start in its assistant bar, which never scrolls the form.
                 let visible = scroll.frame.intersection(viewport)
-                let done = app.buttons["dismissSwimKeyboard"]
-                let bottom = min(visible.maxY, keyboardTop,
-                    done.exists ? done.frame.minY : visible.maxY) - 12
+                let bottom = min(visible.maxY, keyboardTop) - 12
                 let top = max(visible.minY, viewport.minY + 140)
                 let upper = top + (bottom - top) * 0.2
                 let lower = top + (bottom - top) * 0.8
                 let origin = app.coordinate(withNormalizedOffset: .zero)
-                let start = origin.withOffset(CGVector(dx: visible.midX, dy: downward ? upper : lower))
-                let end = origin.withOffset(CGVector(dx: visible.midX, dy: downward ? lower : upper))
+                let start = origin.withOffset(CGVector(dx: visible.minX + gutter, dy: downward ? upper : lower))
+                let end = origin.withOffset(CGVector(dx: visible.minX + gutter, dy: downward ? lower : upper))
                 start.press(forDuration: 0.1, thenDragTo: end)
+            } else if exists {
+                // Move a loaded row by its distance to the middle of the visible
+                // band, then hold to stop momentum. A fling can carry a tall row
+                // (accessibility text) across a short display's whole band.
+                let visible = scroll.frame.intersection(viewport)
+                let top = max(visible.minY, visibleTop), bottom = min(visible.maxY, visibleBottom)
+                let limit = (bottom - top) * 0.8
+                let shift = max(-limit, min(limit, (top + bottom) / 2 - frame.midY))
+                let startY = shift > 0 ? top + (bottom - top) * 0.1 : bottom - (bottom - top) * 0.1
+                let origin = app.coordinate(withNormalizedOffset: .zero)
+                origin.withOffset(CGVector(dx: visible.minX + gutter, dy: startY)).press(forDuration: 0.1,
+                    thenDragTo: origin.withOffset(CGVector(dx: visible.minX + gutter, dy: startY + shift)),
+                    withVelocity: .default, thenHoldForDuration: 0.1)
             } else if downward {
                 // Avoid flinging past the earlier result card, whose lazy
                 // Form row may otherwise retain stale AX coordinates.
-                if earlier { scroll.swipeDown(velocity: .slow) }
-                else { scroll.swipeDown() }
+                scroll.swipeDown(velocity: earlier ? .slow : .default)
             } else { scroll.swipeUp() }
+            // A list that did not move is at its end: search the other way.
+            if let before, landmark(scroll) == before { reversed.toggle() }
         }
         if earlier { XCTFail("Element must remain reachable inside the content viewport: \(element)") }
         else { XCTAssertTrue(element.exists && element.isHittable, "Element must remain reachable: \(element)") }
+    }
+
+    /// The first loaded text in a list and its position: unchanged after a swipe at its end.
+    @MainActor private func landmark(_ scroll: XCUIElement) -> String? {
+        let first = scroll.staticTexts.firstMatch
+        return first.exists ? "\(first.label)@\(Int(first.frame.minY))" : nil
+    }
+
+    /// A sheet's content starts below its navigation bar, which keeps its frame
+    /// while the scrolled sheet hides it (iPhone Duo). Only used for sheets: the
+    /// converter list can scroll a section exactly to that edge.
+    @MainActor private func atTop(_ scroll: XCUIElement, in app: XCUIApplication) -> Bool {
+        let first = scroll.staticTexts.firstMatch
+        guard first.exists else { return false }
+        let list = scroll.frame
+        let bars = app.navigationBars.allElementsBoundByIndex.map(\.frame).filter {
+            $0.minY >= list.minY && $0.minY < list.minY + 100 && $0.minX < list.midX && $0.maxX > list.midX
+        }
+        return first.frame.minY >= (bars.map(\.maxY).max() ?? list.minY) - 1
     }
 
     @MainActor func assertTimeValue(_ text: String, in field: XCUIElement,
@@ -208,13 +259,20 @@ class TurnmarkUITestCase: XCTestCase {
         item.tap()
     }
 
-    /// Taps the standards sheet's Done button. Some devices (iPhone Duo) hide a sheet's navigation
-    /// bar while its form is scrolled down, so scroll back toward the top until Done is available.
+    /// Taps a button in a sheet's navigation bar (Done, Save). Some devices (iPhone Duo) hide a
+    /// sheet's navigation bar while its content is scrolled down, so drag the content back toward
+    /// the top until the button is available. Each drag starts mid-sheet and stops as soon as the
+    /// button appears, so it scrolls content rather than dismissing the sheet.
+    @MainActor func tapSheetBar(_ button: XCUIElement, in app: XCUIApplication) {
+        let origin = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.4))
+        for _ in 0..<8 where !(button.exists && button.isHittable) {
+            origin.press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.75)))
+        }
+        button.tap()
+    }
+
     @MainActor func closeBenchmarks(in app: XCUIApplication) {
-        let done = app.buttons["closeBenchmarks"]
-        let form = app.collectionViews["benchmarkForm"]
-        for _ in 0..<8 where !(done.exists && done.isHittable) && form.exists { form.swipeDown() }
-        done.tap()
+        tapSheetBar(app.buttons["closeBenchmarks"], in: app)
     }
 
     @MainActor func capture(_ app: XCUIApplication, _ name: String) {

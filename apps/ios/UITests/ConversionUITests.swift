@@ -31,7 +31,7 @@ final class ConversionUITests: TurnmarkUITestCase {
         XCTAssertTrue(app.staticTexts["methodResult-Turnmark Equivalence"].exists)
         XCTAssertTrue(app.descendants(matching: .any)["methodDifference"].firstMatch.exists)
         capture(app, "Native method comparison")
-        app.buttons["Done"].firstMatch.tap()
+        tapSheetBar(app.buttons["Done"].firstMatch, in: app)
         reach(app.buttons["resetConverter"], in: app, earlier: true); app.buttons["resetConverter"].tap()
         XCTAssertEqual(field.placeholderValue, "58.32")
         XCTAssertFalse(app.staticTexts["resultTime"].exists)
@@ -59,7 +59,7 @@ final class ConversionUITests: TurnmarkUITestCase {
         XCTAssertTrue(app.staticTexts["Time offset: 1.6 seconds"].exists)
         reach(app.staticTexts["Edition: colorado-teamunify-2026"], in: app)
         XCTAssertTrue(app.staticTexts["Edition: colorado-teamunify-2026"].exists)
-        app.buttons["Done"].firstMatch.tap()
+        tapSheetBar(app.buttons["Done"].firstMatch, in: app)
         chooseCourseConversion("NCAA (default)", in: app, open: false)
         reach(app.staticTexts["resultTime"], in: app)
         XCTAssertEqual(app.staticTexts["resultTime"].label, "1:06.72")
@@ -103,7 +103,7 @@ final class ConversionUITests: TurnmarkUITestCase {
     @MainActor func testConversionDetailsAndDraftSurviveRestart() {
         let app = launch()
         replace(app.textFields["timeInput"], with: "1:00", in: app, earlier: true)
-        if app.buttons["Done"].firstMatch.isHittable { app.buttons["Done"].firstMatch.tap() }
+        if app.buttons["Done"].firstMatch.isHittable { tapSheetBar(app.buttons["Done"].firstMatch, in: app) }
         else { app.textFields["timeInput"].typeText("\n") }
         let input = app.segmentedControls["inputCourse"].buttons["LCM"]
         reach(input, in: app, earlier: true); input.tap()
@@ -119,8 +119,7 @@ final class ConversionUITests: TurnmarkUITestCase {
         XCTAssertTrue(originalContext.exists)
         let edition = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Edition:")).firstMatch
         reach(edition, in: app); capture(app, "Conversion details")
-        let done = app.buttons["Done"].firstMatch
-        reach(done, in: app); done.tap()
+        tapSheetBar(app.buttons["Done"].firstMatch, in: app)
         reach(app.staticTexts["resultTime"], in: app); capture(app, "Converter result light")
         let appearance = XCUIDevice.shared.appearance
         XCUIDevice.shared.appearance = .dark
