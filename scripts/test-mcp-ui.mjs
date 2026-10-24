@@ -54,7 +54,7 @@ if (mode === "HTTP") {
     }),
   );
 }
-const uri = "ui://turnmark/conversion/0.3.0-r7.html";
+const uri = "ui://turnmark/conversion/0.3.0-r8.html";
 const card = (await client.readResource({ uri })).contents[0].text;
 const host = await build({
   absWorkingDir: process.cwd(),
@@ -354,6 +354,59 @@ try {
   await frame
     .locator("body")
     .screenshot({ path: `${shots}/mcp-altitude-light.png` });
+  // Close methods keep separate spectrum labels: women's 1650 SCY 17:36.20 -> SCM
+  // put NCAA and Equivalence closer together than one label is wide.
+  const mile = {
+    ...input,
+    swim: {
+      time: "17:36.20",
+      event: { distance: 1650, stroke: "freestyle", course: "SCY" },
+    },
+    to: "SCM",
+  };
+  const mileResult = await client.callTool({
+    name: "convert_swim",
+    arguments: mile,
+  });
+  await page.evaluate(
+    ({ mile, mileResult }) => window.mount(mile, mileResult),
+    { mile, mileResult },
+  );
+  const spectrumCard = page.frameLocator("iframe").nth(2);
+  await spectrumCard.locator("#result summary").click();
+  for (const width of [680, 390]) {
+    await page.setViewportSize({ width, height: 1100 });
+    await page.waitForTimeout(100);
+    const layout = await spectrumCard
+      .locator(".spectrum-track")
+      .evaluate((track) => {
+        const box = track.getBoundingClientRect();
+        return [...track.querySelectorAll(".spectrum-pin")].map((pin) => ({
+          pin: pin.getBoundingClientRect().left,
+          dot: pin.querySelector(".pin-dot").getBoundingClientRect(),
+          label: pin.querySelector(".pin-name").getBoundingClientRect(),
+          track: { left: box.left, right: box.right, bottom: box.bottom },
+        }));
+      });
+    assert.equal(layout.length, 3);
+    for (const [i, a] of layout.entries()) {
+      assert.ok(Math.abs(a.dot.left + a.dot.width / 2 - a.pin) < 1);
+      assert.ok(a.label.left >= a.track.left - 0.5);
+      assert.ok(a.label.right <= a.track.right + 0.5);
+      assert.ok(a.label.bottom <= a.track.bottom + 0.5);
+      for (const b of layout.slice(i + 1))
+        assert.ok(
+          a.label.right <= b.label.left ||
+            b.label.right <= a.label.left ||
+            a.label.bottom <= b.label.top ||
+            b.label.bottom <= a.label.top,
+          `Spectrum labels overlap at ${width}px`,
+        );
+    }
+    await spectrumCard
+      .locator(".method-spectrum")
+      .screenshot({ path: `${shots}/mcp-spectrum-${width}.png` });
+  }
   console.log(
     `MCP Apps: official AppBridge + real ${mode} tools; opaque sandbox/CSP, keyboard, theme, narrow/large text, cancellation, denied calls/context, invalid/unavailable, destination context and card isolation passed.`,
   );

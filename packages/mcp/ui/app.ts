@@ -7,6 +7,7 @@ import {
   methodComparisonCaveat,
 } from "../../../src/lib/calculation-copy.js";
 import { elevationDisplay } from "../../../src/lib/elevation-display.js";
+import { placeSpectrumLabels } from "../../../src/lib/spectrum-layout.js";
 import { App } from "@modelcontextprotocol/ext-apps";
 import swimIcons from "../../../design/swim-icons.json";
 import type {
@@ -108,6 +109,38 @@ function input(value: unknown): value is ConversionRequest {
     ["women", "men"].includes(x.table)
   );
 }
+// Shared layout keeps close method labels apart; before measurement each label
+// falls back to the CSS position-share shift.
+function layoutSpectrum(track: HTMLElement) {
+  const width = track.clientWidth;
+  const pins = [...track.querySelectorAll<HTMLElement>(".spectrum-pin")];
+  const labels = pins.map((pin) =>
+    pin.querySelector<HTMLElement>(".pin-name")!,
+  );
+  if (!width || labels.some((label) => !label.offsetWidth)) return;
+  const xs = pins.map((pin) => pin.offsetLeft);
+  const places = placeSpectrumLabels(
+    labels.map((label, i) => ({ x: xs[i], width: label.offsetWidth })),
+    width,
+  );
+  track.style.setProperty(
+    "--pin-row",
+    `${Math.max(...labels.map((label) => label.offsetHeight)) + 4}px`,
+  );
+  track.style.setProperty(
+    "--label-rows",
+    String(Math.max(...places.map((place) => place.row + 1))),
+  );
+  places.forEach((place, i) => {
+    pins[i].style.setProperty("--label-row", String(place.row));
+    pins[i].style.setProperty(
+      "--label-shift",
+      `${(place.left - xs[i]).toFixed(1)}px`,
+    );
+    pins[i].querySelector<HTMLElement>(".pin-leader")!.hidden = place.row === 0;
+  });
+}
+
 function render(value: unknown, request: ConversionRequest) {
   if (!value || typeof value !== "object" || !("status" in value))
     throw new Error("Missing result");
@@ -284,6 +317,9 @@ function render(value: unknown, request: ConversionRequest) {
           pin.style.setProperty("--pin-at", pct.toFixed(1));
           const dot = document.createElement("span");
           dot.className = "pin-dot";
+          const leader = document.createElement("span");
+          leader.className = "pin-leader";
+          leader.hidden = true;
           const lbl = document.createElement("span");
           lbl.className = "pin-name";
           lbl.textContent =
@@ -292,9 +328,12 @@ function render(value: unknown, request: ConversionRequest) {
               : item.method === "colorado-teamunify-2026"
                 ? "Colorado"
                 : "Equivalence";
-          pin.append(dot, lbl);
+          pin.append(dot, leader, lbl);
           track.append(pin);
         });
+        // Labels have no size until the collapsed details open, so lay them out
+        // whenever the track is measured (on open, resize and text zoom).
+        new ResizeObserver(() => layoutSpectrum(track)).observe(track);
         spec.append(specTop, track);
         details.append(spec);
       }
