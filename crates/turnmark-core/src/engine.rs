@@ -316,6 +316,7 @@ pub(crate) fn convert_seconds_with_method(
     if !seconds.is_finite() || seconds <= 0.0 {
         return Err(invalid("swim.time", ValidationReason::InvalidTime));
     }
+    let mut empirical_caveat = None;
     let (seconds, factor, offset_seconds, kind) = if event.course == to {
         (seconds, 1.0, 0.0, ConversionKind::Swum)
     } else if method == ConversionMethod::Colorado {
@@ -328,19 +329,23 @@ pub(crate) fn convert_seconds_with_method(
         }
         (converted, factor, offset, ConversionKind::Derived)
     } else if method == ConversionMethod::Empirical {
-        let source = factor(&event, distance, table);
-        let target_factor = factor(&target, distance, table);
-        let (Some(source), Some(target_factor)) = (source, target_factor) else {
+        let Some(equivalent) = empirical_equivalent(&event, distance, to, table, seconds) else {
             return Err(unavailable(CoverageReason::FactorNotPublished, provenance));
         };
-        let factor = source / target_factor;
-        let raw_offset = empirical_offset(&event, distance, to, table, seconds);
-        let offset = (raw_offset * 100.0).round() / 100.0;
-        let converted = truncate(seconds * factor + offset);
+        empirical_caveat = equivalent.caveat;
+        // Truncate the equivalent time once. The reported factor is the unrounded ratio for this
+        // entered time, which varies with ability.
+        let equivalent = equivalent.seconds;
+        let converted = truncate(equivalent);
         if !converted.is_finite() || converted <= 0.0 {
             return Err(invalid("swim.time", ValidationReason::UnsafeResult));
         }
-        (converted, factor, offset, ConversionKind::Derived)
+        (
+            converted,
+            equivalent / seconds,
+            0.0,
+            ConversionKind::Derived,
+        )
     } else {
         let source = factor(&event, distance, table);
         let target_factor = factor(&target, distance, table);
@@ -367,14 +372,17 @@ pub(crate) fn convert_seconds_with_method(
             factor,
             offset_seconds,
             altitude: None,
-            caveat: (method == ConversionMethod::Colorado
+            caveat: if method == ConversionMethod::Colorado
                 && event.stroke == Stroke::Freestyle
                 && distance >= 400
                 && matches!(
                     (event.course, to),
                     (Course::SCY, Course::SCM) | (Course::SCM, Course::SCY)
-                ))
-            .then_some(ConversionCaveat::ColoradoShortCourseDistance),
+                ) {
+                Some(ConversionCaveat::ColoradoShortCourseDistance)
+            } else {
+                empirical_caveat
+            },
             kind,
             event: target,
         },
@@ -382,34 +390,95 @@ pub(crate) fn convert_seconds_with_method(
     ))
 }
 
-/// Shrinkage-regularized Huber pace-curve offset in destination seconds.
-fn empirical_offset(
+/// Directional key, as listed in the snapshot's `lowEvidenceCells` and `preciseLatentRanges`.
+fn empirical_cell_key(event: &SwimEvent, distance: u32, to: Course, table: Category) -> String {
+    format!(
+        "{}->{}|{distance}-{}|{}",
+        course_key(event.course),
+        course_key(to),
+        stroke_key(event.stroke),
+        category_key(table)
+    )
+}
+
+/// A course's monotone map onto the shared latent scale: knots (latent, course log seconds).
+fn empirical_knots(event_key: &str, course: Course) -> Option<Vec<(f64, f64)>> {
+    EMPIRICAL["cells"].get(event_key)?[course_key(course)]["knots"]
+        .as_array()?
+        .iter()
+        .map(|knot| Some((knot.get(0)?.as_f64()?, knot.get(1)?.as_f64()?)))
+        .collect::<Option<Vec<_>>>()
+        .filter(|knots| knots.len() >= 2)
+}
+
+/// Piecewise-linear map through the knots, latent -> course log seconds (or back when
+/// `inverse`), continuing with slope 1 beyond the outer knots: outside the training support the
+/// time ratio at its edge is held constant.
+fn knot_map(knots: &[(f64, f64)], x: f64, inverse: bool) -> f64 {
+    let pick = |k: (f64, f64)| if inverse { (k.1, k.0) } else { k };
+    let (first, last) = (pick(knots[0]), pick(knots[knots.len() - 1]));
+    if x <= first.0 {
+        return first.1 + (x - first.0);
+    }
+    if x >= last.0 {
+        return last.1 + (x - last.0);
+    }
+    let mut i = 0;
+    while pick(knots[i + 1]).0 <= x {
+        i += 1;
+    }
+    let (lo, hi) = (pick(knots[i]), pick(knots[i + 1]));
+    lo.1 + (x - lo.0) * (hi.1 - lo.1) / (hi.0 - lo.0)
+}
+
+struct Equivalent {
+    seconds: f64,
+    caveat: Option<ConversionCaveat>,
+}
+
+/// Equivalent time in seconds before truncation: the entered time's latent ability through the
+/// source course's map, then out through the target course's. Every direction composes the same
+/// per-course maps, so converting back is the exact inverse and converting through a third course
+/// equals converting directly, before truncation. Outside either course's training support the
+/// conversion is out of range; inside it, it is low-evidence when the cell is thin or the entered
+/// time falls outside the latent range where its bootstrap interval is narrow.
+fn empirical_equivalent(
     event: &SwimEvent,
     distance: u32,
     to: Course,
     table: Category,
     seconds: f64,
-) -> f64 {
-    let dir_event = format!(
-        "{}->{}|{distance}-{}",
-        course_key(event.course),
-        course_key(to),
-        stroke_key(event.stroke)
+) -> Option<Equivalent> {
+    let event_key = format!(
+        "{distance}-{}|{}",
+        stroke_key(event.stroke),
+        category_key(table)
     );
-    let cell_key = format!("{dir_event}|{}", category_key(table));
-    if let Some(arr) = EMPIRICAL["cells"].get(&cell_key).and_then(Value::as_array) {
-        if let [Some(ref_s), Some(scale_s), Some(b0), Some(b1), Some(b2)] =
-            [arr.first(), arr.get(1), arr.get(2), arr.get(3), arr.get(4)]
-                .map(|v| v.and_then(Value::as_f64))
-        {
-            let z = ((seconds - ref_s) / scale_s.max(0.01)).clamp(-3.0, 3.0);
-            return b0 + b1 * z + b2 * z * z;
-        }
-    }
-    EMPIRICAL["fallbackOffsetSeconds"]
-        .get(&dir_event)
-        .and_then(Value::as_f64)
-        .unwrap_or(0.0)
+    let from = empirical_knots(&event_key, event.course)?;
+    let target = empirical_knots(&event_key, to)?;
+    let latent = knot_map(&from, seconds.ln(), true);
+    let equivalent = knot_map(&target, latent, false).exp();
+    let low = from[0].0.max(target[0].0);
+    let high = from[from.len() - 1].0.min(target[target.len() - 1].0);
+    let cell_key = empirical_cell_key(event, distance, to, table);
+    let thin = EMPIRICAL["lowEvidenceCells"]
+        .as_array()
+        .is_some_and(|cells| cells.iter().any(|cell| cell.as_str() == Some(&cell_key)));
+    let precise = EMPIRICAL["preciseLatentRanges"][&cell_key]
+        .as_array()
+        .and_then(|range| Some((range.first()?.as_f64()?, range.get(1)?.as_f64()?)))
+        .is_some_and(|(lo, hi)| lo <= latent && latent <= hi);
+    let caveat = if !(low <= latent && latent <= high) {
+        Some(ConversionCaveat::EmpiricalOutOfRange)
+    } else if thin || !precise {
+        Some(ConversionCaveat::EmpiricalLowEvidence)
+    } else {
+        None
+    };
+    Some(Equivalent {
+        seconds: equivalent,
+        caveat,
+    })
 }
 
 /// Direction-specific documented formulas; do not route distance events
@@ -701,8 +770,12 @@ pub(crate) fn altitude_adjustment(distance: u32, feet: f64) -> f64 {
         .unwrap_or(0.0)
 }
 
+/// The altitude-adjusted swim, computed in whole hundredths. Entered times have at most two
+/// decimals and every published adjustment is a whole number of hundredths, so this subtraction is
+/// exact: `round` only removes binary floating-point residue and never changes a hundredth, and the
+/// conversion's single truncation remains the only rounding.
 pub(crate) fn adjusted_seconds(seconds: f64, adjustment: f64) -> f64 {
-    (seconds * 100.0 - adjustment * 100.0).round() / 100.0
+    ((seconds * 100.0).round() - (adjustment * 100.0).round()) / 100.0
 }
 
 pub(crate) fn event_distances(stroke: Stroke) -> &'static [u32] {

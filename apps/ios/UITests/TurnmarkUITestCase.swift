@@ -208,6 +208,15 @@ class TurnmarkUITestCase: XCTestCase {
         item.tap()
     }
 
+    /// Taps the standards sheet's Done button. Some devices (iPhone Duo) hide a sheet's navigation
+    /// bar while its form is scrolled down, so scroll back toward the top until Done is available.
+    @MainActor func closeBenchmarks(in app: XCUIApplication) {
+        let done = app.buttons["closeBenchmarks"]
+        let form = app.collectionViews["benchmarkForm"]
+        for _ in 0..<8 where !(done.exists && done.isHittable) && form.exists { form.swipeDown() }
+        done.tap()
+    }
+
     @MainActor func capture(_ app: XCUIApplication, _ name: String) {
         guard ProcessInfo.processInfo.environment["TURNMARK_SCREENSHOTS"] == "1" else { return }
         let screenshot = XCTAttachment(screenshot: app.screenshot())

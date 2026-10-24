@@ -25,7 +25,16 @@ test("widget downloads only the focused converter Wasm", async ({
   );
   expect(bodies).toHaveLength(1);
   expect(bodies[0].equals(focused)).toBe(true);
-  expect(focused.length).toBeLessThan(full.length / 2);
+  // The widget omits the standards payload, which the engine embeds verbatim.
+  for (const name of ["standards", "masters", "national-standards", "points"]) {
+    const payload = await readFile(
+      new URL(`../data/${name}.json`, import.meta.url),
+    );
+    expect(full.includes(payload), `${name}.json in engine.wasm`).toBe(true);
+    expect(focused.includes(payload), `${name}.json in converter.wasm`).toBe(
+      false,
+    );
+  }
   await testInfo.attach("widget-wasm-budget.json", {
     body: JSON.stringify(
       {

@@ -26,6 +26,10 @@ SCHEMAS = {
     "source_formats": ("access_id", "format_id", "evidence_status", "notes"),
 }
 PRIMARY_KEYS = {table: fields[0] for table, fields in SCHEMAS.items() if table != "source_formats"}
+# A source that names a club's training pool asserts `listed_training_location`;
+# a source that only gives the club's listed (often mailing) address asserts
+# `listed_club_address`. Neither is verified operation or a race venue.
+RELATIONSHIPS = ("listed_training_location", "listed_club_address")
 
 
 def _url(value):
@@ -88,11 +92,14 @@ def validate_tables(tables):
             raise ValueError("Mailing address/coordinates must be withheld")
     source_keys = [(r["authority"], r["authority_id"]) for r in tables["facilities"]]
     if len(set(source_keys)) != len(source_keys): raise ValueError("Duplicate source facility key")
+    withheld = {r["facility_id"] for r in tables["facilities"] if r["location_status"] == "mailing_address_withheld"}
     for row in tables["program_facilities"]:
         if row["facility_id"] not in ids["facilities"] or not row["program_id"] or not row["authority_listing_id"]:
             raise ValueError("Unresolved program/facility relation")
-        if row["relationship"] != "listed_training_location" or row["status"] != "unknown":
+        if row["relationship"] not in RELATIONSHIPS or row["status"] != "unknown":
             raise ValueError("Directory listing is not verified operation or race location")
+        if row["relationship"] == "listed_training_location" and row["facility_id"] in withheld:
+            raise ValueError("A withheld mailing address cannot be a listed training location")
         if row["valid_to"] and row["valid_from"] and row["valid_to"] < row["valid_from"]:
             raise ValueError("Inverted listing validity")
     for row in tables["pool_basins"]:

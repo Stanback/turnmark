@@ -40,6 +40,28 @@ unsupported/invalid states, unchanged entered swims, iframe offline behavior,
 MCP stdio/HTTP parity and its sandbox, cancellation and accessibility boundaries.
 See [methodology](METHODOLOGY.md) for source editions and calculation rules.
 
+## Turnmark Equivalence evidence caveats
+
+Turnmark Equivalence (`turnmark-empirical-2026`) returns a model-based estimate
+of the equivalent time in the other course, not a forecast of a next swim. Two engine-owned caveats mark conversions the data supports
+weakly, and every converter shows their notes with the result:
+
+- `empirical-out-of-range`: the entered time falls outside the model's fitted
+  range (the swimmer-weighted 0.5th to 99.5th percentile of the training pairs).
+  Swims there are sparse, not absent. Beyond its own range each course's map
+  continues at its edge ratio; when only one course is beyond its range the
+  conversion ratio still varies. Either way the result is an extrapolation.
+- `empirical-low-evidence`: few swimmers in the training data swam that event in
+  both courses (fewer than 100 effective swimmers; 30 of 84 course-pair cells,
+  mostly short-course meters), or the entered time falls outside the range where
+  the conversion's bootstrap 95% interval is within 1%.
+
+On the current test set, 95.0% of conversions carry neither caveat, 3.6% are
+low-evidence and 1.4% are out of range. `lowEvidenceCells` and
+`preciseLatentRanges` in `data/empirical.json` are written by the same evaluation
+run that fits the maps and are covered by the snapshot hash. The caveats describe
+the evidence behind the estimate; they are not prediction intervals.
+
 ## Distance-event limitation of the documented Colorado rule
 
 For SCM↔SCY distance freestyle the pinned TeamUnify USA-team formula uses the
@@ -49,7 +71,7 @@ preserves that rule but marks the result with the engine-owned
 NCAA remains the default. Do not silently replace the documented result with a
 new formula under the same method ID.
 
-A regression example: **4:11.36 for 400 m SCM → 500 yd SCY** returns **4:47.30**
+An example: **4:11.36 for 400 m SCM → 500 yd SCY** returns **4:47.30**
 with NCAA (×1.143, truncated), versus the legacy Colorado **3:46.45**
 (÷1.11, truncated). The latter is a documented-rule limitation, not a useful
 comparison of matched event distances. Model evaluation must report this cohort

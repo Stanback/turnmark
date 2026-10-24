@@ -2,188 +2,224 @@
   "checkpoint": "national-checkpoint-06",
   "scope": "aggregate local acquisition receipt; no swimmer-level records",
   "purpose": "Local model training and evaluation; no hosted results service or production prediction",
-  "input_sha256": "14c87a971f0ac88de6ea5ab078182bd3417bccc89dcea51001f80afacda0a80d",
+  "input_sha256": "eb5325f86f284a8b3dcd37ca99f7320a5b061052ffc193bcb9cbed1d937d8e4e",
   "retrieved": "2026-10-22",
-  "races": 6320277,
-  "source_scoped_swimmers": 213105,
-  "meets": 4721,
-  "net_additional_races": 5044575,
+  "races": 8506767,
+  "source_scoped_swimmers": 292474,
+  "meets": 6071,
+  "net_additional_races": 7231065,
   "baseline_checkpoint": "national-checkpoint-05",
   "baseline_races": 1275702,
   "union_counts": {
-    "input_race_records": 6325452,
-    "conflicting_races_excluded": 5175,
-    "usable_distinct_races": 6320277
+    "input_race_records": 8520841,
+    "cross_archive_identical_duplicates": 10550,
+    "conflicting_races_excluded": 3524,
+    "usable_distinct_races": 8506767
   },
   "cohorts": {
     "course": {
-      "LCM": 1975192,
-      "SCM": 36498,
-      "SCY": 4308587
+      "LCM": 2706429,
+      "SCM": 66173,
+      "SCY": 5734165
     },
     "category": {
-      "men": 2836467,
-      "women": 3483810
+      "men": 3866903,
+      "women": 4639864
     },
     "age_band": {
-      "10u": 1460572,
-      "11-12": 1526601,
-      "13-14": 1500376,
-      "15-16": 1131091,
-      "17-18": 608545,
-      "19+": 82860,
-      "unknown": 10232
+      "10u": 1931354,
+      "11-12": 2029280,
+      "13-14": 2007355,
+      "15-16": 1556745,
+      "17-18": 845165,
+      "19+": 117426,
+      "unknown": 19442
     },
     "event": {
-      "100 backstroke": 544040,
-      "100 breaststroke": 483160,
-      "100 butterfly": 389474,
-      "100 freestyle": 753426,
-      "100 individual-medley": 219485,
-      "1000 freestyle": 23654,
-      "1500 freestyle": 14690,
-      "1650 freestyle": 19239,
-      "200 backstroke": 217997,
-      "200 breaststroke": 200302,
-      "200 butterfly": 117003,
-      "200 freestyle": 475504,
-      "200 individual-medley": 406489,
-      "25 backstroke": 51498,
-      "25 breaststroke": 30088,
-      "25 butterfly": 29504,
-      "25 freestyle": 58208,
-      "25 individual-medley": 31,
-      "400 freestyle": 87504,
-      "400 individual-medley": 111473,
-      "50 backstroke": 405186,
-      "50 breaststroke": 347508,
-      "50 butterfly": 320513,
-      "50 freestyle": 848144,
-      "500 freestyle": 144889,
-      "800 freestyle": 21268
+      "100 backstroke": 728417,
+      "100 breaststroke": 657697,
+      "100 butterfly": 533369,
+      "100 freestyle": 1015168,
+      "100 individual-medley": 284730,
+      "1000 freestyle": 32642,
+      "1500 freestyle": 21120,
+      "1650 freestyle": 27492,
+      "200 backstroke": 291987,
+      "200 breaststroke": 275756,
+      "200 butterfly": 160263,
+      "200 freestyle": 641929,
+      "200 individual-medley": 556147,
+      "25 backstroke": 67963,
+      "25 breaststroke": 39817,
+      "25 butterfly": 38764,
+      "25 freestyle": 76845,
+      "25 individual-medley": 70,
+      "400 freestyle": 120812,
+      "400 individual-medley": 154758,
+      "50 backstroke": 531542,
+      "50 breaststroke": 458402,
+      "50 butterfly": 420661,
+      "50 freestyle": 1140256,
+      "500 freestyle": 199241,
+      "800 freestyle": 30919
     },
     "year": {
-      "2010": 13994,
-      "2011": 45170,
-      "2012": 48850,
-      "2013": 141144,
-      "2014": 152921,
-      "2015": 170941,
-      "2016": 194941,
-      "2017": 203771,
-      "2018": 153013,
-      "2019": 188263,
-      "2020": 127582,
-      "2021": 406360,
-      "2022": 700649,
-      "2023": 868416,
-      "2024": 938364,
-      "2025": 1108366,
-      "2026": 857532
+      "2010": 15040,
+      "2011": 49134,
+      "2012": 53901,
+      "2013": 253606,
+      "2014": 279384,
+      "2015": 269119,
+      "2016": 303043,
+      "2017": 308492,
+      "2018": 277216,
+      "2019": 388191,
+      "2020": 325121,
+      "2021": 630998,
+      "2022": 886101,
+      "2023": 995045,
+      "2024": 1074786,
+      "2025": 1349097,
+      "2026": 1048493
     },
     "region": {
-      "Adirondack Swimming": 610386,
-      "Kentucky Swimming": 34979,
-      "Michigan Swimming": 862281,
-      "Midwestern Swimming": 93821,
-      "Montana Swimming": 28078,
-      "North Carolina Swimming": 1661892,
-      "Pacific Swimming": 1626633,
-      "Potomac Valley Swimming": 184444,
-      "South Dakota Swimming": 171993,
-      "South Texas Swimming": 1180,
-      "Southeastern Swimming": 1012591,
-      "Utah Swimming": 14331,
-      "YMCA National Championships": 17668
+      "Adirondack Swimming": 648545,
+      "Florida Gold Coast Swimming": 127773,
+      "Indiana Swimming": 33356,
+      "Kentucky Swimming": 35285,
+      "Michigan Swimming": 892772,
+      "Midwestern Swimming": 96294,
+      "Montana Swimming": 78275,
+      "Niagara Swimming": 126843,
+      "North Carolina Swimming": 1955332,
+      "Oregon Swimming": 186477,
+      "Pacific Swimming": 2590738,
+      "Potomac Valley Swimming": 210123,
+      "South Dakota Swimming": 349255,
+      "South Texas Swimming": 1202,
+      "Southeastern Swimming": 1056077,
+      "Southern California Swimming": 21045,
+      "Utah Swimming": 79656,
+      "YMCA National Championships": 17719
     },
     "meet_class": {
-      "Age Group": 893063,
-      "All-Star": 27917,
-      "All-Star \u2022 SCY": 774,
-      "Approved": 37611,
-      "Approved \u2022 SCY": 4584,
-      "Dual/Tri/Quad": 31255,
-      "Intrasquad": 31860,
-      "Invitational": 90127,
-      "League": 85274,
-      "Observed": 11119,
-      "Observed \u2022 SCY": 202,
-      "Senior": 298089,
-      "Time Trial": 551,
-      "USAS": 114207,
-      "unknown": 4693644
+      "Age Group": 1455234,
+      "All-Star": 34941,
+      "All-Star \u2022 SCY": 1028,
+      "Approved": 64204,
+      "Approved \u2022 SCY": 8684,
+      "Dual/Tri/Quad": 44166,
+      "Intrasquad": 38377,
+      "Invitational": 103779,
+      "League": 119847,
+      "Observed": 67437,
+      "Observed \u2022 SCY": 800,
+      "Senior": 473609,
+      "Time Trial": 645,
+      "USAS": 177987,
+      "unknown": 5916029
     }
   },
   "frozen_sources": [
     {
       "source": "adirondack-exports",
-      "sha256": "cabac3070ffa17c8c5294c2ddf16ef398ba35390159756bb39119e0fa7448b36",
+      "sha256": "25ad8532f766c0105ed2f05c5139c8a4842acd69be31edf8a1607c67a6dcaae2",
       "archives": 575,
-      "rows": 611990
+      "rows": 650217
+    },
+    {
+      "source": "florida-gold-coast-exports",
+      "sha256": "ba0e53afada4a6413621a8e380bbb4ae8a95fabe3e2e2d455426fe3ba0d18f91",
+      "archives": 100,
+      "rows": 127773
+    },
+    {
+      "source": "indiana-exports",
+      "sha256": "4b35e160c6011c648eecfc96e5b5770b1d5ad952a42f78ef6de09c5dcd8e0a6d",
+      "archives": 27,
+      "rows": 33356
     },
     {
       "source": "kentucky-exports",
-      "sha256": "2c7763a196388c0e7337b45f493fc86e90f064c49b3b50bd92ff959618b2ad9b",
+      "sha256": "fc87fc0195ca93c8638a329e9bde9000490531a2b613283e8e395b1dee9f0cb3",
       "archives": 21,
-      "rows": 34979
+      "rows": 35285
     },
     {
       "source": "michigan-exports",
-      "sha256": "cd0e989848f176f3e5f54b0af0a8f95a74561410b097e16a632bebc0cde89e89",
+      "sha256": "cbadcc8d6c36af9412e86f5165eb7839b5d1252723a0acbd1d56f30df381da20",
       "archives": 736,
-      "rows": 862281
+      "rows": 892772
     },
     {
       "source": "midwestern-exports",
-      "sha256": "ad649bf3739594b513b5f2951524d3c64500c30ea8c1b631ed830cdfba448515",
+      "sha256": "0e3f9c34c730cbfd345d1cada58bc24ba1159ffa04c1af474dfb23d42f8a421d",
       "archives": 137,
-      "rows": 93834
+      "rows": 96307
+    },
+    {
+      "source": "niagara-exports",
+      "sha256": "183e2cb51ea9c83dc73f7981a2e265b107030e43d7f1a470b501b16889aa3c0b",
+      "archives": 178,
+      "rows": 126843
     },
     {
       "source": "north-carolina-exports",
-      "sha256": "6d7c82d3e416c5b51c1230ed25c398bbc02c9ff372fe3f9aba764526bc47694e",
-      "archives": 1046,
-      "rows": 1661900
+      "sha256": "8a6bf057d51f9aa74ef61844eec7259977922d2fef4be5b61c7ca838e1a1e36f",
+      "archives": 1230,
+      "rows": 1955341
+    },
+    {
+      "source": "oregon-exports",
+      "sha256": "c80d9ae154be6cda5151a58f5aacc4f54a01a5e93f1ba6c3e087f1911772360a",
+      "archives": 185,
+      "rows": 186477
     },
     {
       "source": "pacific-exports",
-      "sha256": "66edac46fb10d17353db88ba5778af93474d0efa5b7f4d4c736cdc151cd74e53",
-      "archives": 1489,
-      "rows": 1626782
+      "sha256": "8f89e70010f5f4d8a01fb78ec879bb0cdd786d023b9ea70375a4c7dcf8e12ba2",
+      "archives": 1589,
+      "rows": 2597334
     },
     {
       "source": "pvs-exports",
-      "sha256": "4ea68b478b3085d79eba6f300849db7645b35627113792b797c6ba108dce07eb",
-      "archives": 329,
-      "rows": 184449
+      "sha256": "e7870f2513357b4695bcd7ca2dcc3514d86051bfa56d7e68db5aae4727f9e439",
+      "archives": 513,
+      "rows": 210128
+    },
+    {
+      "source": "socal-exports",
+      "sha256": "7640aea18d90fb12b60399fc1e04c721939fb7f97b746e76c33757262db8975d",
+      "archives": 15,
+      "rows": 21073
     },
     {
       "source": "south-dakota-exports",
-      "sha256": "702509de626c1fba146ecc8b240ba6f960280101aa2b50d0472b36750b8bfafa",
-      "archives": 144,
-      "rows": 171993
+      "sha256": "0c5badbefbfbe917e233109b1e8256e9147318503a1e991ab16799516240c0f7",
+      "archives": 285,
+      "rows": 349255
     },
     {
       "source": "south-texas-exports",
-      "sha256": "5d7125321f3ea7b5e0bc0b57159eb665dcf5a71b7b5f8e7a96f5390c07c9eaf8",
+      "sha256": "d4105dd345f9ea03bf4038be8c58685b5bed17322dadc8d799ad1a38f29f7c79",
       "archives": 3,
-      "rows": 1180
+      "rows": 1202
     },
     {
       "source": "southeastern-exports",
-      "sha256": "169d6770b65111e64f9476480507b067b1a0ade5cb29971cbb270fd093c00f27",
-      "archives": 734,
-      "rows": 1055120
+      "sha256": "b7c1ae83aa544637e2007f19b58ed103519a582cd691274c5b3d9d0d700f2675",
+      "archives": 919,
+      "rows": 1216483
     },
     {
       "source": "ymca-nationals-exports",
-      "sha256": "7843f717fb1b33dfe4697ba1e744a136831df9c050ad17da2a34639f44272972",
+      "sha256": "e3354771541b0a2c304512c7a289769e5975abeb44fd0db82f658243363f1f28",
       "archives": 8,
-      "rows": 20944
+      "rows": 20995
     }
   ],
-  "new_archive_files_processed": 4376,
-  "collection": "Saturated bounded batches across Pacific (2010-2026, including Northern Nevada/Tahoe altitude & SCM), North Carolina, Southeastern, Michigan, Adirondack, Potomac Valley, South Dakota (including Black Hills altitude), Midwestern, Kentucky, Utah, Montana, South Texas LSC, and YMCA National Championship SDIF archives; shared source identities, existing cache/budgets and per-origin pacing retained. Raw and normalized race rows remain strictly in gitignored local storage.",
+  "new_archive_files_processed": 6521,
+  "collection": "Saturated bounded batches across Pacific (2013-2026, including Northern Nevada/Tahoe altitude, SCM & Speedo/US Open nationals), North Carolina, Southeastern, Michigan, Adirondack, South Dakota (including Black Hills altitude & SCM), Potomac Valley, Oregon (including SCM & high-altitude Lakeview/Prineville), Florida Gold Coast (including SCM & South Florida invitationals), Niagara (NY), Midwestern, Utah, Montana, Kentucky, Indiana (including Speedo Sectionals & Indiana Colleges), Southern California (including CIF High School Championships), YMCA National Championships, and South Texas LSC SDIF archives; shared source identities, existing cache/budgets and per-origin pacing retained. Raw and normalized race rows remain strictly in gitignored local storage.",
   "limitations": [
     "Actual valid individual round finishes only; seeds, relays, splits and invalid/DQ/no-time slots excluded.",
     "Exact source-ID deduplication only; source-scoped swimmers are not a verified national person count.",
@@ -195,5 +231,63 @@
   ],
   "nationally_representative": false,
   "validated_for_product": true,
-  "pilot_refit": true
+  "pilot_refit": true,
+  "lakehouse_storage": {
+    "checkpoint_dir": "target/lakehouse-national-17",
+    "iceberg_snapshot_id": 4441271835344284414,
+    "hot_sqlite_bytes": 6915502080,
+    "parquet_bytes": 366796050,
+    "point_lookup_first_ms": 0.168,
+    "point_lookup_repeat_median_ms": 0.012,
+    "duckdb_scan_first_ms": 3.59,
+    "duckdb_scan_repeat_median_ms": 2.12
+  },
+  "meet_venue_resolution": {
+    "total_unique_meets_parsed": 6059,
+    "match_Postal5": 4889,
+    "match_CityState": 617,
+    "unmatched": 622,
+    "meets_with_matched_facility": 5506,
+    "meets_with_coordinates": 5438,
+    "meets_with_positive_b1_altitude_ft": 656,
+    "by_state": {
+      "AL": 222,
+      "AZ": 2,
+      "CA": 1179,
+      "CT": 1,
+      "DC": 6,
+      "FL": 179,
+      "IA": 20,
+      "ID": 5,
+      "IL": 2,
+      "IN": 20,
+      "KY": 21,
+      "MA": 2,
+      "MD": 92,
+      "ME": 2,
+      "MI": 702,
+      "MN": 8,
+      "MO": 4,
+      "MS": 2,
+      "MT": 43,
+      "NC": 1223,
+      "ND": 2,
+      "NE": 107,
+      "NV": 100,
+      "NY": 727,
+      "OH": 2,
+      "OR": 180,
+      "SC": 6,
+      "SD": 258,
+      "TN": 375,
+      "TX": 15,
+      "UT": 147,
+      "VA": 109,
+      "WA": 11,
+      "WI": 5,
+      "WV": 1,
+      "WY": 7,
+      "unknown": 272
+    }
+  }
 }

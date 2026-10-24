@@ -117,6 +117,17 @@ class ConverterTest {
         capture("android-distance-caveat")
     }
 
+    @Test fun lowEvidenceCaveatShowsWithThinCell() {
+        // Women's 200 fly, yards to short-course meters (SCY->SCM|200-FL|women), is a low-evidence cell.
+        val preferences = ApplicationProvider.getApplicationContext<Context>().getSharedPreferences("turnmark", Context.MODE_PRIVATE)
+        preferences.edit().putString("draft", Draft.example.copy(time = "2:20.00", strokeIndex = 3, distance = 200u, courseIndex = 0, targetIndex = 1, methodId = "turnmark-empirical-2026").encode()).commit()
+        compose.activityRule.scenario.recreate()
+        compose.onNodeWithTag("resultTime").performScrollTo().assertTextEquals("2:36.49")
+        compose.onNodeWithTag("lowEvidenceCaveat").performScrollTo().assertTextContains("Limited data", substring = true)
+        compose.onNodeWithTag("distanceCaveat").assertDoesNotExist()
+        capture("android-low-evidence-caveat")
+    }
+
     @Test fun conversionMethodPersistsAndKeepsNcaaDefault() {
         example()
         compose.onNodeWithTag("resultTime").assertTextEquals("1:06.72")
@@ -312,7 +323,7 @@ class ConverterTest {
         compose.onNodeWithText("How comparisons work").assertExists()
         compose.onNodeWithText("Done").performScrollTo().assertIsDisplayed().performClick()
         compose.onNodeWithTag("nav-My times").performClick()
-        compose.onNodeWithText("No logged swims").assertExists()
+        assertTextAppears("No logged swims")
         compose.onNodeWithTag("nav-Convert").performClick()
         compose.onNodeWithTag("timeInput").assertTextContains("1:00")
         compose.activityRule.scenario.recreate()
@@ -343,7 +354,7 @@ class ConverterTest {
         assertTrue(automation.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK))
         compose.waitUntil(5_000) { automation.rootInActiveWindow?.packageName?.toString() == "net.stanback.turnmark" }
         compose.onNodeWithTag("nav-My times").performClick()
-        compose.onNodeWithText("No logged swims").assertExists()
+        assertTextAppears("No logged swims")
     }
 
     @Test fun earlierBookmarkRemainsSeparateFromActualTimes() {
@@ -352,7 +363,7 @@ class ConverterTest {
             .edit().putString("saved", Draft(time = "57.25").encode()).commit()
         compose.activityRule.scenario.recreate()
         compose.onNodeWithTag("nav-My times").performClick()
-        compose.onNodeWithText("No logged swims").assertExists()
+        assertTextAppears("No logged swims")
         compose.onNodeWithText("Open previous comparison").performScrollTo().performClick()
         compose.onNodeWithText("Use these inputs").performScrollTo().performClick()
         compose.onNodeWithTag("timeInput").assertTextContains("57.25")
@@ -361,7 +372,7 @@ class ConverterTest {
         compose.onNodeWithText("Remove previous comparison").performScrollTo().performClick()
         compose.activityRule.scenario.recreate()
         compose.onNodeWithText("Open previous comparison").assertDoesNotExist()
-        compose.onNodeWithText("No logged swims").assertExists()
+        assertTextAppears("No logged swims")
     }
 
     @SmokeTest
@@ -372,13 +383,13 @@ class ConverterTest {
         compose.onNodeWithTag("confirmLog").assertIsNotEnabled()
         compose.onNodeWithTag("logTime").performTextReplacement("57.99")
         compose.onNodeWithTag("confirmLog").performClick()
-        compose.onNodeWithText("57.99 · PB").assertExists()
+        assertTextAppears("57.99 · PB")
         compose.onNodeWithTag("recordTime").performClick()
         compose.onNodeWithTag("logTime").performTextReplacement("1:00")
         compose.onNodeWithTag("confirmLog").performClick()
-        compose.onNodeWithText("1:00").assertExists()
+        assertTextAppears("1:00")
         compose.onNodeWithTag("times-Best").performClick()
-        compose.onNodeWithText("57.99 · PB").assertExists()
+        assertTextAppears("57.99 · PB")
         compose.onNodeWithText("1:00").assertDoesNotExist()
         capture("android-my-times")
     }
@@ -425,28 +436,28 @@ class ConverterTest {
         compose.onNodeWithTag("confirmLog").performClick()
         compose.waitUntil(5_000) { compose.onAllNodesWithTag("nav-My times").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithTag("nav-My times").performClick()
-        compose.onNodeWithText("Autumn Invitational · 2026-10-17").assertExists()
+        assertTextAppears("Autumn Invitational · 2026-10-17")
         compose.onNodeWithText("58.32 · PB").performClick()
-        compose.onNodeWithText("Manually logged performance").assertExists()
+        assertTextAppears("Manually logged performance")
         capture("android-history-detail")
         compose.onNodeWithText("Edit swim").performScrollTo().performClick()
         compose.onNodeWithTag("logTime").performTextReplacement("57.99")
         compose.onNodeWithTag("logDate").performScrollTo().performTextReplacement("")
         compose.onNodeWithTag("confirmLog").performClick()
-        compose.onNodeWithText("57.99").assertExists()
-        compose.onNodeWithText("Unknown date").assertExists()
+        assertTextAppears("57.99")
+        assertTextAppears("Unknown date")
         compose.onNodeWithText("Compare this swim").performScrollTo().performClick()
         compose.onNodeWithTag("timeInput").assertTextContains("57.99")
         compose.onNodeWithTag("unavailableConversion").assertExists()
         compose.activityRule.scenario.recreate()
         compose.onNodeWithTag("nav-My times").performClick()
-        compose.onNodeWithText("57.99 · PB").assertExists()
+        assertTextAppears("57.99 · PB")
         capture("android-history")
         compose.onNodeWithText("57.99 · PB").performClick()
         compose.onNodeWithText("Delete swim").performScrollTo().performClick()
-        compose.onNodeWithText("Delete this logged swim?").assertExists()
+        assertTextAppears("Delete this logged swim?")
         compose.onAllNodesWithText("Delete swim").onLast().performClick()
-        compose.onNodeWithText("No logged swims").assertExists()
+        assertTextAppears("No logged swims")
     }
 
     @Test fun documentImportPreviewAndExportPreserveThePortableRecords() {
@@ -470,14 +481,14 @@ class ConverterTest {
         instrumentation.addMonitor(monitor)
         try {
             compose.onNodeWithTag("nav-My times").performClick()
-            compose.onNodeWithText("No logged swims").assertExists()
+            assertTextAppears("No logged swims")
             compose.onNodeWithText("Import").performClick()
-            compose.onNodeWithText("5 new swims · 0 duplicates · 0 rejected").assertExists()
+            assertTextAppears("5 new swims · 0 duplicates · 0 rejected")
             capture("android-import-review")
             compose.onNodeWithText("Cancel").performClick()
-            compose.onNodeWithText("No logged swims").assertExists()
+            assertTextAppears("No logged swims")
             compose.onNodeWithText("Import").performClick()
-            compose.onNodeWithText("5 new swims · 0 duplicates · 0 rejected").assertExists()
+            assertTextAppears("5 new swims · 0 duplicates · 0 rejected")
             compose.onNodeWithTag("confirmImport").performClick()
             compose.waitUntil(5_000) { compose.onAllNodesWithTag("confirmImport").fetchSemanticsNodes().isEmpty() }
             compose.onNodeWithText("Export").performClick()
@@ -486,13 +497,20 @@ class ConverterTest {
             val original = HistoryArchive.preview(input.readBytes(), emptyList()).records
             assertEquals(original.toSet(), exported.toSet())
             compose.onNodeWithText("Import").performClick()
-            compose.onNodeWithText("0 new swims · 5 duplicates · 0 rejected").assertExists()
+            assertTextAppears("0 new swims · 5 duplicates · 0 rejected")
             compose.onNodeWithTag("confirmImport").assertIsNotEnabled()
             compose.onNodeWithText("Cancel").performClick()
         } finally {
             instrumentation.removeMonitor(monitor)
             input.delete(); output.delete()
         }
+    }
+
+    // History loads and saves asynchronously; wait for the result to reach the screen before
+    // asserting it, as the navigation checks above do.
+    private fun assertTextAppears(text: String, substring: Boolean = false) {
+        compose.waitUntil(5_000) { compose.onAllNodesWithText(text, substring = substring).fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithText(text, substring = substring).assertExists()
     }
 
     private fun assertSharedTime(chooser: Intent?, time: String) {

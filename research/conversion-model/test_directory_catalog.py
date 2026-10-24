@@ -68,9 +68,23 @@ class CatalogTests(unittest.TestCase):
         tables = invented_catalog(); tables["facilities"].append(copy.deepcopy(tables["facilities"][0]))
         with self.assertRaises(ValueError): validate_tables(tables)
 
+    def test_club_address_edges_are_distinct_from_training_locations(self):
+        tables = invented_catalog()
+        tables["program_facilities"][0]["relationship"] = "listed_club_address"
+        validate_tables(tables)
+        tables["program_facilities"][0]["relationship"] = "listed_office"
+        with self.assertRaises(ValueError): validate_tables(tables)
+        # A withheld mailing address can be a club's listed address, never a training pool.
+        tables = invented_catalog()
+        tables["facilities"][0].update(location_status="mailing_address_withheld", address1="", latitude="", longitude="")
+        with self.assertRaisesRegex(ValueError, "withheld mailing address"): validate_tables(tables)
+        tables["program_facilities"][0]["relationship"] = "listed_club_address"
+        validate_tables(tables)
+
     def test_unknown_address_and_true_zero_elevation_are_distinct(self):
         tables = invented_catalog()
         tables["facilities"][0].update(location_status="mailing_address_withheld", address1="", latitude="", longitude="")
+        tables["program_facilities"][0]["relationship"] = "listed_club_address"
         tables["pool_basins"][0].update(elevation_m="0", elevation_basis="surveyed", elevation_uncertainty_m="0.1")
         validate_tables(tables)
 

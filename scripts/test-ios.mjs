@@ -103,7 +103,11 @@ try {
       "Multiple iPhone simulators are available; set --device UUID or TURNMARK_IOS_DEVICE so tests do not interrupt another workspace",
     );
   }
-  const device = udid ? devices.find((d) => d.udid === udid) : devices[0];
+  // Without an explicit device, prefer a standard "iPhone N" over special form
+  // factors (such as iPhone Duo's side system rail) that newer runtimes may list first.
+  const device = udid
+    ? devices.find((d) => d.udid === udid)
+    : (devices.find((d) => /^iPhone \d+$/.test(d.name)) ?? devices[0]);
   if (!device)
     throw new Error(
       "Choose an available iPhone simulator with --device UUID / TURNMARK_IOS_DEVICE and the matching TURNMARK_IOS_RUNTIME",

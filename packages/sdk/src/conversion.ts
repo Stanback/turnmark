@@ -34,13 +34,28 @@ export interface ConversionValue {
   time: string;
   seconds: number;
   hundredths: number;
+  /**
+   * Multiplier applied to the entered seconds. For `turnmark-empirical-2026`
+   * (Turnmark Equivalence) it is equivalent seconds / entered seconds, so it
+   * varies with the entered time.
+   */
   factor: number;
-  /** Add after multiplication, before final truncation. Omitted when zero. */
+  /** Add after multiplication, before final truncation. Omitted when zero; Turnmark Equivalence never sets it. */
   offsetSeconds?: number;
   kind: "swum" | "published" | "derived";
   event: SwimEvent;
   altitude?: { value: AltitudeValue; provenance: Provenance };
-  caveat?: "colorado-short-course-distance";
+  /**
+   * Engine-owned limitation to show with the result. `empirical-out-of-range`
+   * marks a Turnmark Equivalence time outside the model's fitted range for this
+   * event and course pair, which extrapolates beyond the available fit.
+   * `empirical-low-evidence` marks one from a cell with fewer than 100 effective
+   * swimmers or where the conversion's bootstrap interval is wider than 1%.
+   */
+  caveat?:
+    | "colorado-short-course-distance"
+    | "empirical-low-evidence"
+    | "empirical-out-of-range";
 }
 export function convertSwim(
   request: ConversionRequest,

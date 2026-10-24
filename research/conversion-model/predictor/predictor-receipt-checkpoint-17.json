@@ -1,0 +1,1679 @@
+{
+  "checkpoint": "national-checkpoint-17",
+  "evaluated_at": "2026-10-24T03:40:56Z",
+  "script_sha256": "1b02b2edaeb67b51ac34d5166e6503f4ec91674cb474fbdbdb4c35d4517c455b",
+  "loaded_swims_sha256": "dad61c4d47ea265847c6735a73f150e907d02d73bbd0d321cd5ce4a4503b9edc",
+  "privacy": "Aggregates only. Groups with < 50 rows or < 20 swimmers are suppressed; worked examples use synthetic inputs.",
+  "design": {
+    "task": "predict the target-course time of a later swim of the same event from an earlier source swim",
+    "pairing": "each target swim is paired, per other course, with the swimmer's most recent earlier swim of the same event, gap 1-365 days",
+    "features_dated_on_or_before_source_swim": true,
+    "history_window_days": 365,
+    "cutoff_target_date": "2026-01-01",
+    "calibration_targets": "validation-partition swimmers, targets 2025-01-01 to cutoff",
+    "test_targets": "test-partition swimmers, targets on or after cutoff",
+    "interval_level": 0.8,
+    "ridge_selected": 100.0,
+    "ridge_validation_mae_s": {
+      "1.0": 3.4068,
+      "10.0": 3.4057,
+      "100.0": 3.4046,
+      "1000.0": 3.4054
+    }
+  },
+  "hygiene": {
+    "round_collapsed_candidate_swims": 5902346,
+    "excluded_non_ncaa_event": 316,
+    "excluded_implausible_time": 492,
+    "best_of_meet_swims": 5901538
+  },
+  "examples": {
+    "total": 2773083,
+    "train_disjoint": {
+      "rows": 1660020,
+      "swimmers": 61176,
+      "with_target_course_history_pct": 65.59,
+      "age_known_pct": 100.0,
+      "by_direction": {
+        "SCY->LCM": 726230,
+        "LCM->SCY": 871184,
+        "SCM->LCM": 14467,
+        "LCM->SCM": 6621,
+        "SCY->SCM": 12154,
+        "SCM->SCY": 29364
+      },
+      "by_gap": {
+        "1-30d": 95271,
+        "31-90d": 323544,
+        "91-180d": 738886,
+        "181-365d": 502319
+      }
+    },
+    "calibration": {
+      "rows": 72136,
+      "swimmers": 4495,
+      "with_target_course_history_pct": 74.01,
+      "age_known_pct": 100.0,
+      "by_direction": {
+        "SCY->LCM": 29842,
+        "LCM->SCY": 39285,
+        "SCM->LCM": 781,
+        "LCM->SCM": 346,
+        "SCY->SCM": 609,
+        "SCM->SCY": 1273
+      },
+      "by_gap": {
+        "1-30d": 3454,
+        "31-90d": 12923,
+        "91-180d": 32194,
+        "181-365d": 23565
+      }
+    },
+    "test": {
+      "rows": 59404,
+      "swimmers": 4422,
+      "with_target_course_history_pct": 74.89,
+      "age_known_pct": 100.0,
+      "by_direction": {
+        "SCY->LCM": 29665,
+        "LCM->SCY": 26966,
+        "SCM->LCM": 791,
+        "LCM->SCM": 304,
+        "SCY->SCM": 484,
+        "SCM->SCY": 1194
+      },
+      "by_gap": {
+        "1-30d": 2737,
+        "31-90d": 13100,
+        "91-180d": 20643,
+        "181-365d": 22924
+      }
+    },
+    "train_non_disjoint_rows": 2373995,
+    "elite_support_scy_1650_men_under_15_30_train_rows": 129
+  },
+  "swimmer_disjoint_test": {
+    "overall": {
+      "ncaa": {
+        "rows": 59404,
+        "swimmers": 4422,
+        "mae_s": 4.9661,
+        "median_ae_s": 2.81,
+        "p90_ae_s": 11.57,
+        "signed_bias_s": 2.4978,
+        "mape_pct": 4.5089
+      },
+      "flat": {
+        "rows": 59404,
+        "swimmers": 4422,
+        "mae_s": 4.4944,
+        "median_ae_s": 2.5613,
+        "p90_ae_s": 10.383,
+        "signed_bias_s": 1.2078,
+        "mape_pct": 4.0605
+      },
+      "pooled": {
+        "rows": 59404,
+        "swimmers": 4422,
+        "mae_s": 3.4626,
+        "median_ae_s": 2.0008,
+        "p90_ae_s": 7.9155,
+        "signed_bias_s": -0.1174,
+        "mape_pct": 3.0808
+      },
+      "history": {
+        "rows": 59404,
+        "swimmers": 4422,
+        "mae_s": 3.3209,
+        "median_ae_s": 1.9053,
+        "p90_ae_s": 7.6356,
+        "signed_bias_s": -0.0654,
+        "mape_pct": 2.9541
+      },
+      "gbm": {
+        "rows": 59404,
+        "swimmers": 4422,
+        "mae_s": 3.2657,
+        "median_ae_s": 1.8834,
+        "p90_ae_s": 7.5029,
+        "signed_bias_s": -0.0385,
+        "mape_pct": 2.9016
+      }
+    },
+    "bootstrap": {
+      "reps": 500,
+      "clusters": 4422,
+      "mae_ci95_s": {
+        "ncaa": [
+          4.8779,
+          5.0771
+        ],
+        "flat": [
+          4.4133,
+          4.5906
+        ],
+        "pooled": [
+          3.3855,
+          3.5339
+        ],
+        "history": [
+          3.2502,
+          3.3955
+        ],
+        "gbm": [
+          3.1945,
+          3.3365
+        ]
+      },
+      "median_ae_ci95_s": {
+        "ncaa": [
+          2.76,
+          2.88
+        ],
+        "flat": [
+          2.5111,
+          2.6171
+        ],
+        "pooled": [
+          1.9648,
+          2.0407
+        ],
+        "history": [
+          1.8676,
+          1.9443
+        ],
+        "gbm": [
+          1.8447,
+          1.9231
+        ]
+      },
+      "mae_difference_ci95_s": {
+        "pooled - ncaa": {
+          "point": -1.5035,
+          "ci95": [
+            -1.5833,
+            -1.4323
+          ]
+        },
+        "pooled - flat": {
+          "point": -1.0318,
+          "ci95": [
+            -1.0931,
+            -0.9783
+          ]
+        },
+        "history - ncaa": {
+          "point": -1.6452,
+          "ci95": [
+            -1.7211,
+            -1.5808
+          ]
+        },
+        "history - flat": {
+          "point": -1.1735,
+          "ci95": [
+            -1.2333,
+            -1.1228
+          ]
+        },
+        "history - pooled": {
+          "point": -0.1417,
+          "ci95": [
+            -0.1621,
+            -0.1205
+          ]
+        },
+        "gbm - history": {
+          "point": -0.0552,
+          "ci95": [
+            -0.0655,
+            -0.0448
+          ]
+        },
+        "flat - ncaa": {
+          "point": -0.4717,
+          "ci95": [
+            -0.5021,
+            -0.4425
+          ]
+        }
+      }
+    },
+    "by_gap": {
+      "1-30d": {
+        "rows": 2737,
+        "ncaa_mae_s": 3.2969,
+        "flat_mae_s": 3.3629,
+        "pooled_mae_s": 3.0431,
+        "history_mae_s": 2.7948,
+        "gbm_mae_s": 2.7197,
+        "history_median_ae_s": 1.6225,
+        "history_bias_s": -0.0572
+      },
+      "181-365d": {
+        "rows": 22924,
+        "ncaa_mae_s": 6.1038,
+        "flat_mae_s": 5.2458,
+        "pooled_mae_s": 3.6826,
+        "history_mae_s": 3.5527,
+        "gbm_mae_s": 3.478,
+        "history_median_ae_s": 1.9808,
+        "history_bias_s": 0.2217
+      },
+      "31-90d": {
+        "rows": 13100,
+        "ncaa_mae_s": 3.8976,
+        "flat_mae_s": 3.8735,
+        "pooled_mae_s": 3.1363,
+        "history_mae_s": 2.9569,
+        "gbm_mae_s": 2.901,
+        "history_median_ae_s": 1.7691,
+        "history_bias_s": -0.2713
+      },
+      "91-180d": {
+        "rows": 20643,
+        "ncaa_mae_s": 4.6021,
+        "flat_mae_s": 4.2041,
+        "pooled_mae_s": 3.4811,
+        "history_mae_s": 3.3643,
+        "gbm_mae_s": 3.3338,
+        "history_median_ae_s": 1.9653,
+        "history_bias_s": -0.2548
+      }
+    },
+    "by_age_band": {
+      "10u": {
+        "rows": 12295,
+        "ncaa_mae_s": 6.7225,
+        "flat_mae_s": 5.8145,
+        "pooled_mae_s": 3.9255,
+        "history_mae_s": 3.8375,
+        "gbm_mae_s": 3.7797,
+        "history_median_ae_s": 2.4033,
+        "history_bias_s": 0.0021
+      },
+      "11-12": {
+        "rows": 14678,
+        "ncaa_mae_s": 5.0582,
+        "flat_mae_s": 4.395,
+        "pooled_mae_s": 3.3221,
+        "history_mae_s": 3.2489,
+        "gbm_mae_s": 3.2039,
+        "history_median_ae_s": 1.9247,
+        "history_bias_s": 0.1374
+      },
+      "13-14": {
+        "rows": 16751,
+        "ncaa_mae_s": 4.6216,
+        "flat_mae_s": 4.2173,
+        "pooled_mae_s": 3.4619,
+        "history_mae_s": 3.3226,
+        "gbm_mae_s": 3.2793,
+        "history_median_ae_s": 1.8686,
+        "history_bias_s": -0.0222
+      },
+      "15-16": {
+        "rows": 11638,
+        "ncaa_mae_s": 4.0269,
+        "flat_mae_s": 3.9357,
+        "pooled_mae_s": 3.3544,
+        "history_mae_s": 3.1017,
+        "gbm_mae_s": 3.0322,
+        "history_median_ae_s": 1.6431,
+        "history_bias_s": -0.3202
+      },
+      "17-18": {
+        "rows": 3880,
+        "ncaa_mae_s": 3.4014,
+        "flat_mae_s": 3.5808,
+        "pooled_mae_s": 2.8462,
+        "history_mae_s": 2.5905,
+        "gbm_mae_s": 2.5005,
+        "history_median_ae_s": 1.4406,
+        "history_bias_s": -0.4986
+      },
+      "19+": {
+        "rows": 162,
+        "ncaa_mae_s": 3.8955,
+        "flat_mae_s": 3.9971,
+        "pooled_mae_s": 3.6863,
+        "history_mae_s": 3.7125,
+        "gbm_mae_s": 3.5416,
+        "history_median_ae_s": 1.7669,
+        "history_bias_s": 0.6296
+      }
+    },
+    "by_direction": {
+      "LCM->SCM": {
+        "rows": 304,
+        "ncaa_mae_s": 4.6745,
+        "flat_mae_s": 4.5107,
+        "pooled_mae_s": 3.7687,
+        "history_mae_s": 3.7184,
+        "gbm_mae_s": 3.7212,
+        "history_median_ae_s": 2.2296,
+        "history_bias_s": -0.4441
+      },
+      "LCM->SCY": {
+        "rows": 26966,
+        "ncaa_mae_s": 4.6423,
+        "flat_mae_s": 4.2039,
+        "pooled_mae_s": 3.2388,
+        "history_mae_s": 3.0984,
+        "gbm_mae_s": 3.0249,
+        "history_median_ae_s": 1.7445,
+        "history_bias_s": 0.0782
+      },
+      "SCM->LCM": {
+        "rows": 791,
+        "ncaa_mae_s": 6.6682,
+        "flat_mae_s": 5.0025,
+        "pooled_mae_s": 3.7488,
+        "history_mae_s": 3.7635,
+        "gbm_mae_s": 3.6996,
+        "history_median_ae_s": 2.0881,
+        "history_bias_s": 0.4221
+      },
+      "SCM->SCY": {
+        "rows": 1194,
+        "ncaa_mae_s": 6.2439,
+        "flat_mae_s": 4.3459,
+        "pooled_mae_s": 3.4131,
+        "history_mae_s": 3.3482,
+        "gbm_mae_s": 3.2964,
+        "history_median_ae_s": 1.9805,
+        "history_bias_s": 0.4569
+      },
+      "SCY->LCM": {
+        "rows": 29665,
+        "ncaa_mae_s": 5.1766,
+        "flat_mae_s": 4.7542,
+        "pooled_mae_s": 3.6582,
+        "history_mae_s": 3.5064,
+        "gbm_mae_s": 3.467,
+        "history_median_ae_s": 2.0472,
+        "history_bias_s": -0.2271
+      },
+      "SCY->SCM": {
+        "rows": 484,
+        "ncaa_mae_s": 4.355,
+        "flat_mae_s": 4.2873,
+        "pooled_mae_s": 3.4138,
+        "history_mae_s": 3.3102,
+        "gbm_mae_s": 3.2719,
+        "history_median_ae_s": 2.0954,
+        "history_bias_s": -0.0053
+      }
+    },
+    "by_event": {
+      "100-BK": {
+        "rows": 6846,
+        "ncaa_mae_s": 4.197,
+        "flat_mae_s": 3.6408,
+        "pooled_mae_s": 2.7296,
+        "history_mae_s": 2.6307,
+        "gbm_mae_s": 2.5915,
+        "history_median_ae_s": 1.8413,
+        "history_bias_s": 0.0066
+      },
+      "100-BR": {
+        "rows": 6189,
+        "ncaa_mae_s": 4.3974,
+        "flat_mae_s": 3.9256,
+        "pooled_mae_s": 3.0324,
+        "history_mae_s": 2.9186,
+        "gbm_mae_s": 2.8738,
+        "history_median_ae_s": 2.1108,
+        "history_bias_s": 0.0074
+      },
+      "100-FL": {
+        "rows": 4712,
+        "ncaa_mae_s": 3.8274,
+        "flat_mae_s": 3.5327,
+        "pooled_mae_s": 2.7083,
+        "history_mae_s": 2.5849,
+        "gbm_mae_s": 2.5376,
+        "history_median_ae_s": 1.7764,
+        "history_bias_s": 0.0045
+      },
+      "100-FR": {
+        "rows": 10068,
+        "ncaa_mae_s": 3.7455,
+        "flat_mae_s": 3.3485,
+        "pooled_mae_s": 2.4561,
+        "history_mae_s": 2.385,
+        "gbm_mae_s": 2.3394,
+        "history_median_ae_s": 1.5686,
+        "history_bias_s": -0.0113
+      },
+      "1500-FR": {
+        "rows": 324,
+        "ncaa_mae_s": 31.2416,
+        "flat_mae_s": 29.4254,
+        "pooled_mae_s": 25.1486,
+        "history_mae_s": 23.341,
+        "gbm_mae_s": 22.8519,
+        "history_median_ae_s": 17.7165,
+        "history_bias_s": -5.4331
+      },
+      "200-BK": {
+        "rows": 2127,
+        "ncaa_mae_s": 5.3933,
+        "flat_mae_s": 5.24,
+        "pooled_mae_s": 4.2205,
+        "history_mae_s": 3.9365,
+        "gbm_mae_s": 3.8589,
+        "history_median_ae_s": 3.0966,
+        "history_bias_s": -0.1254
+      },
+      "200-BR": {
+        "rows": 2049,
+        "ncaa_mae_s": 6.853,
+        "flat_mae_s": 6.1452,
+        "pooled_mae_s": 4.917,
+        "history_mae_s": 4.6553,
+        "gbm_mae_s": 4.5903,
+        "history_median_ae_s": 3.6776,
+        "history_bias_s": -0.1579
+      },
+      "200-FL": {
+        "rows": 969,
+        "ncaa_mae_s": 6.724,
+        "flat_mae_s": 6.1171,
+        "pooled_mae_s": 4.9966,
+        "history_mae_s": 4.6922,
+        "gbm_mae_s": 4.6296,
+        "history_median_ae_s": 3.4155,
+        "history_bias_s": -0.2064
+      },
+      "200-FR": {
+        "rows": 5692,
+        "ncaa_mae_s": 6.3377,
+        "flat_mae_s": 5.8259,
+        "pooled_mae_s": 4.4615,
+        "history_mae_s": 4.313,
+        "gbm_mae_s": 4.2569,
+        "history_median_ae_s": 3.0536,
+        "history_bias_s": -0.1646
+      },
+      "200-IM": {
+        "rows": 4960,
+        "ncaa_mae_s": 6.3606,
+        "flat_mae_s": 5.766,
+        "pooled_mae_s": 4.3912,
+        "history_mae_s": 4.2324,
+        "gbm_mae_s": 4.1556,
+        "history_median_ae_s": 3.177,
+        "history_bias_s": 0.022
+      },
+      "400-FR": {
+        "rows": 2618,
+        "ncaa_mae_s": 11.815,
+        "flat_mae_s": 10.8927,
+        "pooled_mae_s": 8.5173,
+        "history_mae_s": 8.2074,
+        "gbm_mae_s": 8.0516,
+        "history_median_ae_s": 6.0886,
+        "history_bias_s": 0.1964
+      },
+      "400-IM": {
+        "rows": 1087,
+        "ncaa_mae_s": 10.392,
+        "flat_mae_s": 9.475,
+        "pooled_mae_s": 7.1995,
+        "history_mae_s": 6.7908,
+        "gbm_mae_s": 6.6577,
+        "history_median_ae_s": 5.2134,
+        "history_bias_s": -0.1492
+      },
+      "50-FR": {
+        "rows": 11226,
+        "ncaa_mae_s": 1.8485,
+        "flat_mae_s": 1.6321,
+        "pooled_mae_s": 1.2184,
+        "history_mae_s": 1.1696,
+        "gbm_mae_s": 1.1544,
+        "history_median_ae_s": 0.7059,
+        "history_bias_s": -0.0494
+      },
+      "800-FR": {
+        "rows": 537,
+        "ncaa_mae_s": 19.6688,
+        "flat_mae_s": 17.3375,
+        "pooled_mae_s": 14.3984,
+        "history_mae_s": 13.8738,
+        "gbm_mae_s": 13.6605,
+        "history_median_ae_s": 10.7296,
+        "history_bias_s": -0.5672
+      }
+    },
+    "by_history_availability": {
+      "no_target_course_history": {
+        "rows": 14919,
+        "ncaa_mae_s": 7.0384,
+        "flat_mae_s": 6.288,
+        "pooled_mae_s": 4.6268,
+        "history_mae_s": 4.5703,
+        "gbm_mae_s": 4.5222,
+        "history_median_ae_s": 2.7633,
+        "history_bias_s": -0.0097
+      },
+      "with_target_course_history": {
+        "rows": 44485,
+        "ncaa_mae_s": 4.2711,
+        "flat_mae_s": 3.8929,
+        "pooled_mae_s": 3.0722,
+        "history_mae_s": 2.9019,
+        "gbm_mae_s": 2.8443,
+        "history_median_ae_s": 1.6964,
+        "history_bias_s": -0.0841
+      }
+    },
+    "by_target_month": {
+      "01": {
+        "rows": 6156,
+        "ncaa_mae_s": 4.3862,
+        "flat_mae_s": 3.9282,
+        "pooled_mae_s": 3.3427,
+        "history_mae_s": 3.2182,
+        "gbm_mae_s": 3.1559,
+        "history_median_ae_s": 1.7981,
+        "history_bias_s": 0.146
+      },
+      "02": {
+        "rows": 5924,
+        "ncaa_mae_s": 5.4001,
+        "flat_mae_s": 4.5901,
+        "pooled_mae_s": 3.4753,
+        "history_mae_s": 3.3364,
+        "gbm_mae_s": 3.2343,
+        "history_median_ae_s": 1.7808,
+        "history_bias_s": 0.3425
+      },
+      "03": {
+        "rows": 6360,
+        "ncaa_mae_s": 6.1347,
+        "flat_mae_s": 5.0673,
+        "pooled_mae_s": 3.3844,
+        "history_mae_s": 3.2254,
+        "gbm_mae_s": 3.1569,
+        "history_median_ae_s": 1.8623,
+        "history_bias_s": 0.3594
+      },
+      "04": {
+        "rows": 4614,
+        "ncaa_mae_s": 4.6594,
+        "flat_mae_s": 4.4282,
+        "pooled_mae_s": 3.3694,
+        "history_mae_s": 3.2342,
+        "gbm_mae_s": 3.1811,
+        "history_median_ae_s": 1.9138,
+        "history_bias_s": -0.8373
+      },
+      "05": {
+        "rows": 8099,
+        "ncaa_mae_s": 4.8828,
+        "flat_mae_s": 4.6169,
+        "pooled_mae_s": 3.6354,
+        "history_mae_s": 3.4753,
+        "gbm_mae_s": 3.4221,
+        "history_median_ae_s": 2.0708,
+        "history_bias_s": -0.4545
+      },
+      "06": {
+        "rows": 11809,
+        "ncaa_mae_s": 5.3031,
+        "flat_mae_s": 4.7966,
+        "pooled_mae_s": 3.7432,
+        "history_mae_s": 3.6047,
+        "gbm_mae_s": 3.5599,
+        "history_median_ae_s": 2.1075,
+        "history_bias_s": -0.0227
+      },
+      "07": {
+        "rows": 8582,
+        "ncaa_mae_s": 5.2888,
+        "flat_mae_s": 4.6772,
+        "pooled_mae_s": 3.5881,
+        "history_mae_s": 3.4255,
+        "gbm_mae_s": 3.3949,
+        "history_median_ae_s": 1.8955,
+        "history_bias_s": 0.0139
+      },
+      "08": {
+        "rows": 1144,
+        "ncaa_mae_s": 4.3034,
+        "flat_mae_s": 4.0272,
+        "pooled_mae_s": 3.2721,
+        "history_mae_s": 3.2324,
+        "gbm_mae_s": 3.2267,
+        "history_median_ae_s": 1.7287,
+        "history_bias_s": -0.4648
+      },
+      "09": {
+        "rows": 2430,
+        "ncaa_mae_s": 3.0641,
+        "flat_mae_s": 3.2222,
+        "pooled_mae_s": 2.6381,
+        "history_mae_s": 2.5143,
+        "gbm_mae_s": 2.469,
+        "history_median_ae_s": 1.493,
+        "history_bias_s": 0.1624
+      },
+      "10": {
+        "rows": 4286,
+        "ncaa_mae_s": 3.6332,
+        "flat_mae_s": 3.8126,
+        "pooled_mae_s": 3.0016,
+        "history_mae_s": 2.8803,
+        "gbm_mae_s": 2.8163,
+        "history_median_ae_s": 1.814,
+        "history_bias_s": -0.2968
+      }
+    },
+    "by_speed_band": {
+      "fast": {
+        "rows": 6670,
+        "ncaa_mae_s": 2.5754,
+        "flat_mae_s": 2.832,
+        "pooled_mae_s": 2.0855,
+        "history_mae_s": 1.9515,
+        "gbm_mae_s": 1.9113,
+        "history_median_ae_s": 1.1272,
+        "history_bias_s": -0.2569
+      },
+      "middle": {
+        "rows": 40730,
+        "ncaa_mae_s": 3.9622,
+        "flat_mae_s": 3.5782,
+        "pooled_mae_s": 2.9951,
+        "history_mae_s": 2.8454,
+        "gbm_mae_s": 2.7907,
+        "history_median_ae_s": 1.7077,
+        "history_bias_s": 0.002
+      },
+      "slow": {
+        "rows": 12004,
+        "ncaa_mae_s": 9.7009,
+        "flat_mae_s": 8.5269,
+        "pooled_mae_s": 5.8143,
+        "history_mae_s": 5.6954,
+        "gbm_mae_s": 5.6299,
+        "history_median_ae_s": 3.8098,
+        "history_bias_s": -0.1877
+      }
+    }
+  },
+  "non_disjoint_test": {
+    "note": "same test rows; training also includes test swimmers' own pre-cutoff examples",
+    "overall": {
+      "pooled": {
+        "rows": 59404,
+        "swimmers": 4422,
+        "mae_s": 3.4609,
+        "median_ae_s": 1.9994,
+        "p90_ae_s": 7.9116,
+        "signed_bias_s": -0.1102,
+        "mape_pct": 3.0801
+      },
+      "history": {
+        "rows": 59404,
+        "swimmers": 4422,
+        "mae_s": 3.3197,
+        "median_ae_s": 1.9046,
+        "p90_ae_s": 7.6374,
+        "signed_bias_s": -0.0567,
+        "mape_pct": 2.9536
+      }
+    }
+  },
+  "gbm": {
+    "trees_kept": 150,
+    "max_trees": 150,
+    "depth": 3,
+    "passes_keep_rule": true,
+    "rule": "keep only if the gbm - history MAE CI excludes 0 and the gain exceeds 0.05 s"
+  },
+  "intervals_80pct": {
+    "pooled": {
+      "overall": {
+        "rows": 59404,
+        "coverage": 0.8067,
+        "below_low": 0.0926,
+        "above_high": 0.1007,
+        "mean_width_s": 11.74,
+        "median_width_s": 7.892,
+        "median_width_pct": 9.116
+      },
+      "by_gap": {
+        "1-30d": {
+          "rows": 2737,
+          "coverage": 0.7508,
+          "below_low": 0.1019,
+          "above_high": 0.1472,
+          "mean_width_s": 8.804,
+          "median_width_s": 6.147,
+          "median_width_pct": 7.674
+        },
+        "181-365d": {
+          "rows": 22924,
+          "coverage": 0.81,
+          "below_low": 0.0969,
+          "above_high": 0.0931,
+          "mean_width_s": 12.531,
+          "median_width_s": 8.331,
+          "median_width_pct": 9.824
+        },
+        "31-90d": {
+          "rows": 13100,
+          "coverage": 0.8066,
+          "below_low": 0.0898,
+          "above_high": 0.1037,
+          "mean_width_s": 10.563,
+          "median_width_s": 7.202,
+          "median_width_pct": 8.384
+        },
+        "91-180d": {
+          "rows": 20643,
+          "coverage": 0.8105,
+          "below_low": 0.0885,
+          "above_high": 0.101,
+          "mean_width_s": 11.998,
+          "median_width_s": 8.129,
+          "median_width_pct": 8.789
+        }
+      },
+      "by_age_band": {
+        "10u": {
+          "rows": 12295,
+          "coverage": 0.8101,
+          "below_low": 0.095,
+          "above_high": 0.0949,
+          "mean_width_s": 13.313,
+          "median_width_s": 11.147,
+          "median_width_pct": 12.996
+        },
+        "11-12": {
+          "rows": 14678,
+          "coverage": 0.806,
+          "below_low": 0.0909,
+          "above_high": 0.1031,
+          "mean_width_s": 11.473,
+          "median_width_s": 7.73,
+          "median_width_pct": 9.432
+        },
+        "13-14": {
+          "rows": 16751,
+          "coverage": 0.8093,
+          "below_low": 0.0901,
+          "above_high": 0.1007,
+          "mean_width_s": 11.796,
+          "median_width_s": 7.281,
+          "median_width_pct": 8.591
+        },
+        "15-16": {
+          "rows": 11638,
+          "coverage": 0.8009,
+          "below_low": 0.0943,
+          "above_high": 0.1047,
+          "mean_width_s": 11.06,
+          "median_width_s": 6.803,
+          "median_width_pct": 8.714
+        },
+        "17-18": {
+          "rows": 3880,
+          "coverage": 0.8059,
+          "below_low": 0.0964,
+          "above_high": 0.0977,
+          "mean_width_s": 9.655,
+          "median_width_s": 6.208,
+          "median_width_pct": 8.478
+        },
+        "19+": {
+          "rows": 162,
+          "coverage": 0.7778,
+          "below_low": 0.1235,
+          "above_high": 0.0988,
+          "mean_width_s": 9.657,
+          "median_width_s": 6.265,
+          "median_width_pct": 7.908
+        }
+      },
+      "by_direction": {
+        "LCM->SCM": {
+          "rows": 304,
+          "coverage": 0.7533,
+          "below_low": 0.1184,
+          "above_high": 0.1283,
+          "mean_width_s": 12.162,
+          "median_width_s": 7.698,
+          "median_width_pct": 9.933
+        },
+        "LCM->SCY": {
+          "rows": 26966,
+          "coverage": 0.8107,
+          "below_low": 0.0957,
+          "above_high": 0.0936,
+          "mean_width_s": 11.075,
+          "median_width_s": 7.355,
+          "median_width_pct": 9.519
+        },
+        "SCM->LCM": {
+          "rows": 791,
+          "coverage": 0.7522,
+          "below_low": 0.1441,
+          "above_high": 0.1037,
+          "mean_width_s": 11.272,
+          "median_width_s": 7.651,
+          "median_width_pct": 9.03
+        },
+        "SCM->SCY": {
+          "rows": 1194,
+          "coverage": 0.706,
+          "below_low": 0.1583,
+          "above_high": 0.1357,
+          "mean_width_s": 8.91,
+          "median_width_s": 6.677,
+          "median_width_pct": 9.625
+        },
+        "SCY->LCM": {
+          "rows": 29665,
+          "coverage": 0.8098,
+          "below_low": 0.0854,
+          "above_high": 0.1048,
+          "mean_width_s": 12.496,
+          "median_width_s": 8.546,
+          "median_width_pct": 8.767
+        },
+        "SCY->SCM": {
+          "rows": 484,
+          "coverage": 0.7665,
+          "below_low": 0.1012,
+          "above_high": 0.1322,
+          "mean_width_s": 9.933,
+          "median_width_s": 7.275,
+          "median_width_pct": 9.07
+        }
+      },
+      "by_event": {
+        "100-BK": {
+          "rows": 6846,
+          "coverage": 0.7926,
+          "below_low": 0.1004,
+          "above_high": 0.1071,
+          "mean_width_s": 8.387,
+          "median_width_s": 7.093,
+          "median_width_pct": 9.19
+        },
+        "100-BR": {
+          "rows": 6189,
+          "coverage": 0.7801,
+          "below_low": 0.1129,
+          "above_high": 0.107,
+          "mean_width_s": 9.323,
+          "median_width_s": 7.938,
+          "median_width_pct": 9.14
+        },
+        "100-FL": {
+          "rows": 4712,
+          "coverage": 0.7462,
+          "below_low": 0.1227,
+          "above_high": 0.1312,
+          "mean_width_s": 7.342,
+          "median_width_s": 6.303,
+          "median_width_pct": 9.061
+        },
+        "100-FR": {
+          "rows": 10068,
+          "coverage": 0.7992,
+          "below_low": 0.0961,
+          "above_high": 0.1047,
+          "mean_width_s": 7.48,
+          "median_width_s": 6.194,
+          "median_width_pct": 9.147
+        },
+        "1500-FR": {
+          "rows": 324,
+          "coverage": 0.9167,
+          "below_low": 0.0309,
+          "above_high": 0.0525,
+          "mean_width_s": 109.599,
+          "median_width_s": 100.217,
+          "median_width_pct": 9.055
+        },
+        "200-BK": {
+          "rows": 2127,
+          "coverage": 0.834,
+          "below_low": 0.0827,
+          "above_high": 0.0832,
+          "mean_width_s": 14.54,
+          "median_width_s": 13.428,
+          "median_width_pct": 8.928
+        },
+        "200-BR": {
+          "rows": 2049,
+          "coverage": 0.8131,
+          "below_low": 0.0932,
+          "above_high": 0.0937,
+          "mean_width_s": 16.406,
+          "median_width_s": 15.251,
+          "median_width_pct": 8.914
+        },
+        "200-FL": {
+          "rows": 969,
+          "coverage": 0.7668,
+          "below_low": 0.098,
+          "above_high": 0.1352,
+          "mean_width_s": 14.322,
+          "median_width_s": 12.937,
+          "median_width_pct": 9.013
+        },
+        "200-FR": {
+          "rows": 5692,
+          "coverage": 0.8289,
+          "below_low": 0.0778,
+          "above_high": 0.0933,
+          "mean_width_s": 15.032,
+          "median_width_s": 13.021,
+          "median_width_pct": 9.109
+        },
+        "200-IM": {
+          "rows": 4960,
+          "coverage": 0.8518,
+          "below_low": 0.0712,
+          "above_high": 0.077,
+          "mean_width_s": 16.556,
+          "median_width_s": 14.415,
+          "median_width_pct": 9.087
+        },
+        "400-FR": {
+          "rows": 2618,
+          "coverage": 0.8648,
+          "below_low": 0.0638,
+          "above_high": 0.0714,
+          "mean_width_s": 32.833,
+          "median_width_s": 28.924,
+          "median_width_pct": 9.072
+        },
+        "400-IM": {
+          "rows": 1087,
+          "coverage": 0.8905,
+          "below_low": 0.0488,
+          "above_high": 0.0607,
+          "mean_width_s": 30.087,
+          "median_width_s": 27.541,
+          "median_width_pct": 8.98
+        },
+        "50-FR": {
+          "rows": 11226,
+          "coverage": 0.7991,
+          "below_low": 0.0942,
+          "above_high": 0.1067,
+          "mean_width_s": 3.488,
+          "median_width_s": 2.868,
+          "median_width_pct": 9.224
+        },
+        "800-FR": {
+          "rows": 537,
+          "coverage": 0.892,
+          "below_low": 0.0484,
+          "above_high": 0.0596,
+          "mean_width_s": 61.397,
+          "median_width_s": 55.922,
+          "median_width_pct": 8.992
+        }
+      },
+      "by_history": {
+        "no_target_course_history": {
+          "rows": 14919,
+          "coverage": 0.7768,
+          "below_low": 0.1102,
+          "above_high": 0.113,
+          "mean_width_s": 15.05,
+          "median_width_s": 11.906,
+          "median_width_pct": 9.703
+        },
+        "with_target_course_history": {
+          "rows": 44485,
+          "coverage": 0.8167,
+          "below_low": 0.0867,
+          "above_high": 0.0965,
+          "mean_width_s": 10.63,
+          "median_width_s": 7.31,
+          "median_width_pct": 8.973
+        }
+      },
+      "by_speed_band": {
+        "fast": {
+          "rows": 6670,
+          "coverage": 0.8172,
+          "below_low": 0.0804,
+          "above_high": 0.1024,
+          "mean_width_s": 7.057,
+          "median_width_s": 4.742,
+          "median_width_pct": 7.002
+        },
+        "middle": {
+          "rows": 40730,
+          "coverage": 0.8082,
+          "below_low": 0.0922,
+          "above_high": 0.0996,
+          "mean_width_s": 10.087,
+          "median_width_s": 7.123,
+          "median_width_pct": 8.942
+        },
+        "slow": {
+          "rows": 12004,
+          "coverage": 0.7958,
+          "below_low": 0.1008,
+          "above_high": 0.1034,
+          "mean_width_s": 19.953,
+          "median_width_s": 15.439,
+          "median_width_pct": 13.734
+        }
+      }
+    },
+    "history": {
+      "overall": {
+        "rows": 59404,
+        "coverage": 0.8075,
+        "below_low": 0.0924,
+        "above_high": 0.1001,
+        "mean_width_s": 11.253,
+        "median_width_s": 7.545,
+        "median_width_pct": 8.707
+      },
+      "by_gap": {
+        "1-30d": {
+          "rows": 2737,
+          "coverage": 0.7636,
+          "below_low": 0.0888,
+          "above_high": 0.1476,
+          "mean_width_s": 8.15,
+          "median_width_s": 5.812,
+          "median_width_pct": 7.37
+        },
+        "181-365d": {
+          "rows": 22924,
+          "coverage": 0.8096,
+          "below_low": 0.0996,
+          "above_high": 0.0908,
+          "mean_width_s": 12.106,
+          "median_width_s": 7.931,
+          "median_width_pct": 9.422
+        },
+        "31-90d": {
+          "rows": 13100,
+          "coverage": 0.8034,
+          "below_low": 0.089,
+          "above_high": 0.1076,
+          "mean_width_s": 9.877,
+          "median_width_s": 6.745,
+          "median_width_pct": 7.777
+        },
+        "91-180d": {
+          "rows": 20643,
+          "coverage": 0.8136,
+          "below_low": 0.0871,
+          "above_high": 0.0993,
+          "mean_width_s": 11.591,
+          "median_width_s": 7.895,
+          "median_width_pct": 8.366
+        }
+      },
+      "by_age_band": {
+        "10u": {
+          "rows": 12295,
+          "coverage": 0.8053,
+          "below_low": 0.0941,
+          "above_high": 0.1006,
+          "mean_width_s": 12.87,
+          "median_width_s": 10.442,
+          "median_width_pct": 12.049
+        },
+        "11-12": {
+          "rows": 14678,
+          "coverage": 0.8028,
+          "below_low": 0.094,
+          "above_high": 0.1032,
+          "mean_width_s": 11.116,
+          "median_width_s": 7.532,
+          "median_width_pct": 9.218
+        },
+        "13-14": {
+          "rows": 16751,
+          "coverage": 0.8078,
+          "below_low": 0.091,
+          "above_high": 0.1012,
+          "mean_width_s": 11.307,
+          "median_width_s": 6.976,
+          "median_width_pct": 8.252
+        },
+        "15-16": {
+          "rows": 11638,
+          "coverage": 0.8107,
+          "below_low": 0.0923,
+          "above_high": 0.097,
+          "mean_width_s": 10.4,
+          "median_width_s": 6.435,
+          "median_width_pct": 7.94
+        },
+        "17-18": {
+          "rows": 3880,
+          "coverage": 0.8224,
+          "below_low": 0.0874,
+          "above_high": 0.0902,
+          "mean_width_s": 9.054,
+          "median_width_s": 5.879,
+          "median_width_pct": 7.756
+        },
+        "19+": {
+          "rows": 162,
+          "coverage": 0.7901,
+          "below_low": 0.0988,
+          "above_high": 0.1111,
+          "mean_width_s": 9.436,
+          "median_width_s": 5.875,
+          "median_width_pct": 7.767
+        }
+      },
+      "by_direction": {
+        "LCM->SCM": {
+          "rows": 304,
+          "coverage": 0.7664,
+          "below_low": 0.1217,
+          "above_high": 0.1118,
+          "mean_width_s": 12.055,
+          "median_width_s": 7.757,
+          "median_width_pct": 9.819
+        },
+        "LCM->SCY": {
+          "rows": 26966,
+          "coverage": 0.8109,
+          "below_low": 0.0953,
+          "above_high": 0.0937,
+          "mean_width_s": 10.558,
+          "median_width_s": 6.999,
+          "median_width_pct": 9.013
+        },
+        "SCM->LCM": {
+          "rows": 791,
+          "coverage": 0.7257,
+          "below_low": 0.1631,
+          "above_high": 0.1113,
+          "mean_width_s": 10.805,
+          "median_width_s": 7.462,
+          "median_width_pct": 8.464
+        },
+        "SCM->SCY": {
+          "rows": 1194,
+          "coverage": 0.6935,
+          "below_low": 0.1776,
+          "above_high": 0.129,
+          "mean_width_s": 8.56,
+          "median_width_s": 6.407,
+          "median_width_pct": 9.194
+        },
+        "SCY->LCM": {
+          "rows": 29665,
+          "coverage": 0.8122,
+          "below_low": 0.0838,
+          "above_high": 0.104,
+          "mean_width_s": 12.022,
+          "median_width_s": 8.25,
+          "median_width_pct": 8.325
+        },
+        "SCY->SCM": {
+          "rows": 484,
+          "coverage": 0.7686,
+          "below_low": 0.1178,
+          "above_high": 0.1136,
+          "mean_width_s": 9.725,
+          "median_width_s": 7.149,
+          "median_width_pct": 8.892
+        }
+      },
+      "by_event": {
+        "100-BK": {
+          "rows": 6846,
+          "coverage": 0.7914,
+          "below_low": 0.1018,
+          "above_high": 0.1068,
+          "mean_width_s": 8.036,
+          "median_width_s": 6.783,
+          "median_width_pct": 8.774
+        },
+        "100-BR": {
+          "rows": 6189,
+          "coverage": 0.7707,
+          "below_low": 0.1165,
+          "above_high": 0.1128,
+          "mean_width_s": 8.934,
+          "median_width_s": 7.586,
+          "median_width_pct": 8.759
+        },
+        "100-FL": {
+          "rows": 4712,
+          "coverage": 0.7555,
+          "below_low": 0.1214,
+          "above_high": 0.1231,
+          "mean_width_s": 7.029,
+          "median_width_s": 6.001,
+          "median_width_pct": 8.627
+        },
+        "100-FR": {
+          "rows": 10068,
+          "coverage": 0.7986,
+          "below_low": 0.0958,
+          "above_high": 0.1056,
+          "mean_width_s": 7.136,
+          "median_width_s": 5.91,
+          "median_width_pct": 8.722
+        },
+        "1500-FR": {
+          "rows": 324,
+          "coverage": 0.9259,
+          "below_low": 0.0216,
+          "above_high": 0.0525,
+          "mean_width_s": 105.854,
+          "median_width_s": 95.187,
+          "median_width_pct": 8.692
+        },
+        "200-BK": {
+          "rows": 2127,
+          "coverage": 0.8463,
+          "below_low": 0.0766,
+          "above_high": 0.0771,
+          "mean_width_s": 13.919,
+          "median_width_s": 12.64,
+          "median_width_pct": 8.522
+        },
+        "200-BR": {
+          "rows": 2049,
+          "coverage": 0.8087,
+          "below_low": 0.0932,
+          "above_high": 0.0981,
+          "mean_width_s": 15.741,
+          "median_width_s": 14.401,
+          "median_width_pct": 8.459
+        },
+        "200-FL": {
+          "rows": 969,
+          "coverage": 0.7822,
+          "below_low": 0.0939,
+          "above_high": 0.1238,
+          "mean_width_s": 13.715,
+          "median_width_s": 12.231,
+          "median_width_pct": 8.573
+        },
+        "200-FR": {
+          "rows": 5692,
+          "coverage": 0.8306,
+          "below_low": 0.0794,
+          "above_high": 0.09,
+          "mean_width_s": 14.418,
+          "median_width_s": 12.388,
+          "median_width_pct": 8.722
+        },
+        "200-IM": {
+          "rows": 4960,
+          "coverage": 0.8575,
+          "below_low": 0.0688,
+          "above_high": 0.0738,
+          "mean_width_s": 15.854,
+          "median_width_s": 13.751,
+          "median_width_pct": 8.681
+        },
+        "400-FR": {
+          "rows": 2618,
+          "coverage": 0.8705,
+          "below_low": 0.0615,
+          "above_high": 0.068,
+          "mean_width_s": 31.543,
+          "median_width_s": 27.724,
+          "median_width_pct": 8.676
+        },
+        "400-IM": {
+          "rows": 1087,
+          "coverage": 0.8914,
+          "below_low": 0.0451,
+          "above_high": 0.0635,
+          "mean_width_s": 28.916,
+          "median_width_s": 26.235,
+          "median_width_pct": 8.634
+        },
+        "50-FR": {
+          "rows": 11226,
+          "coverage": 0.7973,
+          "below_low": 0.0943,
+          "above_high": 0.1083,
+          "mean_width_s": 3.326,
+          "median_width_s": 2.736,
+          "median_width_pct": 8.797
+        },
+        "800-FR": {
+          "rows": 537,
+          "coverage": 0.905,
+          "below_low": 0.0391,
+          "above_high": 0.0559,
+          "mean_width_s": 59.056,
+          "median_width_s": 53.268,
+          "median_width_pct": 8.681
+        }
+      },
+      "by_history": {
+        "no_target_course_history": {
+          "rows": 14919,
+          "coverage": 0.7926,
+          "below_low": 0.0999,
+          "above_high": 0.1074,
+          "mean_width_s": 15.397,
+          "median_width_s": 12.049,
+          "median_width_pct": 10.036
+        },
+        "with_target_course_history": {
+          "rows": 44485,
+          "coverage": 0.8125,
+          "below_low": 0.0899,
+          "above_high": 0.0976,
+          "mean_width_s": 9.864,
+          "median_width_s": 6.823,
+          "median_width_pct": 8.343
+        }
+      },
+      "by_speed_band": {
+        "fast": {
+          "rows": 6670,
+          "coverage": 0.8178,
+          "below_low": 0.0825,
+          "above_high": 0.0997,
+          "mean_width_s": 6.621,
+          "median_width_s": 4.413,
+          "median_width_pct": 6.541
+        },
+        "middle": {
+          "rows": 40730,
+          "coverage": 0.8092,
+          "below_low": 0.0916,
+          "above_high": 0.0992,
+          "mean_width_s": 9.575,
+          "median_width_s": 6.8,
+          "median_width_pct": 8.506
+        },
+        "slow": {
+          "rows": 12004,
+          "coverage": 0.7962,
+          "below_low": 0.1006,
+          "above_high": 0.1032,
+          "mean_width_s": 19.521,
+          "median_width_s": 15.032,
+          "median_width_pct": 13.256
+        }
+      },
+      "calibration_in_sample": {
+        "rows": 72136,
+        "coverage": 0.7995,
+        "below_low": 0.0997,
+        "above_high": 0.1008,
+        "mean_width_s": 10.887,
+        "median_width_s": 7.347,
+        "median_width_pct": 8.568
+      }
+    }
+  },
+  "coefficients": {
+    "pooled": {
+      "age0": -0.02533,
+      "age1": -0.00245,
+      "age2": 0.0288,
+      "age3": -0.00501,
+      "age4": 0.00308,
+      "age_missing": 0.0,
+      "gap": -0.06443,
+      "gap2": 0.00674,
+      "gap_x_z": -0.01584,
+      "z2": -0.00113,
+      "SCY_month02": -0.00903,
+      "SCY_month03": -0.01501,
+      "SCY_month04": -0.01955,
+      "SCY_month05": -0.01945,
+      "SCY_month06": 0.00077,
+      "SCY_month07": -0.01304,
+      "SCY_month08": -0.01163,
+      "SCY_month09": 0.0078,
+      "SCY_month10": 0.00533,
+      "SCY_month11": -0.00235,
+      "SCY_month12": -0.01123,
+      "LCM_month02": 0.00278,
+      "LCM_month03": -0.00146,
+      "LCM_month04": 0.02224,
+      "LCM_month05": 0.02359,
+      "LCM_month06": 0.02005,
+      "LCM_month07": 0.00837,
+      "LCM_month08": -0.00098,
+      "LCM_month09": 0.05599,
+      "LCM_month10": 0.02048,
+      "LCM_month11": 0.00828,
+      "LCM_month12": 0.00326,
+      "SCM_month02": 0.02275,
+      "SCM_month03": 0.00784,
+      "SCM_month04": 0.01298,
+      "SCM_month05": 0.0148,
+      "SCM_month06": 0.01742,
+      "SCM_month07": -0.00415,
+      "SCM_month08": 0.01984,
+      "SCM_month09": 0.01916,
+      "SCM_month10": 0.02215,
+      "SCM_month11": 0.0128,
+      "SCM_month12": 0.01129,
+      "gap_x_age0": 0.03475,
+      "gap_x_age1": 0.02008,
+      "gap_x_age2": -0.03521,
+      "gap_x_age3": -0.01233,
+      "gap_x_age4": 0.00323,
+      "gap_x_age_missing": 0.0
+    },
+    "history": {
+      "age0": -0.01972,
+      "age1": -0.0026,
+      "age2": 0.0287,
+      "age3": -0.00671,
+      "age4": -9e-05,
+      "age_missing": 0.0,
+      "gap": -0.06381,
+      "gap2": 0.01346,
+      "gap_x_z": -0.01593,
+      "z2": -0.00105,
+      "SCY_month02": -0.00908,
+      "SCY_month03": -0.01538,
+      "SCY_month04": -0.01918,
+      "SCY_month05": -0.0183,
+      "SCY_month06": 0.00202,
+      "SCY_month07": -0.01218,
+      "SCY_month08": -0.01163,
+      "SCY_month09": 0.00792,
+      "SCY_month10": 0.00568,
+      "SCY_month11": -0.00208,
+      "SCY_month12": -0.01083,
+      "LCM_month02": 0.00451,
+      "LCM_month03": -0.00399,
+      "LCM_month04": 0.01875,
+      "LCM_month05": 0.01945,
+      "LCM_month06": 0.01622,
+      "LCM_month07": 0.00451,
+      "LCM_month08": -0.00358,
+      "LCM_month09": 0.05131,
+      "LCM_month10": 0.01746,
+      "LCM_month11": 0.00968,
+      "LCM_month12": -0.0002,
+      "SCM_month02": 0.02907,
+      "SCM_month03": 0.00802,
+      "SCM_month04": 0.01215,
+      "SCM_month05": 0.01328,
+      "SCM_month06": 0.0152,
+      "SCM_month07": -0.0044,
+      "SCM_month08": 0.02002,
+      "SCM_month09": 0.01665,
+      "SCM_month10": 0.02078,
+      "SCM_month11": 0.01095,
+      "SCM_month12": 0.01,
+      "gap_x_age0": 0.03461,
+      "gap_x_age1": 0.01668,
+      "gap_x_age2": -0.03248,
+      "gap_x_age3": -0.0155,
+      "gap_x_age4": 0.00708,
+      "gap_x_age_missing": 0.0,
+      "hb": 0.36721,
+      "hb_missing": 0.00745,
+      "hb_x_stale": -0.28461,
+      "hb_x_gap": -0.00961,
+      "trend": -0.24625,
+      "trend_missing": -0.00187,
+      "trend_x_gap": 0.17796
+    }
+  },
+  "worked_examples_synthetic": [
+    {
+      "case": "Fast distance swimmer (20, men), March SCY 1650 to a June LCM 1500, no LCM history",
+      "inputs": {
+        "direction": "SCY->LCM",
+        "event": "1500-FR",
+        "sex": "men",
+        "source_cs": "14:13.00",
+        "age": 20,
+        "gap_days": 90,
+        "target_month": 6
+      },
+      "ncaa_conversion": "14:43.93",
+      "pooled": {
+        "likely": "14:59.35",
+        "range_80pct": [
+          "14:29.23",
+          "15:39.33"
+        ]
+      },
+      "history": {
+        "likely": "14:58.96",
+        "range_80pct": [
+          "14:17.35",
+          "15:44.05"
+        ]
+      }
+    },
+    {
+      "case": "Same swimmer with a synthetic LCM 1500 best of 15:05.00 from the previous July",
+      "inputs": {
+        "direction": "SCY->LCM",
+        "event": "1500-FR",
+        "sex": "men",
+        "source_cs": "14:13.00",
+        "age": 20,
+        "gap_days": 90,
+        "target_month": 6,
+        "target_best_cs": "15:05.00",
+        "target_best_days_before": 240,
+        "source_prior_best_cs": "14:18.00"
+      },
+      "ncaa_conversion": "14:43.93",
+      "pooled": {
+        "likely": "14:59.35",
+        "range_80pct": [
+          "14:29.23",
+          "15:39.33"
+        ]
+      },
+      "history": {
+        "likely": "14:59.48",
+        "range_80pct": [
+          "14:32.88",
+          "15:37.07"
+        ]
+      }
+    },
+    {
+      "case": "12-year-old girl, March SCY 100 free to a July LCM 100 free, no LCM history",
+      "inputs": {
+        "direction": "SCY->LCM",
+        "event": "100-FR",
+        "sex": "women",
+        "source_cs": "1:05.00",
+        "age": 12,
+        "gap_days": 120,
+        "target_month": 7
+      },
+      "ncaa_conversion": "1:14.37",
+      "pooled": {
+        "likely": "1:12.43",
+        "range_80pct": [
+          "1:09.36",
+          "1:15.70"
+        ]
+      },
+      "history": {
+        "likely": "1:12.10",
+        "range_80pct": [
+          "1:08.96",
+          "1:15.68"
+        ]
+      }
+    },
+    {
+      "case": "Same girl with a synthetic LCM 100 free best of 1:17.00 from the previous July",
+      "inputs": {
+        "direction": "SCY->LCM",
+        "event": "100-FR",
+        "sex": "women",
+        "source_cs": "1:05.00",
+        "age": 12,
+        "gap_days": 120,
+        "target_month": 7,
+        "target_best_cs": "1:17.00",
+        "target_best_days_before": 240,
+        "source_prior_best_cs": "1:07.00"
+      },
+      "ncaa_conversion": "1:14.37",
+      "pooled": {
+        "likely": "1:12.43",
+        "range_80pct": [
+          "1:09.36",
+          "1:15.70"
+        ]
+      },
+      "history": {
+        "likely": "1:12.68",
+        "range_80pct": [
+          "1:09.61",
+          "1:15.61"
+        ]
+      }
+    }
+  ],
+  "models": [
+    "ncaa",
+    "flat",
+    "pooled",
+    "history",
+    "gbm"
+  ],
+  "selection_effects": {
+    "scope": "SCY 50/100/200/500 free and 100/200 stroke swims dated 2024-07-01..2025-06-30",
+    "share_with_same_event_lcm_swim_within_365d_by_speed_quartile": {
+      "q1 (fastest)": {
+        "rate": 0.6411,
+        "rows": 151255
+      },
+      "q2": {
+        "rate": 0.5788,
+        "rows": 151061
+      },
+      "q3": {
+        "rate": 0.4868,
+        "rows": 150918
+      },
+      "q4 (slowest)": {
+        "rate": 0.3185,
+        "rows": 150779
+      }
+    }
+  }
+}

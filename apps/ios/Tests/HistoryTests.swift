@@ -6,13 +6,13 @@ import XCTest
         var input = Draft.example; input.time = "60:00"
         XCTAssertEqual(input.methodDifference, "121.39s")
         XCTAssertNotNil(input.methodSpread)
-        var empirical = Draft.example; empirical.methodID = "turnmark-empirical-2026"
-        XCTAssertEqual(empirical.methodLabel, "Turnmark Empirical")
-        if case let .available(value, _) = empirical.outcome {
-            XCTAssertEqual(empirical.turnGeometrySummary(value.event), "100 yd SCY (3 turns) → 100 m LCM (1 turn) · −2 walls")
-            XCTAssertNotNil(empirical.methodFormulaSummary(againstNcaa: 6672))
+        var equivalence = Draft.example; equivalence.methodID = "turnmark-empirical-2026"
+        XCTAssertEqual(equivalence.methodLabel, "Turnmark Equivalence")
+        if case let .available(value, _) = equivalence.outcome {
+            XCTAssertEqual(equivalence.turnGeometrySummary(value.event), "100 yd SCY (3 turns) → 100 m LCM (1 turn) · −2 walls")
+            XCTAssertNotNil(equivalence.methodFormulaSummary(againstNcaa: 6672))
         } else {
-            XCTFail("Expected available empirical conversion")
+            XCTFail("Expected available equivalence conversion")
         }
     }
     private func fixture(_ name: String) throws -> Data {

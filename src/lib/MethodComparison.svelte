@@ -1,8 +1,9 @@
 <script lang="ts">
   import {
-    coloradoDistanceCaveat,
+    caveatText,
     ncaaMethodExplanation,
     empiricalMethodExplanation,
+    empiricalCalculationNote,
     poolLengthExplanation,
     methodComparisonCaveat,
   } from "./calculation-copy";
@@ -21,7 +22,7 @@
     adjusted = false,
     onSelect,
   }: {
-    converter: Pick<Converter, "convert" | "adjustAltitude">;
+    converter: Pick<Converter, "convert" | "adjustAltitude" | "parseTime">;
     request: ConversionRequest;
     selected: ConversionMethod;
     adjusted?: boolean;
@@ -58,11 +59,21 @@
           ? "NCAA"
           : method.id === "colorado-teamunify-2026"
             ? "Colorado"
-            : "Empirical",
+            : "Equivalence",
       result: converter.convert({ ...request, method: method.id }),
     })),
   );
   const chosen = $derived(comparisons.find((item) => item.id === selected)!);
+  // One note per distinct engine caveat across the compared methods.
+  const caveatNotes = $derived([
+    ...new Set(
+      comparisons.flatMap((item) =>
+        item.result.status === "available" && item.result.value.caveat
+          ? [caveatText(item.result.value.caveat)]
+          : [],
+      ),
+    ),
+  ]);
   const ncaaHundredths = $derived(
     comparisons[0]?.result.status === "available"
       ? comparisons[0].result.value.hundredths
@@ -154,11 +165,11 @@
     ) {
       return null;
     }
-    // Derive source swim hundredths from NCAA result and factor
-    const baseNcaa = comparisons[0].result.value;
-    const estSourceH = Math.round(
-      (baseNcaa.hundredths / Math.max(0.1, baseNcaa.factor)),
-    );
+    // Sample around the entered swim itself; each sample is converted by the
+    // engine with the same request, so altitude is still applied once.
+    const enteredSeconds = converter.parseTime(request.swim.time);
+    if (enteredSeconds === null) return null;
+    const estSourceH = Math.round(enteredSeconds * 100);
     if (!Number.isFinite(estSourceH) || estSourceH < 1500) return null;
 
     const scales = [
@@ -173,7 +184,6 @@
       empTime: string;
       empDeltaS: number;
       colDeltaS: number | null;
-      empOffsetS: number;
     }[] = [];
 
     for (const sc of scales) {
@@ -204,7 +214,6 @@
           rCol.status === "available"
             ? (rCol.value.hundredths - rNcaa.value.hundredths) / 100
             : null,
-        empOffsetS: rEmp.value.offsetSeconds ?? 0,
       });
     }
     if (samples.length < 5) return null;
@@ -347,7 +356,7 @@
                 ? ` ${val.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(val.offsetSeconds).toFixed(2)}s`
                 : ""}
               {#if item.id === "turnmark-empirical-2026"}
-                · pace curve
+                · equivalent time
               {:else if item.id === "colorado-teamunify-2026"}
                 · fixed turn offset
               {:else}
@@ -388,27 +397,29 @@
       </div>
     {/each}
   </dl>
-  {#if comparisons.some((item) => item.result.status === "available" && item.result.value.caveat)}<p
-      class="distance-caveat"
-    >
-      {coloradoDistanceCaveat}
-    </p>{/if}
+  {#each caveatNotes as note}<p class="distance-caveat">{note}</p>{/each}
   {#if difference !== null}<p class="method-gap">
       Method difference: <strong>{difference}s</strong>
     </p>{/if}
   <p>{methodComparisonCaveat}</p>
 
   {#if paceExplorer}
-    <div class="pace-explorer" aria-label="Pace sensitivity comparison against NCAA baseline">
+    <div class="pace-explorer" aria-label="Equivalent time compared with NCAA across paces">
       <div class="pace-explorer-head">
-        <h4>How pace bends the wall vs. NCAA baseline</h4>
-        <span>Faster swimmers lose more underwater velocity per missing wall; slower swimmers spend more elapsed time on the surface.</span>
+        <h4>Equivalent time vs. NCAA across paces</h4>
+        <span>Each point converts an entered time up to 12% faster or slower and subtracts the NCAA conversion of that same time.</span>
       </div>
+      <p class="pace-legend" aria-hidden="true">
+        <span class="pace-key pace-key-emp">Equivalence</span>
+        {#if paceExplorer.colPoints}<span class="pace-key pace-key-col"
+            >Colorado</span
+          >{/if}
+      </p>
       <svg
         class="pace-chart"
         viewBox={`0 0 ${paceExplorer.W} ${paceExplorer.H}`}
         role="img"
-        aria-label="Curve comparing Turnmark Empirical and Colorado Timing offsets relative to the flat NCAA multiplier across faster and slower paces"
+        aria-label={`Difference from the NCAA conversion for Turnmark Equivalence${paceExplorer.colPoints ? " and Colorado Timing" : ""} across faster and slower swims`}
       >
         <line
           x1="24"
@@ -454,7 +465,7 @@
             <span class="pace-cell-title">{col.label}</span>
             <span class="pace-cell-input">In: {col.sample.inputClock}</span>
             <span class="pace-cell-emp">
-              Empirical: <strong>{col.sample.empTime}</strong>
+              Equivalence: <strong>{col.sample.empTime}</strong>
               <small>
                 ({col.sample.empDeltaS >= 0 ? "+" : "−"}{Math.abs(
                   col.sample.empDeltaS,
@@ -487,7 +498,7 @@
       </p>
     </div>
     <div>
-      <h4>Turnmark Empirical</h4>
+      <h4>Turnmark Equivalence</h4>
       <p>{empiricalMethodExplanation}</p>
     </div>
     <div>
@@ -526,7 +537,7 @@
               ? "Published NCAA factor."
               : "Derived from NCAA metric-to-yards factors."
             : chosen.id === "turnmark-empirical-2026"
-              ? "Turnmark Empirical pace-curve offset over NCAA factor."
+              ? empiricalCalculationNote
               : "Colorado Timing formula."} Truncated to hundredths.
         </p>
         <p class="formula-note">
@@ -543,7 +554,7 @@
           >{item.id === "ncaa-2025-27"
             ? "NCAA rules"
             : item.id === "turnmark-empirical-2026"
-              ? "Turnmark Empirical report"
+              ? "Turnmark Equivalence report"
               : "Colorado Timing formulas"} ↗</a
         >
       </li>
@@ -771,6 +782,26 @@
   }
   .pace-explorer-head span {
     font-size: 0.775rem;
+  }
+  .pace-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    margin: 0;
+    font-size: 0.72rem;
+  }
+  .pace-key {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pace-key::before {
+    content: "";
+    width: 16px;
+    border-top: 2.25px solid var(--tm-color-accent);
+  }
+  .pace-key-col::before {
+    border-top: 1.5px dashed var(--tm-color-text-muted);
   }
   .pace-chart {
     width: 100%;

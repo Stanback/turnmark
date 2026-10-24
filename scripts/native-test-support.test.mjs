@@ -24,7 +24,7 @@ test("full inventories retain every native regression and smoke plans select rea
     ...testInventory("apps/ios/Tests", "ios", "TurnmarkTests"),
     ...testInventory("apps/ios/UITests", "ios", "TurnmarkUITests"),
   ];
-  assert.equal(ios.length, 27);
+  assert.equal(ios.length, 28);
   assert.equal(selectTests(ios, ["TurnmarkTests", ...iosSmoke]).length, 11);
   const full = JSON.parse(readFileSync("apps/ios/Full.xctestplan"));
   assert.equal(full.testTargets.length, 2);
@@ -44,7 +44,7 @@ test("full inventories retain every native regression and smoke plans select rea
     "apps/android/src/androidTest/java/net/stanback/turnmark",
     "android",
   );
-  assert.equal(android.length, 30);
+  assert.equal(android.length, 31);
   assert.equal(selectTests(android, androidSmoke).length, 4);
   const source = readFileSync(
     "apps/android/src/androidTest/java/net/stanback/turnmark/ConverterTest.kt",

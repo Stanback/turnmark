@@ -37,8 +37,12 @@ class PublicDirectorySnapshotTests(unittest.TestCase):
                 self.assertTrue(supporting["source_url"].startswith("https://"))
                 self.assertEqual(len(supporting["source_content_sha256"]), 64)
         for row in rows:
-            self.assertEqual(row["country"], "US")
+            self.assertIn(row["country"], ("US", "CA"))
             self.assertIn(row["segment"], ("high_school", "club_swimming", "masters"))
+            if row["country"] == "CA":
+                self.assertEqual(row["segment"], "club_swimming")
+                self.assertTrue(row["jurisdiction"] == "CA" or row["jurisdiction"] in
+                                set("AB BC MB NB NL NS NT NU ON PE QC SK YT".split()))
             self.assertIn(row["source_id"], sources)
             self.assertIn(row["program_listing_status"], ("swimming_not_reviewed", "partial_swimming_imported"))
             self.assertEqual(public_website(row["website"]), row["website"])

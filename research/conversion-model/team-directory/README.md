@@ -5,10 +5,11 @@ This catalog supports **local model training and evaluation**. Like the
 open, reusable groundwork someone can extend independently or revisit later.
 Operating a hosted Turnmark results service remains outside the current scope.
 
-The snapshot contains **20,306 source-scoped program/participation listings at
-17,697 source-scoped organizations**, plus **21,664 affiliations**, **8,240 facility
-records**, **7,497 program-location links** and **1,295 separately described competition
-basins**. These are source assertions, not
+The snapshot contains **21,206 source-scoped program/participation listings at
+18,531 source-scoped organizations**, plus **22,564 affiliations**, **10,005 facility
+records**, **8,125 program-location links** and **1,300 separately described competition
+basins**. 20,301 listings assert a U.S. organization and 900 a Canadian one (see
+[Canada](#canada)). These are source assertions, not
 unique physical teams/pools or verified national membership/activity counts.
 Swimmer-level results, identity keys, raw payloads and collectors remain local.
 Personal contacts and athlete/coach rosters are excluded from public exports.
@@ -109,7 +110,8 @@ activity status remains `unknown`. Massachusetts' source ExpDate is retained
 without inventing effective dates or interpreting an unextracted checkbox.
 
 The [breadth receipt](breadth-checkpoint-10.json) records the current public
-snapshot (`20,306` source-scoped listings across `280` reviewed source documents),
+snapshot (`21,206` source-scoped listings across `631` selected source documents,
+`900` of them Canadian across 37 documents; see [Canada](#canada)),
 including all 10 California CIF sections (`930` deduplicated listings including San Francisco
 AAA and all seven San Diego Section conference alignments), Florida FHSAA 2026–27
 boys/girls swimming hierarchy (`938`), North Carolina NCHSAA 1A–8A regional/state
@@ -196,6 +198,84 @@ regional/sectional sources remain partial (`partial_swimming_imported`) rather t
 complete regular-season membership rolls. Private-school and independent authorities
 remain separate universes from NFHS affiliates.
 
+## Canada
+
+Canadian rows follow the same contract: source-scoped listings with explicit
+authority namespaces, no cross-source merges, all activity statuses `unknown`.
+Eleven source documents supply **874 listings at 808 source-scoped organizations**, and a manual browser review of 26 university athletics pages adds **26 more** (900 Canadian listings in all)
+(`CA`). The national list and the provincial section lists describe many of the
+same clubs; they are kept as separate assertions (309 of the 508 provincial
+listings share a website host or normalized name with a national row, and 217
+national rows have such a provincial candidate; none were merged).
+
+| Source                                   | Listings | Scope and limits                                                                                                                                                                      |
+| ---------------------------------------- | -------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Swimming Canada club list (`swimming-canada:club-list-row`) | 366 | Public JSONP list: name, address, website, coordinates; type and category blank, so `program_kind` stays `unknown`. No province supplied: derived from the postal code first letter (A NL, B NS, C PE, E NB, G/H/J QC, K–P ON, R MB, S SK, T AB, V BC, Y YT; X0A–X0C NU, other X NT); 23 rows without a postal code have no province. Two `Swim PEI` rows are the provincial section, kept as `association`/`other`. Phone field empty on every row |
+| Swim BC (`swim-bc:club-code`)            |       77 | Find-a-Club table with club codes and region tags; 15 rows tagged Masters Clubs become `masters`, the other 62 `age_group`; `Crawl-delay: 10` honoured                                 |
+| Swim Alberta (`swim-alberta:club-code`)  |      121 | Find-a-Club cards: code, city, region, training facilities, type (year-round 50 / masters 16 / summer 55) and website; email column dropped; Hay River and Inuvik cards are `NT` (3 listings) |
+| Swim Ontario (`swim-ontario:abbreviation`) |    199 | Gatsby `page-data.json` build artifact (not a documented API): 144 clubs; `Age Group and Masters Club` rows become two programs; 10 varsity teams; phone/fax/email and president/head-coach names dropped; the clubs page says "over 140 affiliated clubs" |
+| Swim Manitoba (`swim-manitoba:club-listing`) |     26 | Clubs table: 24 clubs; kinds from the services text (age group, masters, university varsity; one para-swimming club kept as `other`); facility address blocks become locations          |
+| Swim Saskatchewan (`swim-sask:club-code`, `swim-sask:club-listing`) | 36 | Age-group (11), summer (18), masters (6) and varsity (1) pages sharing one club-code namespace; `SAMS` independent-masters category and footer contacts excluded                      |
+| Swim Nova Scotia (`swim-nova-scotia:club-listing`) |   37 | 2026–2027 year-round (14), masters (8) and 2026 summer (15) lists; clubs appearing in several lists share one organization; `(no webpage)`/inactive notes retained                      |
+| Swimming NL (`swimming-nl:club-listing`) |       12 | Club Contacts 2026–27 download labels only; the contact PDFs were never fetched; kind from the club name                                                                                 |
+| University athletics pages (`university-athletics:browser-review`) | 26 | Manual browser review of 26 official athletics pages (2026-10-23): 25 varsity programs, Carleton as a club team; no page bodies; category `unknown`; city/province derived from the university's location |
+
+Per province (provincial-section listings / national-list rows): AB 118 / 43,
+BC 77 / 40, MB 26 / 15, NL 12 / 11, NS 37 / 11, NT 3 / 2, ON 199 / 101, SK 36 / 14;
+NB 0 / 13, PE 0 / 3 and QC 0 / 90 are **national-list only**; YT and NU have no
+listing in any imported source, and 23 national rows have no province. These
+are gaps, not zero-club claims. No Canadian denominator is published beyond Swim
+Ontario's rounded "over 140 affiliated clubs"; the [coverage audit](coverage-audit.json)
+carries the per-province table under `canada`.
+
+Reviewed but not imported: Swim NB's find-a-club page labels its ~19 club links
+by city only (six of those hosts also appear in the national list); Swim PEI
+shows two logo links; FNQ's affiliation-policy and club-standings pages were
+cached without a directory projection; MSABC's masters table is filled
+client-side from a Google Sheet and Masters Swimming Canada offers a map search
+only; NWT Swimming's clubs are reached through Swim Alberta's directory. The
+U SPORTS and CCAA sites answered the planning fetches with CloudFront HTTP 403
+on `robots.txt` (see the [site-access ledger](site-access-reviews.csv)), so
+university swimming went through the browser-review lane instead: a person
+opened 26 universities' own athletics pages on 2026-10-23 and recorded what
+each showed. Those observations are imported under
+`university-athletics:browser-review` as **25 `collegiate_varsity` programs and
+Carleton as `collegiate_club`** (BC 2, AB 2, SK 1, MB 1, ON 10, QC 5, NS 2, NB 2,
+NL 1; Canada West 6, OUA 9, RSEQ 6, AUS 5). Each registry source is the official
+page URL; no page body was fetched, so its hash covers the review record, not
+the page, and the reuse notes say so. Category stays `unknown` (several pages
+expose men's/women's labels; one program per university is kept). City and
+province are derived from the university's location, not read from the page.
+Discovery came from search results and conference news; U SPORTS' site was not
+used. Excluded after review: University of Alberta (swimming discontinued after
+2024–25 per its own athletics notice), Mount Royal and UQAM (no swim program
+found), York (unconfirmed: its swimming URL redirected to a general page). Eleven
+of these universities are also listed as varsity teams by Swim Ontario (9),
+Swim Manitoba (1) and Swim Saskatchewan (1); they remain separate assertions,
+and two Swim Ontario varsity listings disagree with the review (Carleton is a
+club team on its own site; York could not be confirmed). This is not a complete
+U SPORTS or CCAA membership roll. Swimming Canada's
+`robots.txt` allows the club-list path for `User-agent: *` and declares
+`Content-Signal: search=yes,ai-train=no,use=reference`; only organizational
+metadata was taken, in one request, and the disallowed `/swimmer/` and
+`/swim-meet/` paths were never requested. Eight provincial bodies were read from
+the planning pass's cached bodies (one request each, hashes retained) rather
+than refetched. No imported Canadian row carried two names, so no alias table
+was needed; bilingual body names are recorded in the governing-body manifest.
+
+Canadian facilities add 1,765 source-scoped location rows: 306 Swimming Canada
+club-listed street addresses linked as `listed_club_address` rather than
+training locations (45 PO-box/mailing rows carry no facility row or edge; 21
+coordinate pairs outside Canada blanked, a 22nd belonged to a row without an
+address), 144 Swim
+Ontario primary pools, 91 Swim Alberta and 31 Swim Manitoba club-listed training
+facilities, 90 Swim Alberta approved competition pools (3 September 2026 PDF,
+visually transcribed; 5 basins where a note names a 25 m or 50 m course) and
+1,103 Statistics Canada ODRSF v1.0 records typed `pool` (ON 615, QC 296, MB 104,
+AB 52, BC 22, NB 14; includes wading pools and water-play sites per source
+labels; "Contains information licensed under the Open Government Licence –
+Canada").
+
 ## Evidence, locations and discovery
 
 - [organizations.csv](snapshot/organizations.csv),
@@ -219,18 +299,22 @@ remain separate universes from NFHS affiliates.
   aquatic centers (7 basins), and local operator pages (5 basins).
   Elevation and dated race configurations remain unknown in the public snapshot. Mailing-style/residential-looking
   locations are screened out as documented; other addresses/coordinates remain unverified source claims.
+  Swim Alberta's approved competition pool list adds 5 basins where its notes name a 25 m or 50 m course.
 - The [source catalog](source-catalog.csv) and its source/format joins distinguish
   observed packaging, working public adapters, discovery-only candidates and
   access gaps. A linked archive is not an imported or complete dataset. Third-
   party sources retain their own rights; no source-data license is inferred.
-- [governing-bodies.csv](governing-bodies.csv) provides 161 authority starting
-  points: 59 USA Swimming LSCs, 51 NFHS member-state associations and 51 USMS
-  LMSCs. Ninety have explicitly partial swimming imports; 71 remain without
-  an imported jurisdiction-level swimming list (while `SD`, `TN`, and `VT` are
-  separately verified as non-sponsoring NFHS authorities in `coverage-audit.json`). The
+- [governing-bodies.csv](governing-bodies.csv) provides 172 authority starting
+  points: 59 USA Swimming LSCs, 51 NFHS member-state associations, 51 USMS
+  LMSCs and 11 Canadian bodies (Swimming Canada and its ten provincial sections,
+  `country=CA`, two-letter province jurisdictions). Ninety-eight have explicitly
+  partial swimming imports; 74 remain without an imported jurisdiction-level
+  swimming list (while `SD`, `TN`, and `VT` are separately verified as
+  non-sponsoring NFHS authorities in `coverage-audit.json`, and FNQ, Swim NB and
+  Swim PEI directories were reviewed without a projectable club list). The
   [manifest](governing-bodies.manifest.json) links exact imported sources/scope.
 - [authority-reviews.csv](authority-reviews.csv) separately records a bounded
-  homepage/transport review for all 161 starting points: 60 homepages cached,
+  homepage/transport review for all 172 starting points: 71 homepages cached,
   97 stopped outcomes and four not requested because of prior access/robots
   gaps. Stopped includes redirects requiring review, network/robots issues and
   exhausted request budgets, not 97 proven inaccessible directories. Original
@@ -273,8 +357,8 @@ ORDER BY organization_name, facility_name;
 SELECT * FROM authority_review_coverage ORDER BY ALL;
 ```
 
-`shared_website_candidates` reports exact repeated URLs for human review (238
-current groups). It never merges identities. Institution/group facilities and
+`shared_website_candidates` reports exact repeated URLs for human review (306
+current groups, including Canadian national/provincial pairs). It never merges identities. Institution/group facilities and
 provider profile URLs can produce misleading matches. CSV/hash receipts are the
 portable interchange; the DuckDB file is an ignored rebuildable artifact.
 
@@ -299,7 +383,9 @@ never clears an automated collector's cooldown. Do not put cookies, tokens,
 private sessions or arbitrary response headers in public notes. The ledger
 separates manual browser outcomes from the original blocked responses: three
 public pages rendered in a manual browser check, while one asset-host URL
-remained unreviewed. Automated cooldowns remain intact.
+remained unreviewed. Two Canadian university-sport origins (`usports.ca`,
+`www.ccaa.ca`) returned CloudFront-generated HTTP 403 bodies to `robots.txt`
+requests and are pending browser review. Automated cooldowns remain intact.
 
 The public DuckDB includes `site_access_reviews`. For example:
 
@@ -312,8 +398,8 @@ ORDER BY origin;
 
 ## Reproduce and contribute
 
-For a local registry, the [selection](selection.json) limits the export to 280
-reviewed organizational source documents:
+For a local registry, the [selection](selection.json) limits the export to 631
+reviewed organizational source documents (594 U.S., 11 Canadian lists and 26 browser-reviewed university pages):
 
 ```sh
 target/lakehouse-venv/bin/python research/conversion-model/directory_export.py \
@@ -331,8 +417,9 @@ map to reacquire a source. Public CSV-to-DuckDB reproduction works independently
 [directory_import.py](../directory_import.py) accepts normalized facts with
 explicit authority-scoped identity, classifications, evidence and unknown status.
 [directory_rows.py](../directory_rows.py) supplies reusable offline CSV/TSV, JSON
-pointer, ordinary HTML-table, repeated-element and strict layout-text readers.
-Embedded JSON parsing accepts a literal after one exact marker; it never executes
+pointer, JSONP, ordinary HTML-table, repeated-element and strict layout-text readers.
+Embedded JSON parsing accepts a literal after one exact marker, and the JSONP
+reader accepts one exact callback wrapping one literal; neither executes
 JavaScript. Repeated-element parsing requires explicit fields/attribute filters
 and a reviewed count. Ambiguous layouts, duplicate keys, changed counts and
 missing selected fields fail for review. Tests use invented organizations and

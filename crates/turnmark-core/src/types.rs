@@ -153,6 +153,12 @@ pub enum ValidationReason {
 #[cfg_attr(feature = "native", derive(uniffi::Enum))]
 pub enum ConversionCaveat {
     ColoradoShortCourseDistance,
+    /// The equivalence conversion rests on limited data: few swimmers in the training data swam
+    /// this event in both courses, or its bootstrap interval at this time is wide.
+    EmpiricalLowEvidence,
+    /// The entered time lies outside the model's fitted range for this event and these courses;
+    /// the conversion extrapolates beyond the available fit.
+    EmpiricalOutOfRange,
 }
 record!(ConversionValue {
     time: String,

@@ -27,7 +27,7 @@ export const conversionMethods = [
   { id: coloradoMethod, label: "Colorado Timing", source: coloradoSource },
   {
     id: empiricalMethod,
-    label: "Turnmark Empirical",
+    label: "Turnmark Equivalence",
     source: empiricalSource,
   },
 ] as const;

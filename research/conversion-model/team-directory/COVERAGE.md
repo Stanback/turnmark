@@ -50,6 +50,50 @@ may remain open; label that limitation rather than claiming “all categories.�
    freshness and a sample of current-operation checks. Keep statistical
    confidence claims separate from enumeration percentages.
 
+## Canada
+
+The 85–90% target is a U.S. target. Canadian coverage is reported separately
+under `canada` in the audit, with a country dimension (`countries`) so U.S. and
+Canadian assertions are never summed into one figure. The unit is the same:
+source-scoped listings, not unique clubs.
+
+| Province | Provincial-section source | Provincial listings | National-list rows | Status |
+| --- | --- | ---: | ---: | --- |
+| AB | Swim Alberta Find a Club | 118 | 43 | partial source assertions |
+| BC | Swim BC Find a Club | 77 | 40 | partial source assertions |
+| MB | Swim Manitoba clubs table | 26 | 15 | partial source assertions |
+| NB | Swim NB (city-labelled links, not imported) | 0 | 13 | national list only |
+| NL | Swimming NL Club Contacts labels | 12 | 11 | partial source assertions |
+| NS | Swim Nova Scotia clubs page | 37 | 11 | partial source assertions |
+| NT | via Swim Alberta | 3 | 2 | partial source assertions (no territorial directory) |
+| NU | none | 0 | 0 | no imported listing |
+| ON | Swim Ontario page-data | 199 | 101 | partial source assertions |
+| PE | Swim PEI (two logo links, not imported) | 0 | 3 | national list only (plus the Swim PEI section rows) |
+| QC | FNQ (policy and standings pages, not imported) | 0 | 90 | national list only |
+| SK | Swim Saskatchewan four pages | 36 | 14 | partial source assertions |
+| YT | none | 0 | 0 | no imported listing |
+
+Twenty-three national rows have no postal code and therefore no province. The
+national list supplies no club type, so its rows stay `program_kind=unknown`;
+provincial kinds come from each section's own labels. National and provincial
+rows for one club are separate assertions (309 of 508 provincial listings have a
+website-host or normalized-name candidate in the national list) and are not
+merged. University association sites (U SPORTS, CCAA, OUA, Canada West, AUS)
+answered automated fetches with HTTP 403, so university swimming came through
+the browser-review lane: 25 varsity programs and one club team (Carleton)
+confirmed by a person on the universities' own athletics pages on 2026-10-23
+(`university-athletics:browser-review`), alongside the twelve varsity listings
+from Swim Ontario, Swim Manitoba and Swim Saskatchewan (eleven overlap by
+name or website host; kept separate). Exclusions: University of Alberta
+(swimming discontinued after 2024–25 per its own athletics notice), Mount Royal
+and UQAM (no swim program found), York (unconfirmed; its swimming URL redirected
+to a general page). No association membership roll was obtained, so no
+university denominator exists.
+
+No Canadian denominator exists beyond Swim Ontario's rounded "over 140
+affiliated clubs" statement, which the 144-club page-data neither confirms nor
+contradicts as an enumerated universe. No provincial percentage is claimed.
+
 ## Acquisition order
 
 First fill absent school jurisdictions and major partial ones: the remaining

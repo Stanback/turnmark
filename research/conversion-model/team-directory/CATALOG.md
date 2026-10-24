@@ -10,14 +10,14 @@ account, crawler or private swimmer database is needed to read these files.
 
 | Object                         | Published count | Meaning                                                                      |
 | ------------------------------ | --------------: | ---------------------------------------------------------------------------- |
-| Programs                       |          20,306 | Source-scoped listings, not deduplicated national teams                      |
-| Organizations                  |          17,697 | Separate institutional/club identities; categories can share an organization |
-| Governing-body starting points |             161 | 71 without imported jurisdiction swimming lists; 90 partial imports          |
-| Facility records               |           8,240 | Source-scoped finder locations and supplemental operator/LSC venue facts     |
-| Program-location links         |           7,497 | Source listing relationships; shared locations do not merge programs         |
-| Separately described basins    |           1,295 | USA Swimming certified courses (948 deduplicated), LMSC (108), NVSL (102), PVS (62), HI (26), AD (20), SSL (17), PN (7), local (5) |
-| Source access records          |             152 | Imported, discovery-only and blocked sources remain distinguishable          |
-| Format contracts               |              10 | Includes explicitly unsupported candidates, not ten implemented parsers      |
+| Programs                       |          21,206 | Source-scoped listings, not deduplicated national teams (20,301 U.S., 900 Canadian, 5 unknown country) |
+| Organizations                  |          18,531 | Separate institutional/club identities; categories can share an organization |
+| Governing-body starting points |             172 | 74 without imported jurisdiction swimming lists; 98 partial imports; 11 Canadian bodies |
+| Facility records               |          10,005 | Source-scoped finder locations, supplemental operator/LSC venue facts and 1,765 Canadian club-listed, approved-pool and ODRSF rows |
+| Program-location links         |           8,125 | Source listing relationships (7,782 listed training locations, 343 listed club addresses); shared locations do not merge programs         |
+| Separately described basins    |           1,300 | USA Swimming certified courses (948 deduplicated), LMSC (108), NVSL (102), PVS (62), HI (26), AD (20), SSL (17), PN (7), local (5), Swim Alberta approved pools (5) |
+| Source access records          |             170 | Imported, discovery-only and blocked sources remain distinguishable          |
+| Format contracts               |              11 | Includes explicitly unsupported candidates, not eleven implemented parsers   |
 
 The program snapshot remains schema v2. The additive
 [catalog manifest](catalog/manifest.json) is schema v1 and hashes/counts every
@@ -25,8 +25,8 @@ supplement CSV. `directory_build.py` accepts older base-only snapshots; a presen
 supplement must validate completely. No cross-provider names or shared pool
 locations are used to merge organizations.
 
-The separate site-access ledger currently has 14 observations across 12 origins;
-these are URL/time observations, not 12 confirmed WAF deployments.
+The separate site-access ledger currently has 16 observations across 14 origins;
+these are URL/time observations, not 14 confirmed WAF deployments.
 
 ## Tables and joins
 
@@ -40,7 +40,7 @@ a timezone. Every evidentiary file receipt preserves its original content hash.
 | -------------------------------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
 | [evidence_sources.csv](catalog/evidence_sources.csv)     | `evidence_id`; `catalog_source_id` → source catalog                      | Exact source URL, retrieval time, original SHA-256, projected scope and reuse context                                        |
 | [facilities.csv](catalog/facilities.csv)                 | `facility_id`; unique `(authority, authority_id)`; evidence reference    | Source name, visitor-address claim, city/state/raw state/postcode/country, nullable coordinates and location evidence status |
-| [program_facilities.csv](catalog/program_facilities.csv) | `relation_id`; program → base snapshot; facility and evidence references | Source listing key, listed-training-location assertion, unknown activity, nullable effective dates                           |
+| [program_facilities.csv](catalog/program_facilities.csv) | `relation_id`; program → base snapshot; facility and evidence references | Source listing key, relationship (`listed_training_location` where the source names a training pool; `listed_club_address` where it only gives the club's listed address), unknown activity, nullable effective dates |
 | [pool_basins.csv](catalog/pool_basins.csv)               | `pool_id`; facility and evidence references                              | Distinct named basin, nullable dimensions, geometry notes, nullable elevation/uncertainty and explicit elevation basis       |
 | [source_access.csv](catalog/source_access.csv)           | `access_id`; source-catalog reference                                    | Human entry point, observed data URL where known, HTTP method, access status, request-contract limits and collection policy  |
 | [formats.csv](catalog/formats.csv)                       | `format_id`                                                              | Packaging, exact public adapter/scope where implemented, limitations and specification link where reviewed                   |
@@ -71,7 +71,9 @@ verification. This publication:
   screen, not a complete independent facility audit.
 
 `source_reported_unverified` means exactly that. `mailing_address_withheld`
-prevents a mailing address being mistaken for a pool. `operator_published` means
+prevents a mailing address being mistaken for a pool, and the validator refuses
+a `listed_training_location` edge onto such a facility; the 37 USA Swimming
+finder edges to withheld addresses are `listed_club_address`. `operator_published` means
 a facility operator supplied the fact; it does not mean Turnmark surveyed it or
 that public access is available. Street-only directions are not complete postal
 addresses. Keep geography unknown when the captured evidence does not establish
@@ -93,6 +95,38 @@ state labels `California`, `Colorado`, `Florida` and `Indiana` normalize to post
 codes while the original state remains in `state_raw`. The finder abbreviation
 is separately preserved in affiliations and is not a unique identity key.
 
+### Canadian locations
+
+Canada pass 01 adds 1,765 facility rows with `country=CA` and the same evidence
+discipline (see the `canada` block of the [catalog manifest](catalog/manifest.json)):
+
+- **Swimming Canada club list** (`swimming-canada:club-list-row`, 306 rows): the
+  club's listed street address, named `<club> (Swimming Canada listed address)`
+  because the source has no facility name, linked to the club as
+  `listed_club_address`, never as a training location. The 45 PO-box/mailing
+  rows get no facility row and no edge: nothing locatable remains once the
+  address is withheld, and the postal-derived province already sits on the
+  organization. 21 coordinate pairs outside Canada are blanked (a 22nd belonged
+  to a row without an address); province comes from the postal code, city is
+  not separated from the address string.
+- **Swim Ontario primary pools** (`swim-ontario:primary-pool`, 144): pool name,
+  street, city and postal code; the source states "the address shown is the
+  location of their primary pool"; no coordinates.
+- **Swim Alberta training facilities** (`swim-alberta:training-facility`, 91)
+  and **Swim Manitoba club facilities** (`swim-manitoba:club-facility`, 31):
+  club-listed training locations; Alberta names carry no address or city,
+  Manitoba blocks carry facility, street and city.
+- **Swim Alberta approved competition pools**
+  (`swim-alberta:approved-competition-pool`, 90, `operator_published` as for
+  LSC venue directories): city, facility and the source's facility-rule note
+  (kept in the name); 5 `pool_basins` rows only where a note names a 25 m or
+  50 m course, with no lane, width or bulkhead facts.
+- **Statistics Canada ODRSF v1.0** (`statcan:odrsf-v1.0`, 1,103): every record
+  typed `pool` across ON, QC, MB, AB, BC and NB, including wading pools and
+  water-play sites (the source facility type is kept in the name); 67 rows have
+  no usable coordinates; names and cities keep the source's casing. Attribution:
+  "Contains information licensed under the Open Government Licence – Canada."
+
 ### Sources, formats and reproducibility
 
 The source atlas includes the national/LSC club discovery layers, USMS/LMSCs,
@@ -110,8 +144,9 @@ category-specific response URLs and source hashes are preserved in the program
 snapshot manifest. A frontend endpoint is not necessarily a supported public API.
 
 Reusable public readers currently handle explicit CSV/TSV columns, JSON field
-pointers, embedded literal JSON after one exact marker, repeated HTML elements
-with explicit fields/counts, ordinary HTML tables and strict layout-text rows. SDIF's public helper
+pointers, embedded literal JSON after one exact marker, JSONP (one exact callback
+around one literal), repeated HTML elements with explicit fields/counts, ordinary
+HTML tables and strict layout-text rows. SDIF's public helper
 projects only the B1 venue/altitude header; the private finish collector is not
 part of this public catalog. ZIP is a container, not a result schema. LENEX and
 proprietary HY-TEK exports are recorded as future adapter/review work, and XLSX

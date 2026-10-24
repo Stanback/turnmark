@@ -94,6 +94,25 @@ class DirectoryRowsTests(unittest.TestCase):
             with self.subTest(source=source), self.assertRaises(ValueError):
                 embedded_json_columns(self.write(source), {"organization_key":"/id"}, marker=marker, root="/data/items")
 
+    def test_jsonp_requires_one_exact_callback_wrapper_around_a_literal(self):
+        from directory_rows import jsonp_columns
+        mapping = {"organization_name": "/name", "website": "/website"}
+        text = 'load_clubs([{"name":"Example Club","website":"https://example.invalid","phone":"private"}]);'
+        self.assertEqual(jsonp_columns(self.write(text), mapping, callback="load_clubs"),
+                         [{"organization_name": "Example Club", "website": "https://example.invalid"}])
+        self.assertEqual(jsonp_columns(self.write('cb({"rows":[{"name":"A","website":null}]})'),
+                                       mapping, callback="cb", root="/rows"),
+                         [{"organization_name": "A", "website": None}])
+        for source in ('other([{"name":"A","website":""}])', 'load_clubs([{"name":"A","website":""}]); alert(1)',
+                       'load_clubs([{"name":"A","website":""}]) trailing', 'load_clubs(fetch())',
+                       'load_clubs([{"name":"A","name":"B","website":""}])', 'load_clubs([{"name":["A"],"website":""}])'):
+            with self.subTest(source=source), self.assertRaises(ValueError):
+                jsonp_columns(self.write(source), mapping, callback="load_clubs")
+        with self.assertRaises(ValueError):
+            jsonp_columns(self.write(text), mapping, callback="load_clubs(")
+        with self.assertRaises(ValueError):
+            jsonp_columns(self.write(text), {"phone": "/phone"}, callback="load_clubs")
+
     def test_repeated_elements_project_ids_with_reviewed_count(self):
         from directory_rows import html_element_columns
         text = '<div class="other">ignore</div><td class="team" data-id="01" data-name="Example &amp; East"><a>Shown <b>name</b></a></td><td class="team" data-id="02" data-name="Example West">Other</td>'

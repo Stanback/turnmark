@@ -1,7 +1,8 @@
 import {
-  coloradoDistanceCaveat,
+  caveatText,
   ncaaMethodExplanation,
   empiricalMethodExplanation,
+  empiricalCalculationNote,
   poolLengthExplanation,
   methodComparisonCaveat,
 } from "../../../src/lib/calculation-copy.js";
@@ -153,11 +154,11 @@ function render(value: unknown, request: ConversionRequest) {
         (v.kind !== "swum" && request.method === "colorado-teamunify-2026"
           ? " · Colorado Timing"
           : v.kind !== "swum" && request.method === "turnmark-empirical-2026"
-            ? " · Turnmark Empirical"
+            ? " · Turnmark Equivalence"
             : ""),
       "kind",
     );
-    if (v.caveat) line("p", coloradoDistanceCaveat, "muted");
+    if (v.caveat) line("p", caveatText(v.caveat), "muted");
     line(
       "p",
       "Converted times are estimates. Check your meet’s entry rules.",
@@ -280,6 +281,7 @@ function render(value: unknown, request: ConversionRequest) {
           const pin = document.createElement("div");
           pin.className = `spectrum-pin${item.method === (request.method ?? "ncaa-2025-27") ? " selected" : ""}`;
           pin.style.left = `${pct.toFixed(1)}%`;
+          pin.style.setProperty("--pin-at", pct.toFixed(1));
           const dot = document.createElement("span");
           dot.className = "pin-dot";
           const lbl = document.createElement("span");
@@ -289,7 +291,7 @@ function render(value: unknown, request: ConversionRequest) {
               ? "NCAA"
               : item.method === "colorado-teamunify-2026"
                 ? "Colorado"
-                : "Empirical";
+                : "Equivalence";
           pin.append(dot, lbl);
           track.append(pin);
         });
@@ -342,14 +344,16 @@ function render(value: unknown, request: ConversionRequest) {
       difference.textContent = `${typeof comparison.methodDifferenceSeconds === "number" && Number.isFinite(comparison.methodDifferenceSeconds) ? `Method difference: ${comparison.methodDifferenceSeconds.toFixed(2)}s. ` : ""}${methodComparisonCaveat}`;
       details.append(difference);
     }
-    if (
-      comparison.methodComparison?.some(
-        (item) =>
-          item.result.status === "available" && item.result.value.caveat,
-      )
-    ) {
+    const caveats = new Set(
+      (comparison.methodComparison ?? []).flatMap((item) =>
+        item.result.status === "available" && item.result.value.caveat
+          ? [caveatText(item.result.value.caveat)]
+          : [],
+      ),
+    );
+    for (const text of caveats) {
       const note = document.createElement("p");
-      note.textContent = coloradoDistanceCaveat;
+      note.textContent = text;
       details.append(note);
     }
     const altitudeRows = (
@@ -407,7 +411,7 @@ function render(value: unknown, request: ConversionRequest) {
         "Colorado Timing",
         "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.",
       ],
-      ["Turnmark Empirical", empiricalMethodExplanation],
+      ["Turnmark Equivalence", empiricalMethodExplanation],
       ["Pool length", poolLengthExplanation],
       [
         "Distance events",
@@ -430,6 +434,11 @@ function render(value: unknown, request: ConversionRequest) {
       const formula = document.createElement("p");
       formula.textContent = `${outcome.value.altitude ? "After the altitude deduction, seconds" : "Seconds"} × ${outcome.value.factor.toFixed(5)}${outcome.value.offsetSeconds ? ` ${outcome.value.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(outcome.value.offsetSeconds)}s` : ""}; factor rounded for display, final result truncated to hundredths.`;
       details.append(formula);
+      if (request.method === "turnmark-empirical-2026") {
+        const note = document.createElement("p");
+        note.textContent = empiricalCalculationNote;
+        details.append(note);
+      }
     }
     const sourceHeading = document.createElement("h2");
     sourceHeading.textContent = "Source";

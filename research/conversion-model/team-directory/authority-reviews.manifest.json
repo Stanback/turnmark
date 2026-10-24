@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "scope": "authority-homepage-discovery",
-  "authorities": 161,
-  "sha256": "c3fd7fc04adb5d00d35edabb77b61956acd7b96ec2aaddb3ff115854b6b39c27",
-  "generated_at": "2026-10-21T03:52:42.358542+00:00",
+  "authorities": 172,
+  "sha256": "89efbadf966a67555e32ff244e6c8b274137936b5373c5745ad575b9d831bb6f",
+  "generated_at": "2026-10-23T22:06:44.234264+00:00",
   "counts": {
-    "homepage_cached": 60,
+    "homepage_cached": 71,
     "stopped": 97,
     "not_requested": 4
   },
-  "notes": "One latest transport/homepage review per authority; HTTP links explicitly checked at same-host/path HTTPS where applicable; original URL retained. Homepage access is separate from sport directory/import coverage. Failed/robots/legacy destinations remain gaps; no challenge bypass. Raw pages, candidate links and collector stay local."
+  "notes": "One latest transport/homepage review per authority; HTTP links explicitly checked at same-host/path HTTPS where applicable; original URL retained. Homepage access is separate from sport directory/import coverage. Failed/robots/legacy destinations remain gaps; no challenge bypass. Raw pages, candidate links and collector stay local. Eleven Canadian homepages: three cached by the project collector, eight reused from the planning pass cache (TurnmarkResearchPlanner/0.1, 2026-10-23) with their original hashes and retrieval times."
 }

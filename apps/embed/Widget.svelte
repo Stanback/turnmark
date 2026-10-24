@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { coloradoDistanceCaveat } from "../../src/lib/calculation-copy";
+  import { caveatText } from "../../src/lib/calculation-copy";
   import AltitudeControls from "../../src/lib/AltitudeControls.svelte";
   import MethodComparison from "../../src/lib/MethodComparison.svelte";
   import Icon from "../../src/lib/Icon.svelte";
@@ -171,7 +171,7 @@
           </div>
           <strong>{result.value.time}</strong>
           {#if result.value.caveat}<p class="distance-caveat">
-              {coloradoDistanceCaveat}
+              {caveatText(result.value.caveat)}
             </p>{/if}
         {:else}
           <div>

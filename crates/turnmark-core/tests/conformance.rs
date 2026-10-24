@@ -65,6 +65,212 @@ fn language_neutral_fixtures() {
     }
 }
 
+/// Holds the engine to the arithmetic the equivalence model was evaluated with. The research
+/// pipeline regenerates these cases from data/empirical.json on every export.
+#[test]
+fn empirical_conversions_match_the_evaluated_reference_to_the_hundredth() {
+    let fixture: Value =
+        serde_json::from_str(include_str!("../../../fixtures/empirical-parity.json")).unwrap();
+    let snapshot: Value =
+        serde_json::from_str(include_str!("../../../data/empirical.json")).unwrap();
+    assert_eq!(
+        fixture["cellsSha256"], snapshot["source"]["sha256"],
+        "fixtures/empirical-parity.json describes a different empirical snapshot"
+    );
+    // A slower entered time never converts faster at a hundredth boundary.
+    let breast = |time: &str| {
+        run(
+            "convert",
+            &json!({
+                "swim": {"time": time, "event": {"distance": 100, "stroke": "breaststroke", "course": "LCM"}},
+                "to": "SCM",
+                "table": "women",
+                "method": "turnmark-empirical-2026",
+            }),
+        )["value"]["hundredths"]
+            .as_u64()
+            .unwrap()
+    };
+    assert!(breast("1:13.05") >= breast("1:13.04"));
+    let cases = fixture["cases"].as_array().unwrap();
+    // Six probes for each of the six course directions of every (event, category).
+    assert_eq!(
+        cases.len(),
+        6 * 6 * snapshot["cells"].as_object().unwrap().len()
+    );
+    for case in cases {
+        let input = json!({
+            "swim": {"time": case["time"], "event": case["event"]},
+            "to": case["to"],
+            "table": case["table"],
+            "method": "turnmark-empirical-2026",
+        });
+        let result = run("convert", &input);
+        if case.get("expectedStatus").is_some() {
+            assert_eq!(
+                result["status"], case["expectedStatus"],
+                "{} at {}: {result}",
+                case["cell"], case["time"]
+            );
+        } else {
+            assert_eq!(
+                result["value"]["hundredths"], case["expectedHundredths"],
+                "{} at {}: {result}",
+                case["cell"], case["time"]
+            );
+            let caveat = result["value"]
+                .get("caveat")
+                .cloned()
+                .unwrap_or(Value::Null);
+            assert_eq!(
+                caveat, case["expectedCaveat"],
+                "{} caveat at {}: {result}",
+                case["cell"], case["time"]
+            );
+        }
+    }
+}
+
+fn clock(hundredths: u64) -> String {
+    let (minutes, rest) = (hundredths / 6000, hundredths % 6000);
+    if minutes > 0 {
+        format!("{minutes}:{:02}.{:02}", rest / 100, rest % 100)
+    } else {
+        format!("{}.{:02}", rest / 100, rest % 100)
+    }
+}
+
+/// Entered distance and stroke for a snapshot event key such as "1500-FR" in one course.
+fn entered_event(event_key: &str, course: &str) -> Value {
+    let (distance, code) = event_key.split_once('-').unwrap();
+    let mut distance: u32 = distance.parse().unwrap();
+    let stroke = match code {
+        "FR" => "freestyle",
+        "BK" => "backstroke",
+        "BR" => "breaststroke",
+        "FL" => "butterfly",
+        _ => "individual-medley",
+    };
+    if course == "SCY" && code == "FR" {
+        distance = match distance {
+            400 => 500,
+            800 => 1000,
+            1500 => 1650,
+            other => other,
+        };
+    }
+    json!({"distance": distance, "stroke": stroke, "course": course})
+}
+
+/// The equivalence map composes one monotone map per course, so before rounding it inverts and
+/// composes exactly. With the engine's single truncation, A -> B -> A returns the entered time or
+/// up to 0.05 s faster (a truncation can be stretched where a course's map is flatter than the
+/// other's), A -> C -> B is within 0.05 s of A -> B, and a slower entered time never converts
+/// faster. Samples run from well below to well above each course's training support.
+#[test]
+fn empirical_conversions_invert_compose_and_stay_monotone() {
+    let snapshot: Value =
+        serde_json::from_str(include_str!("../../../data/empirical.json")).unwrap();
+    let courses = ["SCY", "SCM", "LCM"];
+    let convert = |time: u64, event: &Value, to: &str, table: &str| -> u64 {
+        let result = run(
+            "convert",
+            &json!({
+                "swim": {"time": clock(time), "event": event},
+                "to": to,
+                "table": table,
+                "method": "turnmark-empirical-2026",
+            }),
+        );
+        result["value"]["hundredths"]
+            .as_u64()
+            .unwrap_or_else(|| panic!("{event} {to} {table} at {time}: {result}"))
+    };
+    for (cell_key, params) in snapshot["cells"].as_object().unwrap() {
+        let (event_key, table) = cell_key.split_once('|').unwrap();
+        for from in courses {
+            let knots = params[from]["knots"].as_array().unwrap();
+            let middle_knot = &knots[knots.len() / 2];
+            let center = middle_knot[1].as_f64().unwrap().exp() * 100.0;
+            let event = entered_event(event_key, from);
+            for to in courses.iter().filter(|c| **c != from) {
+                let via = courses.iter().find(|c| **c != from && *c != to).unwrap();
+                let back_event = entered_event(event_key, to);
+                let mut previous = 0;
+                for step in 0..=40 {
+                    // 0.6x to 1.6x the course location, plus an odd hundredth offset.
+                    let time = (center * (0.6 + step as f64 * 0.025)) as u64 + step % 7;
+                    let forward = convert(time, &event, to, table);
+                    assert!(forward >= previous, "{cell_key} {from}->{to} at {time}");
+                    previous = forward;
+                    let back = convert(forward, &back_event, from, table);
+                    assert!(
+                        back <= time && time - back <= 5,
+                        "{cell_key} {from}->{to}->{from}: {time} -> {forward} -> {back}"
+                    );
+                    let middle = convert(time, &event, via, table);
+                    let composed = convert(middle, &entered_event(event_key, via), to, table);
+                    assert!(
+                        composed.abs_diff(forward) <= 5,
+                        "{cell_key} {from}->{via}->{to}: {composed} vs {forward}"
+                    );
+                }
+            }
+        }
+    }
+}
+
+/// Elevation adjusts the entered swim in whole hundredths, so the conversion still rounds once:
+/// an altitude-adjusted conversion equals converting the adjusted clock time directly.
+#[test]
+fn altitude_adjusted_conversions_round_once() {
+    let conversions: Value =
+        serde_json::from_str(include_str!("../../../data/conversions.json")).unwrap();
+    for table in ["altitudeAdjustments", "ncaaAltitudeAdjustments"] {
+        for bands in conversions[table].as_object().unwrap().values() {
+            for adjustment in bands.as_array().unwrap() {
+                let hundredths = adjustment.as_f64().unwrap() * 100.0;
+                assert!(
+                    (hundredths - hundredths.round()).abs() < 1e-9,
+                    "{table}: {adjustment}"
+                );
+            }
+        }
+    }
+    for method in [
+        "ncaa-2025-27",
+        "colorado-teamunify-2026",
+        "turnmark-empirical-2026",
+    ] {
+        for time in ["1:52.37", "4:01.09", "16:12.71"] {
+            let distance = match time {
+                "1:52.37" => 200,
+                "4:01.09" => 400,
+                _ => 1500,
+            };
+            let event = json!({"distance": distance, "stroke": "freestyle", "course": "LCM"});
+            let adjusted = run(
+                "convert",
+                &json!({"swim": {"time": time, "event": event}, "to": "SCY", "table": "women",
+                        "method": method, "elevation": {"value": 5280, "unit": "feet"}}),
+            );
+            let clock = adjusted["value"]["altitude"]["value"]["adjustedTime"]
+                .as_str()
+                .unwrap()
+                .to_owned();
+            let direct = run(
+                "convert",
+                &json!({"swim": {"time": clock, "event": event}, "to": "SCY", "table": "women",
+                        "method": method}),
+            );
+            assert_eq!(
+                adjusted["value"]["hundredths"], direct["value"]["hundredths"],
+                "{method} {time}"
+            );
+        }
+    }
+}
+
 #[test]
 fn all_published_points_bases_and_milestone_hundredths() {
     let data: Value = serde_json::from_str(include_str!("../../../data/points.json")).unwrap();
@@ -139,7 +345,39 @@ fn typed_native_contract_and_transport_errors() {
     };
     assert_eq!(emp_prov.id, "turnmark-empirical-2026");
     assert_eq!(emp_val.kind, ConversionKind::Derived);
-    assert!(emp_val.hundredths > 5000 && emp_val.hundredths < 5600);
+    assert!(emp_val.hundredths >= 5100 && emp_val.hundredths <= 5300);
+    // Distance mapping & monotonicity check: 1650y SCY -> 1500m LCM Men maps to 1500m and rises monotonically
+    let mut prev_hundredths = 0;
+    for sample_time in ["14:13.00", "15:30.00", "17:00.00"] {
+        let mile = convert_swim_with_method(
+            ConversionRequest {
+                swim: Swim {
+                    time: sample_time.into(),
+                    event: SwimEvent {
+                        distance: 1650,
+                        stroke: Stroke::Freestyle,
+                        course: Course::SCY,
+                    },
+                },
+                to: Course::LCM,
+                table: Category::Men,
+            },
+            ConversionMethod::Empirical,
+        );
+        let ConversionOutcome::Available {
+            value: mile_val, ..
+        } = mile
+        else {
+            panic!("empirical 1650y->1500m conversion unavailable")
+        };
+        assert_eq!(mile_val.event.distance, 1500);
+        assert!(mile_val.hundredths > prev_hundredths);
+        prev_hundredths = mile_val.hundredths;
+    }
+    let emp_data: Value =
+        serde_json::from_str(include_str!("../../../data/empirical.json")).unwrap();
+    assert_eq!(emp_data["schemaVersion"], 3);
+    assert_eq!(emp_data["cells"].as_object().unwrap().len(), 28);
     assert!(evaluate("convert".into(), "{".into()).is_err());
     assert!(evaluate("typo".into(), "{}".into()).is_err());
     assert!(evaluate(

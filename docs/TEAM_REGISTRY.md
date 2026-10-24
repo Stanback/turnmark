@@ -52,12 +52,24 @@ first page was imported. Maintain a coverage ledger by segment, state/LSC,
 season, expected-source universe where known, fetched pages, verified programs,
 unmapped observations and freshness. Unsupported access or missing exports are
 visible gaps. Raw source payloads and swimmer-level records stay local. The [public directory snapshot](../research/conversion-model/team-directory/README.md)
-publishes a reviewed projection of organizational facts from 142 directory
-sources (`15,073` program listings across `12,906` source-scoped organizations and
-`16,431` affiliations), alongside `7,597` facility rows and `997` separately described
+publishes a reviewed projection of organizational facts from 631 directory
+sources (`21,206` program listings across `18,531` source-scoped organizations and
+`22,564` affiliations), alongside `10,005` facility rows and `1,300` separately described
 competition basins, with attribution and
 explicit unknown activity status. It excludes raw payloads, contacts, rosters
 and historical meet-file observations.
+
+Canada is a second country dimension, not an extension of the U.S. segments:
+Swimming Canada's national club list and the Swim BC, Alberta, Saskatchewan,
+Manitoba, Ontario, Nova Scotia and Newfoundland and Labrador section lists are
+imported as separate source assertions (`900` listings including 26 browser-reviewed university programs, `country=CA`, two-letter
+province codes derived only from the sources or from postal codes). National and
+provincial rows for one club are never merged; Quebec, New Brunswick and PEI
+clubs are reached only through the national list; university varsity sources
+(U SPORTS, CCAA, OUA, Canada West, AUS) answered automated requests with HTTP 403;
+25 varsity programs and one club team were instead confirmed by a person on university athletics pages. Governing bodies carry the eleven Canadian starting
+points with bilingual names noted in the manifest rather than an alias table,
+since no imported club row carried two names.
 
 The current private race pilot began with Pacific Swimming. Reviewed public ZIP
 sources in Potomac Valley and Midwestern Swimming also parse through the SDIF
@@ -74,8 +86,8 @@ collection milestone, not model validation.
 
 ## Optional graph layer
 
-The public directory snapshot exports `15,073` program listings across `12,906`
-source-scoped organizations and `16,431` affiliations from `142` governing-body
+The public directory snapshot exports `21,206` program listings across `18,531`
+source-scoped organizations and `22,564` affiliations from `631` directory
 sources as CSV with source hashes, URLs and listing dates. Separate
 `organizations.csv`, `programs.csv` and `affiliations.csv` files, plus companion
 facility and source-catalog tables under `catalog/`, rebuild a local queryable

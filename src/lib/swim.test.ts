@@ -3,6 +3,7 @@ import {
   altitudeAdjustment,
   availableEvent,
   convert,
+  convertState,
   courses,
   defaultState,
   eventDistance,
@@ -17,6 +18,9 @@ import {
   formatTime,
 } from "./swim";
 import data from "../../data/standards.json";
+import empirical from "../../data/empirical.json";
+import { caveatText } from "./calculation-copy";
+import type { Course, Stroke } from "./swim";
 
 describe("swimmer time input and hundredths", () => {
   it.each([
@@ -178,5 +182,222 @@ describe("share links", () => {
       defaultState,
     );
     expect(readState("#s=IM&d=100&c=LCM").course).toBe("SCY");
+  });
+});
+
+type Knots = [number, number][];
+type EquivalenceCell = Record<Course, { knots: Knots }>;
+const equivalenceCells = Object.entries(
+  empirical.cells as unknown as Record<string, EquivalenceCell>,
+).map(([key, cell]) => {
+  const [event, category] = key.split("|") as [string, "men" | "women"];
+  const [distance, stroke] = event.split("-") as [string, Stroke];
+  return { key, event, category, distance: Number(distance), stroke, cell };
+});
+const coursePairs = courses.flatMap((from) =>
+  courses.filter((to) => to !== from).map((to) => [from, to] as const),
+);
+const equivalenceSwim = (
+  item: (typeof equivalenceCells)[number],
+  course: Course,
+  seconds: number,
+) => ({
+  ...defaultState,
+  method: "turnmark-empirical-2026" as const,
+  stroke: item.stroke,
+  distance: item.distance,
+  category: item.category,
+  course,
+  time: formatTime(seconds),
+});
+// The equivalence model, from its documented definition: each course maps onto a shared latent
+// scale through piecewise-linear knots in log seconds, with slope 1 beyond the outer knots.
+const knotMap = (knots: Knots, x: number, inverse: boolean) => {
+  const [i, o] = inverse ? [1, 0] : [0, 1];
+  const first = knots[0]!;
+  const last = knots[knots.length - 1]!;
+  if (x <= first[i]) return first[o] + (x - first[i]);
+  if (x >= last[i]) return last[o] + (x - last[i]);
+  let k = 0;
+  while (knots[k + 1]![i] <= x) k++;
+  const lo = knots[k]!;
+  const hi = knots[k + 1]!;
+  return lo[o] + ((x - lo[i]) * (hi[o] - lo[o])) / (hi[i] - lo[i]);
+};
+const latentOf = (cell: EquivalenceCell, from: Course, x: number) =>
+  knotMap(cell[from].knots, Math.log(x), true);
+const equivalentSeconds = (
+  cell: EquivalenceCell,
+  from: Course,
+  to: Course,
+  x: number,
+) => Math.exp(knotMap(cell[to].knots, latentOf(cell, from, x), false));
+// A typical entered time: the middle knot of the source course's map.
+const typicalSeconds = (cell: EquivalenceCell, from: Course) => {
+  const knots = cell[from].knots;
+  return Math.exp(knots[Math.floor(knots.length / 2)]![1]);
+};
+const expectedCaveat = (
+  item: (typeof equivalenceCells)[number],
+  from: Course,
+  to: Course,
+  x: number,
+) => {
+  const u = latentOf(item.cell, from, x);
+  const a = item.cell[from].knots;
+  const b = item.cell[to].knots;
+  const lo = Math.max(a[0]![0], b[0]![0]);
+  const hi = Math.min(a[a.length - 1]![0], b[b.length - 1]![0]);
+  if (!(lo <= u && u <= hi)) return "empirical-out-of-range";
+  const key = `${from}->${to}|${item.event}|${item.category}`;
+  const precise = (
+    empirical.preciseLatentRanges as unknown as Record<
+      string,
+      [number, number] | null
+    >
+  )[key];
+  if (
+    empirical.lowEvidenceCells.includes(key) ||
+    !precise ||
+    !(precise[0] <= u && u <= precise[1])
+  )
+    return "empirical-low-evidence";
+  return undefined;
+};
+
+describe("Turnmark Equivalence conversions", () => {
+  it("covers every published event in the equivalence data", () => {
+    for (const item of equivalenceCells)
+      for (const course of courses)
+        expect(
+          availableEvent(item.distance, course, item.stroke),
+          item.key,
+        ).toBe(true);
+  });
+  it("returns the equivalent time from the fitted course maps, truncated once", () => {
+    for (const item of equivalenceCells)
+      for (const [from, to] of coursePairs)
+        for (const ratio of [0.6, 0.85, 1, 1.2, 1.8]) {
+          const entered =
+            Math.floor(typicalSeconds(item.cell, from) * ratio * 100) / 100;
+          const expected = equivalentSeconds(item.cell, from, to, entered);
+          const result = convertState(equivalenceSwim(item, from, entered), to);
+          const label = `${item.key} ${from}→${to} ${entered}`;
+          expect(result.time, label).not.toBeNull();
+          expect(result.time!, label).toBeLessThanOrEqual(expected + 1e-9);
+          expect(expected - result.time!, label).toBeLessThan(0.01);
+          expect(result.offsetSeconds ?? 0, label).toBe(0);
+          expect(result.factor!, label).toBeCloseTo(expected / entered, 9);
+        }
+  });
+  it("converts there and back to the entered time or a few hundredths faster", () => {
+    for (const item of equivalenceCells)
+      for (const [from, to] of coursePairs)
+        for (const ratio of [0.6, 0.9, 1, 1.1, 1.8]) {
+          const entered =
+            Math.floor(typicalSeconds(item.cell, from) * ratio * 100) / 100;
+          const there = convertState(
+            equivalenceSwim(item, from, entered),
+            to,
+          ).time!;
+          const back = convertState(
+            equivalenceSwim(item, to, there),
+            from,
+          ).time!;
+          const label = `${item.key} ${from}→${to}→${from} ${entered}`;
+          expect(back, label).toBeLessThanOrEqual(entered + 1e-9);
+          expect(entered - back, label).toBeLessThanOrEqual(0.05 + 1e-9);
+        }
+  });
+  it("never converts a faster entered time slower", () => {
+    for (const item of equivalenceCells)
+      for (const [from, to] of coursePairs) {
+        const typical = typicalSeconds(item.cell, from);
+        let previous = 0;
+        for (let step = 0; step <= 60; step++) {
+          const entered = Math.floor(typical * (0.6 + step * 0.02) * 100) / 100;
+          const converted = convertState(
+            equivalenceSwim(item, from, entered),
+            to,
+          ).time!;
+          expect(
+            converted,
+            `${item.key} ${from}→${to} ${entered}`,
+          ).toBeGreaterThanOrEqual(previous);
+          previous = converted;
+        }
+      }
+  });
+});
+
+describe("Turnmark Equivalence caveats", () => {
+  const empiricalSwim = {
+    ...defaultState,
+    method: "turnmark-empirical-2026" as const,
+  };
+  it("marks thin cells as low evidence", () => {
+    expect(empirical.lowEvidenceCells).toContain("SCY->SCM|200-FL|women");
+    const thin = convertState(
+      {
+        ...empiricalSwim,
+        time: "2:20.00",
+        stroke: "FL" as const,
+        distance: 200,
+        course: "SCY",
+        category: "women",
+      },
+      "SCM",
+    );
+    expect(thin.time).toBeCloseTo(156.49, 9);
+    expect(thin.caveat).toBe("empirical-low-evidence");
+    expect(caveatText(thin.caveat)).toBe(
+      "Limited data: few swimmers in Turnmark’s data swam this event in both of these courses at this level, so this equivalent time is less certain and leans on related events and pool geometry.",
+    );
+  });
+  it("marks times beyond the data as out of range", () => {
+    const mile = convertState(
+      {
+        ...empiricalSwim,
+        time: "14:13.00",
+        distance: 1650,
+        course: "SCY",
+        category: "men",
+      },
+      "LCM",
+    );
+    expect(mile.caveat).toBe("empirical-out-of-range");
+    expect(caveatText(mile.caveat)).toBe(
+      "Outside the model’s fitted range: this estimate extrapolates beyond the available fit.",
+    );
+  });
+  it("follows the out-of-range, thin-cell and precision rules at every entered time", () => {
+    for (const item of equivalenceCells)
+      for (const [from, to] of coursePairs)
+        for (const ratio of [0.5, 0.8, 1, 1.25, 2]) {
+          const entered =
+            Math.floor(typicalSeconds(item.cell, from) * ratio * 100) / 100;
+          const key = `${item.key} ${from}→${to} ${entered}`;
+          expect(
+            convertState(equivalenceSwim(item, from, entered), to).caveat,
+            key,
+          ).toBe(expectedCaveat(item, from, to, entered));
+        }
+  });
+  it("leaves well-supported times and other methods unmarked", () => {
+    expect(empirical.lowEvidenceCells).not.toContain("SCY->LCM|100-FR|women");
+    expect(convertState(empiricalSwim, "LCM").caveat).toBeUndefined();
+    expect(
+      convertState(
+        {
+          ...defaultState,
+          time: "16:00.00",
+          distance: 1500,
+          course: "LCM",
+          category: "men",
+        },
+        "SCM",
+      ).caveat,
+    ).toBeUndefined();
+    expect(caveatText(undefined)).toBe("");
   });
 });
