@@ -119,8 +119,7 @@ final class ConversionUITests: TurnmarkUITestCase {
         XCTAssertTrue(originalContext.exists)
         let edition = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Edition:")).firstMatch
         reach(edition, in: app); capture(app, "Conversion details")
-        let done = app.buttons["Done"].firstMatch
-        reach(done, in: app); done.tap()
+        tapSheetBar(app.buttons["Done"].firstMatch, in: app)
         reach(app.staticTexts["resultTime"], in: app); capture(app, "Converter result light")
         let appearance = XCUIDevice.shared.appearance
         XCUIDevice.shared.appearance = .dark

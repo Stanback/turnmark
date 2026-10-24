@@ -59,11 +59,17 @@ final class InputUITests: TurnmarkUITestCase {
         XCTAssertTrue(done.waitForExistence(timeout: 5)); XCTAssertNotNil(visibleKeyboard(in: app)); done.tap()
         assertConverterKeyboardDismissed(in: app)
         // Starting entry in an already-wide workspace must not collapse its
-        // field when the keyboard reduces the available height.
+        // field when the keyboard reduces the available height. A display that
+        // keeps the app portrait (iPhone Duo's) has no wide workspace to keep.
         XCUIDevice.shared.orientation = .landscapeLeft
+        let expanded = app.descendants(matching: .any)["expandedConverter"].firstMatch
+        let rotated = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in app.frame.width > app.frame.height }, object: nil)
+        let wide = XCTWaiter.wait(for: [rotated], timeout: 5) == .completed
+        XCTAssertEqual(wide ? expanded.waitForExistence(timeout: 5) : expanded.exists, wide,
+            "A landscape workspace must use the expanded converter")
         replace(field, with: "58.32", in: app, earlier: true)
         XCTAssertEqual(field.value as? String, "58.32")
-        XCTAssertTrue(app.descendants(matching: .any)["expandedConverter"].firstMatch.exists)
+        XCTAssertEqual(expanded.exists, wide)
         XCTAssertTrue(done.waitForExistence(timeout: 5)); XCTAssertNotNil(visibleKeyboard(in: app)); done.tap()
         assertConverterKeyboardDismissed(in: app)
     }
