@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Close methods on the card's method spectrum no longer print their labels over
+  each other: a label that would collide drops to a lower row with a leader tick
+  back to its dot, using the same layout as the web app. UI resource revision is
+  `0.3.0-r8.html`.
+
 - `turnmark-empirical-2026` is now Turnmark Equivalence: a model-based estimate
   of the equivalent time in the other course. The method ID is unchanged; its factor
   varies with the entered time and it never returns `offsetSeconds`. The card

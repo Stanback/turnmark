@@ -274,8 +274,9 @@ footer {
   margin-bottom: 10px;
 }
 .spectrum-track {
+  --pin-row: 18px;
   position: relative;
-  height: 32px;
+  height: calc(16px + var(--label-rows, 1) * var(--pin-row));
 }
 .spectrum-rail {
   position: absolute;
@@ -286,33 +287,47 @@ footer {
   border-radius: 3px;
   background: var(--tm-color-border-subtle);
 }
-/* Zero-width anchor at the method's position. The dot centers on it; the label
-   shifts by its own position share, so edge labels stay inside the track. */
+/* Zero-width anchor at the method's true position. The dot centres on it; the
+   label is shifted by the measured layout, or before measuring by its own
+   position share so edge labels stay inside the track. */
 .spectrum-pin {
   position: absolute;
   top: 0;
   width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-}
-.pin-name {
-  transform: translateX(calc(var(--pin-at) * -1%));
+  --label-row: 0;
 }
 .pin-dot {
-  transform: translateX(-50%);
+  position: absolute;
+  top: 3px;
+  left: -5.5px;
   width: 11px;
   height: 11px;
   border-radius: 50%;
   border: 2px solid var(--tm-color-border-control);
   background: var(--tm-color-surface);
 }
+.pin-leader {
+  position: absolute;
+  top: 14px;
+  left: -0.5px;
+  width: 1px;
+  height: calc(2px + var(--label-row) * var(--pin-row));
+  background: var(--tm-color-border-control);
+}
 .spectrum-pin.selected .pin-dot {
   border-color: var(--tm-color-result-highlight);
   background: var(--tm-color-result-highlight);
 }
 .pin-name {
+  position: absolute;
+  top: calc(16px + var(--label-row) * var(--pin-row));
+  left: 0;
+  z-index: 1;
+  transform: translateX(var(--label-shift, calc(var(--pin-at) * -1%)));
+  padding: 0 3px;
+  border-radius: var(--tm-radius-control);
+  /* Opaque so a leader that must pass a label runs behind its text. */
+  background: var(--tm-color-surface);
   font-size: 0.7rem;
   font-weight: 650;
   color: var(--tm-color-text);

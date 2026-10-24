@@ -8,6 +8,7 @@
     methodComparisonCaveat,
   } from "./calculation-copy";
   import AltitudeComparison from "./AltitudeComparison.svelte";
+  import { placeSpectrumLabels } from "./spectrum-layout";
   import {
     type Converter,
     conversionMethods,
@@ -157,11 +158,8 @@
     };
   });
 
-  // Pins sit at their true positions; labels are laid out separately so close
-  // methods never print over each other. Each label centres on its pin when it
-  // fits, stays inside the track, and drops to the first lower row (with a
-  // leader tick back to its pin) where it touches no other label. Among those
-  // rows it prefers one where no leader runs through a label.
+  // Pins sit at their true positions; labels are laid out separately (see
+  // spectrum-layout.ts) so close methods never print over each other.
   let trackWidth = $state(0);
   let labelWidths = $state<number[]>([]);
   let labelHeights = $state<number[]>([]);
@@ -170,44 +168,13 @@
   );
   const labelPlaces = $derived.by(() => {
     const nodes = spectrum?.nodes ?? [];
-    const places = nodes.map(() => ({ shift: null as number | null, row: 0 }));
-    if (!trackWidth || nodes.some((_, i) => !labelWidths[i])) return places;
-    const gap = 8;
-    type Box = { left: number; right: number; row: number; x: number };
-    const placed: Box[] = [];
-    const overlaps = (a: Box, b: Box) =>
-      a.row === b.row && a.left < b.right + gap && b.left < a.right + gap;
-    // A leader runs from the rail down through every row above its label.
-    const crosses = (leader: Box, label: Box) =>
-      label.row < leader.row &&
-      leader.x > label.left - gap &&
-      leader.x < label.right + gap;
-    const order = nodes
-      .map((_, i) => i)
-      .sort((a, b) => nodes[a].pct - nodes[b].pct);
-    for (const i of order) {
-      const width = labelWidths[i];
-      const x = (nodes[i].pct / 100) * trackWidth;
-      const left = Math.max(0, Math.min(x - width / 2, trackWidth - width));
-      // Row placed.length is always empty, so a free row always exists.
-      const candidates = Array.from(
-        { length: placed.length + 1 },
-        (_, row) => ({
-          left,
-          right: left + width,
-          row,
-          x,
-        }),
-      ).filter((box) => !placed.some((other) => overlaps(box, other)));
-      const box =
-        candidates.find(
-          (box) =>
-            !placed.some((other) => crosses(box, other) || crosses(other, box)),
-        ) ?? candidates[0];
-      placed.push(box);
-      places[i] = { shift: box.left - x, row: box.row };
-    }
-    return places;
+    if (!trackWidth || nodes.some((_, i) => !labelWidths[i]))
+      return nodes.map(() => ({ shift: null as number | null, row: 0 }));
+    const xs = nodes.map((node) => (node.pct / 100) * trackWidth);
+    return placeSpectrumLabels(
+      xs.map((x, i) => ({ x, width: labelWidths[i] })),
+      trackWidth,
+    ).map((place, i) => ({ shift: place.left - xs[i], row: place.row }));
   });
   const labelRows = $derived(
     Math.max(1, ...labelPlaces.map((place) => place.row + 1)),
