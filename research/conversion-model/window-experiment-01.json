@@ -1,0 +1,3598 @@
+{
+  "experiment": "window-experiment-01",
+  "evaluated_at": "2026-10-24",
+  "scope": "aggregate pairing-window experiment receipt; no swimmer-level records",
+  "question": "Which pairing window should the equivalence model's TRAINING pairs use: 14, 30 (shipped), 60 or 90 days?",
+  "design": {
+    "training_windows_days": [
+      14,
+      30,
+      60,
+      90
+    ],
+    "fixed_test": "clean test-partition pairs within 14 days (primary)",
+    "secondary_test": "clean test-partition pairs within 30 days",
+    "held_fixed": "swimmer-hash 70/15/15 partitions; course noise from 30-day same-course repeats of training swimmers; shrinkage, reconciliation and the 18% ratio screen as shipped",
+    "bootstrap": "2000 swimmer-clustered replicates, seed 20261023; fitted models held fixed inside replicates",
+    "references": "NCAA 2025-27 formula; flat multiplier fitted on each window"
+  },
+  "input_provenance": {
+    "input_label": "national-checkpoint-17",
+    "iceberg_snapshot_id": 4441271835344284414,
+    "archive_rows": 8506767,
+    "loaded_swims_sha256": "dad61c4d47ea265847c6735a73f150e907d02d73bbd0d321cd5ce4a4503b9edc",
+    "matches_shipped_receipt": "evaluation-checkpoint-08.json"
+  },
+  "script_sha256": "783256d0476aead9b495a8f7c3f4c1a03c5134798a8c511a4fb05508d2c20c33",
+  "noise_repeat_swims_train": 803195,
+  "training_sets": {
+    "14d": {
+      "directional_pairs": 93036,
+      "clean_directional_pairs": 92658,
+      "underlying_pairs": 46518,
+      "clean_underlying_pairs": 46329,
+      "swimmers": 14517,
+      "clean_swimmers": 14470,
+      "low_evidence_course_pair_cells": 43,
+      "scm_course_pair_cells_low_evidence": 40,
+      "scm_course_pair_cells": 56
+    },
+    "30d": {
+      "directional_pairs": 189896,
+      "clean_directional_pairs": 189046,
+      "underlying_pairs": 94948,
+      "clean_underlying_pairs": 94523,
+      "swimmers": 22512,
+      "clean_swimmers": 22425,
+      "low_evidence_course_pair_cells": 30,
+      "scm_course_pair_cells_low_evidence": 28,
+      "scm_course_pair_cells": 56
+    },
+    "60d": {
+      "directional_pairs": 414006,
+      "clean_directional_pairs": 411902,
+      "underlying_pairs": 207003,
+      "clean_underlying_pairs": 205951,
+      "swimmers": 35503,
+      "clean_swimmers": 35334,
+      "low_evidence_course_pair_cells": 28,
+      "scm_course_pair_cells_low_evidence": 28,
+      "scm_course_pair_cells": 56
+    },
+    "90d": {
+      "directional_pairs": 730452,
+      "clean_directional_pairs": 726366,
+      "underlying_pairs": 365226,
+      "clean_underlying_pairs": 363183,
+      "swimmers": 45803,
+      "clean_swimmers": 45507,
+      "low_evidence_course_pair_cells": 25,
+      "scm_course_pair_cells_low_evidence": 25,
+      "scm_course_pair_cells": 56
+    }
+  },
+  "seasonal_scy_lcm_order_in_training": {
+    "14d": {
+      "pairs": 41579,
+      "share_LCM_later": 0.4395,
+      "share_LCM_earlier": 0.4516,
+      "share_same_day": 0.109,
+      "mean_signed_gap_days_LCM_minus_SCY": -0.25,
+      "mean_abs_gap_days": 7.81
+    },
+    "30d": {
+      "pairs": 84768,
+      "share_LCM_later": 0.4823,
+      "share_LCM_earlier": 0.4643,
+      "share_same_day": 0.0535,
+      "mean_signed_gap_days_LCM_minus_SCY": 0.71,
+      "mean_abs_gap_days": 15.82
+    },
+    "60d": {
+      "pairs": 191050,
+      "share_LCM_later": 0.6224,
+      "share_LCM_earlier": 0.3539,
+      "share_same_day": 0.0237,
+      "mean_signed_gap_days_LCM_minus_SCY": 12.55,
+      "mean_abs_gap_days": 33.16
+    },
+    "90d": {
+      "pairs": 344252,
+      "share_LCM_later": 0.617,
+      "share_LCM_earlier": 0.3699,
+      "share_same_day": 0.0132,
+      "mean_signed_gap_days_LCM_minus_SCY": 14.14,
+      "mean_abs_gap_days": 52.1
+    }
+  },
+  "scy_to_lcm_ratio_drift": {
+    "14d": {
+      "women 100 free 58.32": {
+        "equivalence_lcm_seconds": 67.1,
+        "equivalence_ratio": 1.15055,
+        "flat_ratio": 1.14729
+      },
+      "men 100 free 50.50": {
+        "equivalence_lcm_seconds": 58.41,
+        "equivalence_ratio": 1.15663,
+        "flat_ratio": 1.15069
+      },
+      "women 200 free 2:05.00": {
+        "equivalence_lcm_seconds": 144.4,
+        "equivalence_ratio": 1.1552,
+        "flat_ratio": 1.14904
+      }
+    },
+    "30d": {
+      "women 100 free 58.32": {
+        "equivalence_lcm_seconds": 67.26,
+        "equivalence_ratio": 1.15329,
+        "flat_ratio": 1.14866
+      },
+      "men 100 free 50.50": {
+        "equivalence_lcm_seconds": 58.53,
+        "equivalence_ratio": 1.15901,
+        "flat_ratio": 1.15109
+      },
+      "women 200 free 2:05.00": {
+        "equivalence_lcm_seconds": 144.97,
+        "equivalence_ratio": 1.15976,
+        "flat_ratio": 1.15176
+      }
+    },
+    "60d": {
+      "women 100 free 58.32": {
+        "equivalence_lcm_seconds": 67.41,
+        "equivalence_ratio": 1.15586,
+        "flat_ratio": 1.14866
+      },
+      "men 100 free 50.50": {
+        "equivalence_lcm_seconds": 58.62,
+        "equivalence_ratio": 1.16079,
+        "flat_ratio": 1.1505
+      },
+      "women 200 free 2:05.00": {
+        "equivalence_lcm_seconds": 145.61,
+        "equivalence_ratio": 1.16488,
+        "flat_ratio": 1.15576
+      }
+    },
+    "90d": {
+      "women 100 free 58.32": {
+        "equivalence_lcm_seconds": 67.18,
+        "equivalence_ratio": 1.15192,
+        "flat_ratio": 1.14506
+      },
+      "men 100 free 50.50": {
+        "equivalence_lcm_seconds": 58.41,
+        "equivalence_ratio": 1.15663,
+        "flat_ratio": 1.14673
+      },
+      "women 200 free 2:05.00": {
+        "equivalence_lcm_seconds": 144.9,
+        "equivalence_ratio": 1.1592,
+        "flat_ratio": 1.14984
+      }
+    }
+  },
+  "evaluations": {
+    "test_14d": {
+      "test_set": {
+        "directional_pairs": 19374,
+        "clean_directional_pairs": 19374,
+        "underlying_pairs": 9687,
+        "clean_underlying_pairs": 9687,
+        "swimmers": 2985,
+        "clean_swimmers": 2985
+      },
+      "methods": {
+        "ncaa_2025_27": {
+          "overall": {
+            "evaluated_pairs": 19374,
+            "evaluated_swimmers": 2985,
+            "mae_seconds": 2.7429,
+            "median_ae_seconds": 1.61,
+            "signed_bias_seconds": 0.0073,
+            "mape_percent": 2.6694
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.9065,
+              "signed_bias_seconds": -0.208
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.6116,
+              "signed_bias_seconds": 0.2227
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.8855,
+              "signed_bias_seconds": -0.5931
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.6561,
+              "signed_bias_seconds": 0.5848
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.549,
+              "signed_bias_seconds": 0.7805
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.4596,
+              "signed_bias_seconds": -0.7564
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 1902,
+            "mae_seconds": 2.5951,
+            "signed_bias_seconds": 0.0065
+          }
+        },
+        "equivalence_14d": {
+          "overall": {
+            "evaluated_pairs": 19374,
+            "evaluated_swimmers": 2985,
+            "mae_seconds": 2.4992,
+            "median_ae_seconds": 1.47,
+            "signed_bias_seconds": -0.0024,
+            "mape_percent": 2.4365
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.58,
+              "signed_bias_seconds": 0.0476
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.4099,
+              "signed_bias_seconds": -0.0526
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.8877,
+              "signed_bias_seconds": -0.222
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.7183,
+              "signed_bias_seconds": 0.2375
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.4137,
+              "signed_bias_seconds": -0.1944
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.3877,
+              "signed_bias_seconds": 0.1808
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 1902,
+            "mae_seconds": 2.5378,
+            "signed_bias_seconds": -0.0019
+          }
+        },
+        "flat_multiplier_14d": {
+          "overall": {
+            "evaluated_pairs": 19374,
+            "evaluated_swimmers": 2985,
+            "mae_seconds": 2.5776,
+            "median_ae_seconds": 1.51,
+            "signed_bias_seconds": 0.002,
+            "mape_percent": 2.5068
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.7277,
+              "signed_bias_seconds": 0.1193
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.4438,
+              "signed_bias_seconds": -0.1115
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.8679,
+              "signed_bias_seconds": -0.1311
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.633,
+              "signed_bias_seconds": 0.1053
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.4057,
+              "signed_bias_seconds": -0.1406
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.3452,
+              "signed_bias_seconds": 0.1077
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 1902,
+            "mae_seconds": 2.5032,
+            "signed_bias_seconds": -0.0152
+          }
+        },
+        "equivalence_30d": {
+          "overall": {
+            "evaluated_pairs": 19374,
+            "evaluated_swimmers": 2985,
+            "mae_seconds": 2.5095,
+            "median_ae_seconds": 1.49,
+            "signed_bias_seconds": 0.0059,
+            "mape_percent": 2.4511
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.5907,
+              "signed_bias_seconds": 0.2993
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.4244,
+              "signed_bias_seconds": -0.2857
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.8596,
+              "signed_bias_seconds": -0.158
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.68,
+              "signed_bias_seconds": 0.1633
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.4096,
+              "signed_bias_seconds": -0.129
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.3937,
+              "signed_bias_seconds": 0.12
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 1902,
+            "mae_seconds": 2.5271,
+            "signed_bias_seconds": -0.0021
+          }
+        },
+        "flat_multiplier_30d": {
+          "overall": {
+            "evaluated_pairs": 19374,
+            "evaluated_swimmers": 2985,
+            "mae_seconds": 2.5834,
+            "median_ae_seconds": 1.51,
+            "signed_bias_seconds": 0.0113,
+            "mape_percent": 2.5104
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.7352,
+              "signed_bias_seconds": 0.292
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.4468,
+              "signed_bias_seconds": -0.2656
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.8727,
+              "signed_bias_seconds": -0.1546
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.6306,
+              "signed_bias_seconds": 0.1566
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.4194,
+              "signed_bias_seconds": -0.2649
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.3609,
+              "signed_bias_seconds": 0.2443
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 1902,
+            "mae_seconds": 2.5133,
+            "signed_bias_seconds": -0.0065
+          }
+        },
+        "equivalence_60d": {
+          "overall": {
+            "evaluated_pairs": 19374,
+            "evaluated_swimmers": 2985,
+            "mae_seconds": 2.5692,
+            "median_ae_seconds": 1.56,
+            "signed_bias_seconds": 0.0127,
+            "mape_percent": 2.4955
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.6465,
+              "signed_bias_seconds": 0.6116
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.4934,
+              "signed_bias_seconds": -0.5838
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.8903,
+              "signed_bias_seconds": 0.193
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.7352,
+              "signed_bias_seconds": -0.1667
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.4378,
+              "signed_bias_seconds": -0.4183
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.4295,
+              "signed_bias_seconds": 0.41
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 1902,
+            "mae_seconds": 2.5628,
+            "signed_bias_seconds": 0.0018
+          }
+        },
+        "flat_multiplier_60d": {
+          "overall": {
+            "evaluated_pairs": 19374,
+            "evaluated_swimmers": 2985,
+            "mae_seconds": 2.6084,
+            "median_ae_seconds": 1.53,
+            "signed_bias_seconds": 0.0189,
+            "mape_percent": 2.5274
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.763,
+              "signed_bias_seconds": 0.5018
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.468,
+              "signed_bias_seconds": -0.4591
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.9045,
+              "signed_bias_seconds": 0.2143
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.6532,
+              "signed_bias_seconds": -0.191
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.4489,
+              "signed_bias_seconds": -0.4474
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.3928,
+              "signed_bias_seconds": 0.424
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 1902,
+            "mae_seconds": 2.5428,
+            "signed_bias_seconds": -0.0038
+          }
+        },
+        "equivalence_90d": {
+          "overall": {
+            "evaluated_pairs": 19374,
+            "evaluated_swimmers": 2985,
+            "mae_seconds": 2.5134,
+            "median_ae_seconds": 1.49,
+            "signed_bias_seconds": 0.0027,
+            "mape_percent": 2.4527
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.582,
+              "signed_bias_seconds": 0.2133
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.4274,
+              "signed_bias_seconds": -0.2066
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.8831,
+              "signed_bias_seconds": 0.1167
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.7523,
+              "signed_bias_seconds": -0.0983
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.4976,
+              "signed_bias_seconds": -0.6771
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.459,
+              "signed_bias_seconds": 0.6579
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 1902,
+            "mae_seconds": 2.5939,
+            "signed_bias_seconds": -0.0032
+          }
+        },
+        "flat_multiplier_90d": {
+          "overall": {
+            "evaluated_pairs": 19374,
+            "evaluated_swimmers": 2985,
+            "mae_seconds": 2.5889,
+            "median_ae_seconds": 1.54,
+            "signed_bias_seconds": -0.0011,
+            "mape_percent": 2.5263
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.7336,
+              "signed_bias_seconds": 0.0624
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 8736,
+              "mae_seconds": 2.4499,
+              "signed_bias_seconds": -0.0648
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.9361,
+              "signed_bias_seconds": 0.5365
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 324,
+              "mae_seconds": 2.6778,
+              "signed_bias_seconds": -0.482
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.4623,
+              "signed_bias_seconds": -0.5535
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 627,
+              "mae_seconds": 2.4113,
+              "signed_bias_seconds": 0.524
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 1902,
+            "mae_seconds": 2.5629,
+            "signed_bias_seconds": -0.0005
+          }
+        }
+      },
+      "bootstrap_mae_swimmer_clustered": {
+        "overall": {
+          "rows": 19374,
+          "swimmers": 2985,
+          "replicates": 2000,
+          "mae_seconds": {
+            "ncaa_2025_27": {
+              "estimate": 2.7429,
+              "ci95_low": 2.6487,
+              "ci95_high": 2.8403,
+              "se": 0.0483
+            },
+            "equivalence_14d": {
+              "estimate": 2.4992,
+              "ci95_low": 2.4184,
+              "ci95_high": 2.5883,
+              "se": 0.044
+            },
+            "flat_multiplier_14d": {
+              "estimate": 2.5776,
+              "ci95_low": 2.4918,
+              "ci95_high": 2.672,
+              "se": 0.0463
+            },
+            "equivalence_30d": {
+              "estimate": 2.5095,
+              "ci95_low": 2.429,
+              "ci95_high": 2.5981,
+              "se": 0.0441
+            },
+            "flat_multiplier_30d": {
+              "estimate": 2.5834,
+              "ci95_low": 2.498,
+              "ci95_high": 2.6778,
+              "se": 0.0466
+            },
+            "equivalence_60d": {
+              "estimate": 2.5692,
+              "ci95_low": 2.4859,
+              "ci95_high": 2.659,
+              "se": 0.045
+            },
+            "flat_multiplier_60d": {
+              "estimate": 2.6084,
+              "ci95_low": 2.5216,
+              "ci95_high": 2.7056,
+              "se": 0.0473
+            },
+            "equivalence_90d": {
+              "estimate": 2.5134,
+              "ci95_low": 2.4307,
+              "ci95_high": 2.6034,
+              "se": 0.0444
+            },
+            "flat_multiplier_90d": {
+              "estimate": 2.5889,
+              "ci95_low": 2.5048,
+              "ci95_high": 2.6834,
+              "se": 0.046
+            }
+          },
+          "mae_minus_equivalence_30d": {
+            "ncaa_2025_27": {
+              "estimate": 0.2335,
+              "ci95_low": 0.1881,
+              "ci95_high": 0.2779,
+              "se": 0.0228,
+              "z_score": 10.2,
+              "p_value": 0.0
+            },
+            "equivalence_14d": {
+              "estimate": -0.0103,
+              "ci95_low": -0.0202,
+              "ci95_high": 0.0003,
+              "se": 0.0052,
+              "z_score": -2.0,
+              "p_value": 0.047798
+            },
+            "flat_multiplier_14d": {
+              "estimate": 0.0682,
+              "ci95_low": 0.0425,
+              "ci95_high": 0.0947,
+              "se": 0.0134,
+              "z_score": 5.1,
+              "p_value": 0.0
+            },
+            "flat_multiplier_30d": {
+              "estimate": 0.0739,
+              "ci95_low": 0.0498,
+              "ci95_high": 0.0995,
+              "se": 0.0128,
+              "z_score": 5.8,
+              "p_value": 0.0
+            },
+            "equivalence_60d": {
+              "estimate": 0.0598,
+              "ci95_low": 0.0456,
+              "ci95_high": 0.0726,
+              "se": 0.0068,
+              "z_score": 8.8,
+              "p_value": 0.0
+            },
+            "flat_multiplier_60d": {
+              "estimate": 0.0989,
+              "ci95_low": 0.0731,
+              "ci95_high": 0.1257,
+              "se": 0.0134,
+              "z_score": 7.4,
+              "p_value": 0.0
+            },
+            "equivalence_90d": {
+              "estimate": 0.004,
+              "ci95_low": -0.005,
+              "ci95_high": 0.0129,
+              "se": 0.0046,
+              "z_score": 0.9,
+              "p_value": 0.38728
+            },
+            "flat_multiplier_90d": {
+              "estimate": 0.0794,
+              "ci95_low": 0.053,
+              "ci95_high": 0.1057,
+              "se": 0.0133,
+              "z_score": 6.0,
+              "p_value": 0.0
+            }
+          }
+        },
+        "scm_involving": {
+          "rows": 1902,
+          "swimmers": 356,
+          "replicates": 2000,
+          "mae_seconds": {
+            "ncaa_2025_27": {
+              "estimate": 2.5951,
+              "ci95_low": 2.3252,
+              "ci95_high": 2.8979,
+              "se": 0.1441
+            },
+            "equivalence_14d": {
+              "estimate": 2.5378,
+              "ci95_low": 2.2913,
+              "ci95_high": 2.8197,
+              "se": 0.1373
+            },
+            "flat_multiplier_14d": {
+              "estimate": 2.5032,
+              "ci95_low": 2.2655,
+              "ci95_high": 2.7844,
+              "se": 0.1358
+            },
+            "equivalence_30d": {
+              "estimate": 2.5271,
+              "ci95_low": 2.2857,
+              "ci95_high": 2.8081,
+              "se": 0.1359
+            },
+            "flat_multiplier_30d": {
+              "estimate": 2.5133,
+              "ci95_low": 2.2701,
+              "ci95_high": 2.7951,
+              "se": 0.1371
+            },
+            "equivalence_60d": {
+              "estimate": 2.5628,
+              "ci95_low": 2.3215,
+              "ci95_high": 2.8378,
+              "se": 0.1338
+            },
+            "flat_multiplier_60d": {
+              "estimate": 2.5428,
+              "ci95_low": 2.3009,
+              "ci95_high": 2.8205,
+              "se": 0.134
+            },
+            "equivalence_90d": {
+              "estimate": 2.5939,
+              "ci95_low": 2.3547,
+              "ci95_high": 2.862,
+              "se": 0.1312
+            },
+            "flat_multiplier_90d": {
+              "estimate": 2.5629,
+              "ci95_low": 2.3199,
+              "ci95_high": 2.8376,
+              "se": 0.1335
+            }
+          },
+          "mae_minus_equivalence_30d": {
+            "ncaa_2025_27": {
+              "estimate": 0.068,
+              "ci95_low": -0.0195,
+              "ci95_high": 0.1585,
+              "se": 0.0452,
+              "z_score": 1.5,
+              "p_value": 0.13243
+            },
+            "equivalence_14d": {
+              "estimate": 0.0107,
+              "ci95_low": -0.0151,
+              "ci95_high": 0.0389,
+              "se": 0.0139,
+              "z_score": 0.8,
+              "p_value": 0.441908
+            },
+            "flat_multiplier_14d": {
+              "estimate": -0.0238,
+              "ci95_low": -0.0623,
+              "ci95_high": 0.016,
+              "se": 0.0202,
+              "z_score": -1.2,
+              "p_value": 0.237753
+            },
+            "flat_multiplier_30d": {
+              "estimate": -0.0138,
+              "ci95_low": -0.0513,
+              "ci95_high": 0.0254,
+              "se": 0.0196,
+              "z_score": -0.7,
+              "p_value": 0.482679
+            },
+            "equivalence_60d": {
+              "estimate": 0.0357,
+              "ci95_low": 0.0005,
+              "ci95_high": 0.0711,
+              "se": 0.0184,
+              "z_score": 1.9,
+              "p_value": 0.052046
+            },
+            "flat_multiplier_60d": {
+              "estimate": 0.0157,
+              "ci95_low": -0.0312,
+              "ci95_high": 0.0653,
+              "se": 0.0252,
+              "z_score": 0.6,
+              "p_value": 0.53206
+            },
+            "equivalence_90d": {
+              "estimate": 0.0669,
+              "ci95_low": 0.0144,
+              "ci95_high": 0.1213,
+              "se": 0.027,
+              "z_score": 2.5,
+              "p_value": 0.013281
+            },
+            "flat_multiplier_90d": {
+              "estimate": 0.0358,
+              "ci95_low": -0.0235,
+              "ci95_high": 0.0973,
+              "se": 0.0311,
+              "z_score": 1.2,
+              "p_value": 0.249414
+            }
+          }
+        },
+        "dir_SCY->LCM": {
+          "rows": 8736,
+          "swimmers": 2727,
+          "replicates": 2000,
+          "mae_seconds": {
+            "ncaa_2025_27": {
+              "estimate": 2.9065,
+              "ci95_low": 2.8126,
+              "ci95_high": 3.0093,
+              "se": 0.0513
+            },
+            "equivalence_14d": {
+              "estimate": 2.58,
+              "ci95_low": 2.4947,
+              "ci95_high": 2.6744,
+              "se": 0.0467
+            },
+            "flat_multiplier_14d": {
+              "estimate": 2.7277,
+              "ci95_low": 2.6355,
+              "ci95_high": 2.8291,
+              "se": 0.0501
+            },
+            "equivalence_30d": {
+              "estimate": 2.5907,
+              "ci95_low": 2.5019,
+              "ci95_high": 2.6843,
+              "se": 0.0468
+            },
+            "flat_multiplier_30d": {
+              "estimate": 2.7352,
+              "ci95_low": 2.6424,
+              "ci95_high": 2.8384,
+              "se": 0.0505
+            },
+            "equivalence_60d": {
+              "estimate": 2.6465,
+              "ci95_low": 2.5567,
+              "ci95_high": 2.7437,
+              "se": 0.0475
+            },
+            "flat_multiplier_60d": {
+              "estimate": 2.763,
+              "ci95_low": 2.6665,
+              "ci95_high": 2.8683,
+              "se": 0.0513
+            },
+            "equivalence_90d": {
+              "estimate": 2.582,
+              "ci95_low": 2.4929,
+              "ci95_high": 2.6765,
+              "se": 0.047
+            },
+            "flat_multiplier_90d": {
+              "estimate": 2.7336,
+              "ci95_low": 2.6408,
+              "ci95_high": 2.8364,
+              "se": 0.05
+            }
+          },
+          "mae_minus_equivalence_30d": {
+            "ncaa_2025_27": {
+              "estimate": 0.3157,
+              "ci95_low": 0.2653,
+              "ci95_high": 0.3643,
+              "se": 0.0252,
+              "z_score": 12.5,
+              "p_value": 0.0
+            },
+            "equivalence_14d": {
+              "estimate": -0.0107,
+              "ci95_low": -0.0217,
+              "ci95_high": 0.0003,
+              "se": 0.0056,
+              "z_score": -1.9,
+              "p_value": 0.056134
+            },
+            "flat_multiplier_14d": {
+              "estimate": 0.137,
+              "ci95_low": 0.1064,
+              "ci95_high": 0.1676,
+              "se": 0.0155,
+              "z_score": 8.8,
+              "p_value": 0.0
+            },
+            "flat_multiplier_30d": {
+              "estimate": 0.1445,
+              "ci95_low": 0.1159,
+              "ci95_high": 0.1729,
+              "se": 0.0148,
+              "z_score": 9.8,
+              "p_value": 0.0
+            },
+            "equivalence_60d": {
+              "estimate": 0.0558,
+              "ci95_low": 0.0414,
+              "ci95_high": 0.0706,
+              "se": 0.0074,
+              "z_score": 7.5,
+              "p_value": 0.0
+            },
+            "flat_multiplier_60d": {
+              "estimate": 0.1723,
+              "ci95_low": 0.1429,
+              "ci95_high": 0.2014,
+              "se": 0.0151,
+              "z_score": 11.4,
+              "p_value": 0.0
+            },
+            "equivalence_90d": {
+              "estimate": -0.0088,
+              "ci95_low": -0.0168,
+              "ci95_high": -0.0008,
+              "se": 0.0041,
+              "z_score": -2.1,
+              "p_value": 0.032444
+            },
+            "flat_multiplier_90d": {
+              "estimate": 0.1428,
+              "ci95_low": 0.1138,
+              "ci95_high": 0.1719,
+              "se": 0.015,
+              "z_score": 9.5,
+              "p_value": 0.0
+            }
+          }
+        },
+        "dir_LCM->SCY": {
+          "rows": 8736,
+          "swimmers": 2727,
+          "replicates": 2000,
+          "mae_seconds": {
+            "ncaa_2025_27": {
+              "estimate": 2.6116,
+              "ci95_low": 2.5182,
+              "ci95_high": 2.7126,
+              "se": 0.0504
+            },
+            "equivalence_14d": {
+              "estimate": 2.4099,
+              "ci95_low": 2.3224,
+              "ci95_high": 2.5062,
+              "se": 0.0472
+            },
+            "flat_multiplier_14d": {
+              "estimate": 2.4438,
+              "ci95_low": 2.3538,
+              "ci95_high": 2.5445,
+              "se": 0.0488
+            },
+            "equivalence_30d": {
+              "estimate": 2.4244,
+              "ci95_low": 2.3355,
+              "ci95_high": 2.5201,
+              "se": 0.0473
+            },
+            "flat_multiplier_30d": {
+              "estimate": 2.4468,
+              "ci95_low": 2.3563,
+              "ci95_high": 2.5484,
+              "se": 0.0491
+            },
+            "equivalence_60d": {
+              "estimate": 2.4934,
+              "ci95_low": 2.4028,
+              "ci95_high": 2.5944,
+              "se": 0.0484
+            },
+            "flat_multiplier_60d": {
+              "estimate": 2.468,
+              "ci95_low": 2.3765,
+              "ci95_high": 2.5696,
+              "se": 0.0497
+            },
+            "equivalence_90d": {
+              "estimate": 2.4274,
+              "ci95_low": 2.3373,
+              "ci95_high": 2.5265,
+              "se": 0.048
+            },
+            "flat_multiplier_90d": {
+              "estimate": 2.4499,
+              "ci95_low": 2.3597,
+              "ci95_high": 2.551,
+              "se": 0.0488
+            }
+          },
+          "mae_minus_equivalence_30d": {
+            "ncaa_2025_27": {
+              "estimate": 0.1872,
+              "ci95_low": 0.1399,
+              "ci95_high": 0.232,
+              "se": 0.0235,
+              "z_score": 8.0,
+              "p_value": 0.0
+            },
+            "equivalence_14d": {
+              "estimate": -0.0145,
+              "ci95_low": -0.0249,
+              "ci95_high": -0.0039,
+              "se": 0.0053,
+              "z_score": -2.7,
+              "p_value": 0.006384
+            },
+            "flat_multiplier_14d": {
+              "estimate": 0.0194,
+              "ci95_low": -0.008,
+              "ci95_high": 0.0459,
+              "se": 0.0135,
+              "z_score": 1.4,
+              "p_value": 0.151017
+            },
+            "flat_multiplier_30d": {
+              "estimate": 0.0224,
+              "ci95_low": -0.0024,
+              "ci95_high": 0.0471,
+              "se": 0.0128,
+              "z_score": 1.7,
+              "p_value": 0.080406
+            },
+            "equivalence_60d": {
+              "estimate": 0.069,
+              "ci95_low": 0.0549,
+              "ci95_high": 0.0837,
+              "se": 0.0072,
+              "z_score": 9.6,
+              "p_value": 0.0
+            },
+            "flat_multiplier_60d": {
+              "estimate": 0.0437,
+              "ci95_low": 0.0176,
+              "ci95_high": 0.0682,
+              "se": 0.013,
+              "z_score": 3.4,
+              "p_value": 0.000785
+            },
+            "equivalence_90d": {
+              "estimate": 0.003,
+              "ci95_low": -0.0055,
+              "ci95_high": 0.0116,
+              "se": 0.0043,
+              "z_score": 0.7,
+              "p_value": 0.480532
+            },
+            "flat_multiplier_90d": {
+              "estimate": 0.0255,
+              "ci95_low": -0.0007,
+              "ci95_high": 0.0511,
+              "se": 0.0132,
+              "z_score": 1.9,
+              "p_value": 0.053444
+            }
+          }
+        },
+        "dir_SCY->SCM": {
+          "rows": 324,
+          "swimmers": 150,
+          "replicates": 2000,
+          "mae_seconds": {
+            "ncaa_2025_27": {
+              "estimate": 2.8855,
+              "ci95_low": 2.4379,
+              "ci95_high": 3.4031,
+              "se": 0.2464
+            },
+            "equivalence_14d": {
+              "estimate": 2.8877,
+              "ci95_low": 2.4724,
+              "ci95_high": 3.3655,
+              "se": 0.2274
+            },
+            "flat_multiplier_14d": {
+              "estimate": 2.8679,
+              "ci95_low": 2.4567,
+              "ci95_high": 3.3638,
+              "se": 0.2302
+            },
+            "equivalence_30d": {
+              "estimate": 2.8596,
+              "ci95_low": 2.4538,
+              "ci95_high": 3.3429,
+              "se": 0.2235
+            },
+            "flat_multiplier_30d": {
+              "estimate": 2.8727,
+              "ci95_low": 2.4427,
+              "ci95_high": 3.3752,
+              "se": 0.2338
+            },
+            "equivalence_60d": {
+              "estimate": 2.8903,
+              "ci95_low": 2.5083,
+              "ci95_high": 3.3469,
+              "se": 0.2102
+            },
+            "flat_multiplier_60d": {
+              "estimate": 2.9045,
+              "ci95_low": 2.504,
+              "ci95_high": 3.3836,
+              "se": 0.2243
+            },
+            "equivalence_90d": {
+              "estimate": 2.8831,
+              "ci95_low": 2.5006,
+              "ci95_high": 3.3372,
+              "se": 0.2081
+            },
+            "flat_multiplier_90d": {
+              "estimate": 2.9361,
+              "ci95_low": 2.5346,
+              "ci95_high": 3.413,
+              "se": 0.2237
+            }
+          },
+          "mae_minus_equivalence_30d": {
+            "ncaa_2025_27": {
+              "estimate": 0.0259,
+              "ci95_low": -0.0895,
+              "ci95_high": 0.135,
+              "se": 0.0576,
+              "z_score": 0.4,
+              "p_value": 0.653409
+            },
+            "equivalence_14d": {
+              "estimate": 0.0281,
+              "ci95_low": -0.0287,
+              "ci95_high": 0.0942,
+              "se": 0.0316,
+              "z_score": 0.9,
+              "p_value": 0.37463
+            },
+            "flat_multiplier_14d": {
+              "estimate": 0.0083,
+              "ci95_low": -0.0512,
+              "ci95_high": 0.0704,
+              "se": 0.0303,
+              "z_score": 0.3,
+              "p_value": 0.783295
+            },
+            "flat_multiplier_30d": {
+              "estimate": 0.0131,
+              "ci95_low": -0.0469,
+              "ci95_high": 0.0781,
+              "se": 0.0322,
+              "z_score": 0.4,
+              "p_value": 0.683737
+            },
+            "equivalence_60d": {
+              "estimate": 0.0307,
+              "ci95_low": -0.033,
+              "ci95_high": 0.0947,
+              "se": 0.0332,
+              "z_score": 0.9,
+              "p_value": 0.355452
+            },
+            "flat_multiplier_60d": {
+              "estimate": 0.0449,
+              "ci95_low": -0.0451,
+              "ci95_high": 0.1391,
+              "se": 0.0463,
+              "z_score": 1.0,
+              "p_value": 0.331753
+            },
+            "equivalence_90d": {
+              "estimate": 0.0235,
+              "ci95_low": -0.0491,
+              "ci95_high": 0.0926,
+              "se": 0.0374,
+              "z_score": 0.6,
+              "p_value": 0.529996
+            },
+            "flat_multiplier_90d": {
+              "estimate": 0.0765,
+              "ci95_low": -0.0487,
+              "ci95_high": 0.2037,
+              "se": 0.0645,
+              "z_score": 1.2,
+              "p_value": 0.235717
+            }
+          }
+        },
+        "dir_SCM->SCY": {
+          "rows": 324,
+          "swimmers": 150,
+          "replicates": 2000,
+          "mae_seconds": {
+            "ncaa_2025_27": {
+              "estimate": 2.6561,
+              "ci95_low": 2.2244,
+              "ci95_high": 3.1691,
+              "se": 0.2417
+            },
+            "equivalence_14d": {
+              "estimate": 2.7183,
+              "ci95_low": 2.3031,
+              "ci95_high": 3.2001,
+              "se": 0.2279
+            },
+            "flat_multiplier_14d": {
+              "estimate": 2.633,
+              "ci95_low": 2.2365,
+              "ci95_high": 3.1116,
+              "se": 0.222
+            },
+            "equivalence_30d": {
+              "estimate": 2.68,
+              "ci95_low": 2.2849,
+              "ci95_high": 3.1593,
+              "se": 0.2203
+            },
+            "flat_multiplier_30d": {
+              "estimate": 2.6306,
+              "ci95_low": 2.2272,
+              "ci95_high": 3.1151,
+              "se": 0.2247
+            },
+            "equivalence_60d": {
+              "estimate": 2.7352,
+              "ci95_low": 2.3519,
+              "ci95_high": 3.1896,
+              "se": 0.2113
+            },
+            "flat_multiplier_60d": {
+              "estimate": 2.6532,
+              "ci95_low": 2.2771,
+              "ci95_high": 3.1156,
+              "se": 0.213
+            },
+            "equivalence_90d": {
+              "estimate": 2.7523,
+              "ci95_low": 2.3659,
+              "ci95_high": 3.2151,
+              "se": 0.2109
+            },
+            "flat_multiplier_90d": {
+              "estimate": 2.6778,
+              "ci95_low": 2.2955,
+              "ci95_high": 3.1326,
+              "se": 0.2128
+            }
+          },
+          "mae_minus_equivalence_30d": {
+            "ncaa_2025_27": {
+              "estimate": -0.0239,
+              "ci95_low": -0.1414,
+              "ci95_high": 0.0907,
+              "se": 0.059,
+              "z_score": -0.4,
+              "p_value": 0.685938
+            },
+            "equivalence_14d": {
+              "estimate": 0.0383,
+              "ci95_low": -0.0198,
+              "ci95_high": 0.1072,
+              "se": 0.0321,
+              "z_score": 1.2,
+              "p_value": 0.233159
+            },
+            "flat_multiplier_14d": {
+              "estimate": -0.047,
+              "ci95_low": -0.105,
+              "ci95_high": 0.0128,
+              "se": 0.0297,
+              "z_score": -1.6,
+              "p_value": 0.113253
+            },
+            "flat_multiplier_30d": {
+              "estimate": -0.0494,
+              "ci95_low": -0.1039,
+              "ci95_high": 0.0054,
+              "se": 0.0281,
+              "z_score": -1.8,
+              "p_value": 0.078664
+            },
+            "equivalence_60d": {
+              "estimate": 0.0552,
+              "ci95_low": -0.0054,
+              "ci95_high": 0.118,
+              "se": 0.0322,
+              "z_score": 1.7,
+              "p_value": 0.086561
+            },
+            "flat_multiplier_60d": {
+              "estimate": -0.0268,
+              "ci95_low": -0.1143,
+              "ci95_high": 0.0626,
+              "se": 0.0453,
+              "z_score": -0.6,
+              "p_value": 0.554257
+            },
+            "equivalence_90d": {
+              "estimate": 0.0723,
+              "ci95_low": 0.0019,
+              "ci95_high": 0.1378,
+              "se": 0.035,
+              "z_score": 2.1,
+              "p_value": 0.038899
+            },
+            "flat_multiplier_90d": {
+              "estimate": -0.0022,
+              "ci95_low": -0.1258,
+              "ci95_high": 0.1208,
+              "se": 0.0625,
+              "z_score": -0.0,
+              "p_value": 0.971637
+            }
+          }
+        },
+        "dir_SCM->LCM": {
+          "rows": 627,
+          "swimmers": 229,
+          "replicates": 2000,
+          "mae_seconds": {
+            "ncaa_2025_27": {
+              "estimate": 2.549,
+              "ci95_low": 2.2509,
+              "ci95_high": 2.8928,
+              "se": 0.1641
+            },
+            "equivalence_14d": {
+              "estimate": 2.4137,
+              "ci95_low": 2.1286,
+              "ci95_high": 2.7492,
+              "se": 0.1603
+            },
+            "flat_multiplier_14d": {
+              "estimate": 2.4057,
+              "ci95_low": 2.1208,
+              "ci95_high": 2.7244,
+              "se": 0.1564
+            },
+            "equivalence_30d": {
+              "estimate": 2.4096,
+              "ci95_low": 2.1268,
+              "ci95_high": 2.737,
+              "se": 0.1586
+            },
+            "flat_multiplier_30d": {
+              "estimate": 2.4194,
+              "ci95_low": 2.1364,
+              "ci95_high": 2.7457,
+              "se": 0.1584
+            },
+            "equivalence_60d": {
+              "estimate": 2.4378,
+              "ci95_low": 2.1527,
+              "ci95_high": 2.7749,
+              "se": 0.1608
+            },
+            "flat_multiplier_60d": {
+              "estimate": 2.4489,
+              "ci95_low": 2.1655,
+              "ci95_high": 2.7707,
+              "se": 0.1583
+            },
+            "equivalence_90d": {
+              "estimate": 2.4976,
+              "ci95_low": 2.2116,
+              "ci95_high": 2.8136,
+              "se": 0.1577
+            },
+            "flat_multiplier_90d": {
+              "estimate": 2.4623,
+              "ci95_low": 2.1829,
+              "ci95_high": 2.7796,
+              "se": 0.157
+            }
+          },
+          "mae_minus_equivalence_30d": {
+            "ncaa_2025_27": {
+              "estimate": 0.1394,
+              "ci95_low": 0.0177,
+              "ci95_high": 0.2625,
+              "se": 0.0624,
+              "z_score": 2.2,
+              "p_value": 0.025525
+            },
+            "equivalence_14d": {
+              "estimate": 0.0041,
+              "ci95_low": -0.0234,
+              "ci95_high": 0.0321,
+              "se": 0.014,
+              "z_score": 0.3,
+              "p_value": 0.768822
+            },
+            "flat_multiplier_14d": {
+              "estimate": -0.0039,
+              "ci95_low": -0.0597,
+              "ci95_high": 0.0507,
+              "se": 0.0285,
+              "z_score": -0.1,
+              "p_value": 0.890948
+            },
+            "flat_multiplier_30d": {
+              "estimate": 0.0098,
+              "ci95_low": -0.0451,
+              "ci95_high": 0.0667,
+              "se": 0.0288,
+              "z_score": 0.3,
+              "p_value": 0.734673
+            },
+            "equivalence_60d": {
+              "estimate": 0.0282,
+              "ci95_low": -0.008,
+              "ci95_high": 0.0694,
+              "se": 0.02,
+              "z_score": 1.4,
+              "p_value": 0.158337
+            },
+            "flat_multiplier_60d": {
+              "estimate": 0.0393,
+              "ci95_low": -0.0217,
+              "ci95_high": 0.1025,
+              "se": 0.0315,
+              "z_score": 1.2,
+              "p_value": 0.212562
+            },
+            "equivalence_90d": {
+              "estimate": 0.0879,
+              "ci95_low": 0.0239,
+              "ci95_high": 0.1582,
+              "se": 0.0342,
+              "z_score": 2.6,
+              "p_value": 0.010128
+            },
+            "flat_multiplier_90d": {
+              "estimate": 0.0527,
+              "ci95_low": -0.0134,
+              "ci95_high": 0.1187,
+              "se": 0.0331,
+              "z_score": 1.6,
+              "p_value": 0.111384
+            }
+          }
+        },
+        "dir_LCM->SCM": {
+          "rows": 627,
+          "swimmers": 229,
+          "replicates": 2000,
+          "mae_seconds": {
+            "ncaa_2025_27": {
+              "estimate": 2.4596,
+              "ci95_low": 2.1729,
+              "ci95_high": 2.7912,
+              "se": 0.158
+            },
+            "equivalence_14d": {
+              "estimate": 2.3877,
+              "ci95_low": 2.1064,
+              "ci95_high": 2.7196,
+              "se": 0.1579
+            },
+            "flat_multiplier_14d": {
+              "estimate": 2.3452,
+              "ci95_low": 2.0658,
+              "ci95_high": 2.6558,
+              "se": 0.1528
+            },
+            "equivalence_30d": {
+              "estimate": 2.3937,
+              "ci95_low": 2.1124,
+              "ci95_high": 2.7201,
+              "se": 0.1572
+            },
+            "flat_multiplier_30d": {
+              "estimate": 2.3609,
+              "ci95_low": 2.0841,
+              "ci95_high": 2.6808,
+              "se": 0.1546
+            },
+            "equivalence_60d": {
+              "estimate": 2.4295,
+              "ci95_low": 2.1457,
+              "ci95_high": 2.7598,
+              "se": 0.1589
+            },
+            "flat_multiplier_60d": {
+              "estimate": 2.3928,
+              "ci95_low": 2.1183,
+              "ci95_high": 2.7071,
+              "se": 0.1546
+            },
+            "equivalence_90d": {
+              "estimate": 2.459,
+              "ci95_low": 2.177,
+              "ci95_high": 2.7693,
+              "se": 0.1549
+            },
+            "flat_multiplier_90d": {
+              "estimate": 2.4113,
+              "ci95_low": 2.1383,
+              "ci95_high": 2.7204,
+              "se": 0.1539
+            }
+          },
+          "mae_minus_equivalence_30d": {
+            "ncaa_2025_27": {
+              "estimate": 0.0659,
+              "ci95_low": -0.0545,
+              "ci95_high": 0.1827,
+              "se": 0.0602,
+              "z_score": 1.1,
+              "p_value": 0.273647
+            },
+            "equivalence_14d": {
+              "estimate": -0.006,
+              "ci95_low": -0.0333,
+              "ci95_high": 0.021,
+              "se": 0.0136,
+              "z_score": -0.4,
+              "p_value": 0.660954
+            },
+            "flat_multiplier_14d": {
+              "estimate": -0.0484,
+              "ci95_low": -0.1059,
+              "ci95_high": 0.0067,
+              "se": 0.0288,
+              "z_score": -1.7,
+              "p_value": 0.0926
+            },
+            "flat_multiplier_30d": {
+              "estimate": -0.0327,
+              "ci95_low": -0.0862,
+              "ci95_high": 0.0222,
+              "se": 0.0276,
+              "z_score": -1.2,
+              "p_value": 0.235485
+            },
+            "equivalence_60d": {
+              "estimate": 0.0359,
+              "ci95_low": -0.0002,
+              "ci95_high": 0.0764,
+              "se": 0.0197,
+              "z_score": 1.8,
+              "p_value": 0.068765
+            },
+            "flat_multiplier_60d": {
+              "estimate": -0.0009,
+              "ci95_low": -0.0608,
+              "ci95_high": 0.0581,
+              "se": 0.0299,
+              "z_score": -0.0,
+              "p_value": 0.976595
+            },
+            "equivalence_90d": {
+              "estimate": 0.0654,
+              "ci95_low": 0.0026,
+              "ci95_high": 0.1333,
+              "se": 0.0337,
+              "z_score": 1.9,
+              "p_value": 0.052391
+            },
+            "flat_multiplier_90d": {
+              "estimate": 0.0176,
+              "ci95_low": -0.047,
+              "ci95_high": 0.0829,
+              "se": 0.0328,
+              "z_score": 0.5,
+              "p_value": 0.591729
+            }
+          }
+        }
+      },
+      "ability_bias_by_independent_swim_decile": {
+        "coverage": {
+          "rows": 19374,
+          "rows_with_independent_swim": 8284,
+          "rows_in_deciles": 8128,
+          "min_days": 31,
+          "max_days": 90
+        },
+        "forward_signed_pct": {
+          "ncaa_2025_27": {
+            "D1": {
+              "estimate": -0.983,
+              "ci95_low": -1.29,
+              "ci95_high": -0.69,
+              "se": 0.15
+            },
+            "D5": {
+              "estimate": -0.345,
+              "ci95_low": -0.663,
+              "ci95_high": -0.028,
+              "se": 0.165
+            },
+            "D10": {
+              "estimate": 1.497,
+              "ci95_low": 1.015,
+              "ci95_high": 1.945,
+              "se": 0.232
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -2.48,
+              "ci95_low": -3.023,
+              "ci95_high": -1.946,
+              "se": 0.272
+            },
+            "forward_decile_range_pct": 2.48
+          },
+          "equivalence_14d": {
+            "D1": {
+              "estimate": -0.399,
+              "ci95_low": -0.698,
+              "ci95_high": -0.121,
+              "se": 0.146
+            },
+            "D5": {
+              "estimate": -0.156,
+              "ci95_low": -0.442,
+              "ci95_high": 0.136,
+              "se": 0.148
+            },
+            "D10": {
+              "estimate": 0.478,
+              "ci95_low": 0.04,
+              "ci95_high": 0.876,
+              "se": 0.207
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -0.876,
+              "ci95_low": -1.365,
+              "ci95_high": -0.394,
+              "se": 0.249
+            },
+            "forward_decile_range_pct": 1.152
+          },
+          "flat_multiplier_14d": {
+            "D1": {
+              "estimate": -1.079,
+              "ci95_low": -1.375,
+              "ci95_high": -0.804,
+              "se": 0.146
+            },
+            "D5": {
+              "estimate": -0.437,
+              "ci95_low": -0.725,
+              "ci95_high": -0.141,
+              "se": 0.151
+            },
+            "D10": {
+              "estimate": 1.421,
+              "ci95_low": 0.975,
+              "ci95_high": 1.838,
+              "se": 0.218
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -2.5,
+              "ci95_low": -2.998,
+              "ci95_high": -1.995,
+              "se": 0.258
+            },
+            "forward_decile_range_pct": 2.5
+          },
+          "equivalence_30d": {
+            "D1": {
+              "estimate": -0.094,
+              "ci95_low": -0.398,
+              "ci95_high": 0.189,
+              "se": 0.147
+            },
+            "D5": {
+              "estimate": 0.096,
+              "ci95_low": -0.19,
+              "ci95_high": 0.382,
+              "se": 0.147
+            },
+            "D10": {
+              "estimate": 0.547,
+              "ci95_low": 0.108,
+              "ci95_high": 0.947,
+              "se": 0.207
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -0.642,
+              "ci95_low": -1.129,
+              "ci95_high": -0.149,
+              "se": 0.25
+            },
+            "forward_decile_range_pct": 0.994
+          },
+          "flat_multiplier_30d": {
+            "D1": {
+              "estimate": -0.954,
+              "ci95_low": -1.255,
+              "ci95_high": -0.683,
+              "se": 0.146
+            },
+            "D5": {
+              "estimate": -0.312,
+              "ci95_low": -0.602,
+              "ci95_high": -0.015,
+              "se": 0.151
+            },
+            "D10": {
+              "estimate": 1.548,
+              "ci95_low": 1.099,
+              "ci95_high": 1.964,
+              "se": 0.217
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -2.502,
+              "ci95_low": -3.003,
+              "ci95_high": -1.996,
+              "se": 0.258
+            },
+            "forward_decile_range_pct": 2.502
+          },
+          "equivalence_60d": {
+            "D1": {
+              "estimate": 0.288,
+              "ci95_low": -0.02,
+              "ci95_high": 0.579,
+              "se": 0.148
+            },
+            "D5": {
+              "estimate": 0.382,
+              "ci95_low": 0.094,
+              "ci95_high": 0.667,
+              "se": 0.147
+            },
+            "D10": {
+              "estimate": 0.53,
+              "ci95_low": 0.091,
+              "ci95_high": 0.931,
+              "se": 0.207
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -0.241,
+              "ci95_low": -0.732,
+              "ci95_high": 0.249,
+              "se": 0.251
+            },
+            "forward_decile_range_pct": 0.734
+          },
+          "flat_multiplier_60d": {
+            "D1": {
+              "estimate": -0.848,
+              "ci95_low": -1.151,
+              "ci95_high": -0.573,
+              "se": 0.148
+            },
+            "D5": {
+              "estimate": -0.205,
+              "ci95_low": -0.5,
+              "ci95_high": 0.09,
+              "se": 0.151
+            },
+            "D10": {
+              "estimate": 1.66,
+              "ci95_low": 1.215,
+              "ci95_high": 2.075,
+              "se": 0.216
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -2.508,
+              "ci95_low": -3.002,
+              "ci95_high": -2.001,
+              "se": 0.259
+            },
+            "forward_decile_range_pct": 2.508
+          },
+          "equivalence_90d": {
+            "D1": {
+              "estimate": -0.129,
+              "ci95_low": -0.436,
+              "ci95_high": 0.159,
+              "se": 0.148
+            },
+            "D5": {
+              "estimate": 0.01,
+              "ci95_low": -0.277,
+              "ci95_high": 0.296,
+              "se": 0.147
+            },
+            "D10": {
+              "estimate": 0.312,
+              "ci95_low": -0.125,
+              "ci95_high": 0.711,
+              "se": 0.208
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -0.441,
+              "ci95_low": -0.925,
+              "ci95_high": 0.043,
+              "se": 0.251
+            },
+            "forward_decile_range_pct": 0.855
+          },
+          "flat_multiplier_90d": {
+            "D1": {
+              "estimate": -1.203,
+              "ci95_low": -1.509,
+              "ci95_high": -0.926,
+              "se": 0.149
+            },
+            "D5": {
+              "estimate": -0.559,
+              "ci95_low": -0.85,
+              "ci95_high": -0.268,
+              "se": 0.151
+            },
+            "D10": {
+              "estimate": 1.307,
+              "ci95_low": 0.859,
+              "ci95_high": 1.72,
+              "se": 0.215
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -2.51,
+              "ci95_low": -3.004,
+              "ci95_high": -2.007,
+              "se": 0.258
+            },
+            "forward_decile_range_pct": 2.51
+          }
+        }
+      }
+    },
+    "test_30d": {
+      "test_set": {
+        "directional_pairs": 39314,
+        "clean_directional_pairs": 39314,
+        "underlying_pairs": 19657,
+        "clean_underlying_pairs": 19657,
+        "swimmers": 4710,
+        "clean_swimmers": 4710
+      },
+      "methods": {
+        "ncaa_2025_27": {
+          "overall": {
+            "evaluated_pairs": 39314,
+            "evaluated_swimmers": 4710,
+            "mae_seconds": 3.0414,
+            "median_ae_seconds": 1.82,
+            "signed_bias_seconds": -0.0032,
+            "mape_percent": 2.9283
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 3.2147,
+              "signed_bias_seconds": -0.4273
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 2.8794,
+              "signed_bias_seconds": 0.4197
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 3.2452,
+              "signed_bias_seconds": -0.426
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 2.9552,
+              "signed_bias_seconds": 0.3991
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.9416,
+              "signed_bias_seconds": 0.9847
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.8388,
+              "signed_bias_seconds": -0.9513
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 3928,
+            "mae_seconds": 2.9901,
+            "signed_bias_seconds": 0.0024
+          }
+        },
+        "equivalence_14d": {
+          "overall": {
+            "evaluated_pairs": 39314,
+            "evaluated_swimmers": 4710,
+            "mae_seconds": 2.7791,
+            "median_ae_seconds": 1.66,
+            "signed_bias_seconds": -0.0137,
+            "mape_percent": 2.688
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 2.8642,
+              "signed_bias_seconds": -0.3017
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 2.6669,
+              "signed_bias_seconds": 0.2723
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 3.2536,
+              "signed_bias_seconds": -0.1109
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 3.0319,
+              "signed_bias_seconds": 0.1088
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.6956,
+              "signed_bias_seconds": -0.0288
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.6691,
+              "signed_bias_seconds": 0.0124
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 3928,
+            "mae_seconds": 2.9013,
+            "signed_bias_seconds": -0.0048
+          }
+        },
+        "flat_multiplier_14d": {
+          "overall": {
+            "evaluated_pairs": 39314,
+            "evaluated_swimmers": 4710,
+            "mae_seconds": 2.8653,
+            "median_ae_seconds": 1.7,
+            "signed_bias_seconds": -0.0096,
+            "mape_percent": 2.7658
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 3.0266,
+              "signed_bias_seconds": -0.1353
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 2.7005,
+              "signed_bias_seconds": 0.1176
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 3.2589,
+              "signed_bias_seconds": -0.0186
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 2.9622,
+              "signed_bias_seconds": -0.0184
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.7095,
+              "signed_bias_seconds": 0.0433
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.6389,
+              "signed_bias_seconds": -0.0723
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 3928,
+            "mae_seconds": 2.8817,
+            "signed_bias_seconds": -0.0164
+          }
+        },
+        "equivalence_30d": {
+          "overall": {
+            "evaluated_pairs": 39314,
+            "evaluated_swimmers": 4710,
+            "mae_seconds": 2.7711,
+            "median_ae_seconds": 1.66,
+            "signed_bias_seconds": -0.0057,
+            "mape_percent": 2.6819
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 2.8525,
+              "signed_bias_seconds": -0.065
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 2.6632,
+              "signed_bias_seconds": 0.0535
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 3.2245,
+              "signed_bias_seconds": -0.0496
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 3.0008,
+              "signed_bias_seconds": 0.0401
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.6951,
+              "signed_bias_seconds": 0.0399
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.6814,
+              "signed_bias_seconds": -0.051
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 3928,
+            "mae_seconds": 2.8901,
+            "signed_bias_seconds": -0.0052
+          }
+        },
+        "flat_multiplier_30d": {
+          "overall": {
+            "evaluated_pairs": 39314,
+            "evaluated_swimmers": 4710,
+            "mae_seconds": 2.8582,
+            "median_ae_seconds": 1.7,
+            "signed_bias_seconds": -0.0002,
+            "mape_percent": 2.7583
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 3.0209,
+              "signed_bias_seconds": 0.0362
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 2.6916,
+              "signed_bias_seconds": -0.0351
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 3.241,
+              "signed_bias_seconds": -0.0263
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 2.9422,
+              "signed_bias_seconds": 0.0149
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.711,
+              "signed_bias_seconds": -0.0781
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.6458,
+              "signed_bias_seconds": 0.0613
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 3928,
+            "mae_seconds": 2.8749,
+            "signed_bias_seconds": -0.0071
+          }
+        },
+        "equivalence_60d": {
+          "overall": {
+            "evaluated_pairs": 39314,
+            "evaluated_swimmers": 4710,
+            "mae_seconds": 2.7937,
+            "median_ae_seconds": 1.7,
+            "signed_bias_seconds": 0.0015,
+            "mape_percent": 2.6973
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 2.8656,
+              "signed_bias_seconds": 0.2214
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 2.6938,
+              "signed_bias_seconds": -0.218
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 3.284,
+              "signed_bias_seconds": 0.2944
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 3.0822,
+              "signed_bias_seconds": -0.2822
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.6838,
+              "signed_bias_seconds": -0.281
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.6776,
+              "signed_bias_seconds": 0.2678
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 3928,
+            "mae_seconds": 2.9196,
+            "signed_bias_seconds": -0.0006
+          }
+        },
+        "flat_multiplier_60d": {
+          "overall": {
+            "evaluated_pairs": 39314,
+            "evaluated_swimmers": 4710,
+            "mae_seconds": 2.8665,
+            "median_ae_seconds": 1.71,
+            "signed_bias_seconds": 0.0075,
+            "mape_percent": 2.7635
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 3.0301,
+              "signed_bias_seconds": 0.2408
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 2.6953,
+              "signed_bias_seconds": -0.2238
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 3.2784,
+              "signed_bias_seconds": 0.3099
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 2.9688,
+              "signed_bias_seconds": -0.295
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.7288,
+              "signed_bias_seconds": -0.2675
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.6681,
+              "signed_bias_seconds": 0.248
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 3928,
+            "mae_seconds": 2.9006,
+            "signed_bias_seconds": -0.0016
+          }
+        },
+        "equivalence_90d": {
+          "overall": {
+            "evaluated_pairs": 39314,
+            "evaluated_swimmers": 4710,
+            "mae_seconds": 2.7761,
+            "median_ae_seconds": 1.67,
+            "signed_bias_seconds": -0.0084,
+            "mape_percent": 2.6883
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 2.8461,
+              "signed_bias_seconds": -0.1625
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 2.6689,
+              "signed_bias_seconds": 0.145
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 3.277,
+              "signed_bias_seconds": 0.208
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 3.1071,
+              "signed_bias_seconds": -0.2038
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.7401,
+              "signed_bias_seconds": -0.5496
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.6992,
+              "signed_bias_seconds": 0.5267
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 3928,
+            "mae_seconds": 2.9443,
+            "signed_bias_seconds": -0.005
+          }
+        },
+        "flat_multiplier_90d": {
+          "overall": {
+            "evaluated_pairs": 39314,
+            "evaluated_swimmers": 4710,
+            "mae_seconds": 2.8701,
+            "median_ae_seconds": 1.72,
+            "signed_bias_seconds": -0.0124,
+            "mape_percent": 2.78
+          },
+          "by_direction": {
+            "SCY->LCM": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 3.0261,
+              "signed_bias_seconds": -0.199
+            },
+            "LCM->SCY": {
+              "evaluated_pairs": 17693,
+              "mae_seconds": 2.7013,
+              "signed_bias_seconds": 0.1707
+            },
+            "SCY->SCM": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 3.3219,
+              "signed_bias_seconds": 0.6155
+            },
+            "SCM->SCY": {
+              "evaluated_pairs": 934,
+              "mae_seconds": 3.002,
+              "signed_bias_seconds": -0.5698
+            },
+            "SCM->LCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.7442,
+              "signed_bias_seconds": -0.3826
+            },
+            "LCM->SCM": {
+              "evaluated_pairs": 1030,
+              "mae_seconds": 2.6847,
+              "signed_bias_seconds": 0.3543
+            }
+          },
+          "scm_involving": {
+            "evaluated_pairs": 3928,
+            "mae_seconds": 2.9273,
+            "signed_bias_seconds": 0.0035
+          }
+        }
+      },
+      "bootstrap_mae_swimmer_clustered": {
+        "overall": {
+          "rows": 39314,
+          "swimmers": 4710,
+          "replicates": 2000,
+          "mae_seconds": {
+            "ncaa_2025_27": {
+              "estimate": 3.0414,
+              "ci95_low": 2.9643,
+              "ci95_high": 3.1166,
+              "se": 0.0394
+            },
+            "equivalence_14d": {
+              "estimate": 2.7791,
+              "ci95_low": 2.7084,
+              "ci95_high": 2.847,
+              "se": 0.0357
+            },
+            "flat_multiplier_14d": {
+              "estimate": 2.8653,
+              "ci95_low": 2.7923,
+              "ci95_high": 2.9365,
+              "se": 0.0371
+            },
+            "equivalence_30d": {
+              "estimate": 2.7711,
+              "ci95_low": 2.7003,
+              "ci95_high": 2.841,
+              "se": 0.0356
+            },
+            "flat_multiplier_30d": {
+              "estimate": 2.8582,
+              "ci95_low": 2.7858,
+              "ci95_high": 2.9285,
+              "se": 0.0371
+            },
+            "equivalence_60d": {
+              "estimate": 2.7937,
+              "ci95_low": 2.7223,
+              "ci95_high": 2.8624,
+              "se": 0.0359
+            },
+            "flat_multiplier_60d": {
+              "estimate": 2.8665,
+              "ci95_low": 2.7932,
+              "ci95_high": 2.9386,
+              "se": 0.0373
+            },
+            "equivalence_90d": {
+              "estimate": 2.7761,
+              "ci95_low": 2.7051,
+              "ci95_high": 2.8453,
+              "se": 0.0357
+            },
+            "flat_multiplier_90d": {
+              "estimate": 2.8701,
+              "ci95_low": 2.7978,
+              "ci95_high": 2.9408,
+              "se": 0.037
+            }
+          },
+          "mae_minus_equivalence_30d": {
+            "ncaa_2025_27": {
+              "estimate": 0.2703,
+              "ci95_low": 0.24,
+              "ci95_high": 0.3018,
+              "se": 0.0157,
+              "z_score": 17.2,
+              "p_value": 0.0
+            },
+            "equivalence_14d": {
+              "estimate": 0.008,
+              "ci95_low": -0.0,
+              "ci95_high": 0.0158,
+              "se": 0.0039,
+              "z_score": 2.0,
+              "p_value": 0.040508
+            },
+            "flat_multiplier_14d": {
+              "estimate": 0.0942,
+              "ci95_low": 0.0758,
+              "ci95_high": 0.1122,
+              "se": 0.0091,
+              "z_score": 10.4,
+              "p_value": 0.0
+            },
+            "flat_multiplier_30d": {
+              "estimate": 0.0871,
+              "ci95_low": 0.0696,
+              "ci95_high": 0.1041,
+              "se": 0.0089,
+              "z_score": 9.8,
+              "p_value": 0.0
+            },
+            "equivalence_60d": {
+              "estimate": 0.0226,
+              "ci95_low": 0.0125,
+              "ci95_high": 0.032,
+              "se": 0.0049,
+              "z_score": 4.6,
+              "p_value": 4e-06
+            },
+            "flat_multiplier_60d": {
+              "estimate": 0.0954,
+              "ci95_low": 0.0768,
+              "ci95_high": 0.1138,
+              "se": 0.0095,
+              "z_score": 10.0,
+              "p_value": 0.0
+            },
+            "equivalence_90d": {
+              "estimate": 0.0051,
+              "ci95_low": -0.0018,
+              "ci95_high": 0.0121,
+              "se": 0.0035,
+              "z_score": 1.4,
+              "p_value": 0.148479
+            },
+            "flat_multiplier_90d": {
+              "estimate": 0.099,
+              "ci95_low": 0.0813,
+              "ci95_high": 0.1175,
+              "se": 0.0092,
+              "z_score": 10.8,
+              "p_value": 0.0
+            }
+          }
+        },
+        "scm_involving": {
+          "rows": 3928,
+          "swimmers": 655,
+          "replicates": 2000,
+          "mae_seconds": {
+            "ncaa_2025_27": {
+              "estimate": 2.9901,
+              "ci95_low": 2.777,
+              "ci95_high": 3.204,
+              "se": 0.1092
+            },
+            "equivalence_14d": {
+              "estimate": 2.9013,
+              "ci95_low": 2.7003,
+              "ci95_high": 3.1034,
+              "se": 0.1045
+            },
+            "flat_multiplier_14d": {
+              "estimate": 2.8817,
+              "ci95_low": 2.6828,
+              "ci95_high": 3.0863,
+              "se": 0.1047
+            },
+            "equivalence_30d": {
+              "estimate": 2.8901,
+              "ci95_low": 2.6878,
+              "ci95_high": 3.0911,
+              "se": 0.1039
+            },
+            "flat_multiplier_30d": {
+              "estimate": 2.8749,
+              "ci95_low": 2.6742,
+              "ci95_high": 3.0808,
+              "se": 0.1053
+            },
+            "equivalence_60d": {
+              "estimate": 2.9196,
+              "ci95_low": 2.7196,
+              "ci95_high": 3.1197,
+              "se": 0.103
+            },
+            "flat_multiplier_60d": {
+              "estimate": 2.9006,
+              "ci95_low": 2.6973,
+              "ci95_high": 3.1049,
+              "se": 0.1045
+            },
+            "equivalence_90d": {
+              "estimate": 2.9443,
+              "ci95_low": 2.7473,
+              "ci95_high": 3.1455,
+              "se": 0.1017
+            },
+            "flat_multiplier_90d": {
+              "estimate": 2.9273,
+              "ci95_low": 2.7251,
+              "ci95_high": 3.1347,
+              "se": 0.105
+            }
+          },
+          "mae_minus_equivalence_30d": {
+            "ncaa_2025_27": {
+              "estimate": 0.1,
+              "ci95_low": 0.0338,
+              "ci95_high": 0.1642,
+              "se": 0.0327,
+              "z_score": 3.1,
+              "p_value": 0.002228
+            },
+            "equivalence_14d": {
+              "estimate": 0.0112,
+              "ci95_low": -0.0083,
+              "ci95_high": 0.0303,
+              "se": 0.0097,
+              "z_score": 1.2,
+              "p_value": 0.246561
+            },
+            "flat_multiplier_14d": {
+              "estimate": -0.0084,
+              "ci95_low": -0.0377,
+              "ci95_high": 0.0202,
+              "se": 0.0149,
+              "z_score": -0.6,
+              "p_value": 0.574375
+            },
+            "flat_multiplier_30d": {
+              "estimate": -0.0152,
+              "ci95_low": -0.0446,
+              "ci95_high": 0.0148,
+              "se": 0.015,
+              "z_score": -1.0,
+              "p_value": 0.312326
+            },
+            "equivalence_60d": {
+              "estimate": 0.0295,
+              "ci95_low": 0.0026,
+              "ci95_high": 0.0588,
+              "se": 0.0146,
+              "z_score": 2.0,
+              "p_value": 0.043085
+            },
+            "flat_multiplier_60d": {
+              "estimate": 0.0106,
+              "ci95_low": -0.0285,
+              "ci95_high": 0.0504,
+              "se": 0.0199,
+              "z_score": 0.5,
+              "p_value": 0.595745
+            },
+            "equivalence_90d": {
+              "estimate": 0.0542,
+              "ci95_low": 0.0154,
+              "ci95_high": 0.0943,
+              "se": 0.0199,
+              "z_score": 2.7,
+              "p_value": 0.006442
+            },
+            "flat_multiplier_90d": {
+              "estimate": 0.0372,
+              "ci95_low": -0.0122,
+              "ci95_high": 0.0861,
+              "se": 0.025,
+              "z_score": 1.5,
+              "p_value": 0.13697
+            }
+          }
+        },
+        "dir_SCY->LCM": {
+          "rows": 17693,
+          "swimmers": 4260,
+          "replicates": 2000,
+          "mae_seconds": {
+            "ncaa_2025_27": {
+              "estimate": 3.2147,
+              "ci95_low": 3.1357,
+              "ci95_high": 3.298,
+              "se": 0.0416
+            },
+            "equivalence_14d": {
+              "estimate": 2.8642,
+              "ci95_low": 2.7909,
+              "ci95_high": 2.9377,
+              "se": 0.0368
+            },
+            "flat_multiplier_14d": {
+              "estimate": 3.0266,
+              "ci95_low": 2.9499,
+              "ci95_high": 3.104,
+              "se": 0.0389
+            },
+            "equivalence_30d": {
+              "estimate": 2.8525,
+              "ci95_low": 2.7795,
+              "ci95_high": 2.9249,
+              "se": 0.0367
+            },
+            "flat_multiplier_30d": {
+              "estimate": 3.0209,
+              "ci95_low": 2.9431,
+              "ci95_high": 3.0986,
+              "se": 0.0388
+            },
+            "equivalence_60d": {
+              "estimate": 2.8656,
+              "ci95_low": 2.7927,
+              "ci95_high": 2.935,
+              "se": 0.0367
+            },
+            "flat_multiplier_60d": {
+              "estimate": 3.0301,
+              "ci95_low": 2.9534,
+              "ci95_high": 3.1081,
+              "se": 0.0391
+            },
+            "equivalence_90d": {
+              "estimate": 2.8461,
+              "ci95_low": 2.7743,
+              "ci95_high": 2.9185,
+              "se": 0.0367
+            },
+            "flat_multiplier_90d": {
+              "estimate": 3.0261,
+              "ci95_low": 2.9495,
+              "ci95_high": 3.1026,
+              "se": 0.0387
+            }
+          },
+          "mae_minus_equivalence_30d": {
+            "ncaa_2025_27": {
+              "estimate": 0.3622,
+              "ci95_low": 0.3265,
+              "ci95_high": 0.398,
+              "se": 0.0182,
+              "z_score": 19.9,
+              "p_value": 0.0
+            },
+            "equivalence_14d": {
+              "estimate": 0.0116,
+              "ci95_low": 0.0033,
+              "ci95_high": 0.0209,
+              "se": 0.0045,
+              "z_score": 2.6,
+              "p_value": 0.009743
+            },
+            "flat_multiplier_14d": {
+              "estimate": 0.174,
+              "ci95_low": 0.1523,
+              "ci95_high": 0.1953,
+              "se": 0.0108,
+              "z_score": 16.1,
+              "p_value": 0.0
+            },
+            "flat_multiplier_30d": {
+              "estimate": 0.1684,
+              "ci95_low": 0.1473,
+              "ci95_high": 0.1889,
+              "se": 0.0104,
+              "z_score": 16.2,
+              "p_value": 0.0
+            },
+            "equivalence_60d": {
+              "estimate": 0.013,
+              "ci95_low": 0.0029,
+              "ci95_high": 0.0239,
+              "se": 0.0054,
+              "z_score": 2.4,
+              "p_value": 0.015701
+            },
+            "flat_multiplier_60d": {
+              "estimate": 0.1775,
+              "ci95_low": 0.1563,
+              "ci95_high": 0.1987,
+              "se": 0.011,
+              "z_score": 16.1,
+              "p_value": 0.0
+            },
+            "equivalence_90d": {
+              "estimate": -0.0064,
+              "ci95_low": -0.0124,
+              "ci95_high": -0.0001,
+              "se": 0.0032,
+              "z_score": -2.0,
+              "p_value": 0.044602
+            },
+            "flat_multiplier_90d": {
+              "estimate": 0.1736,
+              "ci95_low": 0.1525,
+              "ci95_high": 0.1942,
+              "se": 0.0105,
+              "z_score": 16.5,
+              "p_value": 0.0
+            }
+          }
+        },
+        "dir_LCM->SCY": {
+          "rows": 17693,
+          "swimmers": 4260,
+          "replicates": 2000,
+          "mae_seconds": {
+            "ncaa_2025_27": {
+              "estimate": 2.8794,
+              "ci95_low": 2.8029,
+              "ci95_high": 2.9618,
+              "se": 0.0406
+            },
+            "equivalence_14d": {
+              "estimate": 2.6669,
+              "ci95_low": 2.5942,
+              "ci95_high": 2.7401,
+              "se": 0.0365
+            },
+            "flat_multiplier_14d": {
+              "estimate": 2.7005,
+              "ci95_low": 2.628,
+              "ci95_high": 2.7755,
+              "se": 0.0374
+            },
+            "equivalence_30d": {
+              "estimate": 2.6632,
+              "ci95_low": 2.5902,
+              "ci95_high": 2.7342,
+              "se": 0.0365
+            },
+            "flat_multiplier_30d": {
+              "estimate": 2.6916,
+              "ci95_low": 2.6185,
+              "ci95_high": 2.7654,
+              "se": 0.0373
+            },
+            "equivalence_60d": {
+              "estimate": 2.6938,
+              "ci95_low": 2.62,
+              "ci95_high": 2.7641,
+              "se": 0.0368
+            },
+            "flat_multiplier_60d": {
+              "estimate": 2.6953,
+              "ci95_low": 2.6209,
+              "ci95_high": 2.7694,
+              "se": 0.0374
+            },
+            "equivalence_90d": {
+              "estimate": 2.6689,
+              "ci95_low": 2.595,
+              "ci95_high": 2.7415,
+              "se": 0.0368
+            },
+            "flat_multiplier_90d": {
+              "estimate": 2.7013,
+              "ci95_low": 2.6282,
+              "ci95_high": 2.7758,
+              "se": 0.0372
+            }
+          },
+          "mae_minus_equivalence_30d": {
+            "ncaa_2025_27": {
+              "estimate": 0.2161,
+              "ci95_low": 0.1828,
+              "ci95_high": 0.2508,
+              "se": 0.0172,
+              "z_score": 12.6,
+              "p_value": 0.0
+            },
+            "equivalence_14d": {
+              "estimate": 0.0036,
+              "ci95_low": -0.0045,
+              "ci95_high": 0.0124,
+              "se": 0.0043,
+              "z_score": 0.8,
+              "p_value": 0.399194
+            },
+            "flat_multiplier_14d": {
+              "estimate": 0.0372,
+              "ci95_low": 0.0178,
+              "ci95_high": 0.0561,
+              "se": 0.0096,
+              "z_score": 3.9,
+              "p_value": 0.000106
+            },
+            "flat_multiplier_30d": {
+              "estimate": 0.0284,
+              "ci95_low": 0.0096,
+              "ci95_high": 0.0464,
+              "se": 0.0091,
+              "z_score": 3.1,
+              "p_value": 0.001801
+            },
+            "equivalence_60d": {
+              "estimate": 0.0305,
+              "ci95_low": 0.0208,
+              "ci95_high": 0.0411,
+              "se": 0.0052,
+              "z_score": 5.9,
+              "p_value": 0.0
+            },
+            "flat_multiplier_60d": {
+              "estimate": 0.0321,
+              "ci95_low": 0.013,
+              "ci95_high": 0.0505,
+              "se": 0.0097,
+              "z_score": 3.3,
+              "p_value": 0.000939
+            },
+            "equivalence_90d": {
+              "estimate": 0.0056,
+              "ci95_low": -0.0003,
+              "ci95_high": 0.0119,
+              "se": 0.0032,
+              "z_score": 1.8,
+              "p_value": 0.078639
+            },
+            "flat_multiplier_90d": {
+              "estimate": 0.0381,
+              "ci95_low": 0.0193,
+              "ci95_high": 0.0566,
+              "se": 0.0094,
+              "z_score": 4.1,
+              "p_value": 5e-05
+            }
+          }
+        },
+        "dir_SCY->SCM": {
+          "rows": 934,
+          "swimmers": 374,
+          "replicates": 2000,
+          "mae_seconds": {
+            "ncaa_2025_27": {
+              "estimate": 3.2452,
+              "ci95_low": 2.9173,
+              "ci95_high": 3.5992,
+              "se": 0.172
+            },
+            "equivalence_14d": {
+              "estimate": 3.2536,
+              "ci95_low": 2.9544,
+              "ci95_high": 3.5821,
+              "se": 0.1622
+            },
+            "flat_multiplier_14d": {
+              "estimate": 3.2589,
+              "ci95_low": 2.9512,
+              "ci95_high": 3.5967,
+              "se": 0.1671
+            },
+            "equivalence_30d": {
+              "estimate": 3.2245,
+              "ci95_low": 2.9261,
+              "ci95_high": 3.5539,
+              "se": 0.1615
+            },
+            "flat_multiplier_30d": {
+              "estimate": 3.241,
+              "ci95_low": 2.9309,
+              "ci95_high": 3.5758,
+              "se": 0.1678
+            },
+            "equivalence_60d": {
+              "estimate": 3.284,
+              "ci95_low": 2.9955,
+              "ci95_high": 3.607,
+              "se": 0.1564
+            },
+            "flat_multiplier_60d": {
+              "estimate": 3.2784,
+              "ci95_low": 2.9772,
+              "ci95_high": 3.6136,
+              "se": 0.1649
+            },
+            "equivalence_90d": {
+              "estimate": 3.277,
+              "ci95_low": 2.992,
+              "ci95_high": 3.597,
+              "se": 0.154
+            },
+            "flat_multiplier_90d": {
+              "estimate": 3.3219,
+              "ci95_low": 3.0206,
+              "ci95_high": 3.6584,
+              "se": 0.1652
+            }
+          },
+          "mae_minus_equivalence_30d": {
+            "ncaa_2025_27": {
+              "estimate": 0.0207,
+              "ci95_low": -0.054,
+              "ci95_high": 0.0912,
+              "se": 0.0374,
+              "z_score": 0.6,
+              "p_value": 0.579816
+            },
+            "equivalence_14d": {
+              "estimate": 0.0292,
+              "ci95_low": 0.0024,
+              "ci95_high": 0.0602,
+              "se": 0.0149,
+              "z_score": 2.0,
+              "p_value": 0.050303
+            },
+            "flat_multiplier_14d": {
+              "estimate": 0.0344,
+              "ci95_low": -0.004,
+              "ci95_high": 0.0774,
+              "se": 0.0207,
+              "z_score": 1.7,
+              "p_value": 0.096127
+            },
+            "flat_multiplier_30d": {
+              "estimate": 0.0165,
+              "ci95_low": -0.0276,
+              "ci95_high": 0.064,
+              "se": 0.0234,
+              "z_score": 0.7,
+              "p_value": 0.480759
+            },
+            "equivalence_60d": {
+              "estimate": 0.0596,
+              "ci95_low": 0.0164,
+              "ci95_high": 0.1004,
+              "se": 0.0219,
+              "z_score": 2.7,
+              "p_value": 0.006544
+            },
+            "flat_multiplier_60d": {
+              "estimate": 0.0539,
+              "ci95_low": -0.0095,
+              "ci95_high": 0.1213,
+              "se": 0.0335,
+              "z_score": 1.6,
+              "p_value": 0.107574
+            },
+            "equivalence_90d": {
+              "estimate": 0.0525,
+              "ci95_low": 0.0053,
+              "ci95_high": 0.0973,
+              "se": 0.0238,
+              "z_score": 2.2,
+              "p_value": 0.027314
+            },
+            "flat_multiplier_90d": {
+              "estimate": 0.0974,
+              "ci95_low": 0.0147,
+              "ci95_high": 0.1819,
+              "se": 0.0437,
+              "z_score": 2.2,
+              "p_value": 0.025779
+            }
+          }
+        },
+        "dir_SCM->SCY": {
+          "rows": 934,
+          "swimmers": 374,
+          "replicates": 2000,
+          "mae_seconds": {
+            "ncaa_2025_27": {
+              "estimate": 2.9552,
+              "ci95_low": 2.6589,
+              "ci95_high": 3.2888,
+              "se": 0.1596
+            },
+            "equivalence_14d": {
+              "estimate": 3.0319,
+              "ci95_low": 2.7445,
+              "ci95_high": 3.3451,
+              "se": 0.1556
+            },
+            "flat_multiplier_14d": {
+              "estimate": 2.9622,
+              "ci95_low": 2.6807,
+              "ci95_high": 3.271,
+              "se": 0.1548
+            },
+            "equivalence_30d": {
+              "estimate": 3.0008,
+              "ci95_low": 2.7151,
+              "ci95_high": 3.3105,
+              "se": 0.1541
+            },
+            "flat_multiplier_30d": {
+              "estimate": 2.9422,
+              "ci95_low": 2.6616,
+              "ci95_high": 3.2535,
+              "se": 0.1552
+            },
+            "equivalence_60d": {
+              "estimate": 3.0822,
+              "ci95_low": 2.8047,
+              "ci95_high": 3.3904,
+              "se": 0.1518
+            },
+            "flat_multiplier_60d": {
+              "estimate": 2.9688,
+              "ci95_low": 2.6894,
+              "ci95_high": 3.274,
+              "se": 0.1522
+            },
+            "equivalence_90d": {
+              "estimate": 3.1071,
+              "ci95_low": 2.8309,
+              "ci95_high": 3.4169,
+              "se": 0.1514
+            },
+            "flat_multiplier_90d": {
+              "estimate": 3.002,
+              "ci95_low": 2.722,
+              "ci95_high": 3.311,
+              "se": 0.1526
+            }
+          },
+          "mae_minus_equivalence_30d": {
+            "ncaa_2025_27": {
+              "estimate": -0.0455,
+              "ci95_low": -0.1211,
+              "ci95_high": 0.0234,
+              "se": 0.0372,
+              "z_score": -1.2,
+              "p_value": 0.220818
+            },
+            "equivalence_14d": {
+              "estimate": 0.0312,
+              "ci95_low": 0.0045,
+              "ci95_high": 0.0616,
+              "se": 0.0148,
+              "z_score": 2.1,
+              "p_value": 0.035278
+            },
+            "flat_multiplier_14d": {
+              "estimate": -0.0386,
+              "ci95_low": -0.0757,
+              "ci95_high": -0.0014,
+              "se": 0.0192,
+              "z_score": -2.0,
+              "p_value": 0.044225
+            },
+            "flat_multiplier_30d": {
+              "estimate": -0.0586,
+              "ci95_low": -0.0986,
+              "ci95_high": -0.0157,
+              "se": 0.0209,
+              "z_score": -2.8,
+              "p_value": 0.005084
+            },
+            "equivalence_60d": {
+              "estimate": 0.0814,
+              "ci95_low": 0.0386,
+              "ci95_high": 0.1218,
+              "se": 0.022,
+              "z_score": 3.7,
+              "p_value": 0.000216
+            },
+            "flat_multiplier_60d": {
+              "estimate": -0.032,
+              "ci95_low": -0.0938,
+              "ci95_high": 0.0312,
+              "se": 0.0322,
+              "z_score": -1.0,
+              "p_value": 0.320941
+            },
+            "equivalence_90d": {
+              "estimate": 0.1063,
+              "ci95_low": 0.061,
+              "ci95_high": 0.1502,
+              "se": 0.0234,
+              "z_score": 4.5,
+              "p_value": 6e-06
+            },
+            "flat_multiplier_90d": {
+              "estimate": 0.0012,
+              "ci95_low": -0.0804,
+              "ci95_high": 0.083,
+              "se": 0.0421,
+              "z_score": 0.0,
+              "p_value": 0.977885
+            }
+          }
+        },
+        "dir_SCM->LCM": {
+          "rows": 1030,
+          "swimmers": 358,
+          "replicates": 2000,
+          "mae_seconds": {
+            "ncaa_2025_27": {
+              "estimate": 2.9416,
+              "ci95_low": 2.7042,
+              "ci95_high": 3.2037,
+              "se": 0.1313
+            },
+            "equivalence_14d": {
+              "estimate": 2.6956,
+              "ci95_low": 2.4555,
+              "ci95_high": 2.9455,
+              "se": 0.1261
+            },
+            "flat_multiplier_14d": {
+              "estimate": 2.7095,
+              "ci95_low": 2.4741,
+              "ci95_high": 2.9556,
+              "se": 0.1251
+            },
+            "equivalence_30d": {
+              "estimate": 2.6951,
+              "ci95_low": 2.4538,
+              "ci95_high": 2.9501,
+              "se": 0.1271
+            },
+            "flat_multiplier_30d": {
+              "estimate": 2.711,
+              "ci95_low": 2.471,
+              "ci95_high": 2.9565,
+              "se": 0.1262
+            },
+            "equivalence_60d": {
+              "estimate": 2.6838,
+              "ci95_low": 2.4355,
+              "ci95_high": 2.9344,
+              "se": 0.1274
+            },
+            "flat_multiplier_60d": {
+              "estimate": 2.7288,
+              "ci95_low": 2.4864,
+              "ci95_high": 2.9742,
+              "se": 0.1264
+            },
+            "equivalence_90d": {
+              "estimate": 2.7401,
+              "ci95_low": 2.4982,
+              "ci95_high": 2.9891,
+              "se": 0.1263
+            },
+            "flat_multiplier_90d": {
+              "estimate": 2.7442,
+              "ci95_low": 2.5027,
+              "ci95_high": 2.9894,
+              "se": 0.1265
+            }
+          },
+          "mae_minus_equivalence_30d": {
+            "ncaa_2025_27": {
+              "estimate": 0.2465,
+              "ci95_low": 0.1552,
+              "ci95_high": 0.3522,
+              "se": 0.0506,
+              "z_score": 4.9,
+              "p_value": 1e-06
+            },
+            "equivalence_14d": {
+              "estimate": 0.0004,
+              "ci95_low": -0.0234,
+              "ci95_high": 0.0264,
+              "se": 0.0126,
+              "z_score": 0.0,
+              "p_value": 0.974183
+            },
+            "flat_multiplier_14d": {
+              "estimate": 0.0143,
+              "ci95_low": -0.0295,
+              "ci95_high": 0.0592,
+              "se": 0.0227,
+              "z_score": 0.6,
+              "p_value": 0.527856
+            },
+            "flat_multiplier_30d": {
+              "estimate": 0.0159,
+              "ci95_low": -0.0274,
+              "ci95_high": 0.0601,
+              "se": 0.0223,
+              "z_score": 0.7,
+              "p_value": 0.475762
+            },
+            "equivalence_60d": {
+              "estimate": -0.0113,
+              "ci95_low": -0.0435,
+              "ci95_high": 0.022,
+              "se": 0.017,
+              "z_score": -0.7,
+              "p_value": 0.504377
+            },
+            "flat_multiplier_60d": {
+              "estimate": 0.0337,
+              "ci95_low": -0.0133,
+              "ci95_high": 0.082,
+              "se": 0.0244,
+              "z_score": 1.4,
+              "p_value": 0.167613
+            },
+            "equivalence_90d": {
+              "estimate": 0.0449,
+              "ci95_low": -0.0127,
+              "ci95_high": 0.1042,
+              "se": 0.0296,
+              "z_score": 1.5,
+              "p_value": 0.129104
+            },
+            "flat_multiplier_90d": {
+              "estimate": 0.0491,
+              "ci95_low": -0.001,
+              "ci95_high": 0.0998,
+              "se": 0.0264,
+              "z_score": 1.9,
+              "p_value": 0.063079
+            }
+          }
+        },
+        "dir_LCM->SCM": {
+          "rows": 1030,
+          "swimmers": 358,
+          "replicates": 2000,
+          "mae_seconds": {
+            "ncaa_2025_27": {
+              "estimate": 2.8388,
+              "ci95_low": 2.6102,
+              "ci95_high": 3.0903,
+              "se": 0.1261
+            },
+            "equivalence_14d": {
+              "estimate": 2.6691,
+              "ci95_low": 2.432,
+              "ci95_high": 2.9166,
+              "se": 0.1246
+            },
+            "flat_multiplier_14d": {
+              "estimate": 2.6389,
+              "ci95_low": 2.4088,
+              "ci95_high": 2.879,
+              "se": 0.1218
+            },
+            "equivalence_30d": {
+              "estimate": 2.6814,
+              "ci95_low": 2.4412,
+              "ci95_high": 2.9343,
+              "se": 0.1268
+            },
+            "flat_multiplier_30d": {
+              "estimate": 2.6458,
+              "ci95_low": 2.4121,
+              "ci95_high": 2.8867,
+              "se": 0.1231
+            },
+            "equivalence_60d": {
+              "estimate": 2.6776,
+              "ci95_low": 2.4302,
+              "ci95_high": 2.9291,
+              "se": 0.1267
+            },
+            "flat_multiplier_60d": {
+              "estimate": 2.6681,
+              "ci95_low": 2.4317,
+              "ci95_high": 2.9087,
+              "se": 0.1234
+            },
+            "equivalence_90d": {
+              "estimate": 2.6992,
+              "ci95_low": 2.4593,
+              "ci95_high": 2.9451,
+              "se": 0.1244
+            },
+            "flat_multiplier_90d": {
+              "estimate": 2.6847,
+              "ci95_low": 2.4476,
+              "ci95_high": 2.9255,
+              "se": 0.1237
+            }
+          },
+          "mae_minus_equivalence_30d": {
+            "ncaa_2025_27": {
+              "estimate": 0.1574,
+              "ci95_low": 0.0677,
+              "ci95_high": 0.2602,
+              "se": 0.0489,
+              "z_score": 3.2,
+              "p_value": 0.001287
+            },
+            "equivalence_14d": {
+              "estimate": -0.0122,
+              "ci95_low": -0.0357,
+              "ci95_high": 0.0141,
+              "se": 0.0126,
+              "z_score": -1.0,
+              "p_value": 0.331228
+            },
+            "flat_multiplier_14d": {
+              "estimate": -0.0424,
+              "ci95_low": -0.0869,
+              "ci95_high": 0.004,
+              "se": 0.0233,
+              "z_score": -1.8,
+              "p_value": 0.068494
+            },
+            "flat_multiplier_30d": {
+              "estimate": -0.0356,
+              "ci95_low": -0.0789,
+              "ci95_high": 0.0088,
+              "se": 0.0222,
+              "z_score": -1.6,
+              "p_value": 0.109168
+            },
+            "equivalence_60d": {
+              "estimate": -0.0038,
+              "ci95_low": -0.0359,
+              "ci95_high": 0.0293,
+              "se": 0.0169,
+              "z_score": -0.2,
+              "p_value": 0.820933
+            },
+            "flat_multiplier_60d": {
+              "estimate": -0.0133,
+              "ci95_low": -0.0594,
+              "ci95_high": 0.0354,
+              "se": 0.0242,
+              "z_score": -0.6,
+              "p_value": 0.5823
+            },
+            "equivalence_90d": {
+              "estimate": 0.0178,
+              "ci95_low": -0.0389,
+              "ci95_high": 0.0767,
+              "se": 0.029,
+              "z_score": 0.6,
+              "p_value": 0.538777
+            },
+            "flat_multiplier_90d": {
+              "estimate": 0.0033,
+              "ci95_low": -0.0469,
+              "ci95_high": 0.0559,
+              "se": 0.0266,
+              "z_score": 0.1,
+              "p_value": 0.90095
+            }
+          }
+        }
+      },
+      "ability_bias_by_independent_swim_decile": {
+        "coverage": {
+          "rows": 39314,
+          "rows_with_independent_swim": 17076,
+          "rows_in_deciles": 16902,
+          "min_days": 31,
+          "max_days": 90
+        },
+        "forward_signed_pct": {
+          "ncaa_2025_27": {
+            "D1": {
+              "estimate": -1.376,
+              "ci95_low": -1.647,
+              "ci95_high": -1.094,
+              "se": 0.141
+            },
+            "D5": {
+              "estimate": -0.68,
+              "ci95_low": -0.916,
+              "ci95_high": -0.433,
+              "se": 0.122
+            },
+            "D10": {
+              "estimate": 1.421,
+              "ci95_low": 1.066,
+              "ci95_high": 1.774,
+              "se": 0.178
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -2.797,
+              "ci95_low": -3.237,
+              "ci95_high": -2.365,
+              "se": 0.227
+            },
+            "forward_decile_range_pct": 2.797
+          },
+          "equivalence_14d": {
+            "D1": {
+              "estimate": -0.802,
+              "ci95_low": -1.067,
+              "ci95_high": -0.528,
+              "se": 0.135
+            },
+            "D5": {
+              "estimate": -0.559,
+              "ci95_low": -0.784,
+              "ci95_high": -0.333,
+              "se": 0.115
+            },
+            "D10": {
+              "estimate": 0.306,
+              "ci95_low": -0.017,
+              "ci95_high": 0.631,
+              "se": 0.164
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -1.108,
+              "ci95_low": -1.517,
+              "ci95_high": -0.708,
+              "se": 0.211
+            },
+            "forward_decile_range_pct": 1.154
+          },
+          "flat_multiplier_14d": {
+            "D1": {
+              "estimate": -1.47,
+              "ci95_low": -1.737,
+              "ci95_high": -1.187,
+              "se": 0.138
+            },
+            "D5": {
+              "estimate": -0.776,
+              "ci95_low": -1.007,
+              "ci95_high": -0.543,
+              "se": 0.117
+            },
+            "D10": {
+              "estimate": 1.326,
+              "ci95_low": 0.995,
+              "ci95_high": 1.666,
+              "se": 0.17
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -2.796,
+              "ci95_low": -3.217,
+              "ci95_high": -2.381,
+              "se": 0.218
+            },
+            "forward_decile_range_pct": 2.796
+          },
+          "equivalence_30d": {
+            "D1": {
+              "estimate": -0.501,
+              "ci95_low": -0.765,
+              "ci95_high": -0.226,
+              "se": 0.136
+            },
+            "D5": {
+              "estimate": -0.321,
+              "ci95_low": -0.546,
+              "ci95_high": -0.097,
+              "se": 0.114
+            },
+            "D10": {
+              "estimate": 0.357,
+              "ci95_low": 0.035,
+              "ci95_high": 0.682,
+              "se": 0.164
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -0.859,
+              "ci95_low": -1.273,
+              "ci95_high": -0.453,
+              "se": 0.211
+            },
+            "forward_decile_range_pct": 0.998
+          },
+          "flat_multiplier_30d": {
+            "D1": {
+              "estimate": -1.346,
+              "ci95_low": -1.612,
+              "ci95_high": -1.067,
+              "se": 0.138
+            },
+            "D5": {
+              "estimate": -0.651,
+              "ci95_low": -0.879,
+              "ci95_high": -0.418,
+              "se": 0.117
+            },
+            "D10": {
+              "estimate": 1.451,
+              "ci95_low": 1.123,
+              "ci95_high": 1.785,
+              "se": 0.169
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -2.797,
+              "ci95_low": -3.224,
+              "ci95_high": -2.382,
+              "se": 0.217
+            },
+            "forward_decile_range_pct": 2.797
+          },
+          "equivalence_60d": {
+            "D1": {
+              "estimate": -0.118,
+              "ci95_low": -0.385,
+              "ci95_high": 0.157,
+              "se": 0.136
+            },
+            "D5": {
+              "estimate": -0.049,
+              "ci95_low": -0.277,
+              "ci95_high": 0.176,
+              "se": 0.115
+            },
+            "D10": {
+              "estimate": 0.311,
+              "ci95_low": -0.01,
+              "ci95_high": 0.639,
+              "se": 0.164
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -0.429,
+              "ci95_low": -0.837,
+              "ci95_high": -0.02,
+              "se": 0.212
+            },
+            "forward_decile_range_pct": 0.734
+          },
+          "flat_multiplier_60d": {
+            "D1": {
+              "estimate": -1.236,
+              "ci95_low": -1.505,
+              "ci95_high": -0.95,
+              "se": 0.139
+            },
+            "D5": {
+              "estimate": -0.541,
+              "ci95_low": -0.769,
+              "ci95_high": -0.309,
+              "se": 0.118
+            },
+            "D10": {
+              "estimate": 1.564,
+              "ci95_low": 1.237,
+              "ci95_high": 1.9,
+              "se": 0.168
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -2.8,
+              "ci95_low": -3.227,
+              "ci95_high": -2.378,
+              "se": 0.217
+            },
+            "forward_decile_range_pct": 2.8
+          },
+          "equivalence_90d": {
+            "D1": {
+              "estimate": -0.524,
+              "ci95_low": -0.793,
+              "ci95_high": -0.242,
+              "se": 0.137
+            },
+            "D5": {
+              "estimate": -0.407,
+              "ci95_low": -0.635,
+              "ci95_high": -0.185,
+              "se": 0.115
+            },
+            "D10": {
+              "estimate": 0.106,
+              "ci95_low": -0.212,
+              "ci95_high": 0.433,
+              "se": 0.164
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -0.63,
+              "ci95_low": -1.036,
+              "ci95_high": -0.218,
+              "se": 0.213
+            },
+            "forward_decile_range_pct": 0.851
+          },
+          "flat_multiplier_90d": {
+            "D1": {
+              "estimate": -1.582,
+              "ci95_low": -1.851,
+              "ci95_high": -1.29,
+              "se": 0.141
+            },
+            "D5": {
+              "estimate": -0.887,
+              "ci95_low": -1.118,
+              "ci95_high": -0.651,
+              "se": 0.119
+            },
+            "D10": {
+              "estimate": 1.222,
+              "ci95_low": 0.897,
+              "ci95_high": 1.56,
+              "se": 0.168
+            },
+            "tail_spread_D1_minus_D10": {
+              "estimate": -2.804,
+              "ci95_low": -3.232,
+              "ci95_high": -2.386,
+              "se": 0.218
+            },
+            "forward_decile_range_pct": 2.804
+          }
+        }
+      }
+    }
+  },
+  "runtime_seconds": {
+    "load_and_dedup": 41.1,
+    "total": 107.6
+  }
+}

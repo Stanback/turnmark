@@ -511,6 +511,19 @@ The slowest decile converts too fast in both holdouts, and in the regional holdo
 
 MAE rises with the window for every method, consistent with more change in level between swims further apart. The ordering of methods is the same in all three windows.
 
+That table scores the 30-day model on wider test pairs; it does not show which window to train on. [`window_experiment.py`](./window_experiment.py) fits one model per training window, with the same partitions, noise estimates and shrinkage, and scores every model on the same 14-day test pairs, where A3 is most plausible (receipt [`window-experiment-01.json`](./window-experiment-01.json); differences are swimmer-clustered bootstrap estimates with 95% intervals, positive meaning worse than `30d`):
+
+<!-- receipt:window-training -->
+| Training window | Training swimmers | Low-evidence cells | MAE, 14-day test | vs `30d`, 14-day test | vs `30d`, SCM pairs | vs `30d`, 30-day test |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `14d` | 14,470 | 43 (40 SCM) | `2.4992` | `−0.010` `[−0.020, 0.000]` | `+0.011` `[−0.015, +0.039]` | `+0.008` `[0.000, +0.016]` |
+| `30d` (main) | 22,425 | 30 (28 SCM) | `2.5095` | — | — | — |
+| `60d` | 35,334 | 28 (28 SCM) | `2.5692` | `+0.060` `[+0.046, +0.073]` | `+0.036` `[+0.001, +0.071]` | `+0.023` `[+0.013, +0.032]` |
+| `90d` | 45,507 | 25 (25 SCM) | `2.5134` | `+0.004` `[−0.005, +0.013]` | `+0.067` `[+0.014, +0.121]` | `+0.005` `[−0.002, +0.012]` |
+<!-- /receipt:window-training -->
+
+Sixty days is worse on both test sets. Ninety days ties overall but is worse on pairs involving short-course meters, and wider windows clear few low-evidence SCM cells, so widening only the thin SCM cells would not help. Fourteen days ties `30d` (the sign flips between test sets) with a third fewer training swimmers and more low-evidence cells. Thirty days stays. Beyond 30 days most SCY–LCM pairs have the LCM swim later (about 62% at 60 and 90 days, against 48% at 30), but the SCY→LCM ratio rises to 60 days and falls back at 90, so swim order alone does not explain the drift. The intervals hold each fitted model fixed and are not adjusted for the number of comparisons.
+
 ### 7.9 Venue Cohorts (descriptive)
 
 `same_matched_facility` and `different_matched_facility` compare the facility record each meet's locality resolved to (Appendix B), a proxy rather than a verified building. `altitude_proxy_meet_involved` flags a pair when either meet is in a mountain state, a listed high-elevation city or postal prefix, declares a `B1` altitude of at least 3,000 ft, or comes from the Utah or Montana archive. The cohorts differ in swimmers, events and pace, so these differences are descriptive, not measured effects of travel or altitude.

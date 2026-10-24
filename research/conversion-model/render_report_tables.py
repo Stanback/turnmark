@@ -23,6 +23,8 @@ REPORT = HERE / "REPORT.md"
 EVALUATION = HERE / "evaluation-checkpoint-08.json"
 ACQUISITION = HERE / "acquisition-checkpoint-06.json"
 SNAPSHOT = HERE.parents[1] / "data" / "empirical.json"
+# A separate experiment, read by its own renderer rather than passed to every table.
+WINDOW_EXPERIMENT = HERE / "window-experiment-01.json"
 
 BLOCK = re.compile(r"(<!-- receipt:([a-z0-9-]+) -->\n)(.*?)(<!-- /receipt:\2 -->)", re.DOTALL)
 MINUS = "−"
@@ -511,6 +513,36 @@ def window(ev: dict, acq: dict, snap: dict) -> str:
     )
 
 
+def window_training(*_docs: dict) -> str:
+    """One model fitted per training window, every model scored on the same 14-day test pairs."""
+    exp = json.loads(WINDOW_EXPERIMENT.read_text(encoding="utf-8"))
+    fixed_test, wider_test = exp["evaluations"]["test_14d"], exp["evaluations"]["test_30d"]
+
+    def delta(evaluation: dict, scope: str, name: str) -> str:
+        if name == "equivalence_30d":
+            return "—"
+        entry = evaluation["bootstrap_mae_swimmer_clustered"][scope]["mae_minus_equivalence_30d"][name]
+        return f"{code(signed(entry['estimate'], 3))} {ci_only(entry, 3)}"
+
+    rows = []
+    for window, train in exp["training_sets"].items():
+        name = f"equivalence_{window}"
+        rows.append([
+            code(window) + (" (main)" if window == "30d" else ""),
+            count(train["clean_swimmers"]),
+            f"{train['low_evidence_course_pair_cells']} ({train['scm_course_pair_cells_low_evidence']} SCM)",
+            code(fixed(fixed_test["methods"][name]["overall"]["mae_seconds"], 4)),
+            delta(fixed_test, "overall", name),
+            delta(fixed_test, "scm_involving", name),
+            delta(wider_test, "overall", name),
+        ])
+    return table(
+        ["Training window", "Training swimmers", "Low-evidence cells", "MAE, 14-day test", "vs `30d`, 14-day test", "vs `30d`, SCM pairs", "vs `30d`, 30-day test"],
+        [":---"] + ["---:"] * 6,
+        rows,
+    )
+
+
 def caveats(ev: dict, acq: dict, snap: dict) -> str:
     shares = ev["swimmer_disjoint_holdout"]["caveat_shares_on_test"]
     meta = ev["model_metadata"]
@@ -617,6 +649,7 @@ RENDERERS = {
     "holdouts": holdouts,
     "holdout-diagnostics": holdout_diagnostics,
     "window": window,
+    "window-training": window_training,
     "caveats": caveats,
     "venue-cohorts": venue_cohorts,
     "fast-swimmer": fast_swimmer,
