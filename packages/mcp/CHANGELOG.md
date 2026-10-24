@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- `turnmark-empirical-2026` is now Turnmark Equivalence: a model-based estimate
+  of the equivalent time in the other course. The method ID is unchanged; its factor
+  varies with the entered time and it never returns `offsetSeconds`. The card
+  and `convert_swim` description use the new label, explanation and
+  limited-data caveat; the description names all three compared methods. UI
+  resource revision is `0.3.0-r7.html`.
+
 - Add original-swim national benchmark comparisons through `assess_swim_benchmark`;
   keep conversion estimate guidance beside the result.
 

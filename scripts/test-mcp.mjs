@@ -82,7 +82,7 @@ async function verify(transport, mode, label, ui = false) {
       listed.map((t) => t.name).sort(),
       [...Object.values(tools), "get_sources"].sort(),
     );
-    const uri = "ui://turnmark/conversion/0.3.0-r6.html";
+    const uri = "ui://turnmark/conversion/0.3.0-r7.html";
     assert.equal(
       listed.find((t) => t.name === "convert_swim")._meta.ui.resourceUri,
       uri,

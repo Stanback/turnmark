@@ -67,6 +67,14 @@ val strokeImages = listOf(R.drawable.ic_swim_freestyle, R.drawable.ic_swim_backs
 val strokeCodes = listOf("FR", "BK", "BR", "FL", "IM")
 
 private const val coloradoDistanceCaveat = "Distance caveat: this documented Colorado rule uses a general SCM/SCY multiplier for unequal-distance freestyle events. Check the meet’s required conversion."
+private const val empiricalLowEvidenceCaveat = "Limited data: few swimmers in Turnmark’s data swam this event in both of these courses at this level, so this equivalent time is less certain and leans on related events and pool geometry."
+private const val empiricalOutOfRangeCaveat = "Outside the model’s fitted range: this estimate extrapolates beyond the available fit."
+
+private fun caveatText(caveat: ConversionCaveat): String = when (caveat) {
+    ConversionCaveat.COLORADO_SHORT_COURSE_DISTANCE -> coloradoDistanceCaveat
+    ConversionCaveat.EMPIRICAL_LOW_EVIDENCE -> empiricalLowEvidenceCaveat
+    ConversionCaveat.EMPIRICAL_OUT_OF_RANGE -> empiricalOutOfRangeCaveat
+}
 
 data class Draft(
     val time: String = "", val strokeIndex: Int = 0, val distance: UInt = 100u,
@@ -82,7 +90,7 @@ data class Draft(
     }
     val methodLabel get() = when (method) {
         ConversionMethod.COLORADO -> "Colorado Timing"
-        ConversionMethod.EMPIRICAL -> "Turnmark Empirical"
+        ConversionMethod.EMPIRICAL -> "Turnmark Equivalence"
         ConversionMethod.NCAA -> "NCAA"
     }
     val options get() = getEventOptions(courses[courseIndex], strokes[strokeIndex])
@@ -454,7 +462,7 @@ private fun share(context: Context, draft: Draft) {
                 Text("Calculation options"); Spacer(Modifier.width(8.dp)); Icon(Icons.Default.KeyboardArrowDown, null)
             }
             if (calculationExpanded) {
-                val methodLabels = listOf("NCAA (default)", "Colorado Timing", "Turnmark Empirical")
+                val methodLabels = listOf("NCAA (default)", "Colorado Timing", "Turnmark Equivalence")
                 val methodIds = listOf("ncaa-2025-27", "colorado-teamunify-2026", "turnmark-empirical-2026")
                 Choice("Course conversion", methodLabels[methodIds.indexOf(draft.methodId).coerceAtLeast(0)], methodLabels, Modifier.fillMaxWidth()) {
                     update(draft.copy(methodId = methodIds[it]))
@@ -579,7 +587,10 @@ private fun share(context: Context, draft: Draft) {
                     modifier = Modifier.testTag("resultContext"))
                 ResultTime(result.value.time, compact)
                 Text((if ((result.value.altitude?.value?.adjustmentSeconds ?: 0.0) > 0 && result.value.kind == ConversionKind.SWUM) "Sea-level estimate" else kindLabel(result.value.kind)) + if (result.value.kind != ConversionKind.SWUM && draft.method == ConversionMethod.COLORADO) " · Colorado Timing" else "", color = c.textMuted, style = MaterialTheme.typography.labelMedium)
-                if (result.value.caveat != null) Text(coloradoDistanceCaveat, style = MaterialTheme.typography.bodySmall, color = c.textMuted, modifier = Modifier.testTag("distanceCaveat"))
+                result.value.caveat?.let { caveat ->
+                    Text(caveatText(caveat), style = MaterialTheme.typography.bodySmall, color = c.textMuted,
+                        modifier = Modifier.testTag(when (caveat) { ConversionCaveat.EMPIRICAL_LOW_EVIDENCE -> "lowEvidenceCaveat"; ConversionCaveat.EMPIRICAL_OUT_OF_RANGE -> "outOfRangeCaveat"; else -> "distanceCaveat" }))
+                }
                 if (result.value.kind != ConversionKind.SWUM) Text("From ${draft.time} · ${draft.distance} ${draft.unit} ${courses[draft.courseIndex]}",
                     color = c.textMuted, style = MaterialTheme.typography.bodySmall)
 
@@ -760,15 +771,16 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
                         color = c.textMuted, modifier = Modifier.padding(bottom = 16.dp)) }
                 }
             }
-            Text("Two conversion rules, not a prediction range or confidence interval. Use the method required by your meet.",
+            Text("Published rules and an equivalence model, not a prediction range or confidence interval. Use the method required by your meet.",
                 style = MaterialTheme.typography.bodySmall, color = c.textMuted)
-            if (comparisons.any { (it.outcome as? ConversionOutcome.Available)?.value?.caveat != null })
-                Text(coloradoDistanceCaveat, style = MaterialTheme.typography.bodySmall, color = c.textMuted)
+            comparisons.mapNotNull { (it.outcome as? ConversionOutcome.Available)?.value?.caveat }.distinct().forEach { caveat ->
+                Text(caveatText(caveat), style = MaterialTheme.typography.bodySmall, color = c.textMuted)
+            }
             if (draft.altitudeText != null) { Text("Altitude adjustment", style = MaterialTheme.typography.titleMedium); AltitudeDetails(draft) }
             Text("Why the times differ", style = MaterialTheme.typography.titleMedium)
             CalculationExplanation("NCAA", "Factors vary by event and course, not age. Long-course factors use separate men’s and women’s tables; short-course meters-to-yards factors are shared. NCAA publishes metric-to-yards factors; reverse and SCM/LCM conversions are derived.")
             CalculationExplanation("Colorado Timing", "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.")
-            CalculationExplanation("Turnmark Empirical", "Pace-dependent quadratic offsets over NCAA base factors, fitted with Huber loss and empirical-Bayes shrinkage on paired 30-day competition transitions across 6.32M US swims (2010–2026).")
+            CalculationExplanation("Turnmark Equivalence", "Estimates the equivalent time in the other course from 95K pairs of the same swimmer racing both courses within a month (8.51M US swims, 2010–2026), allowing for the randomness in any single swim. Converting back returns the entered time to within 0.02 s.")
             CalculationExplanation("Pool length", "Shorter pools mean more turns and push-offs. These rules do not adjust for your starts, underwater skill, technique, endurance or individual development.")
             CalculationExplanation("Distance events", "500, 1000 and 1650 yards map to 400, 800 and 1500 meters.")
             if (result is ConversionOutcome.Available) {
@@ -782,7 +794,7 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
                         Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text("Time multiplier: ${String.format(java.util.Locale.ROOT, "%.5f", result.value.factor)}", style = MaterialTheme.typography.bodyMedium)
                             if (result.value.offsetSeconds != 0.0) Text("Time offset: ${result.value.offsetSeconds} seconds", style = MaterialTheme.typography.bodyMedium)
-                            Text("After any altitude deduction, multiply the seconds, add any offset, then truncate to hundredths. The factor is rounded here for display.",
+                            Text(if (draft.method == ConversionMethod.EMPIRICAL) "Turnmark Equivalence: the model’s equivalent time in this course. The multiplier shown applies to this entered time." else "After any altitude deduction, multiply the seconds, add any offset, then truncate to hundredths. The factor is rounded here for display.",
                                 style = MaterialTheme.typography.bodySmall, color = c.textMuted)
                         }
                     }

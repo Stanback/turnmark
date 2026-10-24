@@ -50,6 +50,17 @@ nfhs-member-state:584628f4-8f65-4d78-a3dd-ccd54c1de98b,Washington Interscholasti
 nfhs-member-state:08db961a-14b6-4059-9e84-9e3c8ccebf5d,Wisconsin Interscholastic Athletic Association,US,WI,high_school,https://www.wiaawi.org,partial_swimming_imported,nfhs-member-state-associations
 nfhs-member-state:7c818c89-111c-4d62-aa12-c416689864b3,West Virginia Secondary School Activities Commission,US,WV,high_school,https://www.wvssac.org,partial_swimming_imported,nfhs-member-state-associations
 nfhs-member-state:29b177ae-0351-4ba9-98f1-08653613bc08,Wyoming High School Activities Assoc,US,WY,high_school,https://www.whsaa.org,partial_swimming_imported,nfhs-member-state-associations
+swimming-canada-section:swim-alberta,Swim Alberta,CA,AB,club_swimming,http://www.swimalberta.ca/,partial_swimming_imported,swimming-canada-provincial-partners
+swimming-canada-section:swim-bc,Swim BC,CA,BC,club_swimming,https://swimbc.ca/,partial_swimming_imported,swimming-canada-provincial-partners
+swimming-canada-section:swimming-canada,Swimming Canada,CA,CA,club_swimming,https://www.swimming.ca/,partial_swimming_imported,swimming-canada-provincial-partners
+swimming-canada-section:swim-manitoba,Swim Manitoba,CA,MB,club_swimming,https://www.swimmanitoba.mb.ca/,partial_swimming_imported,swimming-canada-provincial-partners
+swimming-canada-section:swimming-new-brunswick,Swimming New Brunswick,CA,NB,club_swimming,https://swimnb.poolq.net/,swimming_not_reviewed,swimming-canada-provincial-partners
+swimming-canada-section:swimming-nl,Swimming Newfoundland and Labrador,CA,NL,club_swimming,https://swimmingnl.ca/,partial_swimming_imported,swimming-canada-provincial-partners
+swimming-canada-section:swim-nova-scotia,Swim Nova Scotia,CA,NS,club_swimming,https://www.swimnovascotia.com/,partial_swimming_imported,swimming-canada-provincial-partners
+swimming-canada-section:swim-ontario,Swim Ontario,CA,ON,club_swimming,https://www.swimontario.com/,partial_swimming_imported,swimming-canada-provincial-partners
+swimming-canada-section:swim-pei,Swim PEI,CA,PE,club_swimming,https://swimpei.com/,swimming_not_reviewed,swimming-canada-provincial-partners
+swimming-canada-section:fnq,Fédération de natation du Québec,CA,QC,club_swimming,https://www.fnq.ca/,swimming_not_reviewed,swimming-canada-provincial-partners
+swimming-canada-section:swim-saskatchewan,Swim Saskatchewan,CA,SK,club_swimming,https://www.swimsask.ca/,partial_swimming_imported,swimming-canada-provincial-partners
 usa-lsc-listing:1276d9365a4e1d5a0e9caa97,Adirondack Swimming,US,Adirondack Swimming,club_swimming,http://www.adirondackswimming.org/,partial_swimming_imported,usa-lsc-websites
 usa-lsc-listing:71394a91d0f93cfa8fd42f8e,Alaska Swimming,US,Alaska Swimming,club_swimming,http://www.akswimming.org/,swimming_not_reviewed,usa-lsc-websites
 usa-lsc-listing:c8315adad4edcb24b0bc12f9,Allegheny Mountain Swimming,US,Allegheny Mountain Swimming,club_swimming,http://www.amswim.org/,swimming_not_reviewed,usa-lsc-websites

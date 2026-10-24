@@ -1,8 +1,14 @@
-# Offline conversion-model pilot
+# Offline conversion-model pipeline & evaluation
 
-This folder is an experiment, not a deployed conversion method. Read the
-[research review](../../docs/CONVERSION_RESEARCH.md) before collecting data or
-interpreting metrics. No real swimmer dataset is included.
+This folder houses the offline training, hygiene, and evaluation pipeline for
+`turnmark-empirical-2026` ([`data/empirical.json`](../../data/empirical.json)),
+shipped alongside `ncaa-2025-27` (default) and `colorado-teamunify-2026`. Read
+[REPORT.md](REPORT.md) and the [research review](../../docs/CONVERSION_RESEARCH.md)
+before collecting data or interpreting metrics. No real swimmer-level dataset is
+committed to the repository.
+
+A separate forward-only "likely time" predictor POC (age, gap, season and own history; not
+equivalence, not shipped) lives in [predictor/](predictor/README.md).
 
 Collection, querying, evaluation and model training stay local. Generic tools and
 invented fixtures are public; source-specific collectors and real datasets remain
@@ -180,15 +186,20 @@ are retained in the lake. Missing context stays null; archive region is not
 automatically a swimmer's home region.
 
 The [latest acquisition receipt](acquisition-checkpoint-06.json) records
-6,320,277 actual individual finishes, 213,105 source-scoped swimmers and 4,721 meets
-across 13 regional and national archives (from 11 frozen export collections).
-The [aggregate evaluation receipt](evaluation-checkpoint-06.json) (`evaluate_and_train.py`)
-runs best-of-meet round deduplication, hygiene screening, composite sample weighting
-($w_{\text{swimmer}} \cdot w_{\text{region}} \cdot w_{\text{cohort}} \cdot w_{\text{gap}}$
-fitted on Train only), and directional apples-to-apples comparisons across 176,306 clean
-30-day directional pairs (from 21,970 swimmers) spanning
-swimmer-disjoint (70/15/15), temporal (`<= 2025` vs `2026`) and leave-regions-out holdouts;
-see [REPORT.md](REPORT.md) for the full methodology and holdout tables.
+8,506,767 actual individual finishes, 292,474 source-scoped swimmers and 6,071 meets
+across 18 regional and national archives (from 16 frozen export collections).
+The [aggregate evaluation receipt](evaluation-checkpoint-08.json) (`evaluate_and_train.py`)
+runs best-of-meet round deduplication, a ratio screen shared by both directions of a pair,
+and the Turnmark Equivalence fit: Deming lines with noise measured from same-course repeat
+swims and uncertainty counted over swimmers, shrunk and reconciled into one linear map per
+course onto a shared scale. It
+scores the published rules, a flat multiplier, latent-anchored percentile maps and the shipped
+map on 269,824 clean 30-day directional rows (135,524 distinct swim pairs; 32,121 swimmers)
+across a swimmer-disjoint 70/15/15 holdout and two further holdouts that also exclude every
+training swimmer: a later season (`<= 2025` training, `2026` test) and five held-out regional
+archives. It reports MAE, errors by ability under two diagnostics (pair mean, which shares
+the pair's noise, and a separate swim of the same swimmer, which is less coupled), percentile
+preservation, and round-trip and transitivity error. See [REPORT.md](REPORT.md) for the full methodology and holdout tables.
 
 ## Organizational directory
 

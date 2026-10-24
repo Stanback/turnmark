@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { coloradoDistanceCaveat } from "./lib/calculation-copy";
+  import { caveatText } from "./lib/calculation-copy";
   import {
     benchmarkPreview,
     benchmarkTimeStandardChoices,
@@ -575,7 +575,7 @@
             : x.kind === "derived"
               ? `Derived estimate · ${selectedMethod.label}`
               : (x.reason ?? "Unavailable"),
-        x.caveat ? coloradoDistanceCaveat : "",
+        caveatText(x.caveat),
       ]),
       [],
       ["Conversion source", selectedMethod.source.url],
@@ -752,7 +752,7 @@
               >{form.method === coloradoMethod
                 ? "Colorado"
                 : form.method === empiricalMethod
-                  ? "Empirical"
+                  ? "Equivalence"
                   : "NCAA"}{#if altitudeValid && form.altitude > 0}
                 · {elevationLabel}{/if}</span
             ></summary
@@ -901,7 +901,7 @@
             class="altitude-method-note"
             data-testid="distance-caveat"
           >
-            {coloradoDistanceCaveat}
+            {caveatText(focused.caveat)}
           </p>{/if}
         {#if adjustment > 0 && correctedTime !== null}
           <section
@@ -1014,7 +1014,12 @@
             </div>{/if}
           {#if !error}
             <MethodComparison
-              converter={{ convert: convertSwim, adjustAltitude }}
+              converter={{
+                convert: convertSwim,
+                adjustAltitude,
+                parseTime: (input: unknown) =>
+                  typeof input === "string" ? parseTime(input) : null,
+              }}
               adjusted={adjustment > 0}
               selected={form.method}
               onSelect={(m) => {

@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "scope": "observed-site-access-signals",
-  "rows": 14,
-  "origins": 12,
-  "sha256": "0aea2e5ab069ef0f8399dc847f45a30602cffa9f0de99bfed3a518e292b54c42",
-  "collection": "Cache-only review; no new network requests. Index/robots response examples, status-only blocked receipts and one independently verified USMS public MeetID challenge response. No athlete records or arbitrary query parameters.",
+  "rows": 16,
+  "origins": 14,
+  "sha256": "cb59f7b53bd244f1963aeadfd6ea51826bad9362a5050f5e490c8dc3d505abba",
+  "collection": "Cache-only review; no new network requests. Index/robots response examples, status-only blocked receipts and one independently verified USMS public MeetID challenge response. No athlete records or arbitrary query parameters. Canadian university association robots.txt 403 observations (U SPORTS, CCAA) added from the planning pass cache; OUA, Canada West and AUS 403 bodies were cached without their request URLs and are listed for browser review outside this ledger.",
   "limitations": [
     "Not a comprehensive WAF inventory or detector; observations are URL/time-specific.",
     "403 alone does not identify WAF/provider; Cloudflare edge headers do not confirm a WAF rule.",

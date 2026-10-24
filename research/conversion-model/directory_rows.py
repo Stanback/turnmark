@@ -229,6 +229,30 @@ def embedded_json_columns(path, columns, *, marker, root="", encoding="utf-8-sig
     return _json_rows(document, columns, root)
 
 
+def jsonp_columns(path, columns, *, callback, root="", encoding="utf-8-sig"):
+    """Project a JSONP response: one exact callback wrapping one JSON literal.
+
+    The body must be `callback(` + literal + `)` with optional trailing `;` and
+    whitespace. Nothing is evaluated; a different callback, extra statements or
+    trailing data fail for source review.
+    """
+    _columns(columns)
+    if not isinstance(callback, str) or not re.fullmatch(r"[A-Za-z_$][\w$]*", callback):
+        raise ValueError("Require one explicit JSONP callback identifier")
+    text = Path(path).read_text(encoding=encoding).strip()
+    prefix = callback + "("
+    if not text.startswith(prefix) or not text.rstrip(";").rstrip().endswith(")"):
+        raise ValueError("Expected exactly one JSONP callback wrapper")
+    literal = text[len(prefix):].rstrip(";").rstrip()[:-1]
+    try:
+        document, end = json.JSONDecoder(object_pairs_hook=_unique_object).raw_decode(literal)
+    except json.JSONDecodeError as error:
+        raise ValueError("JSONP payload must be a JSON literal") from error
+    if literal[end:].strip():
+        raise ValueError("Trailing data after the JSONP literal")
+    return _json_rows(document, columns, root)
+
+
 class _Elements(HTMLParser):
     def __init__(self, tag, attributes):
         super().__init__(convert_charrefs=True)

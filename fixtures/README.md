@@ -17,3 +17,12 @@ point assertions allow the same cases to be used from Swift, Kotlin, Rust, and
 JavaScript. Non-JSON values such as `NaN` and `undefined` are tested separately
 in JavaScript. Broader dataset and milestone boundary tests supplement these
 small portable cases.
+
+`empirical-parity.json` is different on purpose. It holds exact-hundredth
+Turnmark Equivalence (`turnmark-empirical-2026`) conversions for every cell of `data/empirical.json`, computed
+by the Python reference implementation in
+`research/conversion-model/evaluate_and_train.py` (`engine_empirical_cs`) and
+rewritten by every `--export-empirical-json` run. It is evidence that the Rust
+engine applies the exported cells with the same arithmetic the model was
+evaluated with, not a source-backed expectation; `cellsSha256` ties it to one
+snapshot, and the Rust conformance test fails if the two disagree.

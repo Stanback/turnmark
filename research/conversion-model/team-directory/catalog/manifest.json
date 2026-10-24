@@ -11,7 +11,7 @@
     "source_coordinate_pairs_unusable": 85,
     "facility_state_normalization": "Pa -> PA; Illinois (IL) -> IL; raw state retained.",
     "publication_scope": "Public organizational/facility facts and source/format metadata only; personal contacts and swimmer/race records excluded.",
-    "limitations": "Listings do not establish current operation. Facilities remain source-scoped across USA Swimming club finder locations, USA Swimming national pool measurement certifications (2020 & 2022 editions, deduplicated and cleaned of line-wrap artifacts), Potomac Valley Swimming venue directory, Hawaiian Swimming LSC venue directory, Adirondack Swimming water-depth table, Pacific Northwest Swimming host venues, 20 USMS LMSC Places-to-Swim directories, and 9 flagship U.S. summer swim league pool directories. No terrain elevations or race-to-venue joins are inferred in the public snapshot without explicit source evidence.",
+    "limitations": "Listings do not establish current operation. Facilities remain source-scoped across USA Swimming club finder locations, USA Swimming national pool measurement certifications (2020 & 2022 editions, deduplicated and cleaned of line-wrap artifacts), Potomac Valley Swimming venue directory, Hawaiian Swimming LSC venue directory, Adirondack Swimming water-depth table, Pacific Northwest Swimming host venues, 20 USMS LMSC Places-to-Swim directories, and 9 flagship U.S. summer swim league pool directories. No terrain elevations or race-to-venue joins are inferred in the public snapshot without explicit source evidence. Canada pass 01 adds Swimming Canada club-listed addresses, Swim Alberta/Ontario/Manitoba club-listed training facilities, Swim Alberta approved competition pools (course length only where the note names it) and StatCan ODRSF pool-type records (including wading pools and water-play sites) as source-reported locations. Canada pass 01 adds Swimming Canada club-listed addresses, Swim Alberta/Ontario/Manitoba club-listed training facilities, Swim Alberta approved competition pools (course length only where the note names it) and StatCan ODRSF pool-type records (including wading pools and water-play sites) as source-reported locations. Canada pass 01 adds Swimming Canada club-listed addresses, Swim Alberta/Ontario/Manitoba club-listed training facilities, Swim Alberta approved competition pools (course length only where the note names it) and StatCan ODRSF pool-type records (including wading pools and water-play sites) as source-reported locations. Canada pass 01 adds Swimming Canada club-listed addresses, Swim Alberta/Ontario/Manitoba club-listed training facilities, Swim Alberta approved competition pools (course length only where the note names it) and StatCan ODRSF pool-type records (including wading pools and water-play sites) as source-reported locations.",
     "usms_nationwide": {
       "source_program_listings": 1124,
       "source_location_rows": 1533,
@@ -24,36 +24,66 @@
     "regional_expansion": "Seventeen cached source receipts independently checked; four school PDFs and the 2025 PNA directory visually reviewed. Regional club/workout-group source universes are not deduplicated against national finders. Withheld unsupported single city/website values; published source abbreviations do not create cross-provider joins.",
     "site_access": "Four blocked-source browser dispositions reported separately from automation: three public pages accessible, one extension permission gap. Minimal ledger preserves original status/protection observations. USMS results index is a browser-reviewed links directory, not imported results.",
     "ghsa_participation": "Official GHSA 2024-25 participation survey pp.37-53. All positive swimming rows: 261 boys and 264 girls, and participant-column sums matched published p.53 totals. Positive participation does not establish an independent full team or current operation. No contacts, athlete names or participant counts projected. Source names preserved; one intra-word line wrap visually joined. Raw PDF local; no redistribution license asserted.",
-    "naia_and_lsc_recon": "Added 54 NAIA 2026 championship qualifier varsity listings (26 men, 28 women matching published denominators), 19 Adirondack Swimming LSC registered clubs, and cataloged 12 high-altitude/regional LSC and USMS SCM result archives."
+    "naia_and_lsc_recon": "Added 54 NAIA 2026 championship qualifier varsity listings (26 men, 28 women matching published denominators), 19 Adirondack Swimming LSC registered clubs, and cataloged 12 high-altitude/regional LSC and USMS SCM result archives.",
+    "canada": {
+      "national_club_list_rows": 366,
+      "national_facility_rows": 306,
+      "national_rows_without_facility": 15,
+      "national_coordinate_pairs_outside_canada": 22,
+      "national_coordinates_blanked_on_facility_rows": 16,
+      "national_mailing_address_rows_without_facility": 45,
+      "national_relationship": "listed_club_address (club-listed address, not a training pool)",
+      "province_rule": "Postal-code first letter (A NL, B NS, C PE, E NB, G/H/J QC, K-P ON, R MB, S SK, T AB, V BC, Y YT; X0A-X0C NU, other X NT); no postal code means province unknown.",
+      "provincial_facilities": {
+        "swimming-canada:club-list-row": 306,
+        "swim-alberta:training-facility": 91,
+        "swim-ontario:primary-pool": 144,
+        "swim-manitoba:club-facility": 31,
+        "swim-alberta:approved-competition-pool": 90,
+        "statcan:odrsf-v1.0": 1103
+      },
+      "odrsf": {
+        "province:ON": 615,
+        "province:AB": 52,
+        "province:MB": 104,
+        "province:QC": 296,
+        "no_usable_coordinates": 67,
+        "province:BC": 22,
+        "province:NB": 14,
+        "licence": "Contains information licensed under the Open Government Licence \u2013 Canada."
+      },
+      "alberta_basins": 5,
+      "identity": "Source-scoped; national and provincial rows for the same club are separate assertions; facilities never merge clubs."
+    }
   },
   "files": {
     "evidence_sources": {
-      "rows": 37,
-      "sha256": "039b251303a03b77b55dde86c5d688985254699246f93f89daa6f6fa5c027f29"
+      "rows": 43,
+      "sha256": "7b652dbdc8aadc95ffdd791ab5d3bfb077c1707d89ff90b33e6a2afee81eb261"
     },
     "facilities": {
-      "rows": 8240,
-      "sha256": "3254d64da6f2a8f6da824e963996003802261a630d76fb33b0e11aa185bbd800"
+      "rows": 10005,
+      "sha256": "a2766957b4655cf322d612ead790c4ccde17784f8a602e7fd93b48e655bb31e4"
     },
     "program_facilities": {
-      "rows": 7497,
-      "sha256": "f1a86619fae15fc91e9e9a8e3d3bd77de917c64b697f9ec262fb6df70578d9b9"
+      "rows": 8125,
+      "sha256": "68b2cb00470af31cf581f8b5ab3e8e717d960f680f0c17cc6d5562ced5fd0c63"
     },
     "pool_basins": {
-      "rows": 1295,
-      "sha256": "652b20aebcdcab6c08ee45337e6d99a6fe8c878fc0bf61ebdb6fb2236ec0404b"
+      "rows": 1300,
+      "sha256": "04cc80b3b9ddc0f75fb1dbf03c6ff068ff27231c659f7daa38c50a320a95c00a"
     },
     "formats": {
-      "rows": 10,
-      "sha256": "c4854d16c83be456829519f42c4e07b93e83d9ca5ed98452c98b3df25f4f7cf9"
+      "rows": 11,
+      "sha256": "259fbc16b0a017fadb643429df89a01228f1e1e2ea23c3d47a3b42bca51bf96d"
     },
     "source_access": {
-      "rows": 152,
-      "sha256": "e0db7e836603ef5d9eccf71448635424226e4ee1e45beb095d0641e602e209dd"
+      "rows": 170,
+      "sha256": "35d85965442d8234c906fe18d6a46079cc78124c60c49c95be72172d59150dfa"
     },
     "source_formats": {
-      "rows": 196,
-      "sha256": "4441b5267966bcbb1ceb95ba1374d3661fc61caba4ffd5537eb05dda3b11cccd"
+      "rows": 213,
+      "sha256": "ffb6094a5107ded289759c95460eb4c3a76586554e9d5217a7a4571ef565fd03"
     }
   }
 }

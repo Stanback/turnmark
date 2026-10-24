@@ -21,10 +21,12 @@ counts and deduplicated currently operating teams remain different quantities.
 
 ## Current evidence-backed checkpoint
 
-The [public catalog](team-directory/README.md) has 20,306 source-scoped listings at
-17,697 source-scoped organizations, with 21,664 affiliations, 8,240 location
-records, 7,497 program-location links and 1,295 separately described competition
-basins. Every program row carries an explicit `program_kind` (`0` unknown rows).
+The [public catalog](team-directory/README.md) has 21,206 source-scoped listings at
+18,531 source-scoped organizations, with 22,564 affiliations, 10,005 location
+records, 8,125 program-location links and 1,300 separately described competition
+basins. 20,301 listings assert a U.S. organization and 900 a Canadian one. Every
+U.S. program row carries an explicit `program_kind`; the 364 `unknown` rows are
+Swimming Canada national-list clubs whose source supplies no type.
 It includes the USA Swimming national finder (with 234 YMCA dual-chartered
 clubs tagged), Active Competitive YMCA Associations (262 deduplicated), YMCA National
 Championship scoring teams (179 listings across 122 teams) and 13 regional YMCA
@@ -71,14 +73,28 @@ summaries by one per category; Wisconsin strikeouts are excluded after visual
 review. The [latest receipt](team-directory/breadth-checkpoint-10.json) checks
 the source rows against the public snapshot. No state is declared complete.
 
-The 161 [governing-body starting points](team-directory/governing-bodies.csv)
-cover 59 USA Swimming LSCs, 51 NFHS member-state associations and 51 USMS LMSCs.
-Ninety have explicitly partial swimming imports, linked to exact source
-documents in the manifest; 71 remain without imported jurisdiction-level swimming lists.
+The 172 [governing-body starting points](team-directory/governing-bodies.csv)
+cover 59 USA Swimming LSCs, 51 NFHS member-state associations, 51 USMS LMSCs and
+11 Canadian bodies (Swimming Canada and its ten provincial sections).
+Ninety-eight have explicitly partial swimming imports, linked to exact source
+documents in the manifest; 74 remain without imported jurisdiction-level swimming lists.
 The separate [homepage-review ledger](team-directory/authority-reviews.csv)
-records 60 cached homepages, 97 stopped outcomes and four not requested because
+records 71 cached homepages, 97 stopped outcomes and four not requested because
 of prior access gaps. Stopped includes redirects awaiting review, robots,
 network and budget limits. Homepage discovery is not sport-directory coverage.
+
+Canada pass 01 imported eleven Canadian source documents (874 listings): the
+Swimming Canada national club list (366 rows with no province or type; province
+derived from postal codes, 23 rows without one) and the Swim BC, Swim Alberta
+(including NWT clubs), Swim Ontario, Swim Manitoba, Swim Saskatchewan, Swim
+Nova Scotia and Swimming NL club lists, plus 1,765 Canadian facility rows
+(club-listed addresses and training pools, Swim Alberta's approved competition
+pools with five named basins, and StatCan ODRSF pool records under the Open
+Government Licence – Canada). Quebec, New Brunswick and PEI clubs appear only
+through the national list; Yukon and Nunavut have no listing; U SPORTS/CCAA and
+the conference sites returned HTTP 403; a person then confirmed 25 varsity programs and one club team on the universities' own athletics pages (U of Alberta discontinued, Mount Royal/UQAM none, York unconfirmed). The coverage
+audit now carries a `countries` dimension and a per-province `canada` block;
+no Canadian denominator exists beyond Swim Ontario's "over 140".
 
 The [latest private acquisition checkpoint](acquisition-checkpoint-06.json) has
 **3,375,251 actual individual races across 2,454 meets and 138,993 source-scoped
@@ -143,6 +159,7 @@ balanced cohorts, sufficient paired labels or a model ready for the product.
 | College clubs                 | CCS listing and registration-year updates                                                                 | Current registration and verified operation remain separate assertions                                                                                                                    |
 | YMCA and independent          | Official YMCA association and program directories                                                         | Season/source scope and overlapping affiliations retained; no current program inferred merely from a historical meet appearance                                                           |
 | Venues                        | Facility operators and meet documentation                                                                 | Separate source location rows, physical basins, dated course configurations, source-reported coordinates, surveyed/estimated elevations and historical race mappings                      |
+| Canada                        | Swimming Canada national list, ten provincial-section directories, university associations (U SPORTS, CCAA, conferences) and open facility data | Keep national and provincial rows separate; derive province only from postal codes; record FNQ/Swim NB/Swim PEI, Yukon/Nunavut and 403-blocked university sources as explicit gaps, never zero |
 
 Summer leagues are optional, opportunistic extras. They are not a priority, a
 completeness requirement or a gate before wider race acquisition. Prioritize

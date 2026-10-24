@@ -43,6 +43,7 @@ fgc-lmsc-directory,html-page,observed,Florida Gold Coast LMSC (usms-lmsc:50) reg
 fhsaa-swimming-classifications,html-page,observed,Packaging observation does not imply every linked format has a public parser.
 fhsaa-swimming-classifications,html-table,observed,"938 2026-27 listings (468 boys, 470 girls) extracted from FHSAA HomeCampus hierarchy tables."
 florida-masters-clubs,html-page,observed,Format observation describes source packaging; supported parsing scope is in formats.csv; access status remains separate.
+fnq-clubs,html-page,observed,French-language WordPress pages; no club directory table identified for import in this pass.
 gapps-swimming-girls,html-page,observed,"15 varsity girls Division II listings, 2026-27; GAPPS only, NOT GHSA. Georgia is association jurisdiction; individual locations and school/homeschool legal kinds unverified. Does not mark the GHSA authority imported."
 gcsl-divisions-directory,html-page,observed,"Gwinnett County Swim League (GCSL) division directories across North, North Central, South Central, South, and West Divisions (39 summer swim teams and 37 pool locations in Gwinnett County, GA)."
 ghsa-swimming-listings,html-page,observed,State championship page captured; general regional school alignment is not swimming sponsorship evidence. No GHSA program import; GAPPS is a distinct independently captured source universe.
@@ -66,6 +67,7 @@ kshsaa-swimming-schools,pdf-layout,observed,KSHSAA 2025-26 Boys (59) and Girls (
 ky-lmsc-teams,html-page,observed,Kentucky LMSC / Swim Kentucky Masters (usms-lmsc:41) Teams directory (10 Masters teams in Kentucky).
 lhsaa-classification-matrix,pdf-layout,observed,Advertised 2026-2028 first-meeting matrix link redirects to HTTP error page; no import and no final adoption/sponsorship claim.
 lmsc-places-to-swim-round3,html-page,observed,"44 Masters clubs/workout groups and 44 associated practice/competition pool facilities across Adirondack LMSC (17), South Dakota LMSC (12), Snake River LMSC (6), Montana LMSC (6), and Niagara LMSC (3)."
+masters-swimming-canada-find-a-club,html-page,observed,Postal-code map search; no listed directory.
 mcsl-team-directory,html-page,observed,"Montgomery County Swim League (MCSL) official team list table and 2027 Divisions A-O alignment (90 member clubs and pool addresses in Montgomery County, MD)."
 md-lmsc-clubs,html-page,observed,Maryland LMSC (usms-lmsc:9) Club Websites directory (5 Masters clubs in Maryland).
 mhsa-swimming-alignment,pdf-layout,observed,"2026-27 MHSA Swimming Alignment (Class AA=16, Class A=9; total=25 schools/co-ops) with official meet scoring abbreviations. Cooperative sponsorships retained as single published rows without splitting member schools. Organizational facts only; raw PDF stays local. Validation note: document-row identities where source IDs absent; unsplit school categories unknown; roles and locations limited to explicit source assertions. Raw captures, contacts and athlete records remain private."
@@ -89,6 +91,7 @@ mpa-swimming-classification,pdf-layout,observed,"2026-2027 MPA Swim Bulletin (p.
 mpssaa-swimming-bulletin,html-page,observed,Current winter bulletin embeds a public flipbook; no school projection from viewer bootstrap. Previously indexed draft PDF URL returns 404. No swimming programs imported from generic school membership.
 mpssaa-swimming-championships,sdif,observed,"2025 MPSSAA 4A/3A and 3A/2A/1A State Swimming Championship SDIF C1 institutional team records imported (84 public schools, 133 category listings), plus 2026 WMPSSDL Maryland independent/Catholic schools (14 schools, 20 category listings)."
 mpssaa-swimming-championships,zip,observed,"2025 MPSSAA 4A/3A and 3A/2A/1A State Swimming Championship SDIF C1 institutional team records imported (84 public schools, 133 category listings), plus 2026 WMPSSDL Maryland independent/Catholic schools (14 schools, 20 category listings)."
+msabc-find-a-club,html-table,discovery_only,Table populated client-side from a Google Sheet; no rows in served HTML.
 mshsaa-swimming-assignments,html-page,observed,"245 source-heading-2026 swimming assignments: boys Classes 1/2 (79+36), girls Classes 1/2 (83+47). Girls use explicit 2025-26 season selector because 2026-27 assignments are not released; boys use 2026 source parameter. Official school IDs retained across categories; school coordinates excluded as pool locations."
 mshsaa-swimming-assignments,html-table,observed,"245 source-heading-2026 swimming assignments: boys Classes 1/2 (79+36), girls Classes 1/2 (83+47). Girls use explicit 2025-26 season selector because 2026-27 assignments are not released; boys use 2026 source parameter. Official school IDs retained across categories; school coordinates excluded as pool locations."
 mshsl-swimming-schools,html-page,observed,"294 school-activity rows, 129 boys (2026-27) and 165 girls (2026); seven paginated pages. Co-op member cards can link to host team pages; 13 links have no active season subpath. No unique-team or current-activity completeness claim."
@@ -164,6 +167,20 @@ southeastern-results,sdif,observed,Format observation describes source packaging
 southeastern-results,zip,observed,Format observation describes source packaging; supported parsing scope is in formats.csv; access status remains separate.
 southern-pacific-masters-clubs,html-page,discovery_only,Format observation describes source packaging; supported parsing scope is in formats.csv; access status remains separate.
 ssl-de-teams-and-pools,html-page,observed,"Suburban Swim League (SSL) member teams and pool measurement table (17 clubs across Red and Blue Divisions and 17 competition basins with explicit 20 yd, 25 yd, 25 m, and 25.9 m pool lengths in New Castle County, DE)."
+statcan-odrsf,delimited,observed,"cp1252 CSV with "".."" as the missing-value marker."
+statcan-odrsf,zip,observed,"Contains ODRSF_v1.0.csv, Data_Sources.csv and metadata PDF."
+swim-alberta-approved-competition-pools,pdf-layout,observed,Wrapped city/facility/notes columns; rows visually transcribed rather than machine-parsed.
+swim-alberta-find-a-club,html-page,observed,Repeated club_directory_col card markup with type classes year-round/masters/summer.
+swim-bc-clubs,html-table,observed,Ninja Tables markup; region cell carries comma-separated tags including Masters Clubs.
+swim-manitoba-clubs,html-table,observed,Address cell holds one or more facility/street/city paragraphs plus map links (not retained).
+swim-nb-find-a-club,html-page,observed,Pool Queue site; bilingual headings; club identity only through logos and websites.
+swim-nova-scotia-clubs,html-page,observed,Squarespace paragraphs with one link each; mailto entries dropped.
+swim-nova-scotia-facilities,html-page,observed,News-style facility updates with PDF links.
+swim-ontario-find-a-club,json,observed,Gatsby page-data.json with result.data.allItemClubs.nodes[].raw objects.
+swim-pei-clubs,html-page,observed,Divi image modules linking two club sites.
+swim-sask-club-pages,html-page,observed,Club name with code in parentheses followed by list items for city/website/email.
+swimming-canada-club-list,jsonp,observed,load_clubs([...]) wrapper around a JSON array; type and category fields blank on every row.
+swimming-nl-directory,html-page,observed,GoDaddy builder download list; names read from labels only.
 tcsl-member-teams,html-page,observed,"Tri-County Swimming Pool Association (TCSL) member clubs directory (36 community pools and summer swim teams in South Jersey, NJ)."
 tssaa-no-swimming,html-page,observed,Affirmative verification that TSSAA does not sanction high school swimming & diving; TN high school swimming is governed by independent TISCA.
 uhsaa-swimming-teams,html-page,observed,"Boys/girls swimming team links observed; robots disallows those paths, not requested. No swimming programs inferred from general region/classification membership."

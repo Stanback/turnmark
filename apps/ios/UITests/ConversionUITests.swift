@@ -28,7 +28,7 @@ final class ConversionUITests: TurnmarkUITestCase {
         reach(app.buttons["conversionDetails"], in: app); app.buttons["conversionDetails"].tap()
         XCTAssertTrue(app.staticTexts["methodResult-NCAA"].exists)
         XCTAssertTrue(app.staticTexts["methodResult-Colorado Timing"].exists)
-        XCTAssertTrue(app.staticTexts["methodResult-Turnmark Empirical"].exists)
+        XCTAssertTrue(app.staticTexts["methodResult-Turnmark Equivalence"].exists)
         XCTAssertTrue(app.descendants(matching: .any)["methodDifference"].firstMatch.exists)
         capture(app, "Native method comparison")
         app.buttons["Done"].firstMatch.tap()
@@ -80,6 +80,24 @@ final class ConversionUITests: TurnmarkUITestCase {
         let note = app.staticTexts["distanceCaveat"]
         reach(note, in: app); XCTAssertTrue(note.label.contains("unequal-distance freestyle"))
         capture(app, "Native distance caveat")
+    }
+
+    @MainActor func testLowEvidenceCaveatShowsWithThinCell() {
+        // Women's 200 fly, yards to short-course meters (SCY->SCM|200-FL|women), is a low-evidence cell.
+        let app = launch(example: false)
+        replace(app.textFields["timeInput"], with: "2:20.00", in: app)
+        app.buttons["dismissConverterKeyboard"].tap()
+        let stroke = app.buttons["strokePicker"]
+        reach(stroke, in: app, earlier: true); stroke.tap(); app.buttons["Butterfly"].tap()
+        app.buttons["distancePicker"].tap(); app.buttons["200 yd"].tap()
+        chooseCourseConversion("Turnmark Equivalence", in: app)
+        let scm = app.buttons["equivalent-SCM"]
+        reach(scm, in: app); scm.tap()
+        XCTAssertEqual(app.staticTexts["resultTime"].label, "2:36.49")
+        let note = app.staticTexts["lowEvidenceCaveat"]
+        reach(note, in: app); XCTAssertTrue(note.label.contains("Limited data"))
+        XCTAssertFalse(app.staticTexts["distanceCaveat"].exists)
+        capture(app, "Native low-evidence caveat")
     }
 
     @MainActor func testConversionDetailsAndDraftSurviveRestart() {

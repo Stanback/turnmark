@@ -2,6 +2,7 @@
 import copy
 import json
 import os
+import re
 import tempfile
 import unittest
 from datetime import date
@@ -9,6 +10,23 @@ from pathlib import Path
 
 from pipeline import Race, match
 from venues import create_registry, venue_index, classify_pairs, cohort_report, audit, enrichment_queue
+
+
+def without_digests(value):
+    """The value with every *sha256 field checked to be a hex digest and blanked, so a search for
+    identifying text can't match a hash by chance."""
+    if isinstance(value, dict):
+        out = {}
+        for key, item in value.items():
+            if key.endswith("sha256"):
+                assert isinstance(item, str) and re.fullmatch(r"[0-9a-f]{64}", item), (key, item)
+                out[key] = "<digest>"
+            else:
+                out[key] = without_digests(item)
+        return out
+    if isinstance(value, list):
+        return [without_digests(item) for item in value]
+    return value
 
 
 @unittest.skipUnless(os.environ.get("TURNMARK_LAKEHOUSE_TESTS") == "1", "Optional DuckDB")
@@ -104,7 +122,7 @@ class VenueTests(unittest.TestCase):
         self.assertFalse(report["clocks_changed"])
         self.assertFalse(report["partitions_changed"])
         for text in ("athlete", "toy-main", "meet-y", "5832", "6672"):
-            self.assertNotIn(text, json.dumps(report))
+            self.assertNotIn(text, json.dumps(without_digests(report)))
         with self.assertRaises(FileExistsError): audit(path, self.database, self.root / "audit")
         self.assertTrue((self.root / "audit/pairs-with-venues.json").exists())
 
@@ -126,6 +144,6 @@ class VenueTests(unittest.TestCase):
         self.assertEqual({row["meet_id"] for row in queue}, {"meet-y", "meet-m"})
         self.assertEqual(sum(row["mapping_missing"] for row in queue), 2)
         for text in ("athlete", "5832", "6672", '"race_id"', '"time_cs"'):
-            self.assertNotIn(text, json.dumps(queue))
+            self.assertNotIn(text, json.dumps(without_digests(queue)))
         self.create()
         self.assertEqual(enrichment_queue(classify_pairs(self.pairs, venue_index(self.database))), [])

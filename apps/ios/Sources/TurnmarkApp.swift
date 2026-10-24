@@ -3,6 +3,16 @@ import UIKit
 import TurnmarkCore
 
 private let coloradoDistanceCaveat = "Distance caveat: this documented Colorado rule uses a general SCM/SCY multiplier for unequal-distance freestyle events. Check the meet’s required conversion."
+private let empiricalLowEvidenceCaveat = "Limited data: few swimmers in Turnmark’s data swam this event in both of these courses at this level, so this equivalent time is less certain and leans on related events and pool geometry."
+private let empiricalOutOfRangeCaveat = "Outside the model’s fitted range: this estimate extrapolates beyond the available fit."
+
+private func caveatText(_ caveat: ConversionCaveat) -> String {
+    switch caveat {
+    case .coloradoShortCourseDistance: return coloradoDistanceCaveat
+    case .empiricalLowEvidence: return empiricalLowEvidenceCaveat
+    case .empiricalOutOfRange: return empiricalOutOfRangeCaveat
+    }
+}
 
 let courseNames = ["SCY", "SCM", "LCM"]
 let courses: [Course] = [.scy, .scm, .lcm]
@@ -37,7 +47,7 @@ struct Draft: Codable, Equatable {
     var methodLabel: String {
         switch method {
         case .colorado: return "Colorado Timing"
-        case .empirical: return "Turnmark Empirical"
+        case .empirical: return "Turnmark Equivalence"
         case .ncaa: return "NCAA"
         }
     }
@@ -430,7 +440,7 @@ private struct TurnmarkView: View {
                 Picker("Course conversion", selection: Binding(get: { draft.methodID ?? "ncaa-2025-27" }, set: { draft.methodID = $0 })) {
                     Text("NCAA (default)").tag("ncaa-2025-27")
                     Text("Colorado Timing").tag("colorado-teamunify-2026")
-                    Text("Turnmark Empirical").tag("turnmark-empirical-2026")
+                    Text("Turnmark Equivalence").tag("turnmark-empirical-2026")
                 }.pickerStyle(.menu).accessibilityIdentifier("courseConversion")
                 Toggle("Adjust for altitude", isOn: Binding(get: { draft.altitudeText != nil }, set: { draft.altitudeText = $0 ? "0" : nil }))
                     .accessibilityIdentifier("altitudeEnabled")
@@ -536,7 +546,7 @@ struct ConversionResult: View {
                     .foregroundStyle(TurnmarkResultPalette.textMuted).accessibilityIdentifier("resultContext")
                 timeLabel(value.time)
                 Text(((value.altitude?.value.adjustmentSeconds ?? 0) > 0 && value.kind == .swum ? "Sea-level estimate" : kindLabel(value.kind)) + (value.kind != .swum && input.method == .colorado ? " · Colorado Timing" : "")).font(.footnote.weight(.semibold)).foregroundStyle(TurnmarkResultPalette.textMuted)
-                if value.caveat != nil { Text(coloradoDistanceCaveat).font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted).accessibilityIdentifier("distanceCaveat") }
+                if let caveat = value.caveat { Text(caveatText(caveat)).font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted).accessibilityIdentifier(caveat == .empiricalLowEvidence ? "lowEvidenceCaveat" : caveat == .empiricalOutOfRange ? "outOfRangeCaveat" : "distanceCaveat") }
                 if value.kind != .swum {
                     Text("From \(input.time) · \(input.distance) \(input.unit) \(courseNames[input.courseIndex])")
                         .font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted)
@@ -799,16 +809,19 @@ private struct ConversionDetails: View {
                         }
                     }
                 } footer: {
-                    Text("Two conversion rules, not a prediction range or confidence interval. Use the method required by your meet.")
+                    Text("Published rules and an equivalence model, not a prediction range or confidence interval. Use the method required by your meet.")
                 }
                 var colorado: Draft { var copy = input; copy.methodID = "colorado-teamunify-2026"; return copy }
-                if case let .available(value, _) = colorado.outcome, value.caveat != nil {
-                    Section { Text(coloradoDistanceCaveat).font(.footnote).foregroundStyle(.secondary) }
+                var equivalence: Draft { var copy = input; copy.methodID = "turnmark-empirical-2026"; return copy }
+                ForEach([colorado, equivalence], id: \.methodID) { draft in
+                    if case let .available(value, _) = draft.outcome, let caveat = value.caveat {
+                        Section { Text(caveatText(caveat)).font(.footnote).foregroundStyle(.secondary) }
+                    }
                 }
                 Section("Why the times differ") {
                     detail("NCAA", "Factors vary by event and course, not age. Long-course factors use separate men’s and women’s tables; short-course meters-to-yards factors are shared. NCAA publishes metric-to-yards factors; reverse and SCM/LCM conversions are derived.")
                     detail("Colorado Timing", "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.")
-                    detail("Turnmark Empirical", "Pace-dependent quadratic offsets over NCAA base factors, fitted with Huber loss and empirical-Bayes shrinkage on paired 30-day competition transitions across 6.32M US swims (2010–2026).")
+                    detail("Turnmark Equivalence", "Estimates the equivalent time in the other course from 95K pairs of the same swimmer racing both courses within a month (8.51M US swims, 2010–2026), allowing for the randomness in any single swim. Converting back returns the entered time to within 0.02 s.")
                     detail("Pool length", "Shorter pools mean more turns and push-offs. These rules do not adjust for your starts, underwater skill, technique, endurance or individual development.")
                     detail("Distance events", "500, 1000 and 1650 yards map to 400, 800 and 1500 meters.")
                 }
@@ -825,7 +838,7 @@ private struct ConversionDetails: View {
                         else {
                             LabeledContent("Time multiplier", value: String(format: "%.5f", value.factor)).monospacedDigit()
                             if value.offsetSeconds != 0 { Text("Time offset: \(String(value.offsetSeconds)) seconds").monospacedDigit() }
-                            Text("After any altitude deduction, multiply the seconds, add any offset, then truncate to hundredths. The factor is rounded here for display.")
+                            Text(input.method == .empirical ? "Turnmark Equivalence: the model’s equivalent time in this course. The multiplier shown applies to this entered time." : "After any altitude deduction, multiply the seconds, add any offset, then truncate to hundredths. The factor is rounded here for display.")
                                 .font(.footnote).foregroundStyle(.secondary)
                         }
                     }

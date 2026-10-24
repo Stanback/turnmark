@@ -1,18 +1,29 @@
 # Conversion-model research
 
-Research checked October 19, 2026. This is a development experiment, separate
-from Turnmark's shipped calculator. A private local pilot of public meet exports
-has been collected; no swimmer-level dataset is included in the repository, and
-no trained predictive model is approved for the app.
+Research checked October 19, 2026. A private local archive of public meet
+exports has been collected; no swimmer-level dataset is included in the
+repository. One result of this research ships: Turnmark Equivalence
+(`turnmark-empirical-2026`), an equivalent-time map documented in the
+[conversion-model report](../research/conversion-model/REPORT.md). No forecasting
+model is approved for the app.
 
 ## Question and scope
 
-Can a small model predict a comparable, nearby-date swim in another course more
-accurately than the existing NCAA and legacy Colorado methods on unseen
-swimmers and later meets? Start with SCY → LCM 50/100/200 freestyle. Expand
-directions, strokes, distances or populations only after measuring their own
-coverage and errors. Do not invert a fitted predictor and assume its reverse
-direction has the same statistical properties.
+Two different questions share this data, and they need different models:
+
+- **Equivalence:** what time in the other course reflects the same ability? The
+  answer should invert exactly and compose across the three courses. Turnmark
+  Equivalence estimates it with errors-in-variables linear maps onto a shared
+  scale, evaluated mainly by pair MAE against constant-ratio rules, with round-trip
+  and transitivity error, percentile preservation, and errors by ability under a
+  coupled (pair-mean) and a less-coupled (separate-swim) diagnostic. Neither
+  diagnostic proves the map recovers true equal-ability performance.
+- **Forecasting:** what will this swimmer likely swim in the other course at a
+  later meet? A forecast conditions on the entered swim, so it regresses toward
+  the mean and does not invert; age and the gap between swims matter. Do not
+  invert a fitted predictor and assume its reverse direction has the same
+  statistical properties. The guidance below on evaluation, client-side
+  feasibility and uncertainty applies to this track.
 
 Keep NCAA as the production default. General swim-logger expansion, cloud sync
 and coach dashboards remain outside the product plan. A reusable local meet
@@ -49,12 +60,19 @@ mappings or empirical altitude model are claimed.
 
 ## What the original paper establishes
 
-[Alec Vercruysse's paper](https://www.menloschool.org/live/files/3097-alec-vercruysse)
-is a useful baseline and motivation, not a production model card:
+[Alec Vercruysse's paper](https://www.menloschool.org/live/files/3097-alec-vercruysse),
+a July 2019 high-school AP Statistics paper on USA club swimmers scraped from
+swimmingrank.com (it notes Texas, Indiana, Michigan and New York were not
+scraped and that results do not generalize internationally), is a useful
+baseline and motivation, not a production model card. Its reference [4] is the
+SwimSwam swim time converter credited to Brian Stanback, which its footnote 1
+says uses Colorado Timing's model; the paper's "de facto" Table 1 is partly
+sourced from that converter.
 
 - It analyzed approximately one million scraped **links**, not a claim that all
   six million discovered links had been processed. Its best-time dataset has
-  688,868 swims, primarily youth aged 5–18 (printed pages 4–5 and 9).
+  688,868 swims, all from swimmers aged 5–18 (mean 12.48, IQR 11–14; printed
+  pages 4–5 and 9; printed and PDF page numbers coincide).
 - It weights pairs by the time between swims, falling linearly to zero at
   1.5 years, and explicitly acknowledges that progress between dates confounds
   course conversion (pages 11–12).
@@ -67,28 +85,37 @@ is a useful baseline and motivation, not a production model card:
   a broadly validated conversion method for all events.
 - The reported residual summaries are not a swimmer-disjoint, future-meet
   validation benchmark. The paper explicitly declines prediction intervals from
-  its non-normal residuals. A parameter confidence interval is not a prediction
-  interval for an individual swim.
+  its non-normal residuals. Its Tables 2–4 give 95% confidence intervals on the
+  fitted slopes and intercepts (excluding the de facto 1.11 multiplier and stroke
+  increments), but Table 6's non-freestyle rows report no uncertainty. A
+  parameter confidence interval is not a prediction interval for an individual
+  swim.
 
-The paper's Table 1 and the original converter/current TeamUnify documentation
-also differ in some distance-event formulas. Pin an explicit source and edition
-for each baseline; do not combine coefficients from different implementations
+The paper's Table 1 adds 6.40, 12.80 and 24.00 seconds to the SCY → LCM
+500/400, 1000/800 and 1650/1500 freestyle conversions. The current
+TeamUnify/SportsEngine documentation (USA Swimming teams section, revised
+August 6, 2026) gives no increment for non-medley SCY ↔ LCM distances over 200
+and applies those increments only between SCM and LCM, which is what Turnmark's
+pinned `data/colorado.json` implements; its separate non-USA-team method uses
+different factors again. Pin an explicit source and edition for each baseline; do not combine coefficients from different implementations
 under one vague “Colorado Timing” label.
 
 ## Distribution-matching prior art
 
 [Swimulator's January 2018 explanation](https://swimswam.com/swimming-real-time-converter/)
-describes fitting skew-normal distributions by event, course, age and gender.
-It maps a source time's percentile to the corresponding percentile in the
-destination distribution. The author explicitly targets comparable competitive
-standing across populations, rather than predicting the same swimmer's time.
+describes fitting skew-normal distributions to USA Swimming–registered times by
+event, course, age and gender. It maps a source time's percentile to the
+corresponding percentile in the destination distribution. The author explicitly
+chooses to answer what time would be similarly competitive, rather than how fast
+the same swimmer would have gone, though the article also presents the tool as
+helping swimmers see how fast they might be in another course.
 The [current converter](https://swimswam.com/swimming-times-conversion-tool/?type=swimulator)
 notes that 800 m/1000 yd uses an open-age conversion because age-specific data is
 insufficient. These pages were checked October 20, 2026; data freshness and
 current fitted parameters have not been established.
 
-Include a distribution/percentile-matching baseline in the local experiment,
-alongside NCAA, documented Colorado and linear/WLS baselines. Fit distributions
+The equivalence evaluation includes percentile-matching baselines built on the
+same latent scale, alongside NCAA, documented Colorado and a flat multiplier. Fit distributions
 using training data only, and evaluate all eligible methods on the same held-out
 pairs. Report competitive-equivalence diagnostics separately from individual
 prediction errors. The original author also notes sparse-event coverage and
@@ -193,7 +220,7 @@ appearing in several matched pairs. Report exclusions and sensitivity to the
 matching window; even nearby races differ in taper, effort, injury and conditions.
 Do not label a pair as a counterfactual ground truth or physiological potential.
 
-## Evaluation before deployment
+## Evaluating a forecasting model before deployment
 
 1. Freeze a deterministic swimmer-disjoint train/validation/test split. Every
    race, pair and reverse direction for one swimmer stays in one partition.

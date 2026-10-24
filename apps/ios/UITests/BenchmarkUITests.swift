@@ -17,7 +17,7 @@ final class BenchmarkUITests: TurnmarkUITestCase {
         capture(app, "Converted estimate points preview")
         reach(app.staticTexts["benchmarkOriginalTime"], in: app, earlier: true)
         XCTAssertEqual(app.staticTexts["benchmarkOriginalTime"].label, "58.32")
-        app.buttons["closeBenchmarks"].tap()
+        closeBenchmarks(in: app)
         reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
         XCTAssertFalse(app.staticTexts["benchmarkEstimateTime"].exists)
         XCTAssertTrue(app.staticTexts["benchmarkUnavailable"].exists)
@@ -41,8 +41,13 @@ final class BenchmarkUITests: TurnmarkUITestCase {
         XCTAssertTrue(brand.exists)
         XCTAssertGreaterThan(brand.frame.width, 90,
             "Ordinary text must show the wordmark as well as the wave")
-        XCTAssertLessThan(abs(brand.frame.midY - menu.frame.midY), 12,
-            "The compact wordmark and overflow must share the native toolbar row")
+        // Devices with a side system rail (iPhone Duo) place trailing toolbar items in the rail;
+        // elsewhere the compact wordmark and the overflow share the top toolbar row.
+        if app.navigationBars.firstMatch.frame.contains(CGPoint(x: menu.frame.midX, y: menu.frame.midY)) {
+            XCTAssertLessThan(abs(brand.frame.midY - menu.frame.midY), 12,
+                "The compact wordmark and overflow must share the native toolbar row")
+        }
+        XCTAssertTrue(menu.isHittable, "The overflow menu must stay reachable")
         menu.tap(); app.buttons["converterAbout"].tap()
         XCTAssertTrue(app.staticTexts["How comparisons work"].waitForExistence(timeout: 5))
         app.buttons["Done"].firstMatch.tap()
@@ -70,7 +75,7 @@ final class BenchmarkUITests: TurnmarkUITestCase {
         reach(app.staticTexts["benchmarkSummary"], in: app)
         XCTAssertEqual(app.staticTexts["benchmarkSummary"].label, "NQT target met")
         capture(app, "Masters benchmark")
-        app.buttons["closeBenchmarks"].tap()
+        closeBenchmarks(in: app)
         app.terminate(); app.launchArguments = []; app.launch()
         reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
         XCTAssertTrue(app.staticTexts["40–44 · Women · SCY"].waitForExistence(timeout: 5))
@@ -81,7 +86,7 @@ final class BenchmarkUITests: TurnmarkUITestCase {
         XCTAssertTrue(app.staticTexts["40–44 · Women · SCY"].exists, "Switching to points must preserve the standard's age")
         chooseBenchmark("World Aquatics points", in: app, earlier: true)
         capture(app, "Points unavailable for yards")
-        app.buttons["closeBenchmarks"].tap()
+        closeBenchmarks(in: app)
         let course = app.segmentedControls["inputCourse"].buttons["LCM"]
         reach(course, in: app, earlier: true); course.tap()
         reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
@@ -109,7 +114,7 @@ final class BenchmarkUITests: TurnmarkUITestCase {
         XCTAssertEqual(app.staticTexts["benchmarkContext"].label, "100 yd Freestyle · SCY · Men")
         XCTAssertEqual(app.staticTexts["benchmarkOriginLabel"].label, "Recorded swim")
         capture(app, "Recorded swim standards")
-        app.buttons["closeBenchmarks"].tap()
+        closeBenchmarks(in: app)
         XCTAssertTrue(app.staticTexts["Manually logged performance"].exists)
     }
 
@@ -138,7 +143,7 @@ final class BenchmarkUITests: TurnmarkUITestCase {
         XCTAssertTrue(app.descendants(matching: .any)["benchmark-level-All-America time"].firstMatch.exists)
         XCTAssertFalse(age.exists)
         capture(app, "NISCA original swim thresholds")
-        app.buttons["closeBenchmarks"].tap()
+        closeBenchmarks(in: app)
     }
 
     @MainActor func testBenchmarkMissingTargetAtAccessibilityTextSize() {
@@ -178,6 +183,6 @@ final class BenchmarkUITests: TurnmarkUITestCase {
         reach(missing, in: app); XCTAssertTrue(missing.exists)
         XCTAssertTrue(missing.label.contains("No published target"))
         capture(app, "Missing Masters target large text")
-        app.buttons["closeBenchmarks"].tap()
+        closeBenchmarks(in: app)
     }
 }

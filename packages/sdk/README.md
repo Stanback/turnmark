@@ -221,12 +221,25 @@ bundled USMS table produces explicit missing-age-group coverage.
 ## Alternative conversion method (unreleased 0.2.0)
 
 Omit `method` for the unchanged NCAA default, or pass
-`method: "colorado-teamunify-2026"` to `engine.convert` / `convertSwim`.
-`conversionMethods` from `@turnmark/sdk/conversion` supplies labels, identifiers
-and source metadata. Results carry the selected provenance and optional
+`method: "colorado-teamunify-2026"` or `method: "turnmark-empirical-2026"` to
+`engine.convert` / `convertSwim`. `conversionMethods` from
+`@turnmark/sdk/conversion` supplies labels, identifiers and source metadata.
+Results carry the selected provenance. Colorado results add an optional
 `offsetSeconds` (absent when zero): the untruncated calculation is
 `inputSeconds × factor + offsetSeconds`. Colorado results are estimates and
-unsupported formulas remain unavailable. Swift/Kotlin use
+unsupported formulas remain unavailable.
+
+`turnmark-empirical-2026` is Turnmark Equivalence: a model-based estimate of the
+equivalent time in the other course. Each event and category has one linear map
+per course from log seconds onto a shared scale, stored as knots and continued at
+its edge ratio beyond its fitted range; a
+conversion goes in through the source course's map and out through the target
+course's, and is truncated to hundredths once. Before rounding, converting back is
+the exact inverse and converting through a third course equals converting
+directly; after truncation, converting back returns the entered time to within
+0.02 s (almost always 0.01 s fast).
+Its `factor` is equivalent seconds / entered seconds, so it varies with the
+entered time, and `offsetSeconds` is never set. Swift/Kotlin use
 `convertSwimWithMethod(request, method)`; the existing `convertSwim` stays NCAA.
 See the methodology for the exact source scope and distance-event exceptions.
 
@@ -242,6 +255,12 @@ results are unchanged. See [the altitude contract](../../docs/ALTITUDE.md).
 Available Colorado SCM↔SCY distance-freestyle results carry
 `caveat: "colorado-short-course-distance"`. The pinned rule uses a general
 multiplier for unequal-distance events; display that limitation with the result.
+Turnmark Equivalence results carry `caveat: "empirical-out-of-range"` when the
+entered time is outside the model's fitted range (the result extrapolates beyond
+the available fit), and
+`caveat: "empirical-low-evidence"` when few swimmers swam the event in both
+courses or the conversion's uncertainty at that time is wide. Show those notes
+with the result too.
 See [the method comparison contract](../../docs/METHOD_COMPARISON.md).
 
 National benchmark programs (`futures`, `juniors`, `nisca`) share the original-swim

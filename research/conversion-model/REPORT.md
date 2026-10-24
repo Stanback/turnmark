@@ -1,339 +1,727 @@
-# Empirical Swimming Course Conversion at Scale: 6.32 Million Races, Hybrid Lakehouse Architecture, and Pace-Curve Splines
+# Equivalent Swimming Times Across Courses: 8.51 Million Races and a Shared-Scale Map
 
-**Status:** Shipped in `turnmark-core` (`turnmark-empirical-2026`) alongside `ncaa-2025-27` (default) and `colorado-teamunify-2026`  
-**Evaluation Receipt:** [`evaluation-checkpoint-06.json`](./evaluation-checkpoint-06.json) · **Acquisition Receipt:** [`acquisition-checkpoint-06.json`](./acquisition-checkpoint-06.json)  
-**Embedded Snapshot:** [`data/empirical.json`](../../data/empirical.json) (`10.4 KB`) · **Companion Essay:** [`bristanback.com/posts/what-six-million-swims-say-about-the-wall`](https://bristanback.com/posts/what-six-million-swims-say-about-the-wall/)
-
----
-
-## 1. Executive Summary
-
-Published swimming course-conversion systems reduce the transition between a 25-yard pool (`SCY`), a 25-meter pool (`SCM`), and a 50-meter pool (`LCM`) to a single static formula per event:
-
-1. **NCAA Rule 3, Appendix B (`ncaa-2025-27`)** applies a constant multiplier $y = \operatorname{truncate}_{0.01}(x \cdot f_{d,e,g})$ tuned to collegiate championship standards.
-2. **Colorado Timing / TeamUnify (`colorado-teamunify-2026`)** applies a linear affine rule $y = \operatorname{truncate}_{0.01}(x \cdot m_{d,e} + b_{d,e})$ with a fixed per-50-meter turn offset independent of swimmer speed or competition category.
-
-When predicting a swimmer's performance in another pool from a single observed race, a constant multiplier tilts across pace: conditioning on a single noisy swim induces regression to the mean on the next swim, and wall count and stroke decay vary by event and course direction.
-
-To test published conversion rules and train an empirical replacement without cloud runtime dependencies or athlete privacy leakage, we assembled a **6,320,277-race US competition dataset (`national-checkpoint-15`)** spanning **213,105 source-scoped swimmers** and **4,721 meets** (`2010–2026`) across 13 regional and national archives (from 11 frozen export collections), paired with the public facility and organizational catalog in [`team-directory/`](./team-directory/CATALOG.md) (**8,240 source-scoped facility records**, **1,295 separately described pool basins** including **948 deduplicated USA Swimming certified courses**, **20,306 program listings** across **17,697 organizations**, and **92.2% meet-to-facility locality resolution** across `4,357 / 4,724` parsed meet headers).
-
-Across **25,855 held-out 30-day same-swimmer course transitions** (`3,223` disjoint test swimmers, zero athlete overlap with training or validation):
-
-- **Turnmark Empirical (`turnmark-empirical-2026`, Tier 1 Huber Pace-Curve Core)** reduces overall Mean Absolute Error (MAE) from **2.9362s (NCAA)** and **3.5329s (Colorado)** to **2.6658s** — a **9.21% error reduction vs. NCAA** ($z = -15.57$, swimmer-clustered bootstrap 95% CI $[-0.3021\text{s}, -0.2338\text{s}]$) and a **24.54% error reduction vs. Colorado** ($z = -22.92$, 95% CI $[-0.9378\text{s}, -0.7969\text{s}]$). On the untrimmed test set (`25,960` pairs, before the 18% ratio-outlier hygiene filter), MAE drops from **3.0261s (NCAA)** and **3.6174s (Colorado)** to **2.7530s**.
-- **Universal event dominance:** `turnmark-empirical-2026` achieves lower MAE and lower Median AE than both NCAA and Colorado across **all 14 out of 14 canonical events** and **all 6 out of 6 course directions** (`SCY↔LCM`, `SCY↔SCM`, `SCM↔LCM`).
-- **Distance freestyle & specialty strokes:** Error reductions in seconds are largest in longer and turn-sensitive events (while in relative percentage, `100-BK` at `-15.1%` and `200-BR` at `-21.0%` also rank among the top gains):
-  - **1000SCY ↔ 800m Freestyle (`800-FR`):** MAE drops from **16.04s (NCAA)** and **17.59s (Colorado)** to **14.16s** (**-1.88s / -11.7% vs. NCAA**, **-3.43s / -19.5% vs. Colorado**).
-  - **1650SCY ↔ 1500m Freestyle (`1500-FR`):** MAE drops from **31.20s (NCAA)** and **47.61s (Colorado)** to **27.88s** (**-3.32s / -10.6% vs. NCAA**, **-19.73s / -41.4% vs. Colorado**), and Median AE drops from **28.80s** to **21.57s** (`n = 38` 30-day test pairs; on the 60-day test set of `n = 120` pairs, Empirical is `27.78s` vs. `27.84s` for NCAA).
-  - **500SCY ↔ 400m Freestyle (`400-FR`):** MAE drops from **7.06s (NCAA)** and **10.11s (Colorado)** to **6.24s** (**-0.82s / -11.6% vs. NCAA**, **-3.87s / -38.3% vs. Colorado**).
-  - **200 Butterfly (`200-FL`):** MAE drops from **4.61s (NCAA)** and **5.59s (Colorado)** to **3.98s** (**-0.63s / -13.7% vs. NCAA**, **-1.61s / -28.8% vs. Colorado**; **-20.6% vs. NCAA** on the 60-day holdout).
-  - **400 Individual Medley (`400-IM`):** MAE drops from **6.90s (NCAA)** and **9.62s (Colorado)** to **6.07s** (**-0.83s / -12.0% vs. NCAA**, **-3.54s / -36.9% vs. Colorado**; **-16.6% vs. NCAA** on the 60-day holdout).
-  - **200 Breaststroke (`200-BR`):** MAE drops from **4.94s (NCAA)** and **6.25s (Colorado)** to **3.90s** (**-1.04s / -21.0% vs. NCAA**, **-2.35s / -37.6% vs. Colorado**).
-- **Flattening NCAA pace-quartile bias:** On held-out transitions, NCAA exhibits a monotonic signed bias slope across within-event speed quartiles ($\hat{y} - y$) — predicting faster than actual for the fastest 25% of entered swims (`Q1`, **-0.554s**) and slower than actual for the slowest 25% (`Q4`, **+0.587s**). A distribution-matching `quantile_equivalence` baseline shows nearly the same tilt (**-0.503s** on `Q1` and **+0.535s** on `Q4`), confirming that the slope across conditioned entry-time quartiles is largely regression to the mean on a noisy single swim. Fitting the conditional expectation via `turnmark-empirical-2026` reduces the bias to **-0.244s** on `Q1`, **-0.022s** on `Q2`, **-0.034s** on `Q3`, and **-0.048s** on `Q4`.
-- **Same-facility vs. cross-facility & altitude cohorts:** When both meets in a 30-day pair resolve by postal code or city/state to the **same facility record** (`n = 5,925` held-out pairs across `946` swimmers), `turnmark-empirical-2026` reaches an MAE of **2.1942s** (Median AE **1.36s**, bias **+0.025s**) vs. **2.5308s** for NCAA (**-13.3%**) and **3.3224s** for Colorado (**-34.0%**). Pairs across different resolved facilities (`n = 17,836` across `2,472` swimmers) have **+0.632s** higher MAE (`2.8261s` vs. `2.1942s`), and transitions involving altitude meets (`n = 1,287` pairs across `166` swimmers) drop from **3.9100s** (NCAA) and **4.5720s** (Colorado) to **3.6674s** (`Tier 1`) and **3.6005s** (`Tier 2 Age`).
+**Status:** Shipped in `turnmark-core` as Turnmark Equivalence (`turnmark-empirical-2026`) alongside `ncaa-2025-27` (default) and `colorado-teamunify-2026`  
+**Evaluation Receipt:** [`evaluation-checkpoint-08.json`](./evaluation-checkpoint-08.json) · **Acquisition Receipt:** [`acquisition-checkpoint-06.json`](./acquisition-checkpoint-06.json)  
+**Embedded Snapshot:** [`data/empirical.json`](../../data/empirical.json) (schema 3, `14,057` bytes) · **Engine parity fixture:** [`fixtures/empirical-parity.json`](../../fixtures/empirical-parity.json) (`1,008` cases) · **Companion Essay:** [`bristanback.com/posts/what-eight-million-swims-say-about-the-wall`](https://bristanback.com/posts/what-eight-million-swims-say-about-the-wall/)  
+**Tables:** every table between `<!-- receipt:… -->` markers is generated from the receipts and the snapshot by [`render_report_tables.py`](./render_report_tables.py); `--check` fails when the report and the receipts disagree.
 
 ---
 
-## 2. Dataset & Hybrid Lakehouse Architecture
+## 1. Summary
 
-### 2.1 Corpus Scope (`national-checkpoint-15`)
+Published course-conversion systems reduce the change between a 25-yard pool (`SCY`), a 25-meter pool (`SCM`) and a 50-meter pool (`LCM`) to one static formula per event:
 
-All race records were ingested from publicly linked USA Swimming Local Swimming Committee (LSC) and YMCA National Championship Standard Data Interchange Format (`.sd3`, `.cl2`, `.hy3`) meet exports into a gitignored local store (`research/conversion-model/data/national-checkpoint-15/`). As documented in [`COLLECTION_PLAN.md`](./COLLECTION_PLAN.md) and [`acquisition-checkpoint-06.json`](./acquisition-checkpoint-06.json), these 13 regional and national archives reflect public bulk Hy-Tek archive availability (`nationally_representative: false`), not a balanced national probability sample.
+1. **NCAA sample conversion tables (`ncaa-2025-27`; Rules Book Appendix C, printed pages 119–120)** apply a constant multiplier $y = \operatorname{truncate}_{0.01}(x \cdot f_{d,e,g})$.
+2. **Colorado Timing / TeamUnify (`colorado-teamunify-2026`)** applies an affine rule $y = \operatorname{truncate}_{0.01}(x \cdot m_{d,e} + b_{d,e})$ with a fixed per-50 stroke offset.
 
-| Metric | Value | Notes |
+**What Turnmark Equivalence estimates.** The equivalent performance in the other course: the time that sits at the same underlying performance level, not "what will this swimmer swim next" (a forecasting question with a different target, covered by a separate predictor research track). Both swims in a same-swimmer pair are treated as noisy readings of one level. Each `(event, category, course)` gets a map that is linear in log time onto one shared scale, and every conversion composes two of those maps. Inside both courses' training support this gives $y = C x^{b}$, a power law whose ratio $y/x$ changes with the entered time unless $b = 1$ (§5.8).
+
+The report separates three kinds of claim, and each section says which kind it makes:
+
+- **(a) Guarantees by construction (§6).** The map is strictly monotone; converting back is the exact inverse and converting through a third course equals converting directly, before rounding; truncation to hundredths is the only rounding, so a round trip never comes back slower than the entered time.
+- **(b) Observed evaluation results (§7).** On `39,314` clean held-out directional conversions from `4,710` test swimmers (swimmer-disjoint from training and validation), pair MAE is `2.7711s` against `3.0414s` for NCAA (difference `−0.2703s`, 95% CI `[−0.3018, −0.2400]`) and `2.8582s` for a fitted flat multiplier per cell (`−0.0871s`, `[−0.1041, −0.0696]`). **This measured improvement over constant-ratio rules is the main evidence for the model.** Percentile maps built on the same scale are about as accurate (`−0.0171s`, Holm $p = 0.22$; `−0.0153s`, Holm $p = 1.0$): the map does not beat percentile matching after Holm correction, and in `LCM→SCY` the age-aware percentile map is more accurate (§7.3). What the parametric map adds over percentile matching is pooling across thin `SCM` cells (it is more accurate from `SCM` to `LCM`, §7.3), a compact snapshot, and stability under hundredth truncation. Both compose through the shared scale and invert exactly before rounding; the percentile maps' steep segments amplify the hundredth that truncation drops between conversions (§6).
+- **(c) Assumptions the data cannot establish (§8).** The noise ratio taken from same-course repeats ignores swimmer-specific course aptitude; the less-coupled ability diagnostic assumes its separate swim is independent of the pair's errors; pairs 30 days apart are assumed to reflect one level; and the 0.5–99.5% training support is used as the range of trust.
+
+Both ability diagnostics (§7.5) show a single factor converting the fastest and slowest swimmers in opposite directions by a combined `2–3%`, and this map removing most of that. Neither establishes that the map is free of ability-dependent error: the less-coupled diagnostic still shows a trend and a mid-range bend, and progression, a mis-measured noise ratio and selection into the diagnostic could each produce that pattern.
+
+Where it is weaker, all from the receipt:
+
+- On the two harder holdouts (§7.8) the slow tail converts too fast: coupled decile 10 is `−1.36%` (later season) and `−0.82%` (regions held out). The percentile maps show the same pattern, so it is not specific to this map's form. A single-input converter cannot separate improvement between the two swims from the course change.
+- In the 1650/1500 free, NCAA (`28.3018s`) and the flat multiplier (`28.1145s`) beat the map (`28.7135s`) on `66` held-out rows from `27` swimmers.
+- Outside the fitted range the conversion extrapolates. A `14:13.00` men's 1650 yd converts to `14:46.57` LCM with the `empirical-out-of-range` caveat; NCAA gives `14:43.93`. That number is extrapolation (§7.10).
+- "Equivalent" is not "what you'd swim": grouped by the entered time instead of by ability, conversions of the fastest entries run fast and of the slowest run slow. That follows from the target (§2.2).
+
+Observations from checks run outside the pipeline are collected in §9 and labelled exploratory; no conclusion above rests on them.
+
+---
+
+## 2. Target: Equivalent Performance, Not a Forecast
+
+### 2.1 The Estimand
+
+For a swimmer at performance level $\ell$ in an event and category, each course $c$ has a typical log time $g_c(\ell)$. Turnmark Equivalence estimates, for an entered time $x$ in course $A$, the time $y$ in course $B$ at the same level: $\ln y = g_B(g_A^{-1}(\ln x))$. The shared scale is anchored on SCY: $g_{\text{SCY}}$ is the identity, so a scale value is "the SCY log time of the same level".
+
+This is a property of the population of swimmers who race both courses. It is not a statement about what a given swimmer will do in the other course next week; that depends on their own aptitude, progression and form, which a single entered time does not carry.
+
+### 2.2 Why Ordinary Predictive Regression Answers a Different Question
+
+Fitting $\ln y$ on $\ln x$ by least squares estimates $E[\ln y \mid \ln x]$, the best forecast of the target time given the entered one. Because one swim is a noisy reading of a swimmer's level, that conditional mean is pulled toward the population mean: with $\ln x = \ell + e_A$, the least-squares slope is the structural slope times the reliability $\operatorname{Var}\ell / (\operatorname{Var}\ell + \operatorname{Var} e_A) < 1$. Fast entries are forecast slow and slow entries fast. The reverse fit $E[\ln x \mid \ln y]$ is attenuated the same way, so the two fitted slopes multiply to $r^2 < 1$ and A→B→A does not return A. That is the right answer for forecasting and the wrong one for equivalence.
+
+Deming regression is also regression, of a different kind: an errors-in-variables fit that targets the structural relation between the two courses' levels instead of a conditional mean. It recovers that relation only when the ratio of the two courses' noise variances, $\delta$, is known (A2 in §3). A synthetic test with a known conversion and unequal course noise (`test_linear_map_recovers_a_known_equivalence_under_unequal_course_noise`) checks that the fit recovers it under the model's own assumptions; it does not cover swimmer-specific course aptitude, which the repeat swims cannot measure (§8.1).
+
+---
+
+## 3. Assumptions
+
+| | Assumption | Used for | Kind |
+| :--- | :--- | :--- | :--- |
+| **A1** | Within an `(event, category)`, each course's log time is a linear function of one shared level plus noise, over the range the data covers. | The map's form (§5.6) | Checked in part: accuracy and the diagnostics (§7) |
+| **A2** | Each course's per-swim noise variance equals the variance seen in same-course repeat swims 1–30 days apart, so $\delta$ is their ratio. | Every Deming slope (§5.4) | (c) Not establishable (§8.1) |
+| **A3** | A swimmer's two swims in a pair, at most 30 days apart, reflect one level. | Pairing (§5.2) | (c) Not establishable (§8.3) |
+| **A4** | Swimmers are independent clusters; within a swimmer, pairs are correlated arbitrarily. | Weights, variances, bootstrap (§5.4, §7.1) | Partial: §7.11 lists what it misses |
+| **A5** | The separate swim used by the less-coupled diagnostic is independent of the pair's measurement errors. | Interpreting §7.5 | (c) Not establishable (§8.2) |
+| **A6** | The swimmer-weighted 0.5th–99.5th percentile of each course's training pairs bounds where the fitted slope can be trusted; beyond it the edge ratio is held. | Support, extrapolation, `empirical-out-of-range` (§5.7) | (c) A convention (§8.4) |
+
+---
+
+## 4. Notation
+
+| Symbol | Meaning | In the code |
+| :--- | :--- | :--- |
+| $A, B$ | Source and target course (`SCY`, `SCM`, `LCM`) | `source_course`, `target_course` |
+| $x, y$ | Entered time in $A$, converted time in $B$ (seconds) | `time_cs / 100` |
+| $\ell$ | Shared-scale value (SCY log seconds of the same level) | `latent` |
+| $a$ | Anchor: the SCY log-time centre of the cell's SCY–LCM pairs (else SCY–SCM) | `anchor` in `_reconcile` |
+| $m_c, s_c$ | Location and scale of course $c$: its log time at $\ell = a$, and $d \ln t / d\ell$. SCY is $(a, 1)$ | `(location, scale)` returned by `_reconcile` |
+| $g_c$ | Course map, $\ell \mapsto \ln t$; $g_c(\ell) = m_c + s_c(\ell - a)$ inside support | `from_latent`; `knot_map(..., inverse=False)` |
+| $[u_c^-, u_c^+]$ | Course $c$'s training support on the shared scale | the two knots in `data/empirical.json` |
+| $b$, $C$ | Exponent and constant of the conversion, $y = C x^b$ | derived (§5.8) |
+| $\sigma_c^2$ | Per-swim log-time noise variance of course $c$ in an event | `noise_variance_log_seconds` |
+| $\delta$ | Noise ratio $\sigma_B^2 / \sigma_A^2$ for a line from $A$ to $B$ | `delta` in `EquivalenceModel.fit` |
+| $n_{\text{sw}}$ | Effective number of swimmers (Kish) | `effective_swimmers` |
+| D1–D10 | Ability deciles within course pair, event and category; D1 fastest | `pair_mean_deciles`, `independent_swim_deciles` |
+
+Errors in §7 are signed percentages $100 \ln(\hat y / y)$: positive means the conversion is slower than the swim it is scored against.
+
+---
+
+## 5. Data, Model and Fitting Procedure
+
+### 5.1 Corpus (`national-checkpoint-17`)
+
+Race records come from publicly linked USA Swimming Local Swimming Committee (LSC) and YMCA National Championship Standard Data Interchange Format (`.sd3`, `.cl2`, `.hy3`) meet exports, held in a gitignored local store. As documented in [`COLLECTION_PLAN.md`](./COLLECTION_PLAN.md) and the acquisition receipt, the 18 archive authorities in 16 frozen export collections reflect public bulk Hy-Tek archive availability (`nationally_representative: false`), not a balanced national probability sample. Archive-by-archive counts are in Appendix A; the local storage the evaluator reads (Iceberg snapshot `4441271835344284414`, input SHA-256 `eb5325f86f28...`) is in Appendix C.
+
+<!-- receipt:corpus -->
+| Stage | Count | Definition |
 | :--- | ---: | :--- |
-| **Input race records** | `6,325,452` | Across 5,222 meet archive files in 11 frozen export collections (13 regional/national archives) |
-| **Conflicting duplicates excluded** | `5,175` | Identical swimmer/meet/event/round key with conflicting clock strings |
-| **Usable distinct individual finishes** | **`6,320,277`** | Official timed finals, prelims, and finals only (no seeds, relays, splits, or DQs) |
-| **Source-scoped swimmers** | **`213,105`** | Keyed `HMAC-SHA256` pseudonymous IDs from full registration numbers |
-| **Distinct meets** | **`4,721`** | Overall date span `2010–2026` (only `AD` and `PV` begin in `2010`; see per-archive spans below) |
-| **NCAA-event best-of-meet swims** | **`4,374,133`** | Fastest clean round per `(source, swimmer_id, meet_id, course, distance, stroke, category)` |
-| **30-day same-swimmer transition pairs** | **`177,010`** | `176,306` clean directional pairs across `21,970` swimmers (`88,505` undirected pairs) |
-| **60-day same-swimmer transition pairs** | **`406,726`** | Used for window sensitivity and sparse-event training augmentation |
+| Input race records | 8,520,841 | 6,521 meet archive files in 16 frozen export collections (Appendix A) |
+| Cross-archive identical duplicates | 10,550 | Same race identity in overlapping archives; one copy kept |
+| Conflicting duplicates excluded | 3,524 | Same swimmer, meet, event and round with conflicting clock strings |
+| **Usable distinct individual finishes** | **8,506,767** | Official timed finals, prelims and finals only |
+| Source-scoped swimmers | 292,474 | Keyed `HMAC-SHA256` pseudonymous IDs; not a verified person count |
+| Distinct meets | 6,071 | Archive years 2010–2026 |
+| Round-collapsed candidate swims | 5,902,346 | Fastest plausible round per swimmer, meet, course, event and category |
+| Best-of-meet swims in the 14 events | 5,901,538 | After excluding 492 implausible times and 316 swims outside the 14 convertible events |
+| 30-day directional pairs | 271,048 | 269,824 clean after the ratio screen; 135,524 undirected pairs from 32,121 swimmers |
+| Same-course repeat swims | 1,149,135 | Consecutive best-of-meet swims at different meets 1–30 days apart; the 803,195 from training swimmers estimate noise |
+<!-- /receipt:corpus -->
 
-#### Breakdown by Course, Category, and Source Archive
+SCM is thin: under 1% of races, and about 10% of the 30-day directional pairs involve it.
 
-| Cohort / Source | Usable Races | Share | Notes |
+<!-- receipt:courses -->
+| Course / category | Usable races | Share | 30-day directional pairs from this course |
 | :--- | ---: | ---: | :--- |
-| **Course: SCY** (25 yards) | `4,308,587` | `68.17%` | Primary winter/spring competition course |
-| **Course: LCM** (50 meters) | `1,975,192` | `31.25%` | Primary summer championship & Olympic-trials course |
-| **Course: SCM** (25 meters) | `36,498` | `0.58%` | Autumn/invitational short-course meters (`709` SCY↔SCM & `1,372` SCM↔LCM clean 30d test pairs) |
-| **Category: Women** | `3,483,810` | `55.12%` | Published women's / girls' competition category |
-| **Category: Men** | `2,836,467` | `44.88%` | Published men's / boys' competition category |
-| **North Carolina Swimming** (`NC`) | `1,661,892` | `26.29%` | 1,046 archives (`2020–2026`, including SCM & summer LCM) |
-| **Pacific Swimming** (`PC`) | `1,626,633` | `25.74%` | 1,489 archives (`2013–2026`, including Northern Nevada/Tahoe altitude & SCM) |
-| **Southeastern Swimming** (`SE`) | `1,012,591` | `16.02%` | 680 regional archives (`2013–2026`; `734` total files in `southeastern-exports` including `UT`/`MT`) |
-| **Michigan Swimming** (`MI`) | `862,281` | `13.64%` | 736 archives (`2016–2026`) |
-| **Adirondack Swimming** (`AD`) | `610,386` | `9.66%` | 575 archives (`2010–2026`) |
-| **Potomac Valley Swimming** (`PV`) | `184,444` | `2.92%` | 329 archives (`2010–2026`) |
-| **South Dakota Swimming** (`SD`) | `171,993` | `2.72%` | 144 archives (`2018–2026`, including Black Hills / Rapid City altitude) |
-| **Midwestern Swimming** (`MW`) | `93,821` | `1.48%` | 137 archives (`2019–2026`) |
-| **Kentucky Swimming** (`KY`) | `34,979` | `0.55%` | 21 archives (`2026`) |
-| **Montana Swimming** (`MT`) | `28,078` | `0.44%` | 15 archives (`2021–2026`, mountain-west elevation) |
-| **YMCA National Championships** | `17,668` | `0.28%` | 8 national championship archives (`2025–2026`, `SCY` & `LCM`) |
-| **Utah Swimming** (`UT`) | `14,331` | `0.23%` | 39 Wasatch Front archives (`2020–2026`) |
-| **South Texas Swimming** (`ST`) | `1,180` | `0.02%` | 3 archives (`2026`) |
+| `SCY` | 5,734,165 | 67.41% | SCY→LCM 121,114, SCY→SCM 6,534 |
+| `LCM` | 2,706,429 | 31.82% | LCM→SCY 121,114, LCM→SCM 7,264 |
+| `SCM` | 66,173 | 0.78% | SCM→SCY 6,534, SCM→LCM 7,264 |
+| Women | 4,639,864 | 54.54% |  |
+| Men | 3,866,903 | 45.46% |  |
+<!-- /receipt:courses -->
 
-### 2.2 Public Facility & Program Catalog and Meet-to-Venue Locality Join
+### 5.2 Pairing and Hygiene
 
-To evaluate environmental and facility cohorts, we use the committed public reference catalog in [`research/conversion-model/team-directory/`](./team-directory/CATALOG.md):
+1. **Plausibility screen and best-of-meet reduction (`deduplicate_best_of_meet`).** Swims in the 14 convertible events (`canonical_event_key`, which rejects SCY 400 free and 800/1500 yd free) are screened against physical floors and ceilings and collapsed to the fastest valid finish per meet, so prelim/final doubles do not overweight multi-round swimmers.
+2. **Directional pairing (`build_directional_pairs`).** Within each swimmer and event, best-of-meet swims in different courses within $|\Delta t| \le 30$ days are matched greedily one-to-one by nearest date. Each matched pair is evaluated in both directions.
+3. **Ratio screen (`is_pair_ratio_outlier`).** A pair is flagged when its target time differs by more than 18% from a fixed geometry reference (distance in meters, turn count and a surface factor), or when a same-distance LCM swim beats its SCY partner. The screen is decided once per matched pair and applies to both directions (`1,224` flagged rows, `0.45%`). All methods are scored on both the clean and the untrimmed test set.
+4. **Swimmer-disjoint 70/15/15 split (`swimmer_partition`).** Swimmers are partitioned by `SHA-256` of `json.dumps([source, swimmer_id])`. In the main evaluation only Train fits anything, Validation is used only for the curvature question in §7.6, and Test only for §7; the holdouts in §7.8 define their own swimmer-disjoint splits.
 
-1. **[`team-directory/catalog/facilities.csv`](./team-directory/catalog/facilities.csv) (`8,240` source-scoped facility records)** and **[`team-directory/catalog/pool_basins.csv`](./team-directory/catalog/pool_basins.csv) (`1,295` separately described pool basins):**
-   - Aggregates `4,956` USA Swimming national club-finder facility IDs, `1,528` USMS nationwide Places-to-Swim location rows, LSC/LMSC venue directories, summer-league pool directories, and `948` deduplicated USA Swimming pool measurement certification records (`2020` and `2022` editions).
-2. **[`team-directory/snapshot/programs.csv`](./team-directory/snapshot/programs.csv) (`20,306` source-scoped program listings)** across **[`team-directory/snapshot/organizations.csv`](./team-directory/snapshot/organizations.csv) (`17,697` organizational identities)**, **[`team-directory/catalog/program_facilities.csv`](./team-directory/catalog/program_facilities.csv) (`7,497` program-location links)**, and **[`team-directory/governing-bodies.csv`](./team-directory/governing-bodies.csv) (`161` governing-body starting points)**.
-3. **Meet-to-Facility Locality Join (`local/build_meet_venue_join.py`):**
-   - Extracts SDIF `B1` meet headers across the cached regional archives and joins each meet to `team-directory/catalog/facilities.csv` in **two deterministic passes**: 5-digit postal code first (`3,831` meets), then `(city, state)` (`526` meets), preferring USA Swimming pool-certification records when multiple facility entries share a locality.
-   - In total, **`4,357 / 4,724` (`92.2%`) parsed meets** resolve to a facility record, with **`4,296` (`90.9%`) carrying locality coordinates** across 32 states + DC, **`405` meets** carrying positive `B1` altitude claims, and **`408` meets** unmatched.
-   - **Interpretation limit:** Because SDIF `B1` headers provide city, state, postal code, and optional declared altitude rather than a verified basin ID, this locality join is a facility proxy rather than a physical basin survey. Two meets in the `same_facility_transition` cohort resolved to the same `facility_id` in the same ZIP/city, which cannot distinguish a competition pool from an adjacent warm-up tank or directly observe a bulkhead move.
+<!-- receipt:partitions -->
+| Partition | Clean directional rows | Clean pairs | Swimmers | Untrimmed |
+| :--- | ---: | ---: | ---: | :--- |
+| Train | 189,046 | 94,523 | 22,425 | 189,896 rows, 22,512 swimmers |
+| Validation | 41,464 | 20,732 | 4,859 | 41,658 rows, 4,881 swimmers |
+| Test | 39,314 | 19,657 | 4,710 | 39,494 rows, 4,728 swimmers |
+<!-- /receipt:partitions -->
 
-### 2.3 Hybrid Local Data Architecture (`LAKEHOUSE.md`)
+### 5.3 Noise Variances from Same-Course Repeats (`estimate_course_noise`)
 
-A dataset of 6.32 million swims exposes a storage tension between two opposite access patterns:
-- **Point lookups** ("show every race swum by athlete $s$ in chronological order" or "inspect meet $m$") require a low-latency B-tree index on `(source, swimmer_id, race_date)`.
-- **Longitudinal analytical joins** ("self-join 6.32 million swims by athlete, event, and 30-day window across 6 course directions") require columnar compression, vectorized predicate pushdown, and partition pruning.
+For each `(course, event)`, $\sigma_c^2$ is half the swimmer-weighted variance of $\ln(t_2 / t_1)$ over consecutive best-of-meet swims by the same swimmer in the same course at different meets 1–30 days apart, after the same 18% screen. Each swimmer's repeats in a cell carry equal total weight. A course is measured on its own where at least 200 swimmers have repeats; otherwise it takes the mean of the measured courses for that event. In the main evaluation only training swimmers' repeats are used.
 
-While 6.32 million rows could fit in a single indexed PostgreSQL instance, [`research/conversion-model/lakehouse.py`](./lakehouse.py) materializes a **near-zero-cost-at-rest dual-store local lakehouse** (`target/lakehouse-national-15/`, modeled in [`docs/LAKEHOUSE_COST_MODEL.md`](../../docs/LAKEHOUSE_COST_MODEL.md)) from the canonical ingest store and verifies exact row parity between both representations:
+The table shows the per-swim noise as a standard deviation in percent, $100\,\sigma_c$, and the ratios that become $\delta$. SCM is measured on its own only for the 50 free; elsewhere it is pooled, so its ratios carry no SCM-specific information. What these numbers can and cannot see is in §8.1.
 
-```
-Ingested SDIF Union (races.sqlite3, HMAC-SHA256 keyed)
-   ├──► Hot Indexed SQLite Store (hot.sqlite3)
-   │      • Composite B-tree: athlete_history(source, swimmer_id, race_date, meet_id, race_id)
-   │      • Size: 5,127.6 MB (811.3 bytes/row)
-   │      • Point lookup latency (in-process first / repeat median): 0.173 ms / 0.011 ms
-   │
-   └──► Analytical Parquet Warehouse (warehouse/races/course=*/year=*/category=*/*.parquet)
-          • Iceberg-shaped Hive partitioning + Zstandard columnar encoding
-          • Size: 272.8 MB (43.2 bytes/row — 18.8× smaller than hot SQLite)
-          • Filtered DuckDB analytical scan (first / repeat median): 3.94 ms / 2.32 ms
-          • Exact parity verified: 6,320,277 rows, 0 duplicates, history_matches_iceberg = true
-```
+<!-- receipt:noise -->
+| Event | SCY σ (%) | LCM σ (%) | SCM σ (%) | LCM/SCY | SCM/SCY | SCM/LCM |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `50-FR` | 2.78 | 2.47 | 3.48 | 0.79 | 1.57 | 1.99 |
+| `100-FR` | 2.50 | 2.32 | 2.41 (pooled) | 0.86 | 0.93 (pooled) | 1.08 (pooled) |
+| `200-FR` | 2.07 | 2.00 | 2.04 (pooled) | 0.94 | 0.97 (pooled) | 1.03 (pooled) |
+| `400-FR` | 1.79 | 1.84 | 1.81 (pooled) | 1.05 | 1.03 (pooled) | 0.98 (pooled) |
+| `800-FR` | 1.62 | 1.81 | 1.72 (pooled) | 1.25 | 1.13 (pooled) | 0.90 (pooled) |
+| `1500-FR` | 1.62 | 1.69 | 1.65 (pooled) | 1.08 | 1.04 (pooled) | 0.96 (pooled) |
+| `100-BK` | 2.39 | 2.42 | 2.40 (pooled) | 1.03 | 1.01 (pooled) | 0.99 (pooled) |
+| `200-BK` | 1.98 | 1.95 | 1.96 (pooled) | 0.97 | 0.99 (pooled) | 1.01 (pooled) |
+| `100-BR` | 2.23 | 2.22 | 2.22 (pooled) | 0.99 | 1.00 (pooled) | 1.00 (pooled) |
+| `200-BR` | 1.99 | 1.97 | 1.98 (pooled) | 0.98 | 0.99 (pooled) | 1.01 (pooled) |
+| `100-FL` | 2.50 | 2.54 | 2.52 (pooled) | 1.03 | 1.02 (pooled) | 0.98 (pooled) |
+| `200-FL` | 2.27 | 2.29 | 2.28 (pooled) | 1.02 | 1.01 (pooled) | 0.99 (pooled) |
+| `200-IM` | 1.93 | 1.92 | 1.93 (pooled) | 0.99 | 0.99 (pooled) | 1.01 (pooled) |
+| `400-IM` | 1.67 | 1.66 | 1.67 (pooled) | 0.99 | 1.00 (pooled) | 1.00 (pooled) |
+<!-- /receipt:noise -->
+
+### 5.4 Deming Lines per Course Pair (`fit_pair_line`)
+
+For each canonical course pair (`SCY→LCM`, `SCY→SCM`, `SCM→LCM`), event and category, and for each course pair and event with categories pooled, a Deming line is fitted through the clean training pairs in log seconds, $(\ln x_i, \ln y_i)$, with weight $w_i = 1/k_i$ where $k_i$ is the number of pairs swimmer $i$ contributes to that cell, so each swimmer carries equal total weight. With weighted moments $s_{xx}, s_{yy}, s_{xy}$ and $\delta = \sigma_B^2/\sigma_A^2$ from §5.3,
+$$\hat\beta = \frac{s_{yy} - \delta s_{xx} + \sqrt{(s_{yy} - \delta s_{xx})^2 + 4\delta s_{xy}^2}}{2 s_{xy}},$$
+and the line passes through the weighted centre $(\bar x, \bar y)$, giving a shift $\bar y - \bar x$ at that centre.
+
+Each line's sampling variances count swimmers, not rows. The shift variance is a swimmer-clustered sandwich estimate with a small-sample factor $m/(m-1)$ over $m$ swimmers. The slope variance is the approximation $(1 - r^2) / n_{\text{sw}}$ on the log slope, with $n_{\text{sw}} = (\sum_i W_i)^2 / \sum_i W_i^2$ over swimmer totals $W_i$ (Kish's formula, which equals the swimmer count under equal weighting). **It is not a cluster variance, and it runs high when swimmers contribute several pairs**; it feeds the shrinkage weights in §5.5 and the reconciliation weights in §5.6. Repeating a swimmer's rows leaves the line, its variances, the shrinkage, the support, the noise estimate and the flat baseline unchanged (`test_repeated_rows_add_no_evidence_influence_or_confidence`).
+
+### 5.5 Empirical-Bayes Shrinkage (`shrink_toward`)
+
+Two levels, for shift and log slope separately, per course pair:
+
+1. Event lines (categories pooled) shrink toward pool geometry for the shift and toward slope 1 (a flat multiplier) for the log slope.
+2. Category cells shrink toward their event line's posterior.
+
+Each posterior weights its own estimate by $(\text{prior var} + \tau^2)/(\text{prior var} + \tau^2 + \text{sampling var})$, with the between-cell variance $\tau^2$ a moment estimate around the priors (`between_cell_variance` in the receipt). A cell with no line takes its prior. Thin cells therefore lean on their event, and thin events on geometry and slope 1.
+
+### 5.6 Reconciliation into Per-Course Maps (`_reconcile`)
+
+The three course-pair posteriors for an `(event, category)` overdetermine two course maps, and reconciliation makes them consistent. Under A1 the structural slope from course $A$ to course $B$ is $s_B / s_A$, so with $s_{\text{SCY}} = 1$:
+$$\ln s_L = \beta_{\text{SL}}, \qquad \ln s_M = \beta_{\text{SM}}, \qquad \ln s_L - \ln s_M = \beta_{\text{ML}},$$
+where $\beta$ are the shrunk log slopes. Weighted least squares with weights $1/\text{var}$ solves for $(\ln s_L, \ln s_M)$. The locations $(m_L, m_M)$ are solved the same way from the three shrunk shifts, each line passing through its own pair centre, with the SCY anchor $a$ at the SCY centre of the SCY–LCM pairs (else of the SCY–SCM pairs). `_reconcile` returns `{"SCY": (a, 1), "SCM": (m_M, s_M), "LCM": (m_L, s_L)}`, and from then on all six directions use these same per-course parameters.
+
+### 5.7 Support, Knots and the Conversion Rule (`_course_tables`, `knot_map`, `engine_equivalence`)
+
+Course $c$'s map onto the shared scale and back is
+$$\ell = a + \frac{\ln t - m_c}{s_c}, \qquad \ln t = m_c + s_c(\ell - a).$$
+Its training support $[u_c^-, u_c^+]$ is the swimmer-weighted 0.5th and 99.5th percentile of the pair-mean scale value $\tfrac12(\ell_A + \ell_B)$ over every training pair the course appears in (that category only). The snapshot stores each course map as two knots, $(u_c^\pm, g_c(u_c^\pm))$, rounded to six decimals. Beyond the outer knots the map continues with slope 1 in $(\ell, \ln t)$: the course's ratio to the shared scale is held at its edge instead of extrapolating $s_c$.
+
+A conversion from $A$ to $B$ is
+$$\ell = g_A^{-1}(\ln x), \qquad y = \operatorname{truncate}_{0.01}\!\big(\exp g_B(\ell)\big),$$
+flagged `empirical-out-of-range` when $\ell$ lies outside either course's support. Truncation is the only rounding. The Python `engine_equivalence` and Rust `empirical_equivalent` implement the same rule and are checked against each other on the parity fixture (§10).
+
+### 5.8 The Conversion in Closed Form
+
+**Inside both supports.** Substitute the source map into the target map:
+$$\ln y = m_B + s_B\left(\frac{\ln x - m_A}{s_A}\right) = \underbrace{\left(m_B - \frac{s_B}{s_A} m_A\right)}_{\alpha} + \underbrace{\frac{s_B}{s_A}}_{b}\,\ln x,$$
+so before truncation
+$$y = C x^{b}, \qquad C = e^{\alpha}, \qquad b = \frac{s_B}{s_A}, \qquad \frac{y}{x} = C x^{b - 1}.$$
+When $b = 1$ this is an ordinary multiplier, the form NCAA uses. Estimating $b$ lets the ratio vary with the entered time: with $b < 1$ slower entries convert with a smaller ratio, with $b > 1$ a larger one. From SCY, $s_A = 1$ and $b = s_B$. The parameters compose: $b_{BA} = 1/b_{AB}$ and $b_{AC} = b_{AB}\, b_{BC}$, which is why §6's properties hold.
+
+**Beyond a support edge.** Each course map has slope 1 beyond its edges, so the local exponent $d \ln y / d \ln x$ depends on which maps are inside their supports at $\ell$:
+
+| Source map at $\ell$ | Target map at $\ell$ | Local exponent | Ratio $y/x$ |
+| :--- | :--- | :---: | :--- |
+| inside | inside | $s_B / s_A$ | varies unless $s_A = s_B$ |
+| beyond its edge | inside | $s_B$ | varies unless $s_B = 1$ |
+| inside | beyond its edge | $1 / s_A$ | varies unless $s_A = 1$ |
+| beyond its edge | beyond its edge | $1$ | constant |
+
+The combined ratio is constant when both maps are beyond their edges, and, because the SCY map has slope 1 throughout, a conversion to or from SCY is constant once the other course's map is beyond its edge. The `empirical-out-of-range` flag can come on before either: in men's 200 breast SCY→SCM the SCY support ends at `230.26s` while the SCM map stays inside to about `277s`, and flagged conversions there still change ratio (`1.108` at `231.26s`, `1.102` at `260.00s`). Because the two courses' supports differ in most cells, there is usually a band where only one map is beyond its edge and the ratio keeps changing. Men's 100 back SCM→LCM, from the shipped snapshot:
+
+<!-- receipt:worked-example -->
+| Men's 100 back, SCM→LCM | Value |
+| :--- | ---: |
+| Scale $s_{\text{SCM}}$ | `0.9743` |
+| Scale $s_{\text{LCM}}$ | `0.9331` |
+| Exponent $b = s_B / s_A$ inside both supports | `0.9577` |
+| Constant $C = e^{\alpha}$ inside both supports | `1.2474` |
+| SCM support on the shared scale (SCY-equivalent s) | `54.12–141.92` |
+| LCM support on the shared scale (SCY-equivalent s) | `48.63–132.32` |
+| Course-pair cells whose two course supports differ (all events) | `80 of 84` |
+
+| Entered SCM | Converted LCM | Ratio | Regime | Local exponent $b$ | Range caveat |
+| ---: | ---: | ---: | :--- | ---: | :--- |
+| `56.26` | `59.29` | `1.0539` | SCM beyond its edge | `0.9331` | `empirical-out-of-range` |
+| `59.99` | `1:02.95` | `1.0493` | SCM beyond its edge | `0.9331` | `empirical-out-of-range` |
+| `1:05.00` | `1:07.94` | `1.0452` | both inside | `0.9577` |  |
+| `1:20.00` | `1:22.89` | `1.0361` | both inside | `0.9577` |  |
+| `2:20.00` | `2:21.66` | `1.0119` | both inside | `0.9577` |  |
+<!-- /receipt:worked-example -->
+
+The first two entries are below the SCM support, so the SCM map is held at its edge and the local exponent is $s_{\text{LCM}}$, not 1: both are flagged, and their ratios still differ.
+
+### 5.9 Evidence Caveats
+
+Two engine-owned caveats mark conversions the data supports weakly:
+
+- **`empirical-out-of-range`**: $\ell$ lies outside either course's training support (§5.7). Takes precedence.
+- **`empirical-low-evidence`**: the course-pair cell has fewer than `100` effective swimmers, **or** $\ell$ falls outside the range where the swimmer-bootstrap 95% interval of the conversion is within 1% (`preciseLatentRanges`, from 200 refits on 41 points across the joint support). A directional key with no such range carries the caveat for every entered time.
+
+The threshold of 100 effective swimmers and the 1% width limit are judgment calls, not fitted values.
+
+<!-- receipt:caveats -->
+| Caveat evidence | Value |
+| :--- | ---: |
+| Test conversions with no caveat | `95.0%` |
+| Test conversions `empirical-low-evidence` | `3.6%` |
+| Test conversions `empirical-out-of-range` | `1.4%` |
+| Course-pair cells under 100 effective swimmers | `30 of 84` |
+| Directional keys in `lowEvidenceCells` | `60` |
+| Directional keys with no precise range | `36 of 168` |
+| Bootstrap refits behind `preciseLatentRanges` / width limit | `200 / 1%` |
+<!-- /receipt:caveats -->
+
+### 5.10 Baselines
+
+- **`ncaa_2025_27`** and **`colorado_2026`**: the published rules, exactly as the engine computes them.
+- **`flat_empirical_multiplier`**: one fitted ratio per `(direction, event, category)` (the swimmer-weighted median of geometry-normalized ratios, shrunk toward event, stroke and geometry), the fair "single factor" comparison. Each direction is fitted separately, so it neither inverts nor composes exactly.
+- **`percentile_same_input`** and **`percentile_age_aware`** (`AnchoredPercentileModel`): quantile maps $F_B^{-1}(F_A(x))$ built on the same SCY-anchored scale from the SCY–LCM and SCY–SCM populations, so they compose through SCY. The age-aware version adds an age-band table where one exists.
 
 ---
 
-## 3. Longitudinal Pairing, Hygiene, and Model Hierarchy
+## 6. Guarantees by Construction (a)
 
-### 3.1 Pairing Protocol & Adaptive Sparse-Event Supplementation
+These follow from the form in §5.7–5.8, not from the data. The checks below confirm the implementation, not the claims' truth for swimmers.
 
-1. **Plausibility screen & best-of-meet reduction (`deduplicate_best_of_meet`):** Individual swims in the 14 canonical NCAA-convertible events are screened against conservative physical floors and ceilings (`MIN_PLAUSIBLE_CS` / `MAX_PLAUSIBLE_CS`), and collapsed to the fastest valid finish per `(source, swimmer_id, meet_id, course, distance, stroke, category)` (`4,374,133` swims) so prelim/final doubles at the same meet do not overweight multi-round swimmers.
-2. **Directional transition pairing (`build_directional_pairs`):** Within each swimmer and canonical event, best-of-meet swims across different courses (`SCY↔LCM`, `SCY↔SCM`, `SCM↔LCM`) within $|\Delta t| \le 30$ days are matched greedily one-to-one by nearest date (`177,010` directional pairs; `88,505` undirected pairs).
-3. **Outlier hygiene (`is_pair_ratio_outlier`):** To prevent unflagged touch-pad malfunctions or mis-keyed manual watches from distorting training or squared-error metrics, pairs are flagged as outliers if the target time differs by more than **18%** from the NCAA conversion (`|target_cs - ncaa_pred_cs| / ncaa_pred_cs > 0.18`) or if a same-distance `LCM` swim is faster than its paired `SCY` swim (`704` pairs / `0.40%`), leaving **`176,306` clean 30-day directional pairs** across **`21,970` swimmers**. Because the 18% screen references NCAA, all models are evaluated on both `clean_test` and `untrimmed_test`.
-4. **Swimmer-disjoint 70/15/15 split (`swimmer_partition`):** Swimmers are partitioned deterministically by hashing `json.dumps([source, swimmer_id])` with `SHA-256` (`int.from_bytes(digest[:8], "big") % 100` into `<70` train, `<85` validation, `>=85` test):
-   - **Train:** `123,250` clean 30d pairs (`15,425` swimmers)
-   - **Validation:** `27,201` clean 30d pairs (`3,310` swimmers)
-   - **Test:** `25,855` clean 30d pairs (`3,223` swimmers; `25,960` untrimmed pairs across `3,235` swimmers)
-   - Zero swimmer appears in more than one partition.
-5. **Adaptive 31–60d training supplementation & composite weighting (`augment_sparse_training_pairs`, `compute_training_weights`):** Distance freestyle events (`800-FR`, `1500-FR`, `400-FR`), 200m/yd form strokes (`200-FL`, `200-BK`, `200-BR`), `400-IM`, and `SCM` directions are swum less frequently within 30-day windows than 50/100 sprints. For those cohorts **only inside the training swimmer partition**, we supplement the 30-day training pairs with `30,572` non-overlapping 31–60 day transitions (`153,822` total training pairs). Training pairs receive a normalized composite weight fitted on Train only:
-   $$w_i \propto n_{\text{swimmer},d,e}^{-0.50} \cdot n_{d,\text{region}}^{-0.30} \cdot n_{d,e,g,\text{age\_band}}^{-0.25} \cdot \exp(-\Delta\text{days}_i / 21.0)$$
-   Validation and test sets remain strictly un-augmented and unweighted.
+1. **Monotone.** Every piece of every course map has positive slope ($s_c = \exp(\cdot) > 0$ inside, 1 beyond), so each conversion is strictly increasing before truncation and non-decreasing after it.
+2. **Exact inverse before rounding.** $B \to A$ applies $g_A \circ g_B^{-1}$ to $g_B \circ g_A^{-1}$, which is the identity.
+3. **Three-course composition before rounding.** $A \to M \to B$ is $g_B \circ g_M^{-1} \circ g_M \circ g_A^{-1} = g_B \circ g_A^{-1}$, the direct conversion.
+4. **Truncation.** The only rounding is the final truncation to hundredths. Since both legs of a round trip round down and the maps increase, a round trip never returns a time slower than the one entered.
+5. **Evidence accounting.** Duplicating a swimmer's rows changes no fitted quantity (§5.4), and a synthetic population with known conversion and unequal noise is recovered under A1–A3 (§2.2).
 
-### 3.2 Two-Tier Model Hierarchy
+How large the truncation residue is, and how often composition survives it, is observed rather than guaranteed. On the exported snapshot:
 
-We evaluate five empirical models across two input tiers against the two published baselines:
+<!-- receipt:snapshot-arithmetic -->
+| Property (exported snapshot) | Result | Count / note |
+| :--- | ---: | :--- |
+| Conversions checked per property | `10,119,368` | Every hundredth across each cell's plausible range, all six directions |
+| Largest unrounded round-trip error (log s) | `1.8e-15` | Exact inverse up to floating point |
+| Monotonicity violations | `0` |  |
+| Round trip after truncation: exact | `0.0%` |  |
+| Round trip after truncation: 0.01s fast | `96.9%` | `9,807,415` |
+| Round trip after truncation: 0.02s fast | `3.1%` | `311,953` |
+| Via third course vs direct: exact | `50.0%` | `5,059,684` |
+| Via third course vs direct: off by 0.01s | `49.8%` | `5,043,885` |
+| Via third course vs direct: off by 0.02s | `0.2%` | `15,799` |
+<!-- /receipt:snapshot-arithmetic -->
 
-- **Published Baselines:**
-  - `ncaa_2025_27`: Published NCAA Rule 3 constant multipliers.
-  - `colorado_2026`: Published Colorado Timing linear factor + per-50m stroke offset formulas (plus distance-freestyle multipliers/offsets).
-- **Non-Parametric Distribution Benchmark (`quantile_equivalence`, `EmpiricalQuantileModel`):**
-  - 101-knot empirical quantile mapping $F_{\text{to}}^{-1}(F_{\text{from}}(x))$ fitted on training pairs per `(direction, event_key, category, age_band)` (for cells with $n \ge 25$), falling back to `(direction, event_key, category, "all")` and then NCAA.
-- **Tier 1 — Core Input Parity (`swim`, `to`, `table` only):**
-  - **`tier1_huber_pace_core` (`turnmark-empirical-2026` — shipped in production, `HuberPaceModel(include_age=False)`):**
-    Fits a quadratic residual curve in standardized source time $z$ on top of the NCAA base prediction for each of the `154` `(direction, event, category)` cells (with $n \ge 8$) using weighted Iteratively Reweighted Least Squares (IRLS, 8 iterations) with Huber loss ($\delta = \max(0.30\text{s}, 0.02\,\mu_{d,e,g})$) and L2 ridge regularization ($\lambda = 0.05 + 1.5/n$ on non-intercept coefficients):
-    $$z = \operatorname{clip}\!\left(\frac{x - \mu_{d,e,g}}{\sigma_{d,e,g}}, -3.0, 3.0\right), \qquad \Delta\hat{y}(x) = \beta_0 + \beta_1 z + \beta_2 z^2$$
-    $$\hat{y}(x) = \operatorname{truncate}_{0.01}\!\left(x \cdot f_{\text{NCAA}}(d, e, g) + \operatorname{round}_{0.01}\!\left(\Delta\hat{y}(x)\right)\right)$$
-    where $\mu_{d,e,g}$ is the cell median source time and $\sigma_{d,e,g} = \max(1.0\text{s}, \operatorname{pstdev}(x))$. To prevent small-sample overfitting in sparse cells, coefficients are shrunk via empirical Bayes ($\lambda_n = \frac{n}{n + 20}$): $\beta_0$ toward the pooled `(direction, event)` median residual and $(\beta_1, \beta_2)$ toward zero. Slopes are bounded ($|\beta_1| + 6|\beta_2| \le 0.30\,\sigma_{d,e,g}$) so the unrounded curve rises monotonically with entered time across $z \in [-3, 3]$ (after rounding $\Delta\hat{y}$ to `0.01s` and truncating $\hat{y}$ to `0.01s`, inputs one hundredth apart can occasionally swap order by `0.01s`).
-  - **`tier1_gbm_core` (`BoundedHistogramGBM(include_age=False)`):**
-    A custom bounded-depth gradient-boosted regression tree ensemble implemented in [`evaluate_and_train.py`](./evaluate_and_train.py) (up to 40 depth-3 trees per direction, 16 quantile candidate thresholds per feature, learning rate `0.08`, L2 leaf regularization `10.0`, minimum child weight `25.0`, Huber-clipped gradients at `0.80s`, and validation early stopping) fit **on top of `tier1_huber_pace_core`'s predictions** over `[source_time_cs, ncaa_pred_cs, pace_per_100, source_distance, stroke_id, cat_id, event_code]` to test whether non-linear tree splits capture residual structure left behind by the per-cell quadratic curve.
-- **Tier 2 — Age-Aware Extensions (`swim`, `to`, `table`, `age_years`):**
-  - **`tier2_huber_pace_age` (`HuberPaceModel(include_age=True)`):** Extends the per-cell Huber basis with standardized age $a_z = (\operatorname{clip}(\text{age}, 8, 22) - 14.0) / 4.0$, a youth hinge $\max(0.0, 13.0 - \text{age}) / 4.0$, and a binary missing-age indicator $\mathbb{I}[\text{age missing}]$.
-  - **`tier2_gbm_age` (`BoundedHistogramGBM(include_age=True)`):** Fits residual depth-3 trees on top of `tier2_huber_pace_age` with `age_years` and learned missing-value split routing (`nan_left`).
+The same properties on the held-out test swims, for comparison with baselines that lack them by construction:
+
+<!-- receipt:roundtrip -->
+| Method (39,314 test conversions) | Round trip mean / max | Via third course mean / max |
+| :--- | ---: | ---: |
+| Colorado Timing | `0.010s` / `0.02s` | `3.859s` / `202.43s` |
+| NCAA | `0.011s` / `0.02s` | `0.005s` / `0.02s` |
+| Flat multiplier per cell | `0.011s` / `0.83s` | `0.922s` / `16.84s` |
+| Percentile, same input | `0.012s` / `2.79s` | `0.015s` / `3.43s` |
+| Percentile, age-aware | `0.016s` / `2.61s` | `0.020s` / `4.20s` |
+| **Turnmark Equivalence** | **`0.011s` / `0.02s`** | **`0.005s` / `0.02s`** |
+<!-- /receipt:roundtrip -->
+
+NCAA composes because it is one multiplier per course against a common reference. The flat multiplier fits each direction separately, so it neither inverts nor composes exactly. The percentile maps also compose through the shared scale and invert exactly before rounding, but their piecewise-linear quantile maps have steep segments that amplify the hundredth truncation drops between conversions, which is where their worst-case round trips of `2.79s` and `2.61s` come from. This map's slopes stay near 1, so the same truncation moves a round trip by at most `0.02s`. (An exploratory refit of the same-input percentile map with 101 to 1,001 quantile knots, run outside the pipeline, left the worst round trip between `1.22s` and `2.95s`: finer tables do not remove it.)
 
 ---
 
-## 4. Empirical Results & Pressure Testing
+## 7. Evaluation Results (b)
 
-### 4.1 Overall Swimmer-Disjoint Holdout (`n = 25,855` Clean Pairs, `3,223` Swimmers)
+### 7.1 Protocol
 
-| Model | MAE (s) | Median AE (s) | RMSE (s) | P90 AE (s) | Signed Bias (s) | MAPE (%) | Within ±0.5% | Within ±1.0% | Within ±2.0% | Swimmer-Eq MAE (s) | Macro-Cohort MAE (s) | Untrimmed MAE (s) |
-| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **Colorado Timing (`colorado-2026`)** | `3.5329` | `2.19` | `6.0363` | `7.96` | `-0.0771` | `3.31%` | `9.86%` | `20.09%` | `39.11%` | `3.3180` | `4.5210` | `3.6174` |
-| **NCAA (`ncaa-2025-27`)** | `2.9362` | `1.76` | `4.8518` | `6.77` | `+0.0035` | `2.87%` | `12.46%` | `24.39%` | `45.70%` | `2.8344` | `3.8525` | `3.0261` |
-| **Quantile Equivalence** | `2.7199` | `1.64` | `4.5531` | `6.25` | `+0.0199` | `2.64%` | `13.60%` | `26.31%` | `49.20%` | `2.6426` | `3.7229` | `2.8089` |
-| **Tier 1 Huber Pace-Curve (`turnmark-empirical-2026`)** | **`2.6658`** | **`1.61`** | **`4.4109`** | **`6.17`** | `-0.0886` | **`2.61%`** | `13.54%` | **`26.84%`** | **`50.21%`** | **`2.5755`** | **`3.4820`** | **`2.7530`** |
-| **Tier 1 Residual GBM (`tier1_gbm_core`)** | `2.6648` | `1.60` | `4.4104` | `6.18` | `-0.0932` | `2.61%` | `13.54%` | `26.95%` | `50.21%` | `2.5742` | `3.4807` | `2.7519` |
-| **Tier 2 Huber Pace + Age** | `2.6273` | `1.56` | `4.3948` | `6.04` | `-0.0770` | `2.57%` | `13.85%` | `27.28%` | `50.62%` | `2.5484` | `3.4658` | `2.7137` |
-| **Tier 2 Residual GBM + Age (`tier2_gbm_age`)** | **`2.6252`** | **`1.57`** | **`4.3922`** | **`6.03`** | `-0.0831` | **`2.57%`** | **`14.07%`** | `27.22%` | **`50.62%`** | **`2.5458`** | **`3.4647`** | **`2.7116`** |
+All results are on the swimmer-disjoint test partition unless stated otherwise. Errors are scored against the swimmer's actual time in the target course, which is itself a noisy reading of their level, so no method can reach zero error and differences between methods are what carry information. Comparisons resample whole swimmers ($B = 2{,}000$). For each comparison, p-values are Holm-adjusted across all 26 reported families (overall, five event groups and all SCM directions, six directions, 14 events). Intervals that cross zero mean the sample cannot distinguish the methods; they do not show equivalence. §7.11 lists what the intervals do not cover.
 
-*Note: `Within ±0.5%`, `Within ±1.0%`, and `Within ±2.0%` measure the share of holdout predictions whose relative absolute error $|\hat{y} - y| / y$ falls within $0.5\%$, $1.0\%$, and $2.0\%$ of actual target time.*
+### 7.2 Overall Accuracy
 
-> [!IMPORTANT]
-> **Why Tier 1 Huber Pace-Curve (`turnmark-empirical-2026`) is the production engine model:**  
-> Look at rows 4 and 5: boosting depth-3 regression trees on top of the quadratic Huber curve (`tier1_gbm_core`, `2.6648s` MAE) improves on the closed-form 3-coefficient quadratic spline (`tier1_huber_pace_core`, `2.6658s` MAE) by **one one-thousandth of a second (`0.0010s`)**. Once conditioned on `(direction, event, category)`, five numbers per cell (`[refSeconds, scaleSeconds, b0, b1, b2]`) capture virtually all of the learnable signal with exact input parity (`swim`, `to`, `table` — no age prompt required) and ship inside `crates/turnmark-core` as a **10.4 KB (`10,620`-byte)** static JSON table (`154` cells plus `8` pooled fallbacks).
+<!-- receipt:accuracy -->
+| Method | MAE (s) | Median AE (s) | RMSE (s) | P90 AE (s) | Signed bias (s) | MAPE | Within ±1% | Swimmer-eq MAE (s) | Untrimmed MAE (s) |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Colorado Timing | `3.6528` | `2.23` | `6.5657` | `8.23` | `−0.0789` | `3.36%` | `19.89%` | `3.3821` | `3.7345` |
+| NCAA | `3.0414` | `1.82` | `5.0297` | `7.03` | `−0.0032` | `2.93%` | `24.02%` | `2.9186` | `3.1251` |
+| Flat multiplier per cell | `2.8582` | `1.70` | `4.7648` | `6.61` | `−0.0002` | `2.76%` | `25.92%` | `2.7418` | `2.9428` |
+| Percentile, same input | `2.7882` | `1.67` | `4.7293` | `6.38` | `−0.0003` | `2.68%` | `25.94%` | `2.6893` | `2.8747` |
+| Percentile, age-aware | `2.7864` | `1.66` | `4.7565` | `6.38` | `+0.0111` | `2.67%` | `26.26%` | `2.7068` | `2.8724` |
+| **Turnmark Equivalence** | **`2.7711`** | **`1.66`** | **`4.6412`** | **`6.35`** | **`−0.0057`** | **`2.68%`** | **`26.09%`** | **`2.6759`** | **`2.8553`** |
+<!-- /receipt:accuracy -->
 
-### 4.2 Swimmer-Clustered Paired Bootstrap Significance ($B = 200$ Replicates)
+<!-- receipt:mae-differences -->
+| Turnmark Equivalence minus… | Estimate | 95% CI | Holm $p$ |
+| :--- | ---: | :--- | ---: |
+| NCAA | `−0.2703s` | `[−0.3018, −0.2400]` | `<0.001` |
+| Colorado | `−0.8817s` | `[−0.9545, −0.8129]` | `<0.001` |
+| Flat multiplier | `−0.0871s` | `[−0.1041, −0.0696]` | `<0.001` |
+| Percentile, same input | `−0.0171s` | `[−0.0299, −0.0043]` | `0.22` (not established) |
+| Percentile, age-aware | `−0.0153s` | `[−0.0364, +0.0054]` | `1.0` (not established) |
+<!-- /receipt:mae-differences -->
 
-Because multiple transitions from the same swimmer are correlated, standard i.i.d. error bars overstate significance. We resample **entire swimmer clusters** ($B = 200$ replicates across `3,223` test swimmers):
+The improvement over NCAA and over a fitted single factor per cell holds on the swimmer-equalized MAE and the untrimmed set as well. Against the two percentile maps the differences are small and not established after Holm correction.
 
-| Cohort | Pairs ($n$) | Swimmers | `turnmark-empirical-2026` $\Delta\text{MAE}$ vs. NCAA | 95% Clustered CI vs. NCAA | $z$-score vs. NCAA | $\Delta\text{MAE}$ vs. Colorado | $z$-score vs. Colorado |
-| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **All Events (`overall_clean_test`)** | `25,855` | `3,223` | **`-0.2704s (-9.21%)`** | `[-0.3021s, -0.2338s]` | **`-15.57`** | **`-0.8671s (-24.54%)`** | **`-22.92`** |
-| **Sprints (`50/100` all strokes)** | `17,846` | `3,015` | **`-0.1827s (-8.92%)`** | `[-0.2061s, -0.1573s]` | **`-15.20`** | **`-0.4089s (-17.98%)`** | **`-25.33`** |
-| **Middle Distance (`200/400 Free, 200 BK/BR/IM`)** | `6,951` | `1,654` | **`-0.3906s (-8.75%)`** | `[-0.4700s, -0.3169s]` | **`-10.15`** | **`-1.6856s (-29.27%)`** | **`-17.97`** |
-| **Specialty (`200 Fly & 400 IM`)** | `886` | `291` | **`-0.7204s (-12.77%)`** | `[-1.0415s, -0.3842s]` | **`-4.27`** | **`-2.4797s (-33.52%)`** | **`-10.02`** |
-| **Distance Freestyle (`800/1000 & 1500/1650 Free`)** | `172` | `63` | **`-2.1963s (-11.33%)`** | `[-3.9198s, -0.3684s]` | **`-2.43`** | **`-7.0309s (-29.03%)`** | **`-3.86`** |
+### 7.3 By Direction
 
-### 4.3 Event-by-Event Holdout Performance (All 14 Canonical Events, 30-Day Test Set)
+MAE with signed bias in parentheses (seconds):
 
-`turnmark-empirical-2026` beats both NCAA and Colorado on **every single event** in the sport:
-
-| Event Key | Yards ↔ Meters Mapping | Test Pairs ($n$) | Test Swimmers | NCAA MAE (Med AE) | NCAA Bias | Colorado MAE (Bias) | **Turnmark Empirical MAE (Med AE)** | **Empirical Bias** | **Tier 2 Age MAE** | **Gain vs. NCAA / Col** |
-| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **`50-FR`** | 50 yd ↔ 50 m Free | `5,278` | `1,897` | `1.13s` (`0.72s`) | `+0.03s` | `1.04s` (`-0.01s`) | **`1.03s` (`0.64s`)** | `-0.05s` | `1.03s` | **`-8.3% / -1.2%`** |
-| **`100-FR`** | 100 yd ↔ 100 m Free | `4,607` | `1,695` | `2.12s` (`1.41s`) | `+0.02s` | `2.17s` (`-0.03s`) | **`2.04s` (`1.37s`)** | `-0.08s` | `2.02s` | **`-3.7% / -6.0%`** |
-| **`200-FR`** | 200 yd ↔ 200 m Free | `2,292` | `908` | `4.01s` (`3.01s`) | `-0.03s` | `4.34s` (`-0.12s`) | **`3.75s` (`2.74s`)** | `-0.11s` | `3.65s` | **`-6.3% / -13.6%`** |
-| **`400-FR`** | 500 yd ↔ 400 m Free | `958` | `378` | `7.06s` (`5.28s`) | `+0.21s` | `10.11s` (`+0.47s`) | **`6.24s` (`4.64s`)** | `-0.16s` | `6.22s` | **`-11.6% / -38.3%`** |
-| **`800-FR`** | 1000 yd ↔ 800 m Free | `134` | `55` | `16.04s` (`9.71s`) | `+0.42s` | `17.59s` (`+0.64s`) | **`14.16s` (`9.06s`)** | `-0.31s` | `14.63s` | **`-11.7% / -19.5%`** |
-| **`1500-FR`** | 1650 yd ↔ 1500 m Free | `38` | `16` | `31.20s` (`28.80s`) | `-0.28s` | `47.61s` (`+0.08s`) | **`27.88s` (`21.57s`)** | `-1.68s` | `29.67s` | **`-10.6% / -41.4%`** |
-| **`100-BK`** | 100 yd ↔ 100 m Back | `2,939` | `1,103` | `2.70s` (`1.94s`) | `+0.11s` | `3.30s` (`-0.12s`) | **`2.29s` (`1.67s`)** | `-0.07s` | `2.23s` | **`-15.1% / -30.6%`** |
-| **`200-BK`** | 200 yd ↔ 200 m Back | `811` | `320` | `3.76s` (`2.89s`) | `+0.03s` | `6.27s` (`-0.25s`) | **`3.55s` (`2.74s`)** | `-0.07s` | `3.53s` | **`-5.4% / -43.3%`** |
-| **`100-BR`** | 100 yd ↔ 100 m Breast | `2,786` | `1,029` | `2.71s` (`2.10s`) | `-0.05s` | `3.27s` (`-0.12s`) | **`2.44s` (`1.84s`)** | `-0.09s` | `2.40s` | **`-9.8% / -25.2%`** |
-| **`200-BR`** | 200 yd ↔ 200 m Breast | `824` | `325` | `4.94s` (`4.00s`) | `-0.23s` | `6.25s` (`-0.29s`) | **`3.90s` (`2.89s`)** | `+0.03s` | `3.80s` | **`-21.0% / -37.6%`** |
-| **`100-FL`** | 100 yd ↔ 100 m Fly | `2,236` | `831` | `2.40s` (`1.72s`) | `-0.08s` | `2.81s` (`-0.11s`) | **`2.20s` (`1.55s`)** | `-0.13s` | `2.17s` | **`-8.7% / -21.9%`** |
-| **`200-FL`** | 200 yd ↔ 200 m Fly | `488` | `185` | `4.61s` (`3.48s`) | `-0.20s` | `5.59s` (`-0.25s`) | **`3.98s` (`2.81s`)** | `-0.19s` | `3.85s` | **`-13.7% / -28.8%`** |
-| **`200-IM`** | 200 yd ↔ 200 m IM | `2,066` | `802` | `3.86s` (`3.00s`) | `+0.01s` | `4.91s` (`-0.19s`) | **`3.70s` (`2.89s`)** | `-0.09s` | `3.62s` | **`-4.1% / -24.8%`** |
-| **`400-IM`** | 400 yd ↔ 400 m IM | `398` | `161` | `6.90s` (`5.46s`) | `-0.29s` | `9.62s` (`-0.45s`) | **`6.07s` (`4.47s`)** | `-0.25s` | `5.97s` | **`-12.0% / -36.9%`** |
-
-### 4.4 Featured Events Deep Dive: 800/1000 Free, 1500/1650 Free, 500/400 Free, 200 Fly, & 400 IM
-
-Because distance events and 200 Fly / 400 IM are swum less frequently than 50/100 sprints, we also evaluate them on the **60-day swimmer-disjoint test set** (`n = 59,690` total test pairs), which more than doubles the held-out test sample size for those events:
-
-| Featured Event | Window | Total Corpus Pairs | Disjoint Test Pairs ($n$) | NCAA MAE (s) | Colorado MAE (s) | **Turnmark Empirical MAE (s)** | **Tier 2 Age MAE (s)** | Empirical Gain vs. NCAA | Empirical Gain vs. Colorado |
-| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **`800-FR` (1000y ↔ 800m)** | `30d` | `978` | `134` | `16.04s` | `17.59s` | **`14.16s`** | `14.63s` | **`-1.88s (-11.7%)`** | **`-3.43s (-19.5%)`** |
-| **`800-FR` (1000y ↔ 800m)** | `60d` | `2,222` | `350` | `16.66s` | `19.73s` | **`14.83s`** | `14.95s` | **`-1.83s (-11.0%)`** | **`-4.90s (-24.8%)`** |
-| **`1500-FR` (1650y ↔ 1500m)** | `30d` | `288` | `38` | `31.20s` | `47.61s` | **`27.88s`** | `29.67s` | **`-3.32s (-10.6%)`** | **`-19.73s (-41.4%)`** |
-| **`1500-FR` (1650y ↔ 1500m)** | `60d` | `875` | `120` | `27.84s` | `39.22s` | **`27.78s`** | `28.36s` | **`-0.06s (-0.2%)`** | **`-11.43s (-29.2%)`** |
-| **`400-FR` (500y ↔ 400m)** | `30d` | `6,586` | `958` | `7.06s` | `10.11s` | **`6.24s`** | **`6.22s`** | **`-0.82s (-11.6%)`** | **`-3.87s (-38.3%)`** |
-| **`400-FR` (500y ↔ 400m)** | `60d` | `15,806` | `2,293` | `8.68s` | `11.37s` | **`7.45s`** | **`7.26s`** | **`-1.22s (-14.1%)`** | **`-3.92s (-34.4%)`** |
-| **`200-FL` (200y ↔ 200m Fly)** | `30d` | `2,797` | `488` | `4.61s` | `5.59s` | **`3.98s`** | **`3.85s`** | **`-0.63s (-13.7%)`** | **`-1.61s (-28.8%)`** |
-| **`200-FL` (200y ↔ 200m Fly)** | `60d` | `6,310` | `1,059` | `5.64s` | `6.80s` | **`4.48s`** | **`4.37s`** | **`-1.16s (-20.6%)`** | **`-2.33s (-34.2%)`** |
-| **`400-IM` (400y ↔ 400m IM)** | `30d` | `2,602` | `398` | `6.90s` | `9.62s` | **`6.07s`** | **`5.97s`** | **`-0.83s (-12.0%)`** | **`-3.54s (-36.9%)`** |
-| **`400-IM` (400y ↔ 400m IM)** | `60d` | `6,394` | `952` | `8.41s` | `11.17s` | **`7.01s`** | **`6.85s`** | **`-1.40s (-16.6%)`** | **`-4.16s (-37.2%)`** |
-
-### 4.5 Performance by Course Direction, Speed Quartile, and Age Band
-
-#### By Course Transition Direction (30-Day Test Set)
-
-| Direction | Test Pairs ($n$) | NCAA MAE (Bias) | Colorado MAE (Bias) | **Turnmark Empirical MAE (Bias)** | **Tier 2 Age MAE** |
+<!-- receipt:by-direction -->
+| Direction | Rows | NCAA (bias) | Flat | Percentile (same / age) | **Equivalence** (bias) |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| **`SCY -> LCM`** | `11,885` | `3.120s` (`-0.410s`) | `3.672s` (`-2.561s`) | **`2.777s` (`-0.287s`)** | **`2.777s`** |
-| **`LCM -> SCY`** | `11,889` | `2.789s` (`+0.410s`) | `3.406s` (`+2.383s`) | **`2.562s` (`+0.109s`)** | **`2.483s`** |
-| **`LCM -> SCM`** | `686` | `2.600s` (`-0.658s`) | `2.730s` (`+0.919s`) | **`2.500s` (`+0.130s`)** | **`2.449s`** |
-| **`SCM -> LCM`** | `686` | `2.695s` (`+0.679s`) | `2.730s` (`-0.919s`) | **`2.506s` (`-0.335s`)** | **`2.500s`** |
-| **`SCY -> SCM`** | `355` | `3.051s` (`-0.687s`) | `5.175s` (`+1.388s`) | **`3.013s` (`-0.266s`)** | **`2.975s`** |
-| **`SCM -> SCY`** | `354` | `2.730s` (`+0.874s`) | `4.609s` (`-1.058s`) | **`2.691s` (`+0.160s`)** | **`2.686s`** |
+| `SCY->LCM` | `17,693` | `3.2147` (`−0.427`) | `3.0209` | `2.8694` / `2.8907` | **`2.8525`** (`−0.065`) |
+| `LCM->SCY` | `17,693` | `2.8794` (`+0.420`) | `2.6916` | `2.6609` / `2.6031` | **`2.6632`** (`+0.054`) |
+| `SCY->SCM` | `934` | `3.2452` (`−0.426`) | `3.2410` | `3.3036` / `3.4469` | **`3.2245`** (`−0.050`) |
+| `SCM->SCY` | `934` | `2.9552` (`+0.399`) | `2.9422` | `3.0022` / `3.1431` | **`3.0008`** (`+0.040`) |
+| `SCM->LCM` | `1,030` | `2.9416` (`+0.985`) | `2.7110` | `2.8781` / `3.0670` | **`2.6951`** (`+0.040`) |
+| `LCM->SCM` | `1,030` | `2.8388` (`−0.951`) | `2.6458` | `2.8264` / `2.9409` | **`2.6814`** (`−0.051`) |
+<!-- /receipt:by-direction -->
 
-#### By Within-Event Speed Quartile (30-Day Test Set)
+Difference in MAE (Turnmark Equivalence minus each baseline, seconds) with swimmer-bootstrap 95% CI and Holm $p$:
 
-| Speed Quartile | NCAA MAE (s) | **NCAA Signed Bias (s)** | Colorado MAE (s) | Colorado Bias (s) | Quantile Equiv Bias (s) | **Turnmark Empirical MAE (s)** | **Empirical Signed Bias (s)** |
-| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **`Q1` (Fastest 25%)** | `2.021s` | **`-0.554s`** | `2.720s` | `-0.596s` | `-0.503s` | **`1.786s`** | `-0.244s` |
-| **`Q2` (25% – 50%)** | `2.472s` | `-0.116s` | `3.204s` | `-0.171s` | `-0.055s` | **`2.254s`** | **`-0.022s`** |
-| **`Q3` (50% – 75%)** | `2.841s` | `+0.104s` | `3.450s` | `+0.019s` | `+0.114s` | **`2.625s`** | **`-0.034s`** |
-| **`Q4` (Slowest 25%)** | `4.301s` | **`+0.587s`** | `4.430s` | `+0.434s` | `+0.535s` | **`3.901s`** | **`-0.048s`** |
+<!-- receipt:mae-differences-by-direction -->
+| Direction | Rows / swimmers | vs NCAA | vs flat | vs percentile (same) | vs percentile (age) |
+| :--- | ---: | :--- | :--- | :--- | :--- |
+| `SCY->LCM` | 17,693 / 4,260 | `−0.362` `[−0.398, −0.327]`, $p$ `<0.001` | `−0.168` `[−0.189, −0.147]`, $p$ `<0.001` | `−0.017` `[−0.031, −0.003]`, $p$ `0.39` | `−0.038` `[−0.061, −0.015]`, $p$ `0.03` |
+| `LCM->SCY` | 17,693 / 4,260 | `−0.216` `[−0.251, −0.183]`, $p$ `<0.001` | `−0.028` `[−0.046, −0.010]`, $p$ `0.03` | `+0.002` `[−0.012, +0.017]`, $p$ `1.0` | `+0.060` `[+0.038, +0.082]`, $p$ `<0.001` |
+| `SCY->SCM` | 934 / 374 | `−0.021` `[−0.091, +0.054]`, $p$ `1.0` | `−0.017` `[−0.064, +0.028]`, $p$ `1.0` | `−0.079` `[−0.197, +0.041]`, $p$ `1.0` | `−0.223` `[−0.372, −0.069]`, $p$ `0.07` |
+| `SCM->SCY` | 934 / 374 | `+0.046` `[−0.023, +0.121]`, $p$ `0.91` | `+0.059` `[+0.016, +0.099]`, $p$ `0.08` | `−0.001` `[−0.093, +0.096]`, $p$ `1.0` | `−0.142` `[−0.263, −0.020]`, $p$ `0.34` |
+| `SCM->LCM` | 1,030 / 358 | `−0.247` `[−0.352, −0.155]`, $p$ `<0.001` | `−0.016` `[−0.060, +0.027]`, $p$ `1.0` | `−0.183` `[−0.295, −0.086]`, $p$ `0.02` | `−0.372` `[−0.513, −0.240]`, $p$ `<0.001` |
+| `LCM->SCM` | 1,030 / 358 | `−0.157` `[−0.260, −0.068]`, $p$ `0.01` | `+0.036` `[−0.009, +0.079]`, $p$ `1.0` | `−0.145` `[−0.257, −0.044]`, $p$ `0.17` | `−0.260` `[−0.395, −0.124]`, $p$ `0.005` |
+<!-- /receipt:mae-differences-by-direction -->
 
-#### By Age Band (30-Day Test Set)
+Against NCAA the gain in `SCY↔LCM` comes mostly from its ability trend (§7.5), and in `SCM↔LCM` also from a level bias (signed `+0.985s` SCM→LCM, `−0.951s` LCM→SCM). `SCY↔SCM` is not distinguishable from NCAA at this sample size. In `LCM→SCY` the age-aware percentile map is more accurate than this map (`+0.060s`, Holm $p < 0.001$); in `SCM→LCM` and `LCM→SCM` this map is more accurate than both percentile maps in most comparisons.
 
-| Age Band | NCAA MAE (Bias) | Colorado MAE | **Turnmark Empirical MAE (Bias)** | **Tier 2 Age MAE (Bias)** |
-| :--- | ---: | ---: | ---: | ---: |
-| **`10u`** | `3.414s` (`+0.134s`) | `3.223s` | **`3.091s`** (`-0.336s`) | **`3.032s` (`-0.045s`)** |
-| **`11-12`** | `2.814s` (`+0.031s`) | `3.067s` | **`2.497s`** (`-0.218s`) | **`2.497s` (`-0.040s`)** |
-| **`13-14`** | `2.931s` (`-0.014s`) | `3.726s` | **`2.731s`** (`-0.105s`) | **`2.704s` (`-0.134s`)** |
-| **`15-16`** | `2.850s` (`-0.050s`) | `3.851s` | **`2.570s`** (`+0.071s`) | **`2.504s` (`-0.050s`)** |
-| **`17-18`** | `2.706s` (`-0.082s`) | `3.735s` | **`2.437s`** (`+0.187s`) | **`2.385s` (`-0.101s`)** |
-| **`19+`** | `2.066s` (`-0.019s`) | `2.602s` | **`1.941s`** (`+0.230s`) | `1.993s` (`-0.220s`) |
+### 7.4 By Event and Age Band
 
-### 4.6 Facility Transitions, Out-of-Time Holdout, and Split-Conformal Intervals
-
-#### Same-Facility vs. Cross-Facility & Altitude Transitions
-
-Joining meets to `team-directory/catalog/facilities.csv` splits test transitions by whether both meet headers resolved to the **same `facility_id`** (`same_facility_transition`) vs. different `facility_id`s (`different_facility_transition`), and by whether either meet is in the **altitude cohort** (`altitude_meet_involved`: any Utah or Montana meet, meets in mountain-west states `CO`/`UT`/`WY`/`NM`/`ID`/`MT`/`NV`, Reno/Tahoe or Black Hills high-altitude cities/ZIP3 prefixes `577`/`894`/`895`/`897`/`898`/`961`, or meets with a declared `B1` altitude $\ge 3,000\text{ ft}$):
-
-| Venue Cohort | Test Pairs ($n$) | Swimmers | NCAA MAE (Med AE) | Colorado MAE (Med AE) | **Turnmark Empirical MAE (Med AE)** | **Tier 2 Age MAE (Med AE)** |
+<!-- receipt:by-event -->
+| Event | Rows / swimmers | NCAA | Colorado | Flat | Percentile (same / age) | **Equivalence** |
 | :--- | ---: | ---: | ---: | ---: | ---: | ---: |
-| **Same Facility (`same_facility_transition`)** | `5,925` | `946` | `2.5308s` (`1.55s`) | `3.3224s` (`2.21s`) | **`2.1942s` (`1.36s`)** | **`2.1695s` (`1.33s`)** |
-| **Different Facility (`different_facility_transition`)** | `17,836` | `2,472` | `3.0796s` (`1.86s`) | `3.6022s` (`2.20s`) | **`2.8261s` (`1.71s`)** | **`2.7868s` (`1.67s`)** |
-| **Sea-Level Both Meets (`sea_level_both_meets`)** | `24,568` | `3,090` | `2.8852s` (`1.74s`) | `3.4785s` (`2.18s`) | **`2.6134s` (`1.58s`)** | **`2.5763s` (`1.54s`)** |
-| **Altitude Meet Involved (`altitude_meet_involved`)** | `1,287` | `166` | `3.9100s` (`2.27s`) | `4.5720s` (`2.47s`) | **`3.6674s` (`2.15s`)** | **`3.6005s` (`2.12s`)** |
+| `50-FR` 50 Free (50Y / 50M) | 8,010 / 2,747 | `1.1531` | `1.0634` | `1.0739` | `1.0585` / `1.0631` | **`1.0610`** |
+| `100-FR` 100 Free (100Y / 100M) | 6,960 / 2,458 | `2.2402` | `2.2661` | `2.2046` | `2.1705` / `2.1848` | **`2.1688`** |
+| `200-FR` 200 Free (200Y / 200M) | 3,550 / 1,301 | `4.1775` | `4.5272` | `4.0858` | `3.8988` / `3.8737` | **`3.8868`** |
+| `400-FR` 500Y / 400M Free | 1,536 / 570 | `7.8880` | `11.4907` | `7.0265` | `6.9056` / `6.8724` | **`6.8825`** |
+| `800-FR` 1000Y / 800M Free | 182 / 77 | `16.6937` | `22.0641` | `15.5107` | `15.6623` / `15.8625` | **`15.4964`** |
+| `1500-FR` 1650Y / 1500M Free | 66 / 27 | `28.3018` | `37.9067` | `28.1145` | `29.6126` / `30.1742` | **`28.7135`** |
+| `100-BK` 100 Back (100Y / 100M) | 4,394 / 1,600 | `2.7760` | `3.3334` | `2.5318` | `2.3637` / `2.3381` | **`2.3520`** |
+| `200-BK` 200 Back (200Y / 200M) | 1,168 / 459 | `3.8082` | `6.3298` | `3.7945` | `3.6949` / `3.7304` | **`3.6674`** |
+| `100-BR` 100 Breast (100Y / 100M) | 4,216 / 1,494 | `2.6870` | `3.2143` | `2.5874` | `2.4599` / `2.4397` | **`2.4348`** |
+| `200-BR` 200 Breast (200Y / 200M) | 1,274 / 488 | `4.9693` | `6.1187` | `4.0156` | `4.0536` / `4.0479` | **`3.9931`** |
+| `100-FL` 100 Fly (100Y / 100M) | 3,446 / 1,196 | `2.3784` | `2.7628` | `2.1731` | `2.1800` / `2.1761` | **`2.1674`** |
+| `200-FL` 200 Fly (200Y / 200M) | 714 / 273 | `4.5192` | `5.5385` | `3.9370` | `4.0160` / `4.0255` | **`3.9471`** |
+| `200-IM` 200 IM (200Y / 200M) | 3,190 / 1,161 | `4.1028` | `5.1983` | `4.0594` | `3.9214` / `3.8823` | **`3.9020`** |
+| `400-IM` 400 IM (400Y / 400M) | 608 / 245 | `6.6968` | `9.2641` | `5.9428` | `6.0045` / `6.2575` | **`5.8527`** |
+<!-- /receipt:by-event -->
 
-#### Temporal (`2026`), Leave-Regions-Out, and Pairing-Window Holdouts
+The 1650/1500 free is the one event where NCAA and the flat multiplier beat the map, on very few rows.
 
-| Holdout Protocol | Evaluated Pairs ($n$) | Swimmers | NCAA MAE (s) | Colorado MAE (s) | **Turnmark Empirical MAE (s)** | **Tier 2 Age MAE (s)** |
+<!-- receipt:by-age -->
+| Age band | Rows | NCAA | Flat | Percentile (same / age) | **Equivalence** (bias) |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| `10u` | `6,407` | `3.5482` | `3.4432` | `3.2281` / `3.2223` | **`3.2103`** (`+0.003`) |
+| `11-12` | `7,780` | `2.8548` | `2.7075` | `2.6422` / `2.6454` | **`2.6188`** (`+0.007`) |
+| `13-14` | `10,494` | `2.9879` | `2.8084` | `2.8462` / `2.8401` | **`2.8073`** (`−0.009`) |
+| `15-16` | `9,808` | `2.9577` | `2.7157` | `2.6393` / `2.6243` | **`2.6500`** (`−0.007`) |
+| `17-18` | `4,500` | `2.9447` | `2.7008` | `2.5818` / `2.6118` | **`2.5699`** (`−0.025`) |
+| `19+` | `325` | `3.1058` | `3.0152` | `3.0880` / `3.1430` | **`3.0289`** (`−0.027`) |
+<!-- /receipt:by-age -->
+
+### 7.5 Errors by Ability: Two Imperfect Diagnostics
+
+Mean signed error by decile of an ability measure within each course pair, event and category, forward directions (SCY→LCM, SCY→SCM, SCM→LCM). Shape $\chi^2_9$ is a Wald test, with the bootstrap covariance, that all ten forward deciles equal their mean (5% critical value `16.92`). "D2–5 minus D7–9" measures a mid-range bend.
+
+- **Coupled (pair mean).** Deciles of the pair's own mean log time. The bin variable shares the pair's measurement errors: with independent noise $\ln x = \ell + e_A$, $\ln y = \ell + c + e_B$, $\operatorname{cov}(\ln y - \ln x, \tfrac12(\ln x + \ln y)) = \tfrac12(\sigma_B^2 - \sigma_A^2)$, so a correct map trends here whenever the courses' noise differs.
+- **Less coupled (separate swim, `independent_swim_deciles`).** Deciles of a separate swim: the swimmer's swim of the same event in the pair's canonical source course (SCY for SCY–LCM and SCY–SCM, SCM for SCM–LCM) at a meet other than either pair meet, at most 90 days from the pair's swim in that course and at least 31 days from both pair swims, the nearest such swim (ties: the earlier date, then the lower meet ID). It shares no swim with the pair, and the minimum gap reduces shared form and taper. It does not remove all coupling (§8.2), and only swimmers who race often have one.
+
+<!-- receipt:ability -->
+| Method | Less coupled D1−D10 (95% CI) | D2–5 minus D7–9 | Shape $\chi^2_9$ | Coupled D1−D10 (95% CI) | D2–5 minus D7–9 | Shape $\chi^2_9$ |
+| :--- | :--- | ---: | ---: | :--- | ---: | ---: |
+| NCAA | `−2.80%` (`[−3.24, −2.37]`) | `−1.37%` | `263.3` | `−2.17%` (`[−2.50, −1.85]`) | `−1.36%` | `379.0` |
+| Colorado | `−1.85%` (`[−2.28, −1.42]`) | `−0.96%` | `135.4` | `−1.10%` (`[−1.44, −0.78]`) | `−0.91%` | `162.4` |
+| Flat multiplier | `−2.80%` (`[−3.22, −2.38]`) | `−1.37%` | `306.6` | `−2.17%` (`[−2.50, −1.86]`) | `−1.36%` | `440.5` |
+| Percentile, same input | `−0.72%` (`[−1.15, −0.31]`) | `−0.15%` | `21.8` | `−0.26%` (`[−0.59, +0.06]`) | `+0.02%` | `14.6` |
+| Percentile, age-aware | `−0.57%` (`[−1.00, −0.14]`) | `−0.05%` | `15.8` | `−0.28%` (`[−0.62, +0.05]`) | `+0.03%` | `17.2` |
+| **Turnmark Equivalence** | **`−0.86%` (`[−1.27, −0.45]`)** | **`−0.60%`** | **`53.6`** | **`+0.11%` (`[−0.22, +0.41]`)** | **`−0.48%`** | **`55.6`** |
+<!-- /receipt:ability -->
+
+Forward decile biases (%) for NCAA, the same-input percentile map and this map:
+
+<!-- receipt:deciles -->
+| Decile | Less coupled: NCAA | Less coupled: Percentile, same input | Less coupled: Equivalence | Coupled: NCAA | Coupled: Percentile, same input | Coupled: Equivalence |
 | :--- | ---: | ---: | ---: | ---: | ---: | ---: |
-| **Out-of-Time Holdout (`2026` trained on `≤2025`)** | `26,328` | `5,056` | `3.0461s` | `3.4940s` | **`2.7803s (-8.73%)`** | **`2.7224s (-10.63%)`** |
-| **Leave-Regions-Out (`SE + AD + SD + PV + MW` held out)** | `23,352` | `3,723` | `3.2219s` | `3.5598s` | **`3.0762s (-4.52%)`** | `3.0835s (-4.30%)` |
-| **14-Day Pairing Window Sensitivity (`14d`)** | `12,990` | `1,990` | `2.6317s` | `3.2207s` | **`2.4014s (-8.75%)`** | **`2.3626s (-10.23%)`** |
-| **30-Day Primary Pairing Window (`30d`)** | `25,855` | `3,223` | `2.9362s` | `3.5329s` | **`2.6658s (-9.21%)`** | **`2.6273s (-10.52%)`** |
-| **60-Day Pairing Window Sensitivity (`60d`)** | `59,690` | `5,358` | `3.3388s` | `3.9532s` | **`2.9938s (-10.33%)`** | **`2.9438s (-11.83%)`** |
+| D1 (fastest) | `−1.38` | `−0.43` | `−0.50` | `−0.80` | `−0.02` | `+0.10` |
+| D2 | `−1.26` | `−0.25` | `−0.57` | `−0.91` | `+0.08` | `−0.24` |
+| D3 | `−0.91` | `+0.01` | `−0.32` | `−0.80` | `+0.04` | `−0.29` |
+| D4 | `−1.00` | `−0.26` | `−0.53` | `−0.55` | `+0.06` | `−0.18` |
+| D5 | `−0.68` | `−0.14` | `−0.32` | `−0.53` | `−0.20` | `−0.32` |
+| D6 | `−0.46` | `−0.25` | `−0.27` | `−0.18` | `−0.14` | `−0.14` |
+| D7 | `+0.02` | `−0.04` | `+0.04` | `+0.26` | `−0.08` | `+0.10` |
+| D8 | `+0.26` | `−0.15` | `+0.04` | `+0.72` | `+0.03` | `+0.30` |
+| D9 | `+0.95` | `+0.17` | `+0.43` | `+1.01` | `−0.02` | `+0.27` |
+| D10 (slowest) | `+1.42` | `+0.30` | `+0.36` | `+1.37` | `+0.23` | `−0.01` |
+<!-- /receipt:deciles -->
 
-#### Split-Conformal Prediction Intervals (`turnmark-empirical-2026`)
+<!-- receipt:ability-coverage -->
+| Coverage and sensitivity | Value |
+| :--- | ---: |
+| Test rows | `39,314` |
+| Rows with a separate swim | `17,076` |
+| Rows in less-coupled deciles | `16,902` (`43%`) |
+| Separate-swim gap from both pair swims | `31–90 days` |
+| Coupled diagnostic, meet-clustered: Equivalence D1−D10 | `+0.11%` (`[−0.32, +0.48]`) |
+| Coupled diagnostic, meet-clustered: Equivalence shape $\chi^2_9$ | `42.4` |
+<!-- /receipt:ability-coverage -->
 
-Calibrated on the disjoint validation partition (`27,201` pairs) using normalized absolute residuals $|y - \hat{y}| / \max(1.0\text{s}, \hat{y})$ per `(direction, event_key)` cell, finite-sample split-conformal intervals achieve near-exact nominal coverage on the held-out test partition (`25,855` pairs):
+What these support: a single factor converts the fastest and slowest swimmers in opposite directions by a combined `2–3%`, and the equivalence and percentile maps remove most of that on both diagnostics. On the less-coupled diagnostic this map's remaining trend is a little larger than the percentile maps' and its mid-range bend clearly larger. That agrees with the accuracy result in §7.2, which is the stronger evidence. The coupled diagnostic's expected trend under a correct map depends on $\sigma_B^2 - \sigma_A^2$, which is itself only estimated (§8.1), so it is not an upper bound on confounding in the real data. **Neither diagnostic shows that the remaining pattern is, or is not, ability-dependent conversion error.**
 
-| Event | Test Pairs ($n$) | **50% Interval Coverage** | **50% Median Half-Width** | **80% Interval Coverage** | **80% Median Half-Width** | **90% Interval Coverage** | **90% Median Half-Width** |
+### 7.6 Validation: Is There Curvature Left?
+
+The map is linear in log time and fixed for this revision. Whether a nonlinear stage deserves another experiment is examined on the validation partition only (`validation_curvature` in the receipt), so the test partition stays out of that decision.
+
+<!-- receipt:validation -->
+| Validation (41,464 rows) | MAE | Less-coupled D1−D10 | Less-coupled D2–5 minus D7–9 | Coupled D1−D10 | Coupled D2–5 minus D7–9 |
+| :--- | ---: | :--- | :--- | :--- | :--- |
+| NCAA | `2.9698s` | `−2.38%` (`[−2.78, −2.01]`) | `−1.32%` (`[−1.54, −1.10]`) | `−2.07%` (`[−2.34, −1.76]`) | `−1.41%` (`[−1.57, −1.25]`) |
+| Flat multiplier | `2.8034s` | `−2.39%` (`[−2.80, −1.98]`) | `−1.32%` (`[−1.52, −1.12]`) | `−2.07%` (`[−2.35, −1.76]`) | `−1.41%` (`[−1.55, −1.26]`) |
+| **Turnmark Equivalence** | **`2.7177s`** | **`−0.43%` (`[−0.84, −0.02]`)** | **`−0.54%` (`[−0.73, −0.34]`)** | **`+0.17%` (`[−0.09, +0.48]`)** | **`−0.53%` (`[−0.66, −0.40]`)** |
+
+Less-coupled coverage on validation: `17,880` of `41,464` rows.
+<!-- /receipt:validation -->
+
+Both diagnostics leave a bend: the fast half converts slightly fast and the slower deciles slightly slow. Progression between swims, uneven racing frequency and a mis-measured noise ratio can each produce that pattern as well as curvature can, so it is a reason to test a nonlinear stage against known truth with those effects built in, not a reason to fit one. Choosing a nonlinear stage's strength to flatten the coupled diagnostic is not a valid selection rule: with unequal course noise that diagnostic trends even for the true map, so a fitted shape can make conversions less accurate while the diagnostic improves.
+
+### 7.7 Percentile Preservation
+
+Mean absolute shift, in percentile points, between the entered time's percentile among the source-course times and the converted time's percentile among the actual target-course times, within each direction, event and category of the held-out pairs:
+
+<!-- receipt:percentile-preservation -->
+| NCAA | Colorado | Flat | Percentile (same input) | Percentile (age-aware) | **Equivalence** |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| `2.50` | `4.47` | `1.54` | `0.83` | `1.35` | **`0.96`** |
+
+Evaluated rows: `39,074`.
+<!-- /receipt:percentile-preservation -->
+
+Percentile maps preserve percentiles by construction, so this is a check on the other methods.
+
+### 7.8 Harder Holdouts and Pairing Window
+
+Both holdouts are swimmer-disjoint. The temporal holdout trains on swims through 2025 by training-partition swimmers and tests on 2026 swims by test-partition swimmers. The regional holdout tests every 30-day pair from five archives held out together (`SE`, `AD`, `SD`, `PV`, `MW`) and removes every swimmer with a pair there from training.
+
+<!-- receipt:holdouts -->
+| Holdout | Train rows / swimmers | Test rows / swimmers | NCAA | Flat | Percentile (same) | Percentile (age) | **Equivalence** |
 | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **All Events (`overall`)** | `25,855` | **`50.37%`** | **`±1.70s`** | **`79.13%`** | **`±3.34s`** | **`89.64%`** | **`±4.62s`** |
-| **`50-FR`** | `5,278` | `49.83%` | `±0.63s` | `79.25%` | `±1.31s` | `89.16%` | `±1.85s` |
-| **`100-FR`** | `4,607` | `48.90%` | `±1.33s` | `78.68%` | `±2.69s` | `89.21%` | `±3.78s` |
-| **`200-FR`** | `2,292` | `49.87%` | `±2.76s` | `78.71%` | `±5.50s` | `89.62%` | `±7.38s` |
-| **`400-FR` (500y/400m)** | `958` | `58.66%` | `±5.45s` | `84.13%` | `±10.50s` | `90.81%` | `±14.41s` |
-| **`800-FR` (1000y/800m)** | `134` | `50.00%` | `±9.33s` | `74.63%` | `±17.28s` | `79.85%` | `±21.72s` |
-| **`1500-FR` (1650y/1500m)** | `38` | `50.00%` | `±19.22s` | `57.89%` | `±35.73s` | `78.95%` | `±43.88s` |
-| **`100-BK`** | `2,939` | `50.22%` | `±1.67s` | `78.63%` | `±3.23s` | `89.52%` | `±4.38s` |
-| **`200-BK`** | `811` | `48.83%` | `±2.64s` | `79.78%` | `±5.33s` | `92.60%` | `±7.39s` |
-| **`100-BR`** | `2,786` | `51.79%` | `±1.90s` | `78.79%` | `±3.56s` | `89.88%` | `±4.87s` |
-| **`200-BR`** | `824` | `53.28%` | `±3.16s` | `79.98%` | `±6.14s` | `89.44%` | `±8.33s` |
-| **`100-FL`** | `2,236` | `49.15%` | `±1.51s` | `79.92%` | `±3.16s` | `90.92%` | `±4.49s` |
-| **`200-FL`** | `488` | `52.05%` | `±2.94s` | `78.07%` | `±5.80s` | `84.84%` | `±7.42s` |
-| **`200-IM`** | `2,066` | `50.92%` | `±2.92s` | `79.09%` | `±5.60s` | `90.56%` | `±7.64s` |
-| **`400-IM`** | `398` | `47.99%` | `±4.23s` | `76.38%` | `±8.54s` | `89.95%` | `±12.29s` |
+| Later season (2026) | 166,652 / 20,168 | 4,572 / 912 | `3.1792` | `3.0261` | `3.0336` | `2.9984` | **`2.9706`** |
+| Regions held out | 196,790 / 23,126 | 34,402 / 4,694 | `3.2905` | `3.2167` | `3.2607` | `3.3278` | **`3.1377`** |
+<!-- /receipt:holdouts -->
+
+<!-- receipt:holdout-diagnostics -->
+| Holdout | Method | Coupled D10 | Coupled D1−D10 | Coupled D1–D7 range | Less-coupled D1−D10 |
+| :--- | :--- | ---: | :--- | :--- | :--- |
+| Later season (2026) | **Turnmark Equivalence** | `−1.36%` | `+1.26%` (`[+0.30, +2.32]`) | `−0.44 to +0.03%` | `+0.41%` (`[−0.71, +1.53]`); `2,260` rows |
+| Later season (2026) | Percentile, same input | `−0.90%` | `+1.12%` (`[+0.14, +2.21]`) | `−0.52 to +0.30%` | `+0.62%` (`[−0.50, +1.73]`); `2,260` rows |
+| Later season (2026) | Percentile, age-aware | `−0.92%` | `+1.14%` (`[+0.15, +2.22]`) | `−0.55 to +0.28%` | `+0.63%` (`[−0.47, +1.67]`); `2,260` rows |
+| Regions held out | **Turnmark Equivalence** | `−0.82%` | `+1.24%` (`[+0.86, +1.60]`) | `+0.42 to +0.63%` | `+0.19%` (`[−0.36, +0.81]`); `8,428` rows |
+| Regions held out | Percentile, same input | `−0.36%` | `+0.93%` (`[+0.54, +1.29]`) | `+0.25 to +0.82%` | `+0.13%` (`[−0.44, +0.79]`); `8,428` rows |
+| Regions held out | Percentile, age-aware | `−0.16%` | `+0.80%` (`[+0.38, +1.18]`) | `+0.46 to +0.98%` | `+0.13%` (`[−0.48, +0.85]`); `8,428` rows |
+<!-- /receipt:holdout-diagnostics -->
+
+The slowest decile converts too fast in both holdouts, and in the regional holdout deciles 1–7 also sit at a level offset of roughly `+0.4%` to `+0.6%`. The anchored percentile maps show the same slow-tail pattern, smaller in the regional holdout. Improvement between the two swims of a pair is absorbed as a course effect, and a map with no age input cannot separate the two (A3, §8.3). The less-coupled spreads cross zero on these smaller samples.
+
+<!-- receipt:window -->
+| Pairing window | Test rows / swimmers | NCAA | Colorado | Flat | Percentile (same) | Percentile (age) | **Equivalence** |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `14d` | 19,374 / 2,985 | `2.7429` | `3.3151` | `2.5834` | `2.5242` | `2.5300` | **`2.5095`** |
+| `30d` (main) | 39,314 / 4,710 | `3.0414` | `3.6528` | `2.8582` | `2.7882` | `2.7864` | **`2.7711`** |
+| `60d` | 86,704 / 7,468 | `3.3758` | `3.9886` | `3.1632` | `3.0610` | `3.0567` | **`3.0542`** |
+<!-- /receipt:window -->
+
+MAE rises with the window for every method, consistent with more change in level between swims further apart. The ordering of methods is the same in all three windows.
+
+### 7.9 Venue Cohorts (descriptive)
+
+`same_matched_facility` and `different_matched_facility` compare the facility record each meet's locality resolved to (Appendix B), a proxy rather than a verified building. `altitude_proxy_meet_involved` flags a pair when either meet is in a mountain state, a listed high-elevation city or postal prefix, declares a `B1` altitude of at least 3,000 ft, or comes from the Utah or Montana archive. The cohorts differ in swimmers, events and pace, so these differences are descriptive, not measured effects of travel or altitude.
+
+<!-- receipt:venue-cohorts -->
+| Cohort | Rows / swimmers | NCAA | Flat | Percentile (same) | **Equivalence** |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| `altitude_proxy_meet_involved` | 3,648 / 423 | `4.1203` | `4.0080` | `3.8924` | **`3.8669`** |
+| `different_matched_facility` | 26,550 / 3,597 | `3.1602` | `2.9919` | `2.9525` | **`2.9219`** |
+| `no_altitude_flag_both_meets` | 35,518 / 4,336 | `2.9383` | `2.7472` | `2.6811` | **`2.6644`** |
+| `same_matched_facility` | 7,138 / 1,208 | `2.4981` | `2.2791` | `2.2114` | **`2.2078`** |
+<!-- /receipt:venue-cohorts -->
+
+### 7.10 Extrapolation: the Fast-Swimmer Example
+
+<!-- receipt:fast-swimmer -->
+| 14:13.00 1650 yd SCY freestyle (men) → 1500 m LCM | Converted | Converted back |
+| :--- | ---: | ---: |
+| NCAA | `14:43.93` | `14:12.99` |
+| Colorado Timing | `14:30.06` | `14:13.00` |
+| Flat multiplier per cell | `14:44.33` | `14:12.98` |
+| Percentile, same input | `14:57.54` | `14:12.99` |
+| Percentile, age-aware (age 17-18) | `14:57.54` | `14:12.99` |
+| Percentile, age-aware (age 19+) | `14:57.54` | `14:12.99` |
+| **Turnmark Equivalence** | **`14:46.57` (`empirical-out-of-range`)** | **`14:12.99`** |
+<!-- /receipt:fast-swimmer -->
+
+The entered time lies beyond the fast edge of the men's 1650 support, so this conversion is the map's ratio held at that edge (§5.8), which the caveat says. It is extrapolation and should be read that way: the cell has `86` training pairs (`78` swimmers) and is itself low-evidence. §9 records an exploratory check suggesting the held ratio is slightly too large here.
+
+### 7.11 What the Intervals Do Not Cover
+
+Bootstrap intervals resample swimmers (primary) or one meet per pair (sensitivity) with the fitted models held fixed. They do not cover model-selection uncertainty: the shrinkage priors and noise ratios were estimated once, and the 30-day window and the outlier screen chosen once; none is re-estimated or re-chosen inside each replicate. They also do not remove residual dependence: a pair joins two meets but is clustered on one, swimmers share clubs, coaches and taper cycles, and same-day conditions (pool, timing system, altitude) correlate errors across swimmers in ways neither clustering captures. Treat them as lower bounds on uncertainty.
 
 ---
 
-## 5. Production Integration in `turnmark-core`
+## 8. Assumptions the Data Cannot Establish (c)
 
-Rather than deploying a server-side Python inference service, `evaluate_and_train.py --export-empirical-json data/empirical.json` exports the fitted Tier 1 Huber Pace-Curve snapshot (`154` five-number cell arrays `[refSeconds, scaleSeconds, b0, b1, b2]` plus `8` pooled `(direction, event)` fallback offsets and SHA-256 provenance metadata) directly into [`data/empirical.json`](../../data/empirical.json) (`10.4 KB` / `10,620` bytes).
+### 8.1 The Noise Ratio and Unmeasured Course Aptitude (A2)
 
-1. **Rust Authoritative Core (`crates/turnmark-core`):**
-   - `ConversionMethod::Empirical` (`"turnmark-empirical-2026"`) is embedded at compile time via `include_str!("../../../data/empirical.json")`.
-   - Evaluates `empirical_offset(&event, distance, to, table, seconds)` in [`crates/turnmark-core/src/engine.rs`](../../crates/turnmark-core/src/engine.rs), rounds the offset to hundredths (`offset_seconds`), adds it to `seconds * factor`, and truncates to hundredths (`ConversionKind::Derived`).
-   - Preserves Turnmark's altitude ordering contract: when pool elevation is supplied, the sea-level deduction (`usa-swimming-altitude-2026` or `ncaa-altitude-2026-27-d1`) is deducted from the original swim before evaluating the pace-curve conversion.
-2. **Cross-Platform SDK & Consumers:**
-   - **JavaScript / Wasm (`@turnmark/sdk`):** Exports `empiricalMethod = "turnmark-empirical-2026"`, `empiricalSource`, and includes `"Turnmark Empirical"` in `conversionMethods`.
-   - **Web App (`src/`), Embed Widget (`apps/embed/`), Native iOS (`apps/ios/`), Native Android (`apps/android/`), and MCP (`packages/mcp/`):** Expose `"Turnmark Empirical"` in Calculation Options and compare all three methods side-by-side (`NCAA`, `Colorado Timing`, and `Turnmark Empirical`) with course/turn geometry, formula decomposition, and pace-sensitivity visualization while keeping `NCAA (default)` as the default rule.
+This is the model's weakest identifying assumption. Same-course repeats see timing, race-day and short-term form noise. They cannot see a swimmer's aptitude for one course over another (a strong underwater kicker who gains more in short course), which adds spread to the cross-course pairs but not to the repeats. If swimmer $i$'s target-course time carries an aptitude term $\gamma_i$, the effective noise ratio in the pairs is $(\sigma_B^2 + \operatorname{Var}\gamma)/\sigma_A^2$, not $\sigma_B^2/\sigma_A^2$, and the Deming slope inherits the error. Nothing in a single pair separates $\gamma_i$ from level, so the fitted $\delta$ is an estimate under A2, not a measurement of the right $\delta$. SCM ratios are weaker still: outside the 50 free they are pooled (§5.3). The synthetic recovery test confirms the estimator under A2, not A2 itself.
+
+### 8.2 Independence of the Separate Swim (A5)
+
+The less-coupled diagnostic is only as clean as its separate swim is independent of the pair's errors. Form persists beyond a month; progression between the separate swim and the pair correlates the bin with the pair's residual; and the swimmers who have such a swim (`43%` of test rows) race more often than those who do not. Each of these can produce a trend or bend for a correct map. The 31-day minimum gap reduces the first, not the others.
+
+### 8.3 One Level per Pair (A3)
+
+A pair's two swims are up to 30 days apart, and young swimmers improve measurably in that time. Improvement between the swims is indistinguishable, in one pair, from the course effect, and the direction of the bias depends on which course came first. The window table in §7.8 is consistent with level change growing with the gap; the slow-tail holdout bias is consistent with it concentrating in fast-improving swimmers. Neither establishes how much of the remaining error it explains.
+
+### 8.4 The Support as a Range of Trust (A6)
+
+The 0.5th–99.5th percentile bounds are a convention. Inside them the fitted slope is trusted; beyond them the edge ratio is held, which is a choice of extrapolation, not an estimate. Times beyond the edges are sparse in training, not absent, and nothing tests whether holding the edge ratio is better than extending the slope. The `empirical-out-of-range` caveat marks every conversion that depends on this choice (`1.4%` of test conversions).
+
+### 8.5 Sample Composition
+
+The archives are those with public bulk exports, not a probability sample of US swimmers (Appendix A): Pacific and North Carolina supply over half the races and about two-thirds of the 30-day pairs, SCM and adult swims are sparse, and source-scoped swimmer IDs are not a verified person count. The map describes swimmers who race both courses within a month in these archives.
 
 ---
 
-## 6. Reproducibility Commands
+## 9. Exploratory Observations (not reproduced by the pipeline)
+
+These come from checks run outside the evaluation pipeline, by the owner's reviewer or ad hoc against this snapshot. They are not in any receipt, there is no script in this repository that reproduces them, and some were run against an earlier revision. **No conclusion in §1, §6 or §7 rests on them**; each is recorded as a lead, with what it would mean if it holds.
+
+| | Observation | Status | If it holds |
+| :--- | :--- | :--- | :--- |
+| **E1** | Cross-course spread was `1.05–1.34` times what the repeat noise predicts in the SCY–LCM cells checked and up to `1.79` times in SCM cells; in simulation, unmeasured aptitude tilts conversions in the same direction as the less-coupled trend. | Reviewer check, under an earlier row-weighted noise estimate | A2 is violated in the direction that could explain part of the §7.5 trend (§8.1) |
+| **E2** | With separate swims 0–30 days from the pair's source-course swim (instead of at least 31 days from both), this map's less-coupled spread was `−1.45%` on test and `−1.24%` on validation. | Ad hoc rerun of the diagnostic | Near swims share form with the pair, which is why the 31-day minimum exists (§8.2) |
+| **E3** | In a breakdown of an earlier revision with the same holdout pattern, the slow tail was mostly 10-and-unders converting SCY→LCM, whose bias depended on which swim came first, and held-out South Dakota supplied most of the regional slowest-decile rows. | Reviewer breakdown, earlier revision | The §7.8 slow-tail bias is progression (A3), concentrated in one age band and one archive |
+| **E4** | The archive has no men's 1650 yd under `14:20` and no 1500 m LCM under `14:40`; one of the `86` men's 1650 training pairs is under `15:00`; fastest-decile LCM/SCY ratios are about `1.033–1.035`, which would give a faster conversion than `14:46.57`, and NCAA's `14:43.93` sits inside the range those pairs imply. | Reviewer archive query | The edge-ratio extrapolation in §7.10 is slightly slow for elite distance swimmers |
+| **E5** | `2,213` of the `189,046` clean training rows fall outside their cell's support. | Ad hoc count against this snapshot | Out-of-range times are sparse, not absent (§8.4) |
+| **E6** | A nonlinear stage whose strength was chosen to flatten the coupled diagnostic gained `0.007s` of test MAE. | Earlier evaluation; not part of the model | Supports the selection-rule argument in §7.6 |
+
+---
+
+## 10. Production Integration in `turnmark-core`
+
+`evaluate_and_train.py --export-empirical-json data/empirical.json` writes the fitted snapshot to [`data/empirical.json`](../../data/empirical.json) (schema 3, `14,057` bytes):
+
+- `cells`: for each of the `28` `(event, category)` keys, one two-knot table per course, `[scale value, course log seconds]` at the edges of its training support (SCY is the identity);
+- `lowEvidenceCells`: the `60` directional keys whose course-pair cell has fewer than `100` effective swimmers;
+- `preciseLatentRanges`: for each of the `168` directional keys, the scale range where the bootstrap 95% interval is within 1%, or `null`;
+- `source`: SHA-256 provenance for the cells, the evaluator script, the loaded swims and the lakehouse snapshot.
+
+The same run writes [`fixtures/empirical-parity.json`](../../fixtures/empirical-parity.json): `1,008` exact-hundredth reference conversions with their expected caveat, tied to the snapshot by its cell hash. The Python reference evaluates them exactly as the engine does.
+
+1. **Rust core (`crates/turnmark-core`).** `ConversionMethod::Empirical` (`"turnmark-empirical-2026"`) embeds the snapshot at compile time. `empirical_equivalent` in [`engine.rs`](../../crates/turnmark-core/src/engine.rs) maps the entered log time through the source course's knots to the shared scale, then out through the target course's knots, continuing with slope 1 beyond the outer knots, and truncates to hundredths once. It does not consult the NCAA table. Conversions carry `empirical-out-of-range` or `empirical-low-evidence` as in §5.9. When pool elevation is supplied, the sea-level deduction (`usa-swimming-altitude-2026` or `ncaa-altitude-2026-27-d1`) is computed in whole hundredths and applied to the entered swim before conversion, so the only rounding is the final truncation. `tests/conformance.rs` checks every parity case to the hundredth and its caveat, plus round trip, three-course composition, monotonicity and the altitude ordering.
+2. **Consumers.** The SDK (`@turnmark/sdk`), web app (`src/`), embed widget (`apps/embed/`), iOS (`apps/ios/`), Android (`apps/android/`) and MCP server and app (`packages/mcp/`) label the method "Turnmark Equivalence", describe its result as an estimated equivalent time, and show both caveats. `NCAA (default)` stays the default rule.
+
+---
+
+## 11. Reproducibility Commands
 
 ```bash
-# 1. Run research unit test suite (78 tests across pairing, shrinkage, monotonicity, conformal, and catalog)
-python3 -m unittest discover -s research/conversion-model -v
+# 1. Run the research unit tests (synthetic recovery, known truth under the model's assumptions,
+#    duplication invariance, provenance, lakehouse, and that this report matches its receipts)
+TURNMARK_LAKEHOUSE_TESTS=1 PYTHONPATH=research/conversion-model:research/conversion-model/local \
+  target/lakehouse-py312/bin/python -m unittest discover -s research/conversion-model -p "test_*.py" -v
 
-# 2. Rebuild local meet-to-facility locality resolution join (requires local SDIF cache)
-python3 research/conversion-model/local/build_meet_venue_join.py
+# 2. Rebuild this report's tables from the receipts, or check that they match
+python research/conversion-model/render_report_tables.py
+python research/conversion-model/render_report_tables.py --check
 
-# 3. Materialize & probe the hybrid SQLite + Parquet lakehouse
-target/lakehouse-venv/bin/python research/conversion-model/lakehouse.py build \
-  --input research/conversion-model/data/national-checkpoint-15/races.sqlite3 \
-  --output target/lakehouse-national-15
-target/lakehouse-venv/bin/python research/conversion-model/lakehouse.py probe \
-  target/lakehouse-national-15
+# 3. Rebuild the meet-to-facility locality join (requires the local SDIF cache)
+PYTHONPATH=research/conversion-model:research/conversion-model/local \
+  target/lakehouse-py312/bin/python research/conversion-model/local/build_meet_venue_join.py \
+  --output research/conversion-model/data/national-checkpoint-17
 
-# 4. Train models, run holdout/bootstrap/conformal evaluations, and export data/empirical.json
-target/lakehouse-venv/bin/python research/conversion-model/evaluate_and_train.py \
-  --duckdb target/lakehouse-national-15/queries.duckdb \
-  --input-label local-lakehouse-national-checkpoint-15 \
-  --venues-csv research/conversion-model/data/national-checkpoint-15/meet_venues.csv \
-  --output-dir research/conversion-model/data/national-checkpoint-15 \
-  --public-summary research/conversion-model/evaluation-checkpoint-06.json \
+# 4. Materialize and probe the SQLite + Parquet lakehouse
+target/lakehouse-py312/bin/python research/conversion-model/lakehouse.py build \
+  research/conversion-model/data/national-checkpoint-17/results.csv \
+  --manifest research/conversion-model/data/national-checkpoint-17/manifest.json \
+  --output target/lakehouse-national-17 \
+  --max-rows 10000000
+target/lakehouse-py312/bin/python research/conversion-model/lakehouse.py probe \
+  target/lakehouse-national-17
+
+# 5. Fit, evaluate and export data/empirical.json and fixtures/empirical-parity.json in one run
+#    (refuses to run if snapshot.json disagrees with the opened Iceberg view or the venue CSV is missing)
+target/lakehouse-py312/bin/python research/conversion-model/evaluate_and_train.py \
+  --duckdb target/lakehouse-national-17/queries.duckdb \
+  --input-label national-checkpoint-17 \
+  --venues-csv research/conversion-model/data/national-checkpoint-17/meet_venues.csv \
+  --output-dir target/conversion-model-eval-17 \
+  --public-summary research/conversion-model/evaluation-checkpoint-08.json \
   --export-empirical-json data/empirical.json
 ```
+
+---
+
+## Appendix A. Corpus by Archive
+
+Usable races by archive authority (after deduplication) and the 30-day directional pairs each contributes (— where the receipt lists none):
+
+<!-- receipt:archives -->
+| Archive authority | Usable races | Share | 30-day directional pairs |
+| :--- | ---: | ---: | ---: |
+| Pacific Swimming | 2,590,738 | 30.46% | 120,278 |
+| North Carolina Swimming | 1,955,332 | 22.99% | 58,693 |
+| Southeastern Swimming | 1,056,077 | 12.41% | 5,641 |
+| Michigan Swimming | 892,772 | 10.49% | 32,041 |
+| Adirondack Swimming | 648,545 | 7.62% | 10,327 |
+| South Dakota Swimming | 349,255 | 4.11% | 16,165 |
+| Potomac Valley Swimming | 210,123 | 2.47% | 1,180 |
+| Oregon Swimming | 186,477 | 2.19% | 11,114 |
+| Florida Gold Coast Swimming | 127,773 | 1.50% | 2,057 |
+| Niagara Swimming | 126,843 | 1.49% | 7,233 |
+| Midwestern Swimming | 96,294 | 1.13% | 1,089 |
+| Utah Swimming | 79,656 | 0.94% | 1,123 |
+| Montana Swimming | 78,275 | 0.92% | 2,055 |
+| Kentucky Swimming | 35,285 | 0.41% | 31 |
+| Indiana Swimming | 33,356 | 0.39% | — |
+| Southern California Swimming | 21,045 | 0.25% | 673 |
+| YMCA National Championships | 17,719 | 0.21% | 124 |
+| South Texas Swimming | 1,202 | 0.01% | — |
+<!-- /receipt:archives -->
+
+Input records by frozen export collection (before deduplication). `southeastern-exports` also carries the Utah and Montana archives:
+
+<!-- receipt:collections -->
+| Frozen export collection | Archive files | Input race records |
+| :--- | ---: | ---: |
+| `adirondack-exports` | 575 | 650,217 |
+| `florida-gold-coast-exports` | 100 | 127,773 |
+| `indiana-exports` | 27 | 33,356 |
+| `kentucky-exports` | 21 | 35,285 |
+| `michigan-exports` | 736 | 892,772 |
+| `midwestern-exports` | 137 | 96,307 |
+| `niagara-exports` | 178 | 126,843 |
+| `north-carolina-exports` | 1,230 | 1,955,341 |
+| `oregon-exports` | 185 | 186,477 |
+| `pacific-exports` | 1,589 | 2,597,334 |
+| `pvs-exports` | 513 | 210,128 |
+| `socal-exports` | 15 | 21,073 |
+| `south-dakota-exports` | 285 | 349,255 |
+| `south-texas-exports` | 3 | 1,202 |
+| `southeastern-exports` | 919 | 1,216,483 |
+| `ymca-nationals-exports` | 8 | 20,995 |
+| **Total** | **6,521** | **8,520,841** |
+<!-- /receipt:collections -->
+
+Coverage years: Pacific 2013–2026 (including Northern Nevada/Tahoe altitude, SCM, Speedo/US Open nationals and adult `19+` swims); North Carolina 2020–2026; Southeastern 2010–2026; Michigan 2016–2026; Adirondack 2010–2026; South Dakota 2018–2026 (including Black Hills altitude and SCM); Potomac Valley 2010–2026; Oregon 2023–2026; Florida Gold Coast 2022–2026; Niagara 2019–2026; Midwestern 2019–2026; Utah 2018–2026 (Wasatch Front altitude); Montana 2021–2026; Kentucky 2026; Indiana 2025–2026; Southern California 2024–2026; YMCA National Championships 2025–2026; South Texas 2026. Only Adirondack, Potomac Valley and Southeastern begin in 2010. The acquisition receipt's `limitations` list the exclusions (seeds, relays, splits, invalid and DQ slots; missing or ambiguous registration IDs; no name-based joins).
+
+## Appendix B. Meet-to-Venue Locality Join
+
+Venue cohorts (§7.9) use the committed public catalog in [`team-directory/`](./team-directory/CATALOG.md): facility records in [`catalog/facilities.csv`](./team-directory/catalog/facilities.csv), pool basins in [`catalog/pool_basins.csv`](./team-directory/catalog/pool_basins.csv), and program listings in [`snapshot/programs.csv`](./team-directory/snapshot/programs.csv). `local/build_meet_venue_join.py` extracts SDIF `B1` meet headers and joins each meet to a facility record in two deterministic passes, 5-digit postal code first, then `(city, state)`, counted once per unique meet (`meet_locality_matches` in the evaluation receipt):
+
+<!-- receipt:venue-join -->
+| Meet-to-venue locality join | Meets |
+| :--- | ---: |
+| Unique meets with SDIF `B1` headers | 6,059 |
+| Matched by 5-digit postal code | 4,837 |
+| Matched by `(city, state)` | 612 |
+| **Matched to a facility record** | **5,449** (89.9%) |
+| With locality coordinates | 5,383 |
+| Unmatched | 610 |
+<!-- /receipt:venue-join -->
+
+The join picks a likely facility in a postal code or city. It does not verify a facility name or address, and a shared `facility_id` is not evidence that two meets were swum in the same building, basin or bulkhead position.
+
+## Appendix C. Local Lakehouse
+
+[`lakehouse.py`](./lakehouse.py) materializes a dual-store local lakehouse from the canonical ingest store: an indexed SQLite store (composite B-tree on `athlete_history(source, swimmer_id, race_date, meet_id, race_id)`) for point lookups by swimmer and date, and an Iceberg table of Zstandard Parquet files, identity-partitioned by year and course, for the longitudinal self-joins; DuckDB reads it through the committed Iceberg metadata rather than a file glob. The design and its hosted counterparts are in [`MEET_LAKEHOUSE_EXPERIMENT.md`](../../docs/MEET_LAKEHOUSE_EXPERIMENT.md); serving costs are in [`LAKEHOUSE_COST_MODEL.md`](../../docs/LAKEHOUSE_COST_MODEL.md). Measured for this checkpoint (acquisition receipt `lakehouse_storage`):
+
+<!-- receipt:lakehouse -->
+| Lakehouse (`target/lakehouse-national-17`) | Measured |
+| :--- | ---: |
+| Iceberg snapshot | `4441271835344284414` |
+| Hot SQLite store | 6,915.5 MB (812.9 bytes/row) |
+| Parquet warehouse | 366.8 MB (43.1 bytes/row) |
+| Point lookup by swimmer, first / repeat median | 0.168 ms / 0.012 ms |
+| Filtered DuckDB aggregate, first / repeat median | 3.59 ms / 2.12 ms |
+<!-- /receipt:lakehouse -->
+
+The evaluator measures the scanned Iceberg snapshot itself (honoring `snapshot_from_id`) and refuses to run if it disagrees with `snapshot.json` or a referenced file is missing. `lakehouse.py probe` checks that both stores hold the same rows with no duplicates and return one swimmer's latest 50 rows identically; its output is not part of a receipt.

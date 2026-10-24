@@ -54,7 +54,7 @@ if (mode === "HTTP") {
     }),
   );
 }
-const uri = "ui://turnmark/conversion/0.3.0-r6.html";
+const uri = "ui://turnmark/conversion/0.3.0-r7.html";
 const card = (await client.readResource({ uri })).contents[0].text;
 const host = await build({
   absWorkingDir: process.cwd(),
@@ -131,6 +131,17 @@ try {
       .locator('[data-method="colorado-teamunify-2026"]')
       .textContent(),
     /1:06.33/,
+  );
+  // Equivalent time from data/empirical.json 100-FR|women: 58.32 SCY through the
+  // SCY and LCM course maps (knots on the shared latent scale) is 1:07.26, truncated once.
+  const equivalence = await frame
+    .locator('[data-method="turnmark-empirical-2026"]')
+    .textContent();
+  assert.match(equivalence, /Turnmark Equivalence/);
+  assert.match(equivalence, /1:07.26/);
+  assert.match(
+    await frame.locator("#result").textContent(),
+    /Estimates the equivalent time/,
   );
   assert.match(
     await frame.locator(".method-difference").textContent(),

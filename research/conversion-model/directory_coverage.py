@@ -9,6 +9,24 @@ import json
 from pathlib import Path
 
 US_JURISDICTIONS = frozenset("AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY".split())
+CA_JURISDICTIONS = frozenset("AB BC MB NB NL NS NT NU ON PE QC SK YT".split())
+# Swimming Canada's national club list carries no province; rows are placed by
+# postal-code prefix where one is present and otherwise stay without a province.
+CA_NATIONAL_AUTHORITY = "swimming-canada:club-list-row"
+CA_PUBLISHED_DENOMINATORS = {
+    "ON": "Swim Ontario clubs page states 'over 140 affiliated clubs'; a rounded claim, not an enumerated denominator",
+}
+CA_LIMITATIONS = [
+    "No Canadian national or provincial denominator is published beyond Swim Ontario's 'over 140'",
+    "National club-list rows without a postal code have no province and are not zero-province claims",
+    "Quebec and Prince Edward Island clubs appear only through the national list; FNQ and Swim PEI directories were not imported",
+    "No Yukon or Nunavut listing was found in any imported source; those territories are gaps, not zero-club claims",
+    "Northwest Territories clubs appear only through Swim Alberta's directory",
+    "University (U SPORTS/CCAA/OUA/Canada West/AUS) association sites returned HTTP 403 to automated fetches; 25 varsity programs and one club team were instead confirmed by a person on the universities' own athletics pages (2026-10-23) and are not a complete association membership roll",
+    "University browser review exclusions: University of Alberta (swimming discontinued after 2024-25 per its own athletics notice), Mount Royal University and UQAM (no swim program found), York University (unconfirmed; its swimming URL redirected to a general page)",
+    "Browser-reviewed university programs and the 12 varsity programs listed by Swim Ontario, Swim Manitoba and Swim Saskatchewan remain separate assertions; overlaps are reported, not merged",
+    "Provincial and national listings of the same club remain separate source assertions; no automatic merge",
+]
 UNIVERSES = {
     "usa_swimming_finder": ("usa-swimming:org-unit", "Source clubs; youth/program mix unresolved"),
     "ymca_usas_dual_charter": ("ymca:usas-dual-charter", "USA Swimming finder clubs explicitly named as YMCA programs; non-USAS YMCA-only clubs not separately enumerated"),
@@ -26,6 +44,51 @@ UNIVERSES = {
 def read_csv(path):
     with Path(path).open(newline="", encoding="utf-8") as stream:
         return list(csv.DictReader(stream))
+
+
+def canada_audit(programs, affiliations):
+    """Per-province source assertions for Canadian rows; never a club count."""
+    national_ids = {a["program_id"] for a in affiliations if a["authority"] == CA_NATIONAL_AUTHORITY}
+    canadian = [p for p in programs.values() if p["country"] == "CA"]
+    by_province = defaultdict(list)
+    for p in canadian:
+        by_province[p["state"]].append(p)
+    provinces = []
+    for province in sorted(CA_JURISDICTIONS):
+        selected = by_province[province]
+        provincial = [p for p in selected if p["program_id"] not in national_ids]
+        national = [p for p in selected if p["program_id"] in national_ids]
+        if provincial:
+            scope_status = "partial_source_assertions"
+        elif national:
+            scope_status = "national_list_only"
+        else:
+            scope_status = "no_imported_listing"
+        provinces.append({
+            "province": province,
+            "source_scoped_listings": len(selected),
+            "provincial_section_listings": len(provincial),
+            "national_list_listings": len(national),
+            "source_scoped_organizations": len({p["organization_id"] for p in selected}),
+            "program_kinds": dict(sorted(Counter(p["program_kind"] for p in selected).items())),
+            "source_ids": sorted({p["source_id"] for p in selected}),
+            "scope_status": scope_status,
+            "published_denominator": CA_PUBLISHED_DENOMINATORS.get(province),
+            "eligible_unique_clubs": None, "matched_unique_clubs": None, "club_coverage_percent": None,
+        })
+    without_province = [p for p in canadian if not p["state"]]
+    return {
+        "source_scoped_listings": len(canadian),
+        "source_scoped_organizations": len({p["organization_id"] for p in canadian}),
+        "national_list_listings": sum(p["program_id"] in national_ids for p in canadian),
+        "national_rows_without_province": len(without_province),
+        "provinces_with_provincial_section_listings": [p["province"] for p in provinces if p["scope_status"] == "partial_source_assertions"],
+        "provinces_national_list_only": [p["province"] for p in provinces if p["scope_status"] == "national_list_only"],
+        "provinces_without_listings": [p["province"] for p in provinces if p["scope_status"] == "no_imported_listing"],
+        "provinces": provinces,
+        "national_club_coverage_percent": None,
+        "limitations": CA_LIMITATIONS,
+    }
 
 
 def audit(source):
@@ -86,6 +149,15 @@ def audit(source):
             "eligible_unique_teams": None, "matched_unique_teams": None, "team_coverage_percent": None,
         })
     counts = Counter(p["program_kind"] for p in programs.values())
+    countries = {
+        country or "unknown": {
+            "source_scoped_listings": len(selected),
+            "source_scoped_organizations": len({p["organization_id"] for p in selected}),
+        }
+        for country, selected in sorted(
+            ((c, [p for p in programs.values() if p["country"] == c])
+             for c in {p["country"] for p in programs.values()}), key=lambda item: item[0] or "")
+    }
     return {
         "schema_version": 1,
         "snapshot_generated_at": manifest["generated_at"],
@@ -95,6 +167,8 @@ def audit(source):
         "summer_clubs_required_for_target": False,
         "source_scoped_listings": len(programs),
         "source_scoped_organizations": len(tables["organizations"]),
+        "countries": countries,
+        "canada": canada_audit(programs, tables["affiliations"]),
         "program_kinds": dict(sorted(counts.items())),
         "activity_status": dict(sorted(Counter(p["status"] for p in programs.values()).items())),
         "source_universes": universes,

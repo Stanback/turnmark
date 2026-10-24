@@ -9,7 +9,7 @@ import unittest
 from contextlib import closing
 from pathlib import Path
 
-from lakehouse import REQUIRED, OPTIONAL_CONTEXT, build, probe, read_snapshot
+from lakehouse import REQUIRED, OPTIONAL_CONTEXT, build, literal, probe, read_snapshot
 
 
 @unittest.skipUnless(
@@ -113,6 +113,66 @@ class LakehouseTests(unittest.TestCase):
         self.assertNotIn("fixture's", json.dumps(result))
         with self.assertRaises(FileExistsError):
             build(self.csv, self.manifest, output)
+
+    def test_measured_snapshot_follows_the_view_selector_and_quoted_paths(self):
+        import duckdb
+        from pyiceberg.catalog import load_catalog
+        from evaluate_and_train import measure_lakehouse_view
+
+        output = self.root / "measured"
+        report = build(self.csv, self.manifest, output)
+        # The fixture lives under a path containing a quote.
+        self.assertEqual(
+            measure_lakehouse_view(output / "queries.duckdb"),
+            {"iceberg_snapshot_id": report["iceberg_snapshot_id"], "rows": 3},
+        )
+        catalog = load_catalog(
+            "local",
+            type="sql",
+            uri=f"sqlite:///{output / 'catalog.sqlite3'}",
+            warehouse=(output / "warehouse").as_uri(),
+        )
+        table = catalog.load_table("research.races")
+        self.write([{**self.rows[0], "race_id": "new-race"}])
+        table.append(read_snapshot(self.csv)[0])
+        latest = table.metadata_location
+        catalog.close()
+        old = report["iceberg_snapshot_id"]
+        for name, options, expected in (
+            ("pinned.duckdb", f", snapshot_from_id={old}", {"iceberg_snapshot_id": old, "rows": 3}),
+            ("timestamp.duckdb", ", snapshot_from_timestamp=TIMESTAMP '2026-01-01'", ValueError),
+        ):
+            with duckdb.connect(str(self.root / name)) as db:
+                db.execute("LOAD iceberg")
+                db.execute(f"CREATE VIEW races AS SELECT * FROM iceberg_scan({literal(latest)}{options})")
+            if expected is ValueError:
+                with self.assertRaises(ValueError):
+                    measure_lakehouse_view(self.root / name)
+            else:
+                self.assertEqual(measure_lakehouse_view(self.root / name), expected)
+
+    def test_duckdb_loader_keeps_a_valid_round_behind_an_impossible_one(self):
+        import duckdb
+        from datetime import date
+        from evaluate_and_train import SwimRecord, deduplicate_best_of_meet, load_swims_from_duckdb
+
+        db_path = self.root / "rounds.duckdb"
+        rounds = [
+            # An impossible 10.00 100-yard freestyle final next to a valid 58.32 prelim.
+            ("src", "prelim", "s1", "m1", date(2026, 1, 5), "SCY", 100, "freestyle", "women", 5832, 15.0, "R"),
+            ("src", "final", "s1", "m1", date(2026, 1, 5), "SCY", 100, "freestyle", "women", 1000, 15.0, "R"),
+        ]
+        with duckdb.connect(str(db_path)) as db:
+            db.execute(
+                "CREATE TABLE races (source VARCHAR, race_id VARCHAR, swimmer_id VARCHAR, meet_id VARCHAR, "
+                "race_date DATE, course VARCHAR, distance INTEGER, stroke VARCHAR, category VARCHAR, "
+                "time_cs INTEGER, age_years DOUBLE, region VARCHAR)"
+            )
+            db.executemany("INSERT INTO races VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", rounds)
+        from_duckdb, _ = deduplicate_best_of_meet(load_swims_from_duckdb(db_path))
+        from_csv, _ = deduplicate_best_of_meet(SwimRecord(*row) for row in rounds)
+        self.assertEqual([r.race_id for r in from_duckdb], ["prelim"])
+        self.assertEqual([r.race_id for r in from_duckdb], [r.race_id for r in from_csv])
 
     def test_later_catalog_commit_does_not_change_pinned_research_snapshot(self):
         import duckdb

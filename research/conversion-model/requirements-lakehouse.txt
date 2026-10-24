@@ -1,4 +1,5 @@
 # Optional local experiment; not an app/runtime dependency.
 duckdb==1.5.6
+numpy==2.5.3
 pyarrow==26.0.0
 pyiceberg[sql-sqlite]==0.12.0
