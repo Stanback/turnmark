@@ -1070,3 +1070,81 @@ test("benchmark swim selection leads the unified benchmark selector and marks on
   await expect(estimate).not.toHaveAttribute("aria-describedby");
   await expect(estimate).toContainText("1:06.72");
 });
+
+test("method spectrum keeps close method labels apart and inside the card", async ({
+  page,
+}, testInfo) => {
+  if (testInfo.project.name === "mobile")
+    await page.setViewportSize({ width: 390, height: 844 });
+  // NCAA and Equivalence land about 12s apart while Colorado is two minutes
+  // slower, so the two faster labels would collide at their pin positions.
+  await page.goto("./#t=17%3A36.20&s=FR&d=1500&c=SCY&g=women&h=0");
+  await page.getByTestId("result-SCM").click();
+  await page.locator(".result-method summary").click();
+  const methods = page.getByRole("region", { name: "Compare methods in SCM" });
+  const spectrum = methods.locator(".method-spectrum");
+  await expect(spectrum).toBeVisible();
+  const pins = spectrum.locator(".spectrum-pin");
+  await expect(pins).toHaveCount(3);
+  for (const text of ["17:33.04", "17:45.52", "19:32.38"])
+    await expect(spectrum).toContainText(text);
+
+  for (const scheme of ["light", "dark"] as const) {
+    await page.emulateMedia({ colorScheme: scheme });
+    const card = (await spectrum.boundingBox())!;
+    const labels = await spectrum
+      .locator(".pin-name, .pin-time")
+      .evaluateAll((nodes) =>
+        nodes.map((node) => {
+          const r = node.getBoundingClientRect();
+          return {
+            text: node.textContent ?? "",
+            left: r.left,
+            right: r.right,
+            top: r.top,
+            bottom: r.bottom,
+          };
+        }),
+      );
+    expect(labels).toHaveLength(6);
+    for (const label of labels) {
+      expect(label.left, label.text).toBeGreaterThanOrEqual(card.x);
+      expect(label.right, label.text).toBeLessThanOrEqual(card.x + card.width);
+      expect(label.top, label.text).toBeGreaterThanOrEqual(card.y);
+      expect(label.bottom, label.text).toBeLessThanOrEqual(
+        card.y + card.height,
+      );
+    }
+    for (const [i, a] of labels.entries())
+      for (const b of labels.slice(i + 1))
+        expect(
+          a.right <= b.left ||
+            b.right <= a.left ||
+            a.bottom <= b.top ||
+            b.bottom <= a.top,
+          `${a.text} overlaps ${b.text}`,
+        ).toBe(true);
+
+    // Dots stay at their true relative positions on the time axis.
+    const dots = await pins.evaluateAll((nodes) =>
+      nodes.map((node) => {
+        const r = node.querySelector(".pin-dot")!.getBoundingClientRect();
+        return {
+          time: node.querySelector(".pin-time")!.textContent!,
+          x: r.left + r.width / 2,
+        };
+      }),
+    );
+    const at = (time: string) => dots.find((dot) => dot.time === time)!.x;
+    const ncaa = at("17:33.04");
+    const equivalence = at("17:45.52");
+    const colorado = at("19:32.38");
+    expect(ncaa).toBeLessThan(equivalence);
+    expect(equivalence).toBeLessThan(colorado);
+    // 12.48s of a 119.34s spread: the gap is about a tenth of the span.
+    expect((equivalence - ncaa) / (colorado - ncaa)).toBeCloseTo(
+      12.48 / 119.34,
+      2,
+    );
+  }
+});

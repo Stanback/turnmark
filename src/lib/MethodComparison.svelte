@@ -157,6 +157,62 @@
     };
   });
 
+  // Pins sit at their true positions; labels are laid out separately so close
+  // methods never print over each other. Each label centres on its pin when it
+  // fits, stays inside the track, and drops to the first lower row (with a
+  // leader tick back to its pin) where it touches no other label. Among those
+  // rows it prefers one where no leader runs through a label.
+  let trackWidth = $state(0);
+  let labelWidths = $state<number[]>([]);
+  let labelHeights = $state<number[]>([]);
+  const rowPitch = $derived(
+    labelHeights.some(Boolean) ? Math.max(...labelHeights) + 4 : null,
+  );
+  const labelPlaces = $derived.by(() => {
+    const nodes = spectrum?.nodes ?? [];
+    const places = nodes.map(() => ({ shift: null as number | null, row: 0 }));
+    if (!trackWidth || nodes.some((_, i) => !labelWidths[i])) return places;
+    const gap = 8;
+    type Box = { left: number; right: number; row: number; x: number };
+    const placed: Box[] = [];
+    const overlaps = (a: Box, b: Box) =>
+      a.row === b.row && a.left < b.right + gap && b.left < a.right + gap;
+    // A leader runs from the rail down through every row above its label.
+    const crosses = (leader: Box, label: Box) =>
+      label.row < leader.row &&
+      leader.x > label.left - gap &&
+      leader.x < label.right + gap;
+    const order = nodes
+      .map((_, i) => i)
+      .sort((a, b) => nodes[a].pct - nodes[b].pct);
+    for (const i of order) {
+      const width = labelWidths[i];
+      const x = (nodes[i].pct / 100) * trackWidth;
+      const left = Math.max(0, Math.min(x - width / 2, trackWidth - width));
+      // Row placed.length is always empty, so a free row always exists.
+      const candidates = Array.from(
+        { length: placed.length + 1 },
+        (_, row) => ({
+          left,
+          right: left + width,
+          row,
+          x,
+        }),
+      ).filter((box) => !placed.some((other) => overlaps(box, other)));
+      const box =
+        candidates.find(
+          (box) =>
+            !placed.some((other) => crosses(box, other) || crosses(other, box)),
+        ) ?? candidates[0];
+      placed.push(box);
+      places[i] = { shift: box.left - x, row: box.row };
+    }
+    return places;
+  });
+  const labelRows = $derived(
+    Math.max(1, ...labelPlaces.map((place) => place.row + 1)),
+  );
+
   const paceExplorer = $derived.by(() => {
     if (
       chosen?.result.status !== "available" ||
@@ -312,22 +368,36 @@
         <span class="spectrum-spread">Method spread: {spectrum.spreadSeconds}s</span>
         <span>Slower ({spectrum.maxTime})</span>
       </div>
-      <div class="spectrum-track">
+      <div
+        class="spectrum-track"
+        bind:clientWidth={trackWidth}
+        style={`--label-rows: ${labelRows}${rowPitch === null ? "" : `; --pin-row: ${rowPitch}px`}`}
+      >
         <div class="spectrum-rail"></div>
-        {#each spectrum.nodes as node}
-          <button
-            type="button"
+        {#each spectrum.nodes as node, i}
+          {@const place = labelPlaces[i]}
+          <div
             class="spectrum-pin"
             class:selected={node.selected}
-            style={`left: ${node.pct.toFixed(1)}%`}
-            disabled={!onSelect}
-            onclick={() => onSelect?.(node.id)}
-            title={`${node.label}: ${node.time} (${node.deltaText})`}
+            style={`left: ${node.pct.toFixed(1)}%; --label-row: ${place.row}${place.shift === null ? "" : `; --label-shift: ${place.shift.toFixed(1)}px`}`}
           >
             <span class="pin-dot" aria-hidden="true"></span>
-            <span class="pin-name">{node.shortLabel}</span>
-            <span class="pin-time">{node.time}</span>
-          </button>
+            {#if place.row > 0}
+              <span class="pin-leader" aria-hidden="true"></span>
+            {/if}
+            <button
+              type="button"
+              class="pin-label"
+              bind:offsetWidth={labelWidths[i]}
+              bind:offsetHeight={labelHeights[i]}
+              disabled={!onSelect}
+              onclick={() => onSelect?.(node.id)}
+              title={`${node.label}: ${node.time} (${node.deltaText})`}
+            >
+              <span class="pin-name">{node.shortLabel}</span>
+              <span class="pin-time">{node.time}</span>
+            </button>
+          </div>
         {/each}
       </div>
     </div>
@@ -624,8 +694,9 @@
     font-weight: 600;
   }
   .spectrum-track {
+    --pin-row: 2.6rem;
     position: relative;
-    height: 46px;
+    height: calc(18px + var(--label-rows, 1) * var(--pin-row));
   }
   .spectrum-rail {
     position: absolute;
@@ -636,25 +707,51 @@
     border-radius: 3px;
     background: var(--tm-color-border-subtle);
   }
+  /* Zero-width anchor at the method's true position. The dot centres on it;
+     the label is shifted by the measured layout (centred before measuring). */
   .spectrum-pin {
     position: absolute;
     top: 0;
-    transform: translateX(-50%);
+    width: 0;
+  }
+  .pin-leader {
+    position: absolute;
+    top: 16px;
+    left: -0.5px;
+    width: 1px;
+    height: calc(2px + var(--label-row) * var(--pin-row));
+    background: var(--tm-color-border-control);
+  }
+  .pin-label {
+    position: absolute;
+    top: calc(18px + var(--label-row) * var(--pin-row));
+    left: 0;
+    z-index: 1;
+    transform: translateX(var(--label-shift, -50%));
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 2px;
     padding: 0 4px;
     border: 0;
-    background: transparent;
+    border-radius: var(--tm-radius-control);
+    /* Opaque so a leader that must pass a label runs behind its text. */
+    background: var(--tm-color-surface);
     color: var(--tm-color-text-muted);
     font: inherit;
     cursor: pointer;
   }
-  .spectrum-pin:disabled {
+  .pin-label:disabled {
     cursor: default;
   }
+  .pin-label:focus-visible {
+    outline: 2px solid var(--tm-color-accent);
+    outline-offset: 2px;
+  }
   .pin-dot {
+    position: absolute;
+    top: 3px;
+    left: -6px;
     width: 12px;
     height: 12px;
     border-radius: 50%;
