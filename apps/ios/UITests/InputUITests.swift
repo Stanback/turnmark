@@ -27,7 +27,7 @@ final class InputUITests: TurnmarkUITestCase {
         let ncaa = app.staticTexts["altitudeResult-ncaa-altitude-2026-27-d1"]
         reach(ncaa, in: app); XCTAssertEqual(ncaa.label, "−0.10s → 58.22")
         capture(app, "Native altitude policies")
-        app.buttons["Done"].firstMatch.tap()
+        tapSheetBar(app.buttons["Done"].firstMatch, in: app)
         reach(app.buttons["openBenchmarks"], in: app); app.buttons["openBenchmarks"].tap()
         XCTAssertEqual(app.staticTexts["benchmarkOriginalTime"].label, "58.32")
         app.buttons["benchmarkBasis"].tap(); app.buttons["Converted estimate · LCM"].tap()

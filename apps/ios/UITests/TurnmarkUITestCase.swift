@@ -208,13 +208,20 @@ class TurnmarkUITestCase: XCTestCase {
         item.tap()
     }
 
-    /// Taps the standards sheet's Done button. Some devices (iPhone Duo) hide a sheet's navigation
-    /// bar while its form is scrolled down, so scroll back toward the top until Done is available.
+    /// Taps a button in a sheet's navigation bar (Done, Save). Some devices (iPhone Duo) hide a
+    /// sheet's navigation bar while its content is scrolled down, so drag the content back toward
+    /// the top until the button is available. Each drag starts mid-sheet and stops as soon as the
+    /// button appears, so it scrolls content rather than dismissing the sheet.
+    @MainActor func tapSheetBar(_ button: XCUIElement, in app: XCUIApplication) {
+        let origin = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.4))
+        for _ in 0..<8 where !(button.exists && button.isHittable) {
+            origin.press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.75)))
+        }
+        button.tap()
+    }
+
     @MainActor func closeBenchmarks(in app: XCUIApplication) {
-        let done = app.buttons["closeBenchmarks"]
-        let form = app.collectionViews["benchmarkForm"]
-        for _ in 0..<8 where !(done.exists && done.isHittable) && form.exists { form.swipeDown() }
-        done.tap()
+        tapSheetBar(app.buttons["closeBenchmarks"], in: app)
     }
 
     @MainActor func capture(_ app: XCUIApplication, _ name: String) {
