@@ -394,7 +394,7 @@
                 : ""}
               {#if item.id === "turnmark-empirical-2026"}
                 · equivalent time
-              {:else if item.id === "colorado-teamunify-2026"}
+              {:else if item.id === "colorado-teamunify-2026" && val.offsetSeconds}
                 · fixed turn offset
               {:else}
                 · flat multiplier
