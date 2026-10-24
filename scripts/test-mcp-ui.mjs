@@ -54,7 +54,7 @@ if (mode === "HTTP") {
     }),
   );
 }
-const uri = "ui://turnmark/conversion/0.3.0-r8.html";
+const uri = "ui://turnmark/conversion/0.3.0-r9.html";
 const card = (await client.readResource({ uri })).contents[0].text;
 const host = await build({
   absWorkingDir: process.cwd(),
@@ -139,6 +139,13 @@ try {
     .textContent();
   assert.match(equivalence, /Turnmark Equivalence/);
   assert.match(equivalence, /1:07.26/);
+  assert.match(equivalence, /equivalent time/);
+  assert.match(
+    await frame
+      .locator('[data-method="colorado-teamunify-2026"]')
+      .textContent(),
+    /\+ 1\.60s · fixed turn offset/,
+  );
   assert.match(
     await frame.locator("#result").textContent(),
     /Estimates the equivalent time/,

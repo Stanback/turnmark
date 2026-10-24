@@ -43,6 +43,13 @@ export interface ConversionValue {
   /** Add after multiplication, before final truncation. Omitted when zero; Turnmark Equivalence never sets it. */
   offsetSeconds?: number;
   kind: "swum" | "published" | "derived";
+  /**
+   * How the engine computed `time`: `none` (same course), `multiplier`
+   * (× factor), `multiplier-offset` (× factor + offsetSeconds) or `equivalent`
+   * (Turnmark Equivalence's mapping). Describe the arithmetic from this field
+   * rather than from the method.
+   */
+  formula: "none" | "multiplier" | "multiplier-offset" | "equivalent";
   event: SwimEvent;
   altitude?: { value: AltitudeValue; provenance: Provenance };
   /**

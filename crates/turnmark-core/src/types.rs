@@ -114,6 +114,21 @@ pub enum ConversionKind {
     Published,
     Derived,
 }
+/// How the engine computed the time, so clients describe the arithmetic instead of inferring it
+/// from the method.
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+#[cfg_attr(feature = "native", derive(uniffi::Enum))]
+pub enum ConversionFormula {
+    /// Same course: the entered time, unchanged.
+    None,
+    /// Time × `factor`.
+    Multiplier,
+    /// Time × `factor` + `offset_seconds`.
+    MultiplierOffset,
+    /// The equivalence model's mapping; `factor` is the ratio for this entered time.
+    Equivalent,
+}
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 #[cfg_attr(feature = "native", derive(uniffi::Enum))]
@@ -168,6 +183,7 @@ record!(ConversionValue {
     #[serde(default, skip_serializing_if = "is_zero")]
     offset_seconds: f64,
     kind: ConversionKind,
+    formula: ConversionFormula,
     event: SwimEvent,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     altitude: Option<AltitudeCalculation>,

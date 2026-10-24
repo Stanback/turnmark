@@ -1071,6 +1071,32 @@ test("benchmark swim selection leads the unified benchmark selector and marks on
   await expect(estimate).toContainText("1:06.72");
 });
 
+test("Colorado's formula names a turn offset only when it adds one", async ({
+  page,
+}) => {
+  const colorado = async (to: string) => {
+    await page.getByTestId(`result-${to}`).click();
+    // A hash change keeps the page, so the details may already be open.
+    const details = page.locator(".result-method");
+    if (!(await details.evaluate((el) => (el as HTMLDetailsElement).open)))
+      await details.locator("summary").click();
+    return page
+      .getByRole("region", { name: `Compare methods in ${to}` })
+      .locator('[data-method="colorado-teamunify-2026"] .method-formula');
+  };
+  // Distance freestyle multiplies only: ×1.11 for yards to short-course meters.
+  await page.goto("./#t=17%3A36.20&s=FR&d=1500&c=SCY&g=women&h=0");
+  const mile = await colorado("SCM");
+  await expect(mile).toContainText("1.11000");
+  await expect(mile).toContainText("flat multiplier");
+  await expect(mile).not.toContainText("turn offset");
+  // The 100 free adds a fixed per-50 offset to long course.
+  await page.goto("./#t=58.32&s=FR&d=100&c=SCY&g=women&h=0");
+  const sprint = await colorado("LCM");
+  await expect(sprint).toContainText("+ 1.60s");
+  await expect(sprint).toContainText("fixed turn offset");
+});
+
 test("method spectrum keeps close method labels apart and inside the card", async ({
   page,
 }, testInfo) => {

@@ -317,8 +317,14 @@ pub(crate) fn convert_seconds_with_method(
         return Err(invalid("swim.time", ValidationReason::InvalidTime));
     }
     let mut empirical_caveat = None;
-    let (seconds, factor, offset_seconds, kind) = if event.course == to {
-        (seconds, 1.0, 0.0, ConversionKind::Swum)
+    let (seconds, factor, offset_seconds, kind, formula) = if event.course == to {
+        (
+            seconds,
+            1.0,
+            0.0,
+            ConversionKind::Swum,
+            ConversionFormula::None,
+        )
     } else if method == ConversionMethod::Colorado {
         let Some((factor, offset)) = colorado_formula(&event, distance, to) else {
             return Err(unavailable(CoverageReason::FactorNotPublished, provenance));
@@ -327,7 +333,12 @@ pub(crate) fn convert_seconds_with_method(
         if !converted.is_finite() || converted <= 0.0 {
             return Err(invalid("swim.time", ValidationReason::UnsafeResult));
         }
-        (converted, factor, offset, ConversionKind::Derived)
+        let formula = if offset == 0.0 {
+            ConversionFormula::Multiplier
+        } else {
+            ConversionFormula::MultiplierOffset
+        };
+        (converted, factor, offset, ConversionKind::Derived, formula)
     } else if method == ConversionMethod::Empirical {
         let Some(equivalent) = empirical_equivalent(&event, distance, to, table, seconds) else {
             return Err(unavailable(CoverageReason::FactorNotPublished, provenance));
@@ -345,6 +356,7 @@ pub(crate) fn convert_seconds_with_method(
             equivalent / seconds,
             0.0,
             ConversionKind::Derived,
+            ConversionFormula::Equivalent,
         )
     } else {
         let source = factor(&event, distance, table);
@@ -362,6 +374,7 @@ pub(crate) fn convert_seconds_with_method(
             } else {
                 ConversionKind::Derived
             },
+            ConversionFormula::Multiplier,
         )
     };
     Ok((
@@ -371,6 +384,7 @@ pub(crate) fn convert_seconds_with_method(
             hundredths: (seconds * 100.0).round() as u64,
             factor,
             offset_seconds,
+            formula,
             altitude: None,
             caveat: if method == ConversionMethod::Colorado
                 && event.stroke == Stroke::Freestyle

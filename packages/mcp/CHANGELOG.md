@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Method rows name the arithmetic the engine reports (`formula`): flat multiplier,
+  fixed turn offset or equivalent time. UI resource revision is `0.3.0-r9.html`.
+
 - Close methods on the card's method spectrum no longer print their labels over
   each other: a label that would collide drops to a lower row with a leader tick
   back to its dot, using the same layout as the web app. UI resource revision is

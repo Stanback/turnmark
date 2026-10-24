@@ -6,6 +6,9 @@
   and direction-specific formulas. Omitted methods retain NCAA results.
 - Conversion results expose optional `offsetSeconds`; native bindings expose
   `convertSwimWithMethod` and a typed method enum.
+- Conversion results report `formula` (`none`, `multiplier`, `multiplier-offset`
+  or `equivalent`), so clients describe the arithmetic from the engine instead of
+  inferring it from the method.
 
 - `assessSwimBenchmark` / `engine.benchmark` compare an original swim against
   youth or USMS targets, returning met states, the achieved level, next target

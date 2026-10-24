@@ -161,7 +161,7 @@ function mcpLiveVerifier({ staleLists = 0, wrongPreview = false } = {}) {
     "console",
     `return (async () => {${script}})()`,
   );
-  const uri = "ui://turnmark/conversion/0.3.0-r8.html";
+  const uri = "ui://turnmark/conversion/0.3.0-r9.html";
   const names = [
     "adjust_altitude",
     "assess_swim_benchmark",
@@ -188,7 +188,7 @@ function mcpLiveVerifier({ staleLists = 0, wrongPreview = false } = {}) {
           inputSchema: { properties: { preview: { type: "object" } } },
           _meta: {
             ui: {
-              resourceUri: lists <= staleLists ? uri.replace("r8", "r7") : uri,
+              resourceUri: lists <= staleLists ? uri.replace("r9", "r8") : uri,
             },
           },
         })),

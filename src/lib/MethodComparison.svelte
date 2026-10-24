@@ -1,6 +1,7 @@
 <script lang="ts">
   import {
     caveatText,
+    formulaText,
     ncaaMethodExplanation,
     empiricalMethodExplanation,
     empiricalCalculationNote,
@@ -392,12 +393,8 @@
               × {val.factor.toFixed(5)}{val.offsetSeconds
                 ? ` ${val.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(val.offsetSeconds).toFixed(2)}s`
                 : ""}
-              {#if item.id === "turnmark-empirical-2026"}
-                · equivalent time
-              {:else if item.id === "colorado-teamunify-2026"}
-                · fixed turn offset
-              {:else}
-                · flat multiplier
+              {#if formulaText(val.formula)}
+                · {formulaText(val.formula)}
               {/if}
             </span>
           {/if}
