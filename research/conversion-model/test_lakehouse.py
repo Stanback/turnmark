@@ -7,9 +7,19 @@ import sqlite3
 import tempfile
 import unittest
 from contextlib import closing
+from datetime import date
 from pathlib import Path
 
-from lakehouse import REQUIRED, OPTIONAL_CONTEXT, build, literal, probe, read_snapshot
+from lakehouse import (
+    HOT_COLUMNS,
+    OPTIONAL_CONTEXT,
+    REQUIRED,
+    build,
+    literal,
+    probe,
+    read_snapshot,
+    rebuild_hot,
+)
 
 
 @unittest.skipUnless(
@@ -205,9 +215,33 @@ class LakehouseTests(unittest.TestCase):
         output = self.root / "snapshot"
         build(self.csv, self.manifest, output)
         with closing(sqlite3.connect(output / "hot.sqlite3")) as db, db:
-            db.execute("UPDATE races SET time_cs = time_cs + 1")
+            db.execute("UPDATE race_rows SET time_cs = time_cs + 1")
         with self.assertRaisesRegex(ValueError, "projection differs"):
             probe(output)
+
+    def test_rebuild_hot_restores_the_projection_from_the_pinned_snapshot(self):
+        output = self.root / "snapshot"
+        report = build(self.csv, self.manifest, output)
+        with closing(sqlite3.connect(output / "hot.sqlite3")) as db, db:
+            db.execute("UPDATE race_rows SET time_cs = time_cs + 1")
+        rebuilt = rebuild_hot(output)
+        self.assertEqual(rebuilt["iceberg_snapshot_id"], report["iceberg_snapshot_id"])
+        self.assertEqual(
+            rebuilt["hot_sqlite_bytes"], (output / "hot.sqlite3").stat().st_size
+        )
+        self.assertTrue(probe(output)["history_matches_iceberg"])
+        # The compatibility view returns exactly the snapshot's rows and values.
+        columns = ", ".join(HOT_COLUMNS)
+        with closing(sqlite3.connect(output / "hot.sqlite3")) as db:
+            hot = sorted(db.execute(f"SELECT {columns} FROM races").fetchall())
+        expected = sorted(
+            tuple(
+                value.isoformat() if isinstance(value, date) else value
+                for value in row.values()
+            )
+            for row in read_snapshot(self.csv)[0].select(HOT_COLUMNS).to_pylist()
+        )
+        self.assertEqual(hot, expected)
 
     def test_validation_rejects_conflicts_nonfinite_age_and_seed_records(self):
         for replacement in (

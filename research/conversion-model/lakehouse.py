@@ -1,5 +1,7 @@
 """Local Iceberg/Parquet query experiment, with a rebuildable SQLite hot projection.
 
+`rebuild-hot` replaces the SQLite projection from the committed Iceberg snapshot.
+
 No network ingestion, cloud credentials, uploads or model training. Outputs contain
 private race-level data: keep them under ignored target/ or outside the repository.
 """
@@ -46,16 +48,44 @@ HOT_COLUMNS = (
     "time_cs",
 )
 OPTIONAL_CONTEXT = ("region", "meet_class", "round", "archive_id", "date_precision")
+# Repeated keys live once in small dimension tables; each race row and its two
+# indexes carry only integers. A 64-character hashed ID repeated in the table and
+# in every index made the earlier layout about 813 bytes a race. Uniqueness of
+# (source, race_id) is enforced by read_snapshot, so no index stores race_id.
 HOT_SCHEMA = """
-CREATE TABLE races (
-    source TEXT NOT NULL, race_id TEXT NOT NULL, swimmer_id TEXT NOT NULL,
-    meet_id TEXT NOT NULL, race_date TEXT NOT NULL, course TEXT NOT NULL,
-    distance INTEGER NOT NULL, stroke TEXT NOT NULL, category TEXT NOT NULL,
-    time_cs INTEGER NOT NULL, PRIMARY KEY (source, race_id)
+CREATE TABLE swimmers (
+    id INTEGER PRIMARY KEY, source TEXT NOT NULL, swimmer_id TEXT NOT NULL,
+    UNIQUE (source, swimmer_id)
 );
-CREATE INDEX athlete_history ON races(source, swimmer_id, race_date DESC, race_id);
-CREATE INDEX meet_results ON races(source, meet_id, course, distance, stroke, time_cs);
+CREATE TABLE meets (
+    id INTEGER PRIMARY KEY, source TEXT NOT NULL, meet_id TEXT NOT NULL,
+    UNIQUE (source, meet_id)
+);
+CREATE TABLE events (
+    id INTEGER PRIMARY KEY, course TEXT NOT NULL, distance INTEGER NOT NULL,
+    stroke TEXT NOT NULL, category TEXT NOT NULL,
+    UNIQUE (course, distance, stroke, category)
+);
+CREATE TABLE race_rows (
+    id INTEGER PRIMARY KEY, swimmer INTEGER NOT NULL REFERENCES swimmers,
+    race_day INTEGER NOT NULL, meet INTEGER NOT NULL REFERENCES meets,
+    event INTEGER NOT NULL REFERENCES events, time_cs INTEGER NOT NULL,
+    race_id TEXT NOT NULL
+);
+CREATE INDEX athlete_history ON race_rows(swimmer, race_day DESC);
+CREATE INDEX meet_results ON race_rows(meet, event, time_cs);
+CREATE VIEW races AS
+SELECT s.source, r.race_id, s.swimmer_id, m.meet_id,
+       date(r.race_day * 86400, 'unixepoch') AS race_date,
+       e.course, e.distance, e.stroke, e.category, r.time_cs
+FROM race_rows r
+JOIN swimmers s ON s.id = r.swimmer
+JOIN meets m ON m.id = r.meet
+JOIN events e ON e.id = r.event;
 """
+HISTORY_SQL = """SELECT r.race_id, r.time_cs FROM race_rows r
+JOIN swimmers s ON s.id = r.swimmer WHERE s.source = ? AND s.swimmer_id = ?
+ORDER BY r.race_day DESC, r.id LIMIT 50"""
 
 
 def literal(value: str) -> str:
@@ -168,21 +198,66 @@ def read_snapshot(path: Path, max_rows: int = 1_000_000):
 
 def create_hot(table, path: Path):
     """Use ordinary SQLite SQL supported by D1; never claim this benchmarks D1."""
+    epoch = date(1970, 1, 1)
+    keys = {"swimmers": {}, "meets": {}, "events": {}}
+
+    def key(kind, value):
+        return keys[kind].setdefault(value, len(keys[kind]) + 1)
+
+    rows = [
+        (
+            key("swimmers", (row["source"], row["swimmer_id"])),
+            (row["race_date"] - epoch).days,
+            key("meets", (row["source"], row["meet_id"])),
+            key(
+                "events",
+                (row["course"], row["distance"], row["stroke"], row["category"]),
+            ),
+            row["time_cs"],
+            row["race_id"],
+        )
+        for row in table.select(HOT_COLUMNS).to_pylist()
+    ]
+    # Insert each swimmer's races together in (date, race_id) order, so row IDs
+    # break same-day ties the way race IDs do and a history read stays local.
+    rows.sort(key=lambda row: (row[0], row[1], row[5]))
     with closing(sqlite3.connect(path)) as db, db:
         db.executescript(HOT_SCHEMA)
+        for kind, width in (("swimmers", 2), ("meets", 2), ("events", 4)):
+            db.executemany(
+                f"INSERT INTO {kind} VALUES (?{', ?' * width})",
+                ((ident, *value) for value, ident in keys[kind].items()),
+            )
         db.executemany(
-            f"INSERT INTO races VALUES ({','.join('?' for _ in HOT_COLUMNS)})",
-            (
-                tuple(
-                    row[column].isoformat()
-                    if isinstance(row[column], date)
-                    else row[column]
-                    for column in HOT_COLUMNS
-                )
-                for row in table.to_pylist()
-            ),
+            "INSERT INTO race_rows (swimmer, race_day, meet, event, time_cs, race_id)"
+            " VALUES (?, ?, ?, ?, ?, ?)",
+            rows,
         )
         db.execute("ANALYZE")
+    with closing(sqlite3.connect(path)) as db:
+        db.execute("VACUUM")
+
+
+def rebuild_hot(output: Path):
+    """Replace the hot projection from the committed Iceberg snapshot it mirrors."""
+    import duckdb
+
+    snapshot_path = output / "snapshot.json"
+    snapshot = json.loads(snapshot_path.read_text())
+    with duckdb.connect(str(output / "queries.duckdb"), read_only=True) as db:
+        db.execute("LOAD iceberg")
+        table = db.sql(f"SELECT {', '.join(HOT_COLUMNS)} FROM races").to_arrow_table()
+    if table.num_rows != snapshot["rows"]:
+        raise ValueError("Iceberg snapshot row count differs from snapshot.json")
+    staged = output / "hot.sqlite3.new"
+    staged.unlink(missing_ok=True)
+    create_hot(table, staged)
+    staged.replace(output / "hot.sqlite3")
+    snapshot["hot_sqlite_bytes"] = (output / "hot.sqlite3").stat().st_size
+    staged_report = output / "snapshot.json.new"
+    staged_report.write_text(json.dumps(snapshot, indent=2) + "\n")
+    staged_report.replace(snapshot_path)
+    return snapshot
 
 
 def build(csv_path: Path, manifest_path: Path, output: Path, max_rows=1_000_000):
@@ -313,8 +388,7 @@ def probe(output: Path):
             "SELECT source, swimmer_id FROM races ORDER BY source, swimmer_id LIMIT 1"
         ).fetchone()
         with closing(sqlite3.connect(output / "hot.sqlite3")) as hot:
-            query = """SELECT race_id, time_cs FROM races WHERE source=? AND swimmer_id=?
-                       ORDER BY race_date DESC, race_id LIMIT 50"""
+            query = HISTORY_SQL
             history, hot_first = timed(lambda: hot.execute(query, first).fetchall())
             warm = [
                 timed(lambda: hot.execute(query, first).fetchall())[1] for _ in range(5)
@@ -380,6 +454,8 @@ def main():
     create.add_argument("--max-rows", type=int, default=1_000_000)
     check = commands.add_parser("probe")
     check.add_argument("output", type=Path)
+    rebuild = commands.add_parser("rebuild-hot")
+    rebuild.add_argument("output", type=Path)
     args = parser.parse_args()
     if args.command == "build":
         report = build(args.csv, args.manifest, args.output, args.max_rows)
@@ -397,6 +473,9 @@ def main():
                 }
             )
         )
+    elif args.command == "rebuild-hot":
+        report = rebuild_hot(args.output)
+        print(json.dumps({key: report[key] for key in ("rows", "hot_sqlite_bytes")}))
     else:
         print(json.dumps(probe(args.output), indent=2))
 
