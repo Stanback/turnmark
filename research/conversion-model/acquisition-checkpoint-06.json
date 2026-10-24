@@ -235,12 +235,12 @@
   "lakehouse_storage": {
     "checkpoint_dir": "target/lakehouse-national-17",
     "iceberg_snapshot_id": 4441271835344284414,
-    "hot_sqlite_bytes": 6915502080,
+    "hot_sqlite_bytes": 1101565952,
     "parquet_bytes": 366796050,
-    "point_lookup_first_ms": 0.168,
-    "point_lookup_repeat_median_ms": 0.012,
-    "duckdb_scan_first_ms": 3.59,
-    "duckdb_scan_repeat_median_ms": 2.12
+    "point_lookup_first_ms": 0.311,
+    "point_lookup_repeat_median_ms": 0.02,
+    "duckdb_scan_first_ms": 3.577,
+    "duckdb_scan_repeat_median_ms": 2.803
   },
   "meet_venue_resolution": {
     "total_unique_meets_parsed": 6059,

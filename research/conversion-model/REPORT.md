@@ -712,16 +712,16 @@ The join picks a likely facility in a postal code or city. It does not verify a 
 
 ## Appendix C. Local Lakehouse
 
-[`lakehouse.py`](./lakehouse.py) materializes a dual-store local lakehouse from the canonical ingest store: an indexed SQLite store (composite B-tree on `athlete_history(source, swimmer_id, race_date, meet_id, race_id)`) for point lookups by swimmer and date, and an Iceberg table of Zstandard Parquet files, identity-partitioned by year and course, for the longitudinal self-joins; DuckDB reads it through the committed Iceberg metadata rather than a file glob. The design and its hosted counterparts are in [`MEET_LAKEHOUSE_EXPERIMENT.md`](../../docs/MEET_LAKEHOUSE_EXPERIMENT.md); serving costs are in [`LAKEHOUSE_COST_MODEL.md`](../../docs/LAKEHOUSE_COST_MODEL.md). Measured for this checkpoint (acquisition receipt `lakehouse_storage`):
+[`lakehouse.py`](./lakehouse.py) materializes a dual-store local lakehouse from the canonical ingest store: an indexed SQLite store for point lookups by swimmer and date and by meet and event (swimmer, meet and event keys are stored once in dimension tables; the race table's `athlete_history(swimmer, race_day)` and `meet_results(meet, event, time_cs)` indexes hold only integers, and `lakehouse.py rebuild-hot` replaces the store from the committed snapshot), and an Iceberg table of Zstandard Parquet files, identity-partitioned by year and course, for the longitudinal self-joins; DuckDB reads it through the committed Iceberg metadata rather than a file glob. The design and its hosted counterparts are in [`MEET_LAKEHOUSE_EXPERIMENT.md`](../../docs/MEET_LAKEHOUSE_EXPERIMENT.md); serving costs are in [`LAKEHOUSE_COST_MODEL.md`](../../docs/LAKEHOUSE_COST_MODEL.md). Measured for this checkpoint (acquisition receipt `lakehouse_storage`):
 
 <!-- receipt:lakehouse -->
 | Lakehouse (`target/lakehouse-national-17`) | Measured |
 | :--- | ---: |
 | Iceberg snapshot | `4441271835344284414` |
-| Hot SQLite store | 6,915.5 MB (812.9 bytes/row) |
+| Hot SQLite store | 1,101.6 MB (129.5 bytes/row) |
 | Parquet warehouse | 366.8 MB (43.1 bytes/row) |
-| Point lookup by swimmer, first / repeat median | 0.168 ms / 0.012 ms |
-| Filtered DuckDB aggregate, first / repeat median | 3.59 ms / 2.12 ms |
+| Point lookup by swimmer, first / repeat median | 0.311 ms / 0.020 ms |
+| Filtered DuckDB aggregate, first / repeat median | 3.58 ms / 2.80 ms |
 <!-- /receipt:lakehouse -->
 
 The evaluator measures the scanned Iceberg snapshot itself (honoring `snapshot_from_id`) and refuses to run if it disagrees with `snapshot.json` or a referenced file is missing. `lakehouse.py probe` checks that both stores hold the same rows with no duplicates and return one swimmer's latest 50 rows identically; its output is not part of a receipt.

@@ -69,7 +69,10 @@ writes an Iceberg table partitioned by year/course. It creates:
 - A DuckDB database with an `races` view reading the exact committed Iceberg
   metadata, plus a `parquet_snapshot` reference view of that snapshot's active
   files. Full multiset equality verifies the two reads.
-- A separate SQLite hot projection with source-scoped athlete and meet indexes.
+- A separate SQLite hot projection. Swimmer, meet and event keys are stored once
+  in dimension tables, and the race table's athlete-history and meet-results
+  indexes hold only integers. `lakehouse.py rebuild-hot` replaces it from the
+  committed snapshot.
 - A private snapshot manifest with source hash, versions and snapshot ID, written
   last. An incomplete build has no published manifest. Existing outputs are
   never overwritten.
@@ -94,6 +97,13 @@ A second checkpoint of 106,053 races occupied 5,025,874 bytes in Parquet and
 81,518,592 bytes in the same SQLite projection. It yielded 614 matched pairs
 under the pilot's 30-day policy, with 57 independent test swimmers. This improves
 the pilot's coverage but still does not justify a general predictive claim.
+
+On the national checkpoint (8,506,767 races), the straightforward layout used in
+those pilots took 6,915,502,080 bytes, about 813 bytes/race, because every
+64-character key was repeated in the table and in each index. The current layout
+takes 1,101,565,952 bytes, about 129 bytes/race; the remaining bulk is the race
+ID stored once per row. Warm single-swimmer history lookups stay around 0.02 ms
+locally.
 
 The indexed query and Iceberg results agree. Millisecond local timings are
 warm-cache laptop measurements, **not** D1/R2 latency, throughput or cost
@@ -129,7 +139,7 @@ matters; an inexpensive single copy is not an archival strategy by itself.
 ## D1 and sharding
 
 The [current D1 limits](https://developers.cloudflare.com/d1/platform/limits/)
-are 500 MB/database on Free and 10 GB/database on Paid. Each database processes
+are 500 MB/database on Free and 10 GB/database on Paid. The national hot projection (1.10 GB) fits one Paid database. Each database processes
 queries serially. Good indexes, short queries, bounded pagination and caching
 come before sharding. The prototype's ordinary SQLite SQL is a portability
 starting point, not proof that a D1 workload will fit its execution limits.
