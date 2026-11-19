@@ -90,6 +90,34 @@ test("conversion method is optional, persists and round-trips through comparison
   ).toBeVisible();
 });
 
+test("World Aquatics conversion persists and leaves the entered score alone", async ({
+  page,
+}) => {
+  const method = "world-aquatics-points-2026";
+  await page.goto("./#t=55.00&s=FR&d=100&c=SCM&g=men");
+  await openCalculationOptions(page);
+  await page.locator("#conversion-method").selectOption(method);
+  await expect(page.getByTestId("result-LCM")).toHaveText("56.94");
+  await expect(page.getByTestId("result-SCM")).toHaveText("55.00");
+  await expect(page.getByTestId("result-SCY")).toHaveText("—");
+  await page.locator(".result-method summary").click();
+  await expect(page.locator(`[data-method="${method}"]`)).toContainText(
+    "56.94",
+  );
+  await expect(page.locator(".result-explanation")).toContainText(
+    "World Aquatics points score",
+  );
+  await page.goto("./");
+  await page.reload();
+  await expect(page.locator("#conversion-method")).toHaveValue(method);
+  await page.goto(`./#t=55.00&s=FR&d=100&c=SCM&g=men&m=${method}`);
+  await expect(page.getByTestId("result-LCM")).toHaveText("56.94");
+  await page
+    .getByRole("combobox", { name: "Compare against", exact: true })
+    .selectOption("world-points");
+  await expect(page.getByTestId("points-score")).toContainText("541");
+});
+
 test("calculation details stay optional and keyboard accessible", async ({
   page,
 }, testInfo) => {

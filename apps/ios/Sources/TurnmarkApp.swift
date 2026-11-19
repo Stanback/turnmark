@@ -4,6 +4,8 @@ import TurnmarkCore
 
 private let coloradoDistanceCaveat = "Distance caveat: this documented Colorado rule uses a general SCM/SCY multiplier for unequal-distance freestyle events. Check the meet’s required conversion."
 private let empiricalLowEvidenceCaveat = "Limited data: few swimmers in Turnmark’s data swam this event in both of these courses at this level, so this equivalent time is less certain and leans on related events and pool geometry."
+private let worldAquaticsCourseNote = "World Aquatics points conversion covers 25 m and 50 m pools."
+private let worldAquaticsExplanation = "Estimates a 25 m or 50 m time that meets the entered swim’s World Aquatics points score. Both courses need a published base time."
 private let empiricalOutOfRangeCaveat = "Outside the model’s fitted range: this estimate extrapolates beyond the available fit."
 
 private func caveatText(_ caveat: ConversionCaveat) -> String {
@@ -36,11 +38,13 @@ struct Draft: Codable, Equatable {
     var elevation: Elevation { Elevation(value: Double(altitudeText ?? "") ?? .nan, unit: elevationUnitIndex == 1 ? .meters : .feet) }
     var altitudeOutcome: AltitudeOutcome { adjustAltitudeWithPolicy(request: AltitudeRequest(swim: swim, elevation: elevation), policy: altitudePolicy) }
     var swim: Swim { Swim(time: time, event: SwimEvent(distance: distance, stroke: strokes[strokeIndex], course: courses[courseIndex])) }
+    static let methodIDs = ["ncaa-2025-27", "colorado-teamunify-2026", "turnmark-empirical-2026", "world-aquatics-points-2026"]
     var methodID: String?
     var method: ConversionMethod {
         switch methodID {
         case "colorado-teamunify-2026": return .colorado
         case "turnmark-empirical-2026": return .empirical
+        case "world-aquatics-points-2026": return .worldAquaticsPoints
         default: return .ncaa
         }
     }
@@ -48,19 +52,19 @@ struct Draft: Codable, Equatable {
         switch method {
         case .colorado: return "Colorado Timing"
         case .empirical: return "Turnmark Equivalence"
+        case .worldAquaticsPoints: return "World Aquatics Points (FINA)"
         case .ncaa: return "NCAA"
         }
     }
     static var example: Draft { var input = Draft(); input.time = "58.32"; return input }
     var methodDifference: String? {
         var ncaa = self; ncaa.methodID = "ncaa-2025-27"
-        var other = self; other.methodID = method == .empirical ? "turnmark-empirical-2026" : "colorado-teamunify-2026"
+        var other = self; other.methodID = method == .ncaa ? "colorado-teamunify-2026" : methodID
         guard case let .available(a, _) = ncaa.outcome, case let .available(b, _) = other.outcome else { return nil }
         return String(format: "%.2fs", abs(Double(a.hundredths) - Double(b.hundredths)) / 100)
     }
     var methodSpread: String? {
-        let ids = ["ncaa-2025-27", "colorado-teamunify-2026", "turnmark-empirical-2026"]
-        let hs = ids.compactMap { id -> UInt64? in
+        let hs = Self.methodIDs.compactMap { id -> UInt64? in
             var copy = self; copy.methodID = id
             if case let .available(v, _) = copy.outcome { return v.hundredths }
             return nil
@@ -91,6 +95,7 @@ struct Draft: Codable, Equatable {
                 deltaText = String(format: " · %@%.2fs vs NCAA", d >= 0 ? "+" : "−", abs(d))
             }
         }
+        if value.formula == .pointsEquivalent { return "Points-equivalent time" + deltaText }
         return String(format: "× %.5f%@%@", value.factor, offText, deltaText)
     }
 
@@ -438,9 +443,9 @@ private struct TurnmarkView: View {
             }
             DisclosureGroup(isExpanded: $calculationOptionsExpanded) {
                 Picker("Course conversion", selection: Binding(get: { draft.methodID ?? "ncaa-2025-27" }, set: { draft.methodID = $0 })) {
-                    Text("NCAA (default)").tag("ncaa-2025-27")
-                    Text("Colorado Timing").tag("colorado-teamunify-2026")
-                    Text("Turnmark Equivalence").tag("turnmark-empirical-2026")
+                    ForEach(Draft.methodIDs, id: \.self) { id in
+                        Text(Draft(methodID: id).method == .ncaa ? "NCAA (default)" : Draft(methodID: id).methodLabel).tag(id)
+                    }
                 }.pickerStyle(.menu).accessibilityIdentifier("courseConversion")
                 Toggle("Adjust for altitude", isOn: Binding(get: { draft.altitudeText != nil }, set: { draft.altitudeText = $0 ? "0" : nil }))
                     .accessibilityIdentifier("altitudeEnabled")
@@ -545,7 +550,7 @@ struct ConversionResult: View {
                 Text(input.resultLabel(value.event)).font(.subheadline)
                     .foregroundStyle(TurnmarkResultPalette.textMuted).accessibilityIdentifier("resultContext")
                 timeLabel(value.time)
-                Text(((value.altitude?.value.adjustmentSeconds ?? 0) > 0 && value.kind == .swum ? "Sea-level estimate" : kindLabel(value.kind)) + (value.kind != .swum && input.method == .colorado ? " · Colorado Timing" : "")).font(.footnote.weight(.semibold)).foregroundStyle(TurnmarkResultPalette.textMuted)
+                Text(((value.altitude?.value.adjustmentSeconds ?? 0) > 0 && value.kind == .swum ? "Sea-level estimate" : kindLabel(value.kind)) + (value.kind != .swum && input.method != .ncaa ? " · \(input.methodLabel)" : "")).font(.footnote.weight(.semibold)).foregroundStyle(TurnmarkResultPalette.textMuted)
                 if let caveat = value.caveat { Text(caveatText(caveat)).font(.footnote).foregroundStyle(TurnmarkResultPalette.textMuted).accessibilityIdentifier(caveat == .empiricalLowEvidence ? "lowEvidenceCaveat" : caveat == .empiricalOutOfRange ? "outOfRangeCaveat" : "distanceCaveat") }
                 if value.kind != .swum {
                     Text("From \(input.time) · \(input.distance) \(input.unit) \(courseNames[input.courseIndex])")
@@ -554,9 +559,9 @@ struct ConversionResult: View {
             case .invalid:
                 Text("Check your time or elevation").font(.headline).accessibilityIdentifier("invalidTime")
                 Text("Try 58.32 or 1:02.45, up to 60 minutes.").font(.subheadline).foregroundStyle(TurnmarkResultPalette.textMuted)
-            case .unavailable:
+            case let .unavailable(reason, _):
                 Text("No published conversion").font(.headline).accessibilityIdentifier("unavailableConversion")
-                Text("Choose another event or course comparison.").font(.subheadline).foregroundStyle(TurnmarkResultPalette.textMuted)
+                Text(reason == .courseNotSupported ? worldAquaticsCourseNote : "Choose another event or course comparison.").font(.subheadline).foregroundStyle(TurnmarkResultPalette.textMuted)
             } }
             if parseTime(input: input.time) != nil {
                 Divider().overlay(TurnmarkResultPalette.borderSubtle)
@@ -638,7 +643,7 @@ struct ConversionResult: View {
         var value = input; value.targetIndex = index
         switch value.outcome {
         case let .available(result, _): return (result.time, "\(value.resultLabel(result.event)) · \((result.altitude?.value.adjustmentSeconds ?? 0) > 0 && result.kind == .swum ? "Sea-level estimate" : kindLabel(result.kind))")
-        case .unavailable: return ("Unavailable", "No published conversion")
+        case let .unavailable(reason, _): return ("Unavailable", reason == .courseNotSupported ? "25 m ↔ 50 m only" : "No published conversion")
         case .invalid: return ("—", "Check your time")
         }
     }
@@ -745,7 +750,6 @@ private struct ConversionDetails: View {
     let input: Draft
     @Environment(\.dismiss) private var dismiss
     @Environment(\.dynamicTypeSize) private var typeSize
-    private let methodIDs = ["ncaa-2025-27", "colorado-teamunify-2026", "turnmark-empirical-2026"]
 
     private var ncaaHundredths: UInt64? {
         var ncaa = input; ncaa.methodID = "ncaa-2025-27"
@@ -772,7 +776,7 @@ private struct ConversionDetails: View {
         case let .available(value, _):
             Text(value.time).font(.title3.weight(.semibold)).monospacedDigit()
                 .accessibilityIdentifier("methodResult-\(comparison.methodLabel)")
-        case .unavailable: Text("Unavailable").foregroundStyle(.secondary)
+        case let .unavailable(reason, _): Text(reason == .courseNotSupported ? "25 m ↔ 50 m only" : "Unavailable").foregroundStyle(.secondary)
         case .invalid: Text("Check your time or elevation").foregroundStyle(.secondary)
         }
     }
@@ -780,7 +784,7 @@ private struct ConversionDetails: View {
         NavigationStack {
             List {
                 Section {
-                    ForEach(methodIDs, id: \.self) { method in
+                    ForEach(Draft.methodIDs, id: \.self) { method in
                         var comparison: Draft { var copy = input; copy.methodID = method; return copy }
                         if typeSize.isAccessibilitySize {
                             VStack(alignment: .leading, spacing: 6) { methodName(comparison); methodTime(comparison) }
@@ -795,7 +799,7 @@ private struct ConversionDetails: View {
                             .accessibilityElement(children: .combine).accessibilityIdentifier("methodDifference")
                     }
                     if let spread = input.methodSpread {
-                        LabeledContent("Method spread (all 3)", value: spread)
+                        LabeledContent("Method spread", value: spread)
                             .accessibilityElement(children: .combine)
                     }
                 } header: {
@@ -822,6 +826,7 @@ private struct ConversionDetails: View {
                     detail("NCAA", "Factors vary by event and course, not age. Long-course factors use separate men’s and women’s tables; short-course meters-to-yards factors are shared. NCAA publishes metric-to-yards factors; reverse and SCM/LCM conversions are derived.")
                     detail("Colorado Timing", "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.")
                     detail("Turnmark Equivalence", "Estimates the equivalent time in the other course from 95K pairs of the same swimmer racing both courses within a month (8.51M US swims, 2010–2026), allowing for the randomness in any single swim. Converting back returns the entered time to within 0.02 s.")
+                    detail("World Aquatics Points (FINA)", worldAquaticsExplanation)
                     detail("Pool length", "Shorter pools mean more turns and push-offs. These rules do not adjust for your starts, underwater skill, technique, endurance or individual development.")
                     detail("Distance events", "500, 1000 and 1650 yards map to 400, 800 and 1500 meters.")
                 }
@@ -835,6 +840,7 @@ private struct ConversionDetails: View {
                         Text(value.time).font(.title3.weight(.semibold)).monospacedDigit()
                         Text(input.resultLabel(value.event)).font(.subheadline).foregroundStyle(.secondary)
                         if value.kind == .swum { Text((value.altitude?.value.adjustmentSeconds ?? 0) > 0 ? "Altitude is deducted first; the course is unchanged." : "The entered time is unchanged.") }
+                        else if value.formula == .pointsEquivalent { Text(worldAquaticsExplanation) }
                         else {
                             LabeledContent("Time multiplier", value: String(format: "%.5f", value.factor)).monospacedDigit()
                             if value.offsetSeconds != 0 { Text("Time offset: \(String(value.offsetSeconds)) seconds").monospacedDigit() }

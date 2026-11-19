@@ -37,7 +37,7 @@ export interface ConversionValue {
   /**
    * Multiplier applied to the entered seconds. For `turnmark-empirical-2026`
    * (Turnmark Equivalence) it is equivalent seconds / entered seconds, so it
-   * varies with the entered time.
+   * varies with the entered time. World Aquatics Points likewise reports the ratio for this input.
    */
   factor: number;
   /** Add after multiplication, before final truncation. Omitted when zero; Turnmark Equivalence never sets it. */
@@ -46,10 +46,16 @@ export interface ConversionValue {
   /**
    * How the engine computed `time`: `none` (same course), `multiplier`
    * (× factor), `multiplier-offset` (× factor + offsetSeconds) or `equivalent`
-   * (Turnmark Equivalence's mapping). Describe the arithmetic from this field
+   * (Turnmark Equivalence's mapping) or `points-equivalent` (World Aquatics score inversion).
+   * Describe the arithmetic from this field
    * rather than from the method.
    */
-  formula: "none" | "multiplier" | "multiplier-offset" | "equivalent";
+  formula:
+    | "none"
+    | "multiplier"
+    | "multiplier-offset"
+    | "equivalent"
+    | "points-equivalent";
   event: SwimEvent;
   altitude?: { value: AltitudeValue; provenance: Provenance };
   /**

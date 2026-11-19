@@ -25,14 +25,14 @@ test("widget downloads only the focused converter Wasm", async ({
   );
   expect(bodies).toHaveLength(1);
   expect(bodies[0].equals(focused)).toBe(true);
-  // The widget omits the standards payload, which the engine embeds verbatim.
+  // The focused converter needs the World Aquatics bases, while standards remain full-SDK only.
   for (const name of ["standards", "masters", "national-standards", "points"]) {
     const payload = await readFile(
       new URL(`../data/${name}.json`, import.meta.url),
     );
     expect(full.includes(payload), `${name}.json in engine.wasm`).toBe(true);
     expect(focused.includes(payload), `${name}.json in converter.wasm`).toBe(
-      false,
+      name === "points",
     );
   }
   await testInfo.attach("widget-wasm-budget.json", {
@@ -89,6 +89,16 @@ test("widget keeps NCAA default and offers Colorado offline without changing the
     .getByRole("combobox", { name: "Course conversion", exact: true })
     .selectOption("ncaa-2025-27");
   await expect(scy).toContainText("52.44");
+  await page
+    .getByRole("combobox", { name: "Course conversion", exact: true })
+    .selectOption("world-aquatics-points-2026");
+  await expect(
+    page.locator("article").filter({ hasText: "100 Freestyle · SCM" }),
+  ).toContainText("57.93");
+  await expect(lcm).toContainText("1:00.00");
+  await expect(
+    page.locator("article").filter({ hasText: "25 m and 50 m pools" }),
+  ).toContainText("SCY");
 });
 
 test("publisher iframe converts offline without reading the host app's storage", async ({

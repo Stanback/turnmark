@@ -13,6 +13,7 @@ export {
   adjustAltitude,
   conversionMethod,
   coloradoMethod,
+  worldAquaticsMethod,
   conversionMethods,
   altitudePolicies,
   type AltitudePolicy,

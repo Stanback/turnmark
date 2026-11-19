@@ -82,7 +82,7 @@ async function verify(transport, mode, label, ui = false) {
       listed.map((t) => t.name).sort(),
       [...Object.values(tools), "get_sources"].sort(),
     );
-    const uri = "ui://turnmark/conversion/0.3.0-r9.html";
+    const uri = "ui://turnmark/conversion/0.3.0-r10.html";
     assert.equal(
       listed.find((t) => t.name === "convert_swim")._meta.ui.resourceUri,
       uri,
@@ -164,13 +164,14 @@ async function verify(transport, mode, label, ui = false) {
             );
         } else assert.equal(altitudeComparison, undefined);
         if (f.operation === "convert" && primary.status !== "invalid") {
-          assert.equal(methodComparison.length, 3);
+          assert.equal(methodComparison.length, 4);
           assert.deepEqual(
             methodComparison.map((item) => item.method),
             [
               "ncaa-2025-27",
               "colorado-teamunify-2026",
               "turnmark-empirical-2026",
+              "world-aquatics-points-2026",
             ],
           );
           for (const item of methodComparison)
@@ -178,14 +179,14 @@ async function verify(transport, mode, label, ui = false) {
               item.result,
               engine.convert({ ...f.input, method: item.method }),
             );
-          // NCAA against Colorado, or against Turnmark Equivalence when selected.
-          const [a, colorado, equivalence] = methodComparison.map(
-            (item) => item.result,
-          );
-          const b =
-            f.input.method === "turnmark-empirical-2026"
-              ? equivalence
-              : colorado;
+          const a = methodComparison[0].result;
+          const comparedMethod =
+            !f.input.method || f.input.method === "ncaa-2025-27"
+              ? "colorado-teamunify-2026"
+              : f.input.method;
+          const b = methodComparison.find(
+            (item) => item.method === comparedMethod,
+          ).result;
           assert.equal(
             methodDifferenceSeconds,
             a.status === "available" && b.status === "available"

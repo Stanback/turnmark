@@ -18,10 +18,7 @@ export {
 export const conversionMethod = "ncaa-2025-27";
 export const coloradoMethod = "colorado-teamunify-2026";
 export const empiricalMethod = "turnmark-empirical-2026";
-export type ConversionMethod =
-  | typeof conversionMethod
-  | typeof coloradoMethod
-  | typeof empiricalMethod;
+export const worldAquaticsMethod = "world-aquatics-points-2026";
 export const conversionMethods = [
   { id: conversionMethod, label: "NCAA (default)", source: conversionSource },
   { id: coloradoMethod, label: "Colorado Timing", source: coloradoSource },
@@ -30,7 +27,20 @@ export const conversionMethods = [
     label: "Turnmark Equivalence",
     source: empiricalSource,
   },
+  {
+    id: worldAquaticsMethod,
+    label: "World Aquatics Points (FINA)",
+    source: {
+      title: metadata.points.source.name,
+      url: metadata.points.source.url,
+      revision: metadata.points.source.checked,
+    },
+  },
 ] as const;
+export type ConversionMethod = (typeof conversionMethods)[number]["id"];
+export function isConversionMethod(value: unknown): value is ConversionMethod {
+  return conversionMethods.some(({ id }) => id === value);
+}
 export const conversionProvenance: Readonly<Provenance> = Object.freeze({
   id: conversionMethod,
   ...conversionSource,

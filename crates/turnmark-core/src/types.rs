@@ -72,6 +72,8 @@ pub enum ConversionMethod {
     Colorado,
     #[serde(rename = "turnmark-empirical-2026")]
     Empirical,
+    #[serde(rename = "world-aquatics-points-2026")]
+    WorldAquaticsPoints,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "native", derive(uniffi::Enum))]
@@ -128,6 +130,8 @@ pub enum ConversionFormula {
     MultiplierOffset,
     /// The equivalence model's mapping; `factor` is the ratio for this entered time.
     Equivalent,
+    /// A destination time derived from World Aquatics points; the factor applies to this input.
+    PointsEquivalent,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]

@@ -12,10 +12,9 @@ offline on first launch, and use the same source editions and outcomes.
 - Conversion, entered/published/derived labels, source attribution, invalid
   input and unsupported-comparison states. The persistent result shows its
   destination event, units, course and category alongside the original swim.
-  Calculation details use native grouped sections/sheets to compare NCAA and
-  Colorado Timing for the chosen destination, explain the rules and show the
-  selected multiplier/offset and source edition. Values come from the SDK;
-  method differences are not prediction intervals.
+  Calculation details compare NCAA, Colorado Timing, Turnmark Equivalence and
+  World Aquatics Points (FINA) for the chosen destination, with the calculation
+  and source edition. Values come from the shared SDK.
 - **Convert · My times** navigation and **Log swim** confirmation. From Convert,
   the editor prefills the entered performance; My times opens a blank-time editor.
   Recent and Best times views show actual records, not converted estimates.

@@ -54,7 +54,7 @@ if (mode === "HTTP") {
     }),
   );
 }
-const uri = "ui://turnmark/conversion/0.3.0-r9.html";
+const uri = "ui://turnmark/conversion/0.3.0-r10.html";
 const card = (await client.readResource({ uri })).contents[0].text;
 const host = await build({
   absWorkingDir: process.cwd(),
@@ -361,6 +361,45 @@ try {
   await frame
     .locator("body")
     .screenshot({ path: `${shots}/mcp-altitude-light.png` });
+  const metric = {
+    swim: {
+      time: "55.00",
+      event: { distance: 100, stroke: "freestyle", course: "SCM" },
+    },
+    table: "men",
+    to: "LCM",
+  };
+  const metricResult = await client.callTool({
+    name: "convert_swim",
+    arguments: metric,
+  });
+  await page.evaluate(
+    ({ metric, metricResult }) => window.mount(metric, metricResult),
+    { metric, metricResult },
+  );
+  const metricCard = page.frameLocator("iframe").nth(2);
+  const method = "world-aquatics-points-2026";
+  await metricCard.locator(".calculation-options summary").click();
+  await metricCard.locator("#method").selectOption(method);
+  await metricCard.locator("#update").click();
+  await metricCard
+    .locator(".clock")
+    .getByText("56.94", { exact: true })
+    .waitFor();
+  await metricCard.locator("#result summary").click();
+  await metricCard.locator(".spectrum-pin .pin-name").nth(3).waitFor();
+  assert.match(
+    await metricCard.locator(`[data-method="${method}"]`).textContent(),
+    /points-equivalent time/,
+  );
+  await metricCard.locator("#course").selectOption("SCY");
+  await metricCard.locator("#update").click();
+  await metricCard
+    .locator("#result")
+    .getByText("World Aquatics points conversion covers 25 m and 50 m pools.", {
+      exact: true,
+    })
+    .waitFor();
   // Close methods keep separate spectrum labels: women's 1650 SCY 17:36.20 -> SCM
   // put NCAA and Equivalence closer together than one label is wide.
   const mile = {
@@ -379,7 +418,7 @@ try {
     ({ mile, mileResult }) => window.mount(mile, mileResult),
     { mile, mileResult },
   );
-  const spectrumCard = page.frameLocator("iframe").nth(2);
+  const spectrumCard = page.frameLocator("iframe").nth(3);
   await spectrumCard.locator("#result summary").click();
   for (const width of [680, 390]) {
     await page.setViewportSize({ width, height: 1100 });

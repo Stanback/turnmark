@@ -117,7 +117,7 @@ menus, scrolling, native persistence, sharing, accessibility and lifecycle chang
 This follows [Apple's testing guidance](https://developer.apple.com/documentation/xcode/testing)
 and [Android's test strategy](https://developer.android.com/training/testing/fundamentals/strategies).
 
-iOS uses native **Full** (default) and **Smoke** Xcode test plans. The 20 UI
+iOS uses native **Full** (default) and **Smoke** Xcode test plans. The 22 UI
 regressions are grouped by conversion, benchmarks, history and input, with shared
 helpers containing no tests. The wrapper limits parallel execution to two
 simulator workers; each has its own app container. `--workers 1` gives a serial
@@ -130,7 +130,7 @@ when multiple local iPhones are installed, so another workspace is not interrupt
 
 ```sh
 export TURNMARK_IOS_DEVICE=SIMULATOR_UUID
-node scripts/test-ios.mjs app                       # full: 7 direct + 20 UI cases
+node scripts/test-ios.mjs app                       # full: 7 direct + 22 UI cases
 node scripts/test-ios.mjs app --suite smoke         # 7 direct + 4 UI cases
 node scripts/test-ios.mjs app --suite unit          # 7 direct app tests, no UI run
 node scripts/test-ios.mjs app --only TurnmarkUITests/InputUITests
@@ -150,7 +150,7 @@ small suite; adding shards would increase boot/resource costs without an
 established benefit. See [managed-device guidance](https://developer.android.com/studio/test/managed-devices).
 
 ```sh
-node scripts/test-android.mjs app --managed         # all 30 cases
+node scripts/test-android.mjs app --managed         # all 32 cases
 node scripts/test-android.mjs app --managed --suite smoke
 node scripts/test-android.mjs sdk --managed         # native ABI/fixture checks
 node scripts/test-android.mjs app --serial emulator-5556 \

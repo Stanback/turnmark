@@ -65,6 +65,28 @@ final class ConversionUITests: TurnmarkUITestCase {
         XCTAssertEqual(app.staticTexts["resultTime"].label, "1:06.72")
     }
 
+    @MainActor func testWorldAquaticsPointsConversion() {
+        let app = launch(example: false)
+        replace(app.textFields["timeInput"], with: "55.00", in: app)
+        app.buttons["dismissConverterKeyboard"].tap()
+        let scm = app.segmentedControls["inputCourse"].buttons["SCM"]
+        reach(scm, in: app); scm.tap()
+        let men = app.segmentedControls["category"].buttons["Men"]
+        reach(men, in: app); men.tap()
+        chooseCourseConversion("World Aquatics Points (FINA)", in: app)
+        let lcm = app.buttons["equivalent-LCM"]
+        reach(lcm, in: app); lcm.tap()
+        XCTAssertEqual(app.staticTexts["resultTime"].label, "56.94")
+        capture(app, "World Aquatics metric result")
+        app.terminate(); app.launchArguments = []; app.launch()
+        reach(app.staticTexts["resultTime"], in: app)
+        XCTAssertEqual(app.staticTexts["resultTime"].label, "56.94")
+        let yards = app.buttons["equivalent-SCY"]
+        reach(yards, in: app); yards.tap()
+        let note = app.staticTexts["World Aquatics points conversion covers 25 m and 50 m pools."]
+        reach(note, in: app); XCTAssertTrue(note.exists)
+    }
+
     @MainActor func testDistanceColoradoCaveatUsesCorrectEventContext() {
         let app = launch(example: false)
         replace(app.textFields["timeInput"], with: "4:11.36", in: app)
