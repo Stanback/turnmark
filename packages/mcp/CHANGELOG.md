@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add World Aquatics Points (FINA) conversion to the MCP tool and card.
+  UI resource revision is `0.3.0-r10.html`.
+
 - Method rows name the arithmetic the engine reports (`formula`): flat multiplier,
   fixed turn offset or equivalent time. UI resource revision is `0.3.0-r9.html`.
 

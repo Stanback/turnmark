@@ -41,15 +41,14 @@ it does not initialize or download the full standards/points engine. Each result
 and whether it is the entered swim, a published-factor conversion or a derived
 estimate. Unsupported conversions remain unavailable. Times are estimates;
 meet rules determine eligibility. The source link and Turnmark credit stay
-visible. A collapsed Calculation options section keeps NCAA as default and offers
-Colorado Timing plus optional USA Swimming / NCAA altitude adjustments. It also compares both methods for a chosen destination, naming
-the gap a method difference rather than a prediction interval. Expanded copy
-explains the inputs and limits. Standards, points and personal history remain
-in the full app.
+visible. Calculation options includes NCAA by default, plus Colorado Timing,
+Turnmark Equivalence and World Aquatics Points (FINA) for 25 m ↔ 50 m conversions.
+The widget offers optional USA Swimming and NCAA altitude adjustments and compares
+the methods for a chosen destination. Standalone points scoring, standards and
+personal history are available in the full app.
 
 A production browser check verifies that a fresh widget loads exactly one Wasm
-asset matching the focused SDK bytes, at less than half the full engine’s raw
-size. Both course methods, both altitude policies, mapped events, failure
+asset matching the focused converter bytes. Course methods, both altitude policies, mapped events, failure
 recovery and offline use are covered separately.
 
 The implementation is GPL-3.0-or-later, with source in this repository.

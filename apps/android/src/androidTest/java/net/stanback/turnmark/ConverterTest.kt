@@ -107,6 +107,19 @@ class ConverterTest {
         compose.onNodeWithTag("resultTime").performScrollTo().assertTextEquals("1:06.61")
     }
 
+    @Test fun worldAquaticsPointsConversion() {
+        val preferences = ApplicationProvider.getApplicationContext<Context>().getSharedPreferences("turnmark", Context.MODE_PRIVATE)
+        preferences.edit().putString("draft", Draft.example.copy(time = "55.00", courseIndex = 1, categoryIndex = 1, targetIndex = 2).encode()).commit()
+        compose.activityRule.scenario.recreate()
+        chooseCourseConversion("World Aquatics Points (FINA)")
+        compose.onNodeWithTag("resultTime").performScrollTo().assertTextEquals("56.94")
+        capture("android-world-aquatics-metric")
+        compose.activityRule.scenario.recreate()
+        compose.onNodeWithTag("resultTime").performScrollTo().assertTextEquals("56.94")
+        compose.onNodeWithTag("equivalent-SCY").performScrollTo().performClick()
+        compose.onNodeWithText("World Aquatics points conversion covers 25 m and 50 m pools.").performScrollTo().assertIsDisplayed()
+    }
+
     @Test fun distanceColoradoCaveatUsesCorrectEventContext() {
         val preferences = ApplicationProvider.getApplicationContext<Context>().getSharedPreferences("turnmark", Context.MODE_PRIVATE)
         preferences.edit().putString("draft", Draft.example.copy(time = "4:11.36", distance = 400u, courseIndex = 1, targetIndex = 0, methodId = "colorado-teamunify-2026").encode()).commit()

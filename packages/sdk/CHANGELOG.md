@@ -2,6 +2,8 @@
 
 ## 0.2.0 — unreleased
 
+- Convert SCM ↔ LCM using `world-aquatics-points-2026` in the full and focused SDKs.
+
 - Optional `colorado-teamunify-2026` conversion method, pinned source metadata
   and direction-specific formulas. Omitted methods retain NCAA results.
 - Conversion results expose optional `offsetSeconds`; native bindings expose

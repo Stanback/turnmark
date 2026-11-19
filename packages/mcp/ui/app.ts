@@ -4,6 +4,9 @@ import {
   ncaaMethodExplanation,
   empiricalMethodExplanation,
   empiricalCalculationNote,
+  methodShortLabels,
+  worldAquaticsMethodExplanation,
+  worldAquaticsCourseNote,
   poolLengthExplanation,
   methodComparisonCaveat,
 } from "../../../src/lib/calculation-copy.js";
@@ -12,6 +15,7 @@ import { placeSpectrumLabels } from "../../../src/lib/spectrum-layout.js";
 import { App } from "@modelcontextprotocol/ext-apps";
 import swimIcons from "../../../design/swim-icons.json";
 import type {
+  ConversionMethod,
   ConversionRequest,
   ConversionValue,
   Result,
@@ -24,6 +28,12 @@ const form = $("convert");
 const time = $<HTMLInputElement>("time");
 const course = $<HTMLSelectElement>("course");
 const method = $<HTMLSelectElement>("method");
+const methodLabels = new Map(
+  Array.from(method.options, (option) => [option.value, option.text]),
+);
+function isConversionMethod(value: string): value is ConversionMethod {
+  return methodLabels.has(value);
+}
 const altitudeEnabled = $<HTMLInputElement>("altitude-enabled");
 const elevation = $<HTMLInputElement>("elevation");
 const elevationUnit = $<HTMLSelectElement>("elevation-unit");
@@ -185,11 +195,12 @@ function render(value: unknown, request: ConversionRequest) {
         published: "Published conversion",
         derived: "Derived estimate",
       }[v.kind] +
-        (v.kind !== "swum" && request.method === "colorado-teamunify-2026"
-          ? " · Colorado Timing"
-          : v.kind !== "swum" && request.method === "turnmark-empirical-2026"
-            ? " · Turnmark Equivalence"
-            : ""),
+        (v.kind !== "swum" &&
+        request.method &&
+        request.method !== "ncaa-2025-27" &&
+        methodLabels.has(request.method)
+          ? ` · ${methodLabels.get(request.method)}`
+          : ""),
       "kind",
     );
     if (v.caveat) line("p", caveatText(v.caveat), "muted");
@@ -207,7 +218,9 @@ function render(value: unknown, request: ConversionRequest) {
     line("h1", "No conversion for this selection", "context");
     line(
       "p",
-      "This event or course isn’t covered by the selected published method. Ask for another event or comparison course.",
+      outcome.reason === "course-not-supported"
+        ? worldAquaticsCourseNote
+        : "This event or course isn’t covered by the selected method. Ask for another event or comparison course.",
       "muted",
     );
   } else if (outcome.status === "invalid") {
@@ -241,12 +254,9 @@ function render(value: unknown, request: ConversionRequest) {
       const heading = document.createElement("h2");
       heading.textContent = `Compare methods · ${request.to}`;
       details.append(heading);
-      const validMethods = comparison.methodComparison.filter((item) =>
-        [
-          "ncaa-2025-27",
-          "colorado-teamunify-2026",
-          "turnmark-empirical-2026",
-        ].includes(item.method),
+      const validMethods = comparison.methodComparison.filter(
+        (item): item is typeof item & { method: ConversionMethod } =>
+          isConversionMethod(item.method),
       );
       const ncaaEntry = validMethods.find(
         (item) => item.method === "ncaa-2025-27",
@@ -311,7 +321,7 @@ function render(value: unknown, request: ConversionRequest) {
           const pct =
             spanH > 0
               ? 10 + ((item.result.value.hundredths - minH) / spanH) * 80
-              : 25 + idx * 25;
+              : 25 + (idx * 50) / (availMethods.length - 1);
           const pin = document.createElement("div");
           pin.className = `spectrum-pin${item.method === (request.method ?? "ncaa-2025-27") ? " selected" : ""}`;
           pin.style.left = `${pct.toFixed(1)}%`;
@@ -323,12 +333,7 @@ function render(value: unknown, request: ConversionRequest) {
           leader.hidden = true;
           const lbl = document.createElement("span");
           lbl.className = "pin-name";
-          lbl.textContent =
-            item.method === "ncaa-2025-27"
-              ? "NCAA"
-              : item.method === "colorado-teamunify-2026"
-                ? "Colorado"
-                : "Equivalence";
+          lbl.textContent = methodShortLabels[item.method];
           pin.append(dot, leader, lbl);
           track.append(pin);
         });
@@ -453,6 +458,7 @@ function render(value: unknown, request: ConversionRequest) {
         "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.",
       ],
       ["Turnmark Equivalence", empiricalMethodExplanation],
+      ["World Aquatics Points (FINA)", worldAquaticsMethodExplanation],
       ["Pool length", poolLengthExplanation],
       [
         "Distance events",
@@ -474,6 +480,9 @@ function render(value: unknown, request: ConversionRequest) {
       details.append(heading);
       const formula = document.createElement("p");
       formula.textContent = `${outcome.value.altitude ? "After the altitude deduction, seconds" : "Seconds"} × ${outcome.value.factor.toFixed(5)}${outcome.value.offsetSeconds ? ` ${outcome.value.offsetSeconds > 0 ? "+" : "−"} ${Math.abs(outcome.value.offsetSeconds)}s` : ""}; factor rounded for display, final result truncated to hundredths.`;
+      if (outcome.value.formula === "points-equivalent") {
+        formula.textContent = worldAquaticsMethodExplanation;
+      }
       details.append(formula);
       if (request.method === "turnmark-empirical-2026") {
         const note = document.createElement("p");
@@ -517,10 +526,12 @@ app.ontoolinput = ({ arguments: args }) => {
     return;
   }
   original = structuredClone(args);
+  const selectedMethod =
+    args.method && isConversionMethod(args.method)
+      ? args.method
+      : "ncaa-2025-27";
   $<HTMLDetailsElement>("calculation-options").open =
-    !!args.elevation ||
-    args.method === "colorado-teamunify-2026" ||
-    args.method === "turnmark-empirical-2026";
+    !!args.elevation || selectedMethod !== "ncaa-2025-27";
   altitudeEnabled.checked = !!args.elevation;
   $("altitude-fields").hidden = !args.elevation;
   elevation.value = String(args.elevation?.value ?? 0);
@@ -532,11 +543,7 @@ app.ontoolinput = ({ arguments: args }) => {
       : "usa-swimming-altitude-2026";
   time.value = args.swim.time;
   course.value = args.to;
-  method.value =
-    args.method === "colorado-teamunify-2026" ||
-    args.method === "turnmark-empirical-2026"
-      ? args.method
-      : "ncaa-2025-27";
+  method.value = selectedMethod;
   $("original").textContent = context(args.swim.event, args.table);
   message("Waiting for the conversion…");
   controls();

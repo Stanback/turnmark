@@ -68,6 +68,9 @@ val strokeCodes = listOf("FR", "BK", "BR", "FL", "IM")
 
 private const val coloradoDistanceCaveat = "Distance caveat: this documented Colorado rule uses a general SCM/SCY multiplier for unequal-distance freestyle events. Check the meet’s required conversion."
 private const val empiricalLowEvidenceCaveat = "Limited data: few swimmers in Turnmark’s data swam this event in both of these courses at this level, so this equivalent time is less certain and leans on related events and pool geometry."
+private const val worldAquaticsCourseNote = "World Aquatics points conversion covers 25 m and 50 m pools."
+private const val worldAquaticsExplanation = "Estimates a 25 m or 50 m time that meets the entered swim’s World Aquatics points score. Both courses need a published base time."
+private val conversionMethodIds = listOf("ncaa-2025-27", "colorado-teamunify-2026", "turnmark-empirical-2026", "world-aquatics-points-2026")
 private const val empiricalOutOfRangeCaveat = "Outside the model’s fitted range: this estimate extrapolates beyond the available fit."
 
 private fun caveatText(caveat: ConversionCaveat): String = when (caveat) {
@@ -86,11 +89,13 @@ data class Draft(
     val method get() = when (methodId) {
         "colorado-teamunify-2026" -> ConversionMethod.COLORADO
         "turnmark-empirical-2026" -> ConversionMethod.EMPIRICAL
+        "world-aquatics-points-2026" -> ConversionMethod.WORLD_AQUATICS_POINTS
         else -> ConversionMethod.NCAA
     }
     val methodLabel get() = when (method) {
         ConversionMethod.COLORADO -> "Colorado Timing"
         ConversionMethod.EMPIRICAL -> "Turnmark Equivalence"
+        ConversionMethod.WORLD_AQUATICS_POINTS -> "World Aquatics Points (FINA)"
         ConversionMethod.NCAA -> "NCAA"
     }
     val options get() = getEventOptions(courses[courseIndex], strokes[strokeIndex])
@@ -105,13 +110,13 @@ data class Draft(
     }
     val methodDifference: String? get() {
         val ncaa = copy(methodId = "ncaa-2025-27").outcome as? ConversionOutcome.Available ?: return null
-        val otherId = if (method == ConversionMethod.EMPIRICAL) "turnmark-empirical-2026" else "colorado-teamunify-2026"
+        val otherId = if (method == ConversionMethod.NCAA) "colorado-teamunify-2026" else methodId
         val other = copy(methodId = otherId).outcome as? ConversionOutcome.Available ?: return null
         return String.format(java.util.Locale.ROOT, "%.2fs", kotlin.math.abs(ncaa.value.hundredths.toDouble() - other.value.hundredths.toDouble()) / 100)
     }
     val methodSpread: String? get() {
         if (courseIndex == targetIndex) return null
-        val hs = listOf("ncaa-2025-27", "colorado-teamunify-2026", "turnmark-empirical-2026")
+        val hs = conversionMethodIds
             .mapNotNull { (copy(methodId = it).outcome as? ConversionOutcome.Available)?.value?.hundredths }
         if (hs.size < 2) return null
         return String.format(java.util.Locale.ROOT, "%.2fs", ((hs.maxOrNull() ?: 0uL) - (hs.minOrNull() ?: 0uL)).toDouble() / 100.0)
@@ -136,6 +141,7 @@ data class Draft(
             val d = (avail.value.hundredths.toDouble() - ncaaHundredths.toDouble()) / 100.0
             String.format(java.util.Locale.ROOT, " · %s%.2fs vs NCAA", if (d >= 0) "+" else "−", kotlin.math.abs(d))
         }
+        if (avail.value.formula == ConversionFormula.POINTS_EQUIVALENT) return "Points-equivalent time$deltaText"
         return String.format(java.util.Locale.ROOT, "× %.5f%s%s", avail.value.factor, offText, deltaText)
     }
     val available get() = outcome is ConversionOutcome.Available
@@ -462,10 +468,11 @@ private fun share(context: Context, draft: Draft) {
                 Text("Calculation options"); Spacer(Modifier.width(8.dp)); Icon(Icons.Default.KeyboardArrowDown, null)
             }
             if (calculationExpanded) {
-                val methodLabels = listOf("NCAA (default)", "Colorado Timing", "Turnmark Equivalence")
-                val methodIds = listOf("ncaa-2025-27", "colorado-teamunify-2026", "turnmark-empirical-2026")
-                Choice("Course conversion", methodLabels[methodIds.indexOf(draft.methodId).coerceAtLeast(0)], methodLabels, Modifier.fillMaxWidth()) {
-                    update(draft.copy(methodId = methodIds[it]))
+                val methodLabels = conversionMethodIds.map { id ->
+                    if (id == conversionMethodIds.first()) "NCAA (default)" else draft.copy(methodId = id).methodLabel
+                }
+                Choice("Course conversion", methodLabels[conversionMethodIds.indexOf(draft.methodId).coerceAtLeast(0)], methodLabels, Modifier.fillMaxWidth()) {
+                    update(draft.copy(methodId = conversionMethodIds[it]))
                 }
                 Row(Modifier.fillMaxWidth(), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                     Text("Adjust for altitude", modifier = Modifier.weight(1f))
@@ -586,7 +593,7 @@ private fun share(context: Context, draft: Draft) {
                 Text(draft.resultLabel(result.value.event), color = c.textMuted, style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.testTag("resultContext"))
                 ResultTime(result.value.time, compact)
-                Text((if ((result.value.altitude?.value?.adjustmentSeconds ?: 0.0) > 0 && result.value.kind == ConversionKind.SWUM) "Sea-level estimate" else kindLabel(result.value.kind)) + if (result.value.kind != ConversionKind.SWUM && draft.method == ConversionMethod.COLORADO) " · Colorado Timing" else "", color = c.textMuted, style = MaterialTheme.typography.labelMedium)
+                Text((if ((result.value.altitude?.value?.adjustmentSeconds ?: 0.0) > 0 && result.value.kind == ConversionKind.SWUM) "Sea-level estimate" else kindLabel(result.value.kind)) + if (result.value.kind != ConversionKind.SWUM && draft.method != ConversionMethod.NCAA) " · ${draft.methodLabel}" else "", color = c.textMuted, style = MaterialTheme.typography.labelMedium)
                 result.value.caveat?.let { caveat ->
                     Text(caveatText(caveat), style = MaterialTheme.typography.bodySmall, color = c.textMuted,
                         modifier = Modifier.testTag(when (caveat) { ConversionCaveat.EMPIRICAL_LOW_EVIDENCE -> "lowEvidenceCaveat"; ConversionCaveat.EMPIRICAL_OUT_OF_RANGE -> "outOfRangeCaveat"; else -> "distanceCaveat" }))
@@ -601,7 +608,7 @@ private fun share(context: Context, draft: Draft) {
             }
             is ConversionOutcome.Unavailable -> {
                 Text("No published conversion", color = c.text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.testTag("unavailableConversion"))
-                Text("Choose another event or course comparison.", color = c.textMuted, style = MaterialTheme.typography.bodyMedium)
+                Text(if (result.reason == CoverageReason.COURSE_NOT_SUPPORTED) worldAquaticsCourseNote else "Choose another event or course comparison.", color = c.textMuted, style = MaterialTheme.typography.bodyMedium)
             }
         }
         if (parseTime(draft.time) != null) {
@@ -628,7 +635,7 @@ private fun share(context: Context, draft: Draft) {
                             if (!large) Text(time, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                         }
                         if (large) Text(time, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                        Text(if (row is ConversionOutcome.Available) "${draft.resultLabel(row.value.event)} · ${if ((row.value.altitude?.value?.adjustmentSeconds ?: 0.0) > 0 && row.value.kind == ConversionKind.SWUM) "Sea-level estimate" else kindLabel(row.value.kind)}" else "No published conversion",
+                        Text(if (row is ConversionOutcome.Available) "${draft.resultLabel(row.value.event)} · ${if ((row.value.altitude?.value?.adjustmentSeconds ?: 0.0) > 0 && row.value.kind == ConversionKind.SWUM) "Sea-level estimate" else kindLabel(row.value.kind)}" else if (row is ConversionOutcome.Unavailable && row.reason == CoverageReason.COURSE_NOT_SUPPORTED) "25 m ↔ 50 m only" else "No published conversion",
                             style = MaterialTheme.typography.bodySmall, color = c.textMuted)
                     }
                 }
@@ -714,7 +721,7 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
 @Composable private fun ConversionDetails(draft: Draft, result: ConversionOutcome, onClose: () -> Unit) {
     val context = LocalContext.current
     val c = LocalTurnmarkColors.current
-    val comparisons = listOf("ncaa-2025-27", "colorado-teamunify-2026", "turnmark-empirical-2026").map { draft.copy(methodId = it) }
+    val comparisons = conversionMethodIds.map { draft.copy(methodId = it) }
     val ncaaHundredths = (comparisons.firstOrNull()?.outcome as? ConversionOutcome.Available)?.value?.hundredths
     Column(Modifier.fillMaxWidth()) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 16.dp),
@@ -755,7 +762,7 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
                                     is ConversionOutcome.Available -> Text(outcome.value.time,
                                         style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold,
                                         modifier = Modifier.testTag("methodResult-${comparison.methodLabel}"))
-                                    is ConversionOutcome.Unavailable -> Text("Unavailable", style = MaterialTheme.typography.bodyMedium, color = c.textMuted)
+                                    is ConversionOutcome.Unavailable -> Text(if (outcome.reason == CoverageReason.COURSE_NOT_SUPPORTED) "25 m ↔ 50 m only" else "Unavailable", style = MaterialTheme.typography.bodyMedium, color = c.textMuted)
                                     is ConversionOutcome.Invalid -> Text("Check your time", style = MaterialTheme.typography.bodyMedium, color = c.textMuted)
                                 }
                             }
@@ -767,7 +774,7 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
                     }
                     draft.methodDifference?.let { Text("Method difference: $it", style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier.padding(vertical = 16.dp).testTag("methodDifference")) }
-                    draft.methodSpread?.let { Text("Method spread (all 3): $it", style = MaterialTheme.typography.bodySmall,
+                    draft.methodSpread?.let { Text("Method spread: $it", style = MaterialTheme.typography.bodySmall,
                         color = c.textMuted, modifier = Modifier.padding(bottom = 16.dp)) }
                 }
             }
@@ -781,6 +788,7 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
             CalculationExplanation("NCAA", "Factors vary by event and course, not age. Long-course factors use separate men’s and women’s tables; short-course meters-to-yards factors are shared. NCAA publishes metric-to-yards factors; reverse and SCM/LCM conversions are derived.")
             CalculationExplanation("Colorado Timing", "Documented multipliers plus fixed time offsets. The formulas vary by event and course, not age or category.")
             CalculationExplanation("Turnmark Equivalence", "Estimates the equivalent time in the other course from 95K pairs of the same swimmer racing both courses within a month (8.51M US swims, 2010–2026), allowing for the randomness in any single swim. Converting back returns the entered time to within 0.02 s.")
+            CalculationExplanation("World Aquatics Points (FINA)", worldAquaticsExplanation)
             CalculationExplanation("Pool length", "Shorter pools mean more turns and push-offs. These rules do not adjust for your starts, underwater skill, technique, endurance or individual development.")
             CalculationExplanation("Distance events", "500, 1000 and 1650 yards map to 400, 800 and 1500 meters.")
             if (result is ConversionOutcome.Available) {
@@ -789,6 +797,7 @@ private fun kindLabel(kind: ConversionKind) = when (kind) {
                 CalculationExplanation("Entered swim · ${draft.time}", draft.label)
                 CalculationExplanation("Comparison · ${result.value.time}", draft.resultLabel(result.value.event))
                 if (result.value.kind == ConversionKind.SWUM) Text("The course is unchanged; any selected altitude deduction is applied first.", style = MaterialTheme.typography.bodyMedium)
+                else if (result.value.formula == ConversionFormula.POINTS_EQUIVALENT) Text(worldAquaticsExplanation, style = MaterialTheme.typography.bodyMedium)
                 else {
                     Surface(shape = RoundedCornerShape(TurnmarkTokens.radiusControl), color = c.surfaceRaised) {
                         Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {

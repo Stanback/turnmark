@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { caveatText } from "./lib/calculation-copy";
+  import {
+    caveatText,
+    methodShortLabels,
+    worldAquaticsCourseNote,
+  } from "./lib/calculation-copy";
   import {
     benchmarkPreview,
     benchmarkTimeStandardChoices,
@@ -21,8 +25,7 @@
     convertSwim,
     adjustAltitude,
     conversionMethods,
-    coloradoMethod,
-    empiricalMethod,
+    conversionMethod,
     altitudePolicies,
   } from "@turnmark/sdk/conversion";
   import { readPreferences, type SwimPreferences } from "./lib/preferences";
@@ -111,8 +114,7 @@
       calculationOpen = true;
       altitudeEnabled = true;
     }
-    if (form.method === coloradoMethod || form.method === empiricalMethod)
-      calculationOpen = true;
+    if (form.method !== conversionMethod) calculationOpen = true;
   });
   $effect(() => {
     if (!mounted || !altitudeValid) return;
@@ -475,10 +477,7 @@
   }
   function restoreCalculationOptions() {
     altitudeEnabled = form.altitude > 0;
-    calculationOpen =
-      altitudeEnabled ||
-      form.method === coloradoMethod ||
-      form.method === empiricalMethod;
+    calculationOpen = altitudeEnabled || form.method !== conversionMethod;
   }
   function reset() {
     form = { ...defaultState, time: "" };
@@ -749,11 +748,9 @@
           <summary
             ><span><Icon name="settings" size={17} />Calculation options</span
             ><span class="summary-elevation"
-              >{form.method === coloradoMethod
-                ? "Colorado"
-                : form.method === empiricalMethod
-                  ? "Equivalence"
-                  : "NCAA"}{#if altitudeValid && form.altitude > 0}
+              >{methodShortLabels[
+                form.method
+              ]}{#if altitudeValid && form.altitude > 0}
                 · {elevationLabel}{/if}</span
             ></summary
           >
@@ -886,8 +883,10 @@
           <p class="focused-provenance">
             {#if emptyTime}Enter your time to compare all three courses.
             {:else if error}Check your input to see a conversion.
-            {:else if focused.kind === "unavailable"}No conversion published for
-              this event.
+            {:else if focused.kind === "unavailable"}{focused.reason ===
+              "course-not-supported"
+                ? worldAquaticsCourseNote
+                : "No conversion published for this event."}
             {:else if focused.kind === "swum"}{adjustment
                 ? "Sea-level estimate"
                 : "Your original time"} · {form.course}

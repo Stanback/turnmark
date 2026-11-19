@@ -3006,6 +3006,306 @@
       },
       "source": "data/national-sources.json",
       "rationale": "Independent published table sample. Original swim only; thresholds do not award eligibility or All-America status."
+    },
+    {
+      "id": "points-conversion-scm-to-lcm",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "55.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCM"
+          }
+        },
+        "to": "LCM",
+        "table": "men",
+        "method": "world-aquatics-points-2026"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "56.94",
+          "hundredths": 5694,
+          "kind": "derived",
+          "formula": "points-equivalent",
+          "event": {
+            "course": "LCM"
+          }
+        },
+        "provenance": {
+          "id": "world-aquatics-points-2026",
+          "url": "https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf"
+        }
+      },
+      "source": "https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf",
+      "rationale": "The SCM base 44.84 gives 541 whole points. Using the LCM base 46.40, 56.94 meets 541 and 56.95 scores 540."
+    },
+    {
+      "id": "points-conversion-lcm-to-scm",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "1:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "LCM"
+          }
+        },
+        "to": "SCM",
+        "table": "women",
+        "method": "world-aquatics-points-2026"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "57.93",
+          "hundredths": 5793,
+          "kind": "derived",
+          "formula": "points-equivalent",
+          "event": {
+            "course": "SCM"
+          }
+        },
+        "provenance": {
+          "id": "world-aquatics-points-2026",
+          "url": "https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf"
+        }
+      },
+      "source": "https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf",
+      "rationale": "The LCM base 51.71 gives 640 whole points. Inverting with SCM base 49.93 gives 57.9386 seconds before truncation."
+    },
+    {
+      "id": "points-conversion-published-base",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "44.84",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCM"
+          }
+        },
+        "to": "LCM",
+        "table": "men",
+        "method": "world-aquatics-points-2026"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "46.40",
+          "hundredths": 4640,
+          "kind": "derived",
+          "formula": "points-equivalent",
+          "event": {
+            "course": "LCM"
+          }
+        },
+        "provenance": {
+          "id": "world-aquatics-points-2026",
+          "url": "https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf"
+        }
+      },
+      "source": "https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf",
+      "rationale": "The published 1000-point 100 freestyle base maps exactly to the base in the other course."
+    },
+    {
+      "id": "points-conversion-with-altitude",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "55.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCM"
+          }
+        },
+        "to": "LCM",
+        "table": "men",
+        "method": "world-aquatics-points-2026",
+        "elevation": {
+          "value": 5280,
+          "unit": "feet"
+        },
+        "altitudePolicy": "ncaa-altitude-2026-27-d1"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "56.83",
+          "hundredths": 5683,
+          "kind": "derived",
+          "formula": "points-equivalent",
+          "event": {
+            "course": "LCM"
+          },
+          "altitude": {
+            "value": {
+              "rawTime": "55.00",
+              "adjustedTime": "54.90",
+              "adjustmentSeconds": 0.1
+            }
+          }
+        },
+        "provenance": {
+          "id": "world-aquatics-points-2026",
+          "url": "https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf"
+        }
+      },
+      "source": "https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf",
+      "rationale": "At 5280 feet the NCAA Division I deduction for 100 freestyle is 0.10 seconds. The adjusted 54.90 is worth 544 whole points before projection to LCM."
+    },
+    {
+      "id": "points-conversion-zero-points",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "10:00.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCM"
+          }
+        },
+        "to": "LCM",
+        "table": "men",
+        "method": "world-aquatics-points-2026"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "10:20.88",
+          "hundredths": 62088,
+          "kind": "derived",
+          "formula": "points-equivalent",
+          "event": {
+            "course": "LCM"
+          }
+        },
+        "provenance": {
+          "id": "world-aquatics-points-2026",
+          "url": "https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf"
+        }
+      },
+      "source": "https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf",
+      "rationale": "Zero points has no finite inverse. The base-time ratio gives 620.8742 seconds and the slower hundredth still scores zero."
+    },
+    {
+      "id": "points-conversion-same-course",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "55.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "SCY",
+        "table": "men",
+        "method": "world-aquatics-points-2026"
+      },
+      "expected": {
+        "status": "available",
+        "value": {
+          "time": "55.00",
+          "hundredths": 5500,
+          "kind": "swum",
+          "formula": "none",
+          "event": {
+            "course": "SCY"
+          }
+        },
+        "provenance": {
+          "id": "world-aquatics-points-2026",
+          "url": "https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf"
+        }
+      },
+      "source": "https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf",
+      "rationale": "Same-course results retain the swim."
+    },
+    {
+      "id": "points-conversion-from-yards",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "55.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCY"
+          }
+        },
+        "to": "LCM",
+        "table": "men",
+        "method": "world-aquatics-points-2026"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "course-not-supported",
+        "provenance": {
+          "id": "world-aquatics-points-2026"
+        }
+      },
+      "source": "https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf",
+      "rationale": "The World Aquatics base-time table covers only metric courses."
+    },
+    {
+      "id": "points-conversion-to-yards",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "55.00",
+          "event": {
+            "distance": 100,
+            "stroke": "freestyle",
+            "course": "SCM"
+          }
+        },
+        "to": "SCY",
+        "table": "men",
+        "method": "world-aquatics-points-2026"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "course-not-supported",
+        "provenance": {
+          "id": "world-aquatics-points-2026"
+        }
+      },
+      "source": "https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf",
+      "rationale": "The World Aquatics base-time table covers only metric courses."
+    },
+    {
+      "id": "points-conversion-missing-destination",
+      "operation": "convert",
+      "input": {
+        "swim": {
+          "time": "55.00",
+          "event": {
+            "distance": 100,
+            "stroke": "individual-medley",
+            "course": "SCM"
+          }
+        },
+        "to": "LCM",
+        "table": "men",
+        "method": "world-aquatics-points-2026"
+      },
+      "expected": {
+        "status": "unavailable",
+        "reason": "event-not-published",
+        "provenance": {
+          "id": "world-aquatics-points-2026"
+        }
+      },
+      "source": "https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf",
+      "rationale": "The 100 IM exists only in the SCM table."
     }
   ]
 }

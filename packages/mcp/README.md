@@ -143,9 +143,10 @@ Clients without MCP Apps continue to receive the same text and structured
 results. There is no separate UI endpoint to configure: use the same stdio
 server or Streamable HTTP URL. Published package `0.2.0` uses immutable resource
 `ui://turnmark/conversion/0.2.0.html`. The current source prepares `0.3.0` with SDK `0.2.0`, shared glyphs and
-separate Course conversion and altitude controls under collapsed Calculation options at `ui://turnmark/conversion/0.3.0-r9.html`.
-Omitting `method` retains NCAA; `colorado-teamunify-2026` selects documented
-Colorado Timing formulas. `get_sources` lists both editions. These npm versions
+separate Course conversion and altitude controls under collapsed Calculation options at `ui://turnmark/conversion/0.3.0-r10.html`.
+Omitting `method` retains NCAA. `world-aquatics-points-2026` converts between
+25 m and 50 m pools using the 2026 World Aquatics points score. `get_sources`
+lists all four methods. These npm versions
 are not yet published; SDK 0.2.0 must publish before MCP 0.3.0. Both use `text/html;profile=mcp-app`. Local Apps require package `0.2.0` or later;
 package `0.1.0` provides text and structured tools.
 

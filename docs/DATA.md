@@ -33,6 +33,7 @@ The generated `data/standards.json` records the source URL, revision, retrieval 
 2. Run `npm run data:points`. The importer fetches the pinned official PDF, uses Poppler to extract its numeric columns, verifies both time representations, rejects duplicates, and requires 35 individual events (70 category-specific base times).
 3. For a future edition, review the PDF and update the URL, validity guards, source dates, labels, documentation, and tests together. Do not simply substitute current world records; the scoring base times have their own validity periods.
 4. Verify all 70 base times score 1,000 and independent slower/faster samples follow the published cubic formula and truncation. There is no yards points table and no implicit scoring of course-converted estimates.
+5. Check both directions of the points-based course conversion against the updated edition. Its provenance identifies the same snapshot, which also ships in the focused offline converter.
 
 ## Altitude
 

@@ -9,6 +9,8 @@ import { z } from "zod";
 import { getNationalStandardPrograms, type Engine } from "@turnmark/sdk";
 import {
   conversionMethods,
+  conversionMethod,
+  coloradoMethod,
   altitudePolicies,
   type ConversionMethod,
   type Swim,
@@ -27,7 +29,7 @@ import {
   pointsValidity,
 } from "@turnmark/sdk/points";
 
-export const conversionResourceUri = "ui://turnmark/conversion/0.3.0-r9.html";
+export const conversionResourceUri = "ui://turnmark/conversion/0.3.0-r10.html";
 const uiMeta = {
   ui: {
     csp: { connectDomains: [], resourceDomains: [], frameDomains: [] },
@@ -188,7 +190,7 @@ export function createServer(engine: Engine) {
     "convert_swim",
     {
       description:
-        "Convert an entered swim to an explicit course. NCAA is the default; colorado-teamunify-2026 selects documented Colorado Timing formulas; turnmark-empirical-2026 selects Turnmark Equivalence, a model-based estimate of the equivalent time in the other course (its factor varies with the entered time and it has no offset). The selected method drives the primary result; methodComparison returns NCAA, Colorado and Turnmark Equivalence for the same destination. methodDifferenceSeconds is the difference between NCAA and Colorado, or NCAA and Turnmark Equivalence when that method is selected; it is not a confidence interval. Optional elevation is deducted from the original event first, using altitudePolicy (USA Swimming default); value.altitude retains the original time, deduction and source. altitudeComparison returns both policies. value.caveat identifies the documented Colorado SCM/SCY unequal-distance freestyle limitation (colorado-short-course-distance) a Turnmark Equivalence time with limited data, from an event and course pair with fewer than 100 effective swimmers or where the conversion's bootstrap interval is wider than 1% (empirical-low-evidence), or a Turnmark Equivalence time outside the model's fitted range, which extrapolates beyond the available fit (empirical-out-of-range); show it alongside that result. Preserve each source; conversions are estimates, not entry approval.",
+        "Convert an entered swim to an explicit course. NCAA is the default; colorado-teamunify-2026 selects documented Colorado Timing formulas; turnmark-empirical-2026 selects Turnmark Equivalence, a model-based estimate of the equivalent time in the other course (its factor varies with the entered time and it has no offset). world-aquatics-points-2026 selects World Aquatics Points (FINA), which inverts the score for 25 m and 50 m pools when both courses have a published base time. The selected method drives the primary result; methodComparison returns all four methods for the same destination. methodDifferenceSeconds compares the selected method with NCAA, with NCAA versus Colorado as the default. Optional elevation is deducted from the original event first, using altitudePolicy (USA Swimming default); value.altitude retains the original time, deduction and source. altitudeComparison returns both policies. value.caveat identifies the documented Colorado SCM/SCY unequal-distance freestyle limitation (colorado-short-course-distance) a Turnmark Equivalence time with limited data, from an event and course pair with fewer than 100 effective swimmers or where the conversion's bootstrap interval is wider than 1% (empirical-low-evidence), or a Turnmark Equivalence time outside the model's fitted range, which extrapolates beyond the available fit (empirical-out-of-range); show it alongside that result. Preserve each source; conversions are estimates, not entry approval.",
       inputSchema: z.strictObject({
         swim,
         to: z.enum(["SCY", "SCM", "LCM"]),
@@ -249,11 +251,14 @@ export function createServer(engine: Engine) {
                   (typeof altitudePolicies)[number]["id"] | undefined,
               }),
       }));
-      const [ncaa, colorado, empirical] = methodComparison.map(
-        (item) => item.result,
-      );
-      const compared =
-        input.method === "turnmark-empirical-2026" ? empirical : colorado;
+      const [ncaa] = methodComparison.map((item) => item.result);
+      const comparedMethod =
+        input.method && input.method !== conversionMethod
+          ? input.method
+          : coloradoMethod;
+      const compared = methodComparison.find(
+        (item) => item.method === comparedMethod,
+      )?.result;
       return result({
         ...primary,
         methodComparison,

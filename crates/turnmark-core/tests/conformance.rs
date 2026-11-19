@@ -300,6 +300,56 @@ fn all_published_points_bases_and_milestone_hundredths() {
 }
 
 #[test]
+fn points_conversion_returns_the_slowest_hundredth_that_meets_the_score() {
+    let data: Value = serde_json::from_str(include_str!("../../../data/points.json")).unwrap();
+    for row in data["events"].as_array().unwrap() {
+        let stroke = match row["stroke"].as_str().unwrap() {
+            "FR" => "freestyle",
+            "BK" => "backstroke",
+            "BR" => "breaststroke",
+            "FL" => "butterfly",
+            "IM" => "individual-medley",
+            _ => panic!("unknown stroke"),
+        };
+        let to = if row["course"] == "SCM" { "LCM" } else { "SCM" };
+        for table in ["women", "men"] {
+            let time = format!("{:.2}", row[table].as_f64().unwrap() * 1.23);
+            let swim = json!({
+                "time": time,
+                "event": {"distance": row["distance"], "stroke": stroke, "course": row["course"]}
+            });
+            let score = run("points", &json!({"swim": swim, "table": table}))["value"]["points"]
+                .as_u64()
+                .unwrap();
+            let outcome = run(
+                "convert",
+                &json!({
+                    "swim": swim, "table": table, "to": to, "method": "world-aquatics-points-2026"
+                }),
+            );
+            if stroke == "individual-medley" && row["distance"] == 100 {
+                assert_eq!(outcome["reason"], "event-not-published");
+                continue;
+            }
+            let target = &outcome["value"];
+            let hundredths = target["hundredths"].as_u64().unwrap();
+            let destination_score = |ticks| {
+                run(
+                    "points",
+                    &json!({
+                        "swim": {"event": target["event"], "time": clock(ticks)}, "table": table
+                    }),
+                )["value"]["points"]
+                    .as_u64()
+                    .unwrap()
+            };
+            assert!(destination_score(hundredths) >= score, "{swim}");
+            assert!(destination_score(hundredths + 1) < score, "{swim}");
+        }
+    }
+}
+
+#[test]
 fn typed_native_contract_and_transport_errors() {
     assert_eq!(parse_time("\u{feff}1:02.45\u{00a0}".into()), Some(62.45));
     assert_eq!(parse_time("\u{0085}1:02.45".into()), None);

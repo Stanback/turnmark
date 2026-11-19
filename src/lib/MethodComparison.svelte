@@ -5,6 +5,9 @@
     ncaaMethodExplanation,
     empiricalMethodExplanation,
     empiricalCalculationNote,
+    methodShortLabels,
+    worldAquaticsMethodExplanation,
+    worldAquaticsCourseNote,
     poolLengthExplanation,
     methodComparisonCaveat,
   } from "./calculation-copy";
@@ -56,12 +59,7 @@
   const comparisons = $derived(
     conversionMethods.map((method) => ({
       ...method,
-      shortLabel:
-        method.id === "ncaa-2025-27"
-          ? "NCAA"
-          : method.id === "colorado-teamunify-2026"
-            ? "Colorado"
-            : "Equivalence",
+      shortLabel: methodShortLabels[method.id],
       result: converter.convert({ ...request, method: method.id }),
     })),
   );
@@ -84,9 +82,7 @@
   const difference = $derived.by(() => {
     const a = comparisons[0]?.result;
     const b =
-      selected === "turnmark-empirical-2026"
-        ? chosen?.result
-        : comparisons[1]?.result;
+      selected === "ncaa-2025-27" ? comparisons[1]?.result : chosen?.result;
     return a?.status === "available" && b?.status === "available"
       ? (Math.abs(a.value.hundredths - b.value.hundredths) / 100).toFixed(2)
       : null;
@@ -141,7 +137,9 @@
       nodes: avail.map((item, idx) => {
         const h = item.result.value.hundredths;
         const pct =
-          spanH > 0 ? 10 + ((h - minH) / spanH) * 80 : 25 + idx * 25;
+          spanH > 0
+            ? 10 + ((h - minH) / spanH) * 80
+            : 25 + (idx * 50) / (avail.length - 1);
         const deltaH = ncaaHundredths !== null ? h - ncaaHundredths : 0;
         return {
           id: item.id,
@@ -197,8 +195,7 @@
     if (!Number.isFinite(estSourceH) || estSourceH < 1500) return null;
 
     const scales = [
-      0.88, 0.9, 0.92, 0.94, 0.96, 0.98, 1.0, 1.02, 1.04, 1.06, 1.08, 1.1,
-      1.12,
+      0.88, 0.9, 0.92, 0.94, 0.96, 0.98, 1.0, 1.02, 1.04, 1.06, 1.08, 1.1, 1.12,
     ];
     const samples: {
       scale: number;
@@ -252,8 +249,7 @@
     const padY = 16;
     const xAt = (idx: number) =>
       padX + (idx / Math.max(1, samples.length - 1)) * (W - padX * 2);
-    const yAt = (val: number) =>
-      H / 2 - (val / maxAbs) * (H / 2 - padY);
+    const yAt = (val: number) => H / 2 - (val / maxAbs) * (H / 2 - padY);
 
     const empPoints = samples
       .map((s, i) => `${xAt(i).toFixed(1)},${yAt(s.empDeltaS).toFixed(1)}`)
@@ -321,7 +317,9 @@
         </span>
         {#if geometry.turnDelta !== 0}
           <strong class="turn-delta">
-            {geometry.turnDelta > 0 ? `+${geometry.turnDelta}` : `−${Math.abs(geometry.turnDelta)}`}
+            {geometry.turnDelta > 0
+              ? `+${geometry.turnDelta}`
+              : `−${Math.abs(geometry.turnDelta)}`}
             {Math.abs(geometry.turnDelta) === 1 ? "wall" : "walls"}
           </strong>
         {/if}
@@ -330,10 +328,15 @@
   </div>
 
   {#if spectrum}
-    <div class="method-spectrum" aria-label="Relative time spectrum across conversion methods">
+    <div
+      class="method-spectrum"
+      aria-label="Relative time spectrum across conversion methods"
+    >
       <div class="spectrum-labels">
         <span>Faster ({spectrum.minTime})</span>
-        <span class="spectrum-spread">Method spread: {spectrum.spreadSeconds}s</span>
+        <span class="spectrum-spread"
+          >Method spread: {spectrum.spreadSeconds}s</span
+        >
         <span>Slower ({spectrum.maxTime})</span>
       </div>
       <div
@@ -373,19 +376,20 @@
 
   <dl>
     {#each comparisons as item}
-      {@const val = item.result.status === "available" ? item.result.value : null}
+      {@const val =
+        item.result.status === "available" ? item.result.value : null}
       {@const deltaH =
         val !== null && ncaaHundredths !== null
           ? val.hundredths - ncaaHundredths
           : null}
-      <div
-        data-method={item.id}
-        class:selected-row={item.id === selected}
-      >
+      <div data-method={item.id} class:selected-row={item.id === selected}>
         <dt>
           <span class="method-title">
-            {item.label.replace(" (default)", "")}{#if item.id === selected}<span
-                class="selected-badge">Selected</span
+            {item.label.replace(
+              " (default)",
+              "",
+            )}{#if item.id === selected}<span class="selected-badge"
+                >Selected</span
               >{/if}
           </span>
           {#if val !== null && val.kind !== "swum"}
@@ -424,7 +428,9 @@
             <span
               >{item.result.status === "invalid"
                 ? "Check the entered swim"
-                : "Unavailable for this event"}</span
+                : item.result.reason === "course-not-supported"
+                  ? "25 m ↔ 50 m only"
+                  : "Unavailable for this event"}</span
             >
           {/if}
         </dd>
@@ -438,10 +444,16 @@
   <p>{methodComparisonCaveat}</p>
 
   {#if paceExplorer}
-    <div class="pace-explorer" aria-label="Equivalent time compared with NCAA across paces">
+    <div
+      class="pace-explorer"
+      aria-label="Equivalent time compared with NCAA across paces"
+    >
       <div class="pace-explorer-head">
         <h4>Equivalent time vs. NCAA across paces</h4>
-        <span>Each point converts an entered time up to 12% faster or slower and subtracts the NCAA conversion of that same time.</span>
+        <span
+          >Each point converts an entered time up to 12% faster or slower and
+          subtracts the NCAA conversion of that same time.</span
+        >
       </div>
       <p class="pace-legend" aria-hidden="true">
         <span class="pace-key pace-key-emp">Equivalence</span>
@@ -487,10 +499,8 @@
           text-anchor="end"
           class="pace-axis-label">Slower pace</text
         >
-        <text
-          x="24"
-          y={paceExplorer.zeroY - 4}
-          class="pace-zero-label">NCAA 0.00s</text
+        <text x="24" y={paceExplorer.zeroY - 4} class="pace-zero-label"
+          >NCAA 0.00s</text
         >
       </svg>
       <div class="pace-strip">
@@ -536,6 +546,10 @@
       <p>{empiricalMethodExplanation}</p>
     </div>
     <div>
+      <h4>World Aquatics Points (FINA)</h4>
+      <p>{worldAquaticsMethodExplanation}</p>
+    </div>
+    <div>
       <h4>Pool length</h4>
       <p>{poolLengthExplanation}</p>
     </div>
@@ -558,6 +572,8 @@
             ? `Your sea-level estimate in ${request.to}.`
             : "Your entered swim, exactly as timed."}
         </p>
+      {:else if chosen.result.value.formula === "points-equivalent"}
+        <p>{worldAquaticsMethodExplanation}</p>
       {:else}
         <p>
           {request.swim.event.course} → {request.to}:
@@ -579,7 +595,11 @@
           rule.
         </p>
       {/if}
-    {:else}<p>Unavailable for this event and destination.</p>{/if}
+    {:else}<p>
+        {chosen.result.reason === "course-not-supported"
+          ? worldAquaticsCourseNote
+          : "Unavailable for this event and destination."}
+      </p>{/if}
   </div>
   <ul class="sources">
     {#each comparisons as item}
@@ -589,7 +609,9 @@
             ? "NCAA rules"
             : item.id === "turnmark-empirical-2026"
               ? "Turnmark Equivalence report"
-              : "Colorado Timing formulas"} ↗</a
+              : item.id === "world-aquatics-points-2026"
+                ? "World Aquatics base times"
+                : "Colorado Timing formulas"} ↗</a
         >
       </li>
     {/each}

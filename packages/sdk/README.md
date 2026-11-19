@@ -218,17 +218,18 @@ outcomes. Meeting a target does not confirm entry eligibility. Native bindings
 also expose `getStandardAgeGroups` from the same core; selecting 85+ for the
 bundled USMS table produces explicit missing-age-group coverage.
 
-## Alternative conversion method (unreleased 0.2.0)
+## Alternative conversion methods (unreleased 0.2.0)
 
 Omit `method` for the unchanged NCAA default, or pass
-`method: "colorado-teamunify-2026"` or `method: "turnmark-empirical-2026"` to
+`method: "colorado-teamunify-2026"`, `"turnmark-empirical-2026"` or
+`"world-aquatics-points-2026"` to
 `engine.convert` / `convertSwim`. `conversionMethods` from
 `@turnmark/sdk/conversion` supplies labels, identifiers and source metadata.
 Results carry the selected provenance. Colorado results add an optional
 `offsetSeconds` (absent when zero): the untruncated calculation is
 `inputSeconds × factor + offsetSeconds`. Colorado results are estimates and
 unsupported formulas remain unavailable. Every result's `formula` names the
-arithmetic: `none`, `multiplier`, `multiplier-offset` or `equivalent`; Colorado's
+arithmetic: `none`, `multiplier`, `multiplier-offset`, `equivalent` or `points-equivalent`. Colorado's
 distance-freestyle rules are `multiplier`.
 
 `turnmark-empirical-2026` is Turnmark Equivalence: a model-based estimate of the
@@ -244,6 +245,13 @@ Its `factor` is equivalent seconds / entered seconds, so it varies with the
 entered time, and `offsetSeconds` is never set. Swift/Kotlin use
 `convertSwimWithMethod(request, method)`; the existing `convertSwim` stays NCAA.
 See the methodology for the exact source scope and distance-event exceptions.
+
+`world-aquatics-points-2026` converts between SCM and LCM for individual events
+with a 2026 base time in both courses. It scores the source swim and returns
+the slowest destination hundredth that meets the score. At zero points, it
+scales by the base-time ratio and rounds toward the slower hundredth. Its
+`formula` is `points-equivalent`, its factor is specific to the entered time,
+and the result carries the published base-time provenance.
 
 ### Optional altitude context
 

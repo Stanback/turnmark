@@ -304,6 +304,9 @@ pub(crate) fn convert_seconds_with_method(
                 verified: Some(text(&source["verified"])),
             }
         }
+        ConversionMethod::WorldAquaticsPoints => {
+            provenance(&POINTS, "world-aquatics-points-2026", "name", "checked")
+        }
     };
     let target = SwimEvent {
         course: to,
@@ -324,6 +327,38 @@ pub(crate) fn convert_seconds_with_method(
             0.0,
             ConversionKind::Swum,
             ConversionFormula::None,
+        )
+    } else if method == ConversionMethod::WorldAquaticsPoints {
+        if event.course == Course::SCY || to == Course::SCY {
+            return Err(unavailable(CoverageReason::CourseNotSupported, provenance));
+        }
+        let (Some(source), Some(destination)) =
+            (points_base(&event, table), points_base(&target, table))
+        else {
+            return Err(unavailable(CoverageReason::EventNotPublished, provenance));
+        };
+        let points = world_points_score(source, seconds)?;
+        // Zero points has no finite inverse. Preserve the underlying score in that case.
+        let equivalent = if points == 0 {
+            seconds * (destination / source)
+        } else {
+            points_time(destination, points)
+        };
+        let converted = if points == 0 {
+            // Round toward the slower hundredth to keep the destination score at zero.
+            (equivalent * 100.0 - 1e-8).ceil() / 100.0
+        } else {
+            truncate(equivalent)
+        };
+        if !converted.is_finite() || converted <= 0.0 {
+            return Err(invalid("swim.time", ValidationReason::UnsafeResult));
+        }
+        (
+            converted,
+            equivalent / seconds,
+            0.0,
+            ConversionKind::Derived,
+            ConversionFormula::PointsEquivalent,
         )
     } else if method == ConversionMethod::Colorado {
         let Some((factor, offset)) = colorado_formula(&event, distance, to) else {
@@ -731,26 +766,15 @@ pub(crate) fn points_seconds(
     if event.course == Course::SCY {
         return Err(unavailable(CoverageReason::CourseNotSupported, provenance));
     }
-    let row = POINTS["events"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .find(|r| matches(r, &event));
-    let Some(row) = row else {
+    let Some(base) = points_base(&event, table) else {
         return Err(unavailable(CoverageReason::EventNotPublished, provenance));
     };
-    let base = row[category_key(table)].as_f64().unwrap();
-    let score = 1000.0 * (base / seconds).powi(3);
-    const MAX_SAFE: f64 = 9_007_199_254_740_991.0;
-    if !score.is_finite() || score.floor() > MAX_SAFE {
-        return Err(invalid("swim.time", ValidationReason::UnsafeResult));
-    }
-    let points = (score + 1e-9).floor() as u64;
+    let points = world_points_score(base, seconds)?;
     let next = (points / 100 + 1) * 100;
-    if next as f64 > MAX_SAFE {
+    if next as f64 > MAX_SAFE_POINTS {
         return Err(invalid("swim.time", ValidationReason::UnsafeResult));
     }
-    let target = truncate(base / (next as f64 / 1000.0).cbrt());
+    let target = truncate(points_time(base, next));
     Ok((
         PointsValue {
             points,
@@ -766,6 +790,28 @@ pub(crate) fn points_seconds(
         },
         provenance,
     ))
+}
+
+fn points_base(event: &SwimEvent, table: Category) -> Option<f64> {
+    POINTS["events"]
+        .as_array()?
+        .iter()
+        .find(|row| matches(row, event))?[category_key(table)]
+    .as_f64()
+}
+
+const MAX_SAFE_POINTS: f64 = 9_007_199_254_740_991.0;
+
+fn world_points_score(base: f64, seconds: f64) -> Result<u64, Failure> {
+    let score = (1000.0 * (base / seconds).powi(3) + 1e-9).floor();
+    if !score.is_finite() || score > MAX_SAFE_POINTS {
+        return Err(invalid("swim.time", ValidationReason::UnsafeResult));
+    }
+    Ok(score as u64)
+}
+
+fn points_time(base: f64, points: u64) -> f64 {
+    base / (points as f64 / 1000.0).cbrt()
 }
 
 pub(crate) fn altitude_adjustment(distance: u32, feet: f64) -> f64 {

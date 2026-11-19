@@ -1,5 +1,8 @@
 <script lang="ts">
-  import { caveatText } from "../../src/lib/calculation-copy";
+  import {
+    caveatText,
+    worldAquaticsCourseNote,
+  } from "../../src/lib/calculation-copy";
   import AltitudeControls from "../../src/lib/AltitudeControls.svelte";
   import MethodComparison from "../../src/lib/MethodComparison.svelte";
   import Icon from "../../src/lib/Icon.svelte";
@@ -179,7 +182,9 @@
             <p>
               {result.status === "invalid"
                 ? "Check the entered time"
-                : "No published factor for this event"}
+                : result.reason === "course-not-supported"
+                  ? worldAquaticsCourseNote
+                  : "No published factor for this event"}
             </p>
           </div>
           <span aria-label="No result">—</span>

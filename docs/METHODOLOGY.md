@@ -4,7 +4,7 @@ Source review: October 19, 2026 (Colorado formulas, NCAA altitude and national b
 
 ## Course conversion
 
-**NCAA is the default conversion method.** Calculation options groups separate Course conversion and optional Altitude policy controls on web, native apps, widget and MCP cards. Course conversion offers Colorado Timing as an alternative. The selection changes estimates, never the original swim used for standards or points. Web preferences, history and links retain the method; older links and records default to NCAA.
+**NCAA is the default conversion method.** Calculation options groups separate Course conversion and optional Altitude policy controls on web, native apps, widget and MCP cards. Course conversion also offers Colorado Timing, Turnmark Equivalence and World Aquatics Points (FINA). The selection changes estimates, never the original swim used for standards or points. Web preferences, history and links retain the method; older links and records default to NCAA.
 
 ### NCAA
 
@@ -70,6 +70,14 @@ The [national benchmark guide](NATIONAL_BENCHMARKS.md) documents the editioned
 2027 Futures and Junior Nationals tables and 2026–2027 NISCA All-America time
 thresholds. These comparisons use only the original swim, preserve each table's
 course/event coverage, and do not establish meet entry or award eligibility.
+
+## World Aquatics Points (FINA) course conversion
+
+`world-aquatics-points-2026` uses the [2026 SCM and LCM base-time tables](https://resources.fina.org/fina/document/2026/09/05/9b48fb98-233c-4ce9-b67b-bc6163319bbd/Points-Base-times-SCM-and-LCM-2026_09.2026.pdf) and the [World Aquatics scoring formula](https://www.worldaquatics.com/swimming/points). The [LENEX 3.0 specification, p. 21](https://wiki.swimrankings.net/images/6/62/Lenex_3.0_Technical_Documentation.pdf#page=21) describes the score-and-invert approach for seeding. Turnmark applies it to individual SCM ↔ LCM events with a base time in both courses. Yards conversions and 100 IM across courses are unavailable. Same-course results retain the input with any explicit altitude deduction.
+
+The engine calculates the source swim’s whole-point score after any explicit altitude deduction. For a positive score `P`, it returns the slowest destination hundredth that meets that score, by truncating `destinationBase / ∛(P / 1000)`. At high scores a hundredth can span several points, so the destination can score slightly higher. A zero score has no finite inverse. Turnmark uses the destination-to-source base-time ratio and rounds to the slower hundredth to preserve zero. Every cross-course result is a derived estimate and carries the table edition. Meet organizers determine accepted entry and seeding methods.
+
+The men's 100 m freestyle bases are 44.84 SCM and 46.40 LCM. An entered 55.00 SCM scores 541 points. The LCM conversion is **56.94**, and 56.95 scores 540. A 44.84 SCM swim maps to the published 46.40 LCM base at 1,000 points.
 
 ## World Aquatics points
 

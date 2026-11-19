@@ -32,6 +32,8 @@ export {
   conversionMethod,
   coloradoMethod,
   empiricalMethod,
+  worldAquaticsMethod,
+  isConversionMethod,
   conversionMethods,
   altitudePolicies,
 } from "./conversion-methods.js";

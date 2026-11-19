@@ -1,3 +1,12 @@
+import type { ConversionMethod } from "@turnmark/sdk/converter";
+
+export const methodShortLabels: Record<ConversionMethod, string> = {
+  "ncaa-2025-27": "NCAA",
+  "colorado-teamunify-2026": "Colorado",
+  "turnmark-empirical-2026": "Equivalence",
+  "world-aquatics-points-2026": "FINA",
+};
+
 export const coloradoDistanceCaveat =
   "Distance caveat: this documented Colorado rule uses a general SCM/SCY multiplier for unequal-distance freestyle events. Check the meet’s required conversion.";
 
@@ -21,6 +30,7 @@ export function formulaText(formula: string | undefined): string {
   if (formula === "multiplier") return "flat multiplier";
   if (formula === "multiplier-offset") return "fixed turn offset";
   if (formula === "equivalent") return "equivalent time";
+  if (formula === "points-equivalent") return "points-equivalent time";
   return "";
 }
 
@@ -33,6 +43,12 @@ export const ncaaMethodExplanation =
 
 export const empiricalMethodExplanation =
   "Estimates the equivalent time in the other course from 95K pairs of the same swimmer racing both courses within a month (8.51M US swims, 2010–2026), allowing for the randomness in any single swim. Converting back returns the entered time to within 0.02 s.";
+
+export const worldAquaticsMethodExplanation =
+  "Estimates a 25 m or 50 m time that meets the entered swim’s World Aquatics points score. Both courses need a published base time.";
+
+export const worldAquaticsCourseNote =
+  "World Aquatics points conversion covers 25 m and 50 m pools.";
 
 export const poolLengthExplanation =
   "Shorter pools mean more turns and push-offs. These rules do not adjust for your starts, underwater skill, technique, endurance or individual development.";
